@@ -1,11 +1,10 @@
-
-gecos_ws_management_setup_connection "vpn-user1" do
-  network_type "vpn"
-  cert "file:///kkfuti"
-  user "user1"
-end
-
-gecos_ws_management_setup_connection "eth0-default" do
-  network_type "wired"
-  use_dhcp true
-end
+#
+# Cookbook Name:: gecos-ws-mgmt
+# Recipe:: network_management
+#
+# Copyright 2013, Junta de Andalucia
+# http://www.juntadeandalucia.es/
+#
+# All rights reserved - EUPL License V 1.1
+# http://www.osor.eu/eupl
+#
