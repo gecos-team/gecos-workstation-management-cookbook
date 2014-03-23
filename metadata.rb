@@ -21,7 +21,7 @@ network_resource_js = {
     gateway: { type: "string" },
     ip_address: { type:"string" },
     netmask: { type: "string" },
-    network_type: { pattern: "(^wired$|wireless)", type: "string" },
+    network_type: { pattern: "(wired|wireless)", type: "string" },
     use_dhcp: { type: "boolean" },
     dns_server: {
       type: "array",
@@ -43,7 +43,7 @@ network_resource_js = {
           gateway: { type: "string" },
           ip_address: { type:"string" },
           netmask: { type: "string" },
-          network_type: { pattern: "(^wired$|wireless|vpn|proxy)", type: "string" },
+          network_type: { pattern: "(wired|wireless|vpn|proxy)", type: "string" },
           use_dhcp: { type: "boolean" }
         }
       }
