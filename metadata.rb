@@ -1,4 +1,4 @@
-name              "gecos_workstation_management"
+name              "gecos_ws_mgmt"
 maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
@@ -10,66 +10,65 @@ version           "0.2.0"
   supports os
 end
 
-# more complete input definition via json-schema:
-js = Hash.new
-js["id"] = "http://some.site.somewhere/entry-schema#"
-# TODO: provide a valid schema URL
-#js["$schema"] = "http://github.com/gecos-team/networkmanagement-cookbook/json-schemas/root-schema#"
-js["description"] = "GECOS Network Management cookbook attributes json-schema"
-js["type"] = "object"
-js["required"] = [ "gecos_network_management" ]
-js["properties"] = Hash.new
-js["properties"]["gecos_network_management"] = Hash.new
-js["properties"]["gecos_network_management"]["type"] = "object"
-js["properties"]["gecos_network_management"]["required"] = ["default_recipe"]
 
-js["properties"]["gecos_network_management"]["default_recipe"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["type"] = "object"
-js["properties"]["gecos_network_management"]["default_recipe"]["required"] = ["setup_connection_resource"]
 
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["type"] = "object"
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["required"] = ["network_type"]
+# more complete input definition via json-schemas:
+network_resource_js = {
+    type: "object",
+    required: ["network_type"],
+    properties:
+    {
+        gateway: { type: "string" },
+        ip_address: { type:"string" },
+        netmask: { type: "string" },
+        network_type: { pattern: "(^wired$|wireless)", type: "string" },
+        use_dhcp: { type: "boolean" },
+        users: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+                type: "object",
+                required: ["username","network_type"],
+                properties: {
+                    username: { type: "string" },
+                    gateway: { type: "string" },
+                    ip_address: { type:"string" },
+                    netmask: { type: "string" },
+                    network_type: { pattern: "(^wired$|wireless|vpn|proxy)", type: "string" },
+                    use_dhcp: { type: "boolean" }
+                }
+            }
+        }
+    }
+}
 
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["network_type"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["network_type"]["type"] = "string"
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["network_type"]["pattern"] = "(wired|wireless)"
 
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["use_dhcp"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["use_dhcp"]["type"] = "boolean"
-
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["ip_address"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["ip_address"]["type"] = "string"
-# TODO: dependency handling
-#js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["ip_address"]["dependencies"] = Hash.new
-#js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["ip_address"]["dependencies"]["use_dhcp"]
-#js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["ip_address"]["dependencies"] = Hash.new
-
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["gateway"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["gateway"]["type"] = "string"
-
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["netmask"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["netmask"]["type"] = "string"
-
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["dns_servers"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["dns_servers"]["type"] = "array"
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["dns_servers"]["minItems"] = 1
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["dns_servers"]["uniqueItems"] = true
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["dns_servers"]["items"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["dns_servers"]["items"]["type"] = "string"
-# TODO: add ip patterns
-#js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["dns_servers"]["items"]["pattern"] = "_ipregex_here_"
-
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["users"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["users"]["type"] = "array"
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["users"]["minItems"] = "0"
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["users"]["uniqueItems"] = "true"
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["users"]["items"] = Hash.new
-js["properties"]["gecos_network_management"]["default_recipe"]["setup_connection_resource"]["users"]["items"]["$ref"] = "#/gecos_network_management/default_recipe/setup_connection_resource"
+complete_js = { 
+    description: "GECOS workstation management LWRPs json-schema",
+    id: "http://gecos-server/cookbooks/#{name}/#{version}/network-schema#",
+    required: ["gecos_ws_mgmt"],
+    type: "object",
+    properties: {
+        gecos_ws_mgmt: {
+            type: "object",
+            required: ["network_management_recipe"],
+            properties: {
+                network_management_recipe: {
+                    type: "object",
+                    required: ["network_resource"],
+                    properties: {
+                        network_resource: network_resource_js
+                    }
+                }
+            }
+        }
+    }
+}
 
 attribute 'json_schema',
   :display_name => "json-schema",
   :description  => "Special attribute to include json-schema for defining cookbook's input",
   :type         => "hash",
-  :object       => js
+  :object       => complete_js
 
