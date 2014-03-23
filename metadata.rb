@@ -23,6 +23,14 @@ network_resource_js = {
         netmask: { type: "string" },
         network_type: { pattern: "(^wired$|wireless)", type: "string" },
         use_dhcp: { type: "boolean" },
+        dns_server: {
+            type: "array",
+            minItems: 1,
+            uniqueItems: true,
+            items: {
+                type: "string"
+            }
+        },
         users: {
             type: "array",
             minItems: 0,
@@ -39,6 +47,19 @@ network_resource_js = {
                     use_dhcp: { type: "boolean" }
                 }
             }
+        },
+        job_ids: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string" },
+                    status: { type: "string" }
+                }
+            }
         }
     }
 }
@@ -52,13 +73,13 @@ complete_js = {
     properties: {
         gecos_ws_mgmt: {
             type: "object",
-            required: ["network_management_recipe"],
+            required: ["network_mgmt"],
             properties: {
-                network_management_recipe: {
+                network_mgnt: {
                     type: "object",
-                    required: ["network_resource"],
+                    required: ["network_res"],
                     properties: {
-                        network_resource: network_resource_js
+                        network_res: network_resource_js
                     }
                 }
             }
