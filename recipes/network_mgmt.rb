@@ -8,3 +8,7 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
+
+gecos_ws_mgmt_network "localhost" do
+  action  :setup
+end
