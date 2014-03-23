@@ -75,7 +75,7 @@ complete_js = {
       type: "object",
       required: ["network_mgmt"],
       properties: {
-        network_mgnt: {
+        network_mgmt: {
           type: "object",
           required: ["network_res"],
           properties: {
