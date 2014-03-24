@@ -9,9 +9,6 @@
 # http://www.osor.eu/eupl
 #
 
-class Chef::Recipe
-  include NetworkFunctions
-end
 
 action :setup do
 
