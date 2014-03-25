@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: gecos-ws-mgmt
+# Cookbook Name:: gecos_ws_mgmt
 # Recipe:: software_management
 #
 # Copyright 2013, Junta de Andalucia
@@ -8,3 +8,9 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
+include_recipe "apt"
+
+gecos_ws_mgmt_software_sources 'test' do
+  repo_list node[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:repo_list]
+  action :setup
+end
