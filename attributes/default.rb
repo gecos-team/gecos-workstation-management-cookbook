@@ -6,3 +6,6 @@ default[:gecos_ws_mgmt][:network_mgmt][:network_res][:network_type] = 'wired'
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:use_dhcp] = true
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:users] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
+
+default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:repo_list] = []
+default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:job_ids] = []

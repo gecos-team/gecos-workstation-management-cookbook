@@ -5,12 +5,11 @@ license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
 version           "0.2.0"
 
+depends "apt"
 
 %w{ ubuntu debian }.each do |os|
   supports os
 end
-
-
 
 # more complete input definition via json-schemas:
 network_resource_js = {
@@ -64,6 +63,45 @@ network_resource_js = {
   }
 }
 
+software_sources_resource_js = {
+  type: "object",
+  properties: 
+  {repo_list: {
+      type:"array",
+      items: {
+        type:"object",
+        required: ["repo_name","distribution","components","actiontorun","uri","deb_src","repo_key","key_server"],
+        properties:{
+          actiontorun: {pattern: "(add|remove)",type: "string"},
+          components: { type: "array",items: { type: "string" } },
+          deb_src: { type: "boolean", default: false },
+          repo_key: { type: "string", default: ""},
+          key_server: { type: "string", default: ""},
+          distribution: { type: "string"},
+          repo_name: { type: "string"},
+          uri: { type: "string" }
+        }
+     }
+   }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+}
+
+
+
+
 
 complete_js = { 
   description: "GECOS workstation management LWRPs json-schema",
@@ -73,13 +111,20 @@ complete_js = {
   properties: {
     gecos_ws_mgmt: {
       type: "object",
-      required: ["network_mgmt"],
+      required: ["network_mgmt","software_mgmt"],
       properties: {
         network_mgmt: {
           type: "object",
           required: ["network_res"],
           properties: {
             network_res: network_resource_js
+          }
+        },
+        software_mgmt: {
+          type: "object",
+          required: ["software_sources_res"],
+          properties: {
+            software_sources_res: software_sources_resource_js
           }
         }
       }
