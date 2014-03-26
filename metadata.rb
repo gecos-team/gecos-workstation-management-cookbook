@@ -121,6 +121,7 @@ network_resource_js = {
 
 software_sources_resource_js = {
   type: "object",
+  required: ["repo_list"],
   properties: 
   {repo_list: {
       type:"array",
@@ -184,7 +185,7 @@ complete_js = {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js
           }
-        }
+        },
         software_mgmt: {
           type: "object",
           required: ["software_sources_res"],
