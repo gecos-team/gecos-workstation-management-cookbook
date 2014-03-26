@@ -179,7 +179,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res, scripts_launch_res"], 
+          required: ["tz_date_res", "scripts_launch_res"], 
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js
