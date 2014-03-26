@@ -12,6 +12,29 @@ depends "apt"
 end
 
 # more complete input definition via json-schemas:
+tz_date_js = {
+  type: "object",
+  required: ["server"],
+  properties: {
+    server: {
+      type: "string"
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
 scripts_launch_js = {
   type: "object",
   required: ["scripts"],
@@ -154,6 +177,14 @@ complete_js = {
             network_res: network_resource_js
           }
         },
+        misc_mgmt: {
+          type: "object",
+          required: ["tz_date_res", "scripts_launch_res"], 
+          properties: {
+            tz_date_res: tz_date_js,
+            scripts_launch_res: scripts_launch_js
+          }
+        }
         software_mgmt: {
           type: "object",
           required: ["software_sources_res"],
