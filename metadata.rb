@@ -82,7 +82,7 @@ software_sources_resource_js = {
           uri: { type: "string" }
         }
      }
-   }
+   
   },
   job_ids: {
     type: "array",
@@ -97,6 +97,7 @@ software_sources_resource_js = {
       }
     }
    }
+ }
 }
 
 
