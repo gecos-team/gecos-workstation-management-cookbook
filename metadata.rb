@@ -168,7 +168,7 @@ complete_js = {
   properties: {
     gecos_ws_mgmt: {
       type: "object",
-      required: ["network_mgmt","software_mgmt"],
+      required: ["network_mgmt","software_mgmt","misc_mgmt"],
       properties: {
         network_mgmt: {
           type: "object",
