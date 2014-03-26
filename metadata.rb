@@ -12,6 +12,39 @@ depends "apt"
 end
 
 # more complete input definition via json-schemas:
+scripts_launch_js = {
+  type: "object",
+  required: ["scripts"],
+  properties:
+  {
+    scripts: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: false,
+      items: {
+        type: "object",
+        required: ["command","c_type"],
+        properties: {
+          command: {type: "string"},
+          c_type: {type: "string", pattern: "(autostart|logout)"}
+        }
+      }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+          status: { type: "string" }
+        }
+      }
+    }
+  } 
+}
 network_resource_js = {
   type: "object",
   required: ["network_type"],
