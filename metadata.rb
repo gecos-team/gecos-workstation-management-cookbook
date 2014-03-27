@@ -237,9 +237,9 @@ printers_resource_js = {
 
 local_users_js = {
   type: "object",
-  required: ["user_list"],
+  required: ["users_list"],
   properties: 
-  {user_list: {
+  {users_list: {
       type:"array",
       items: {
         type:"object",
@@ -268,6 +268,36 @@ local_users_js = {
  }
 }
 
+local_groups_js = {
+  type: "object",
+  required: ["groups_list"],
+  properties: 
+  {groups_list: {
+      type:"array",
+      items: {
+        type:"object",
+        required: ["group"],
+        properties:{
+          group: { type: "string" },
+          users: { type: "array",items: { type: "string" } }
+        }
+     }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
 
 local_file_js = {
   type: "object",
@@ -358,12 +388,13 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_file_res", "local_admin_users_res"], 
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res"], 
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
             local_users_res: local_users_js,
             local_file_res: local_file_js,
+            local_groups_res: local_groups_js,
             local_admin_users_res: local_admin_users_js
           }
         },
