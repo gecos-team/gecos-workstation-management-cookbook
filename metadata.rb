@@ -314,6 +314,29 @@ local_file_js = {
  }
 }
 
+local_admin_users_js = {
+  type: "object",
+  required: ["local_admin_list"],
+  properties: 
+  {local_admin_list: {
+      type:"array",
+      items: { type:"string"}
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
 
 complete_js = { 
   description: "GECOS workstation management LWRPs json-schema",
@@ -334,12 +357,13 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_file_res"], 
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_file_res", "local_admin_users_res"], 
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
             local_users_res: local_users_js,
-            local_file_res: local_file_js
+            local_file_res: local_file_js,
+            local_admin_users_res: local_admin_users_js
           }
         },
         software_mgmt: {
