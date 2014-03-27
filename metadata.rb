@@ -247,7 +247,7 @@ local_users_js = {
           actiontorun: {pattern: "(create|delete)",type: "string"},
           groups: { type: "array",items: { type: "string" } },
           user: { type: "string" },
-          password: { type: "string"},
+          password: { type: "string"}
         }
      }
   },
@@ -266,6 +266,54 @@ local_users_js = {
    }
  }
 }
+
+
+local_file_js = {
+  type: "object",
+  required: ["delete_files", "copy_files"],
+  properties: 
+  {delete_files: {
+      type:"array",
+      items: {
+        type:"object",
+        required: ["file"],
+        properties:{
+          file: {type: "string"},
+          backup: { type: "boolean" }
+        }
+     }
+  },
+  copy_files: {
+    type: "array",
+    items: {
+      type: "object",
+      required: ["file_orig","file_dest"],
+      properties:{
+        file_orig: {type: "string"},
+        file_dest: {type: "string"},
+        user: {type: "string"},
+        group: {type: "string"},
+        mode: {type: "string"},
+        overwrite: {type: "boolean"}
+      }
+    }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
 
 complete_js = { 
   description: "GECOS workstation management LWRPs json-schema",
@@ -286,11 +334,12 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res"], 
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_file_res"], 
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
-            local_users_res: local_users_js
+            local_users_res: local_users_js,
+            local_file_res: local_file_js
           }
         },
         software_mgmt: {
