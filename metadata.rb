@@ -309,11 +309,12 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res"], 
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "auto_updates_res"], 
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
-            local_users_res: local_users_js
+            local_users_res: local_users_js,
+            auto_updates_res: auto_updates_js
           }
         },
         software_mgmt: {
