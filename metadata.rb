@@ -459,7 +459,7 @@ complete_js = {
   properties: {
     gecos_ws_mgmt: {
       type: "object",
-      required: ["network_mgmt","software_mgmt", "printers_mgmt", "misc_mgmt"],
+      required: ["network_mgmt","software_mgmt", "printers_mgmt", "misc_mgmt", "users_mgmt"],
       properties: {
         network_mgmt: {
           type: "object",
@@ -494,6 +494,13 @@ complete_js = {
           required: ["printers_res"],
           properties: {
             printers_res: printers_resource_js
+          }
+        },
+        users_mgmt: {
+          type: "object",
+          required: ["user_apps_autostart_res"],
+          properties: {
+            user_apps_autostart_res: user_apps_autostart_js
           }
         }
       }
