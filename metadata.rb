@@ -198,6 +198,7 @@ software_sources_resource_js = {
 
 printers_resource_js = {
   type: "object",
+  required: ["printer_list"],
   properties: 
   {
     printer_list: {
