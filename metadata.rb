@@ -12,6 +12,45 @@ depends "apt"
 end
 
 # more complete input definition via json-schemas:
+
+user_apps_autostart_js = {
+  type: "object",
+  required: ["autostart_files"],
+  properties: {
+    autostart_files: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["user", "desktops"],
+        properties: {
+          user: {type: "string"},
+          desktops: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {type: "string"}
+          }
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
 tz_date_js = {
   type: "object",
   required: ["server"],
