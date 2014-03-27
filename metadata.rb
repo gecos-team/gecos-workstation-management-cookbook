@@ -99,6 +99,45 @@ software_sources_resource_js = {
    }
 }
 
+printers_resource_js = {
+  type: "object",
+  properties: 
+  {
+    printer_list: {
+      type:"array",
+      items: {
+        type:"object",
+        required: [ "name", "manufacturer", "model", "shared", "users_allowed", "groups_allowed" ],
+        properties:{
+          name: { type: "string" },
+          manufacturer: { type: "string" },
+          model: { type: "string" },
+          uri: { type: "string" },
+          shared: { type: "boolean", default: false },
+          ppd: { type: "string", default: ""},
+          ppd_uri: { type: "string", default: ""},
+          users_allowed: { type: "array", items: { type: "string" } },
+          groups_allowed: { type: "array", items: { type: "string" } }
+        }
+      }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+          status: { type: "string" }
+        }
+      }
+    }
+  }
+}
+
+
 
 
 
@@ -125,6 +164,13 @@ complete_js = {
           required: ["software_sources_res"],
           properties: {
             software_sources_res: software_sources_resource_js
+          }
+        }
+         printers_mgmt: {
+          type: "object",
+          required: ["printers_res"],
+          properties: {
+            printers_res: printers_resource_js
           }
         }
       }
