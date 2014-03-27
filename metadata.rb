@@ -196,6 +196,27 @@ software_sources_resource_js = {
  }
 }
 
+package_js = {
+  type: "object",
+  required: ["package_list"],
+  properties: 
+  {package_list: {type:"array"},
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
 printers_resource_js = {
   type: "object",
   required: ["printer_list"],
@@ -400,9 +421,10 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res"],
+          required: ["software_sources_res","package_res"],
           properties: {
-            software_sources_res: software_sources_resource_js
+            software_sources_res: software_sources_resource_js,
+            package_res: package_js
           }
         }
          printers_mgmt: {
