@@ -12,6 +12,101 @@ depends "apt"
 end
 
 # more complete input definition via json-schemas:
+
+user_apps_autostart_js = {
+  type: "object",
+  required: ["autostart_files"],
+  properties: {
+    autostart_files: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["user", "desktops"],
+        properties: {
+          user: {type: "string"},
+          desktops: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {type: "string"}
+          }
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
+tz_date_js = {
+  type: "object",
+  required: ["server"],
+  properties: {
+    server: {
+      type: "string"
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
+scripts_launch_js = {
+  type: "object",
+  required: ["scripts"],
+  properties:
+  {
+    scripts: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: false,
+      items: {
+        type: "object",
+        required: ["command","c_type"],
+        properties: {
+          command: {type: "string"},
+          c_type: {type: "string", pattern: "(autostart|logout)"}
+        }
+      }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+          status: { type: "string" }
+        }
+      }
+    }
+  } 
+}
 network_resource_js = {
   type: "object",
   required: ["network_type"],
@@ -65,6 +160,7 @@ network_resource_js = {
 
 software_sources_resource_js = {
   type: "object",
+  required: ["repo_list"],
   properties: 
   {repo_list: {
       type:"array",
@@ -82,7 +178,7 @@ software_sources_resource_js = {
           uri: { type: "string" }
         }
      }
-   }
+   
   },
   job_ids: {
     type: "array",
@@ -97,6 +193,7 @@ software_sources_resource_js = {
       }
     }
    }
+ }
 }
 
 printers_resource_js = {
@@ -137,10 +234,38 @@ printers_resource_js = {
   }
 }
 
-
-
-
-
+local_users_js = {
+  type: "object",
+  required: ["user_list"],
+  properties: 
+  {user_list: {
+      type:"array",
+      items: {
+        type:"object",
+        required: ["user","actiontorun"],
+        properties:{
+          actiontorun: {pattern: "(create|delete)",type: "string"},
+          groups: { type: "array",items: { type: "string" } },
+          user: { type: "string" },
+          password: { type: "string"},
+        }
+     }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
 
 complete_js = { 
   description: "GECOS workstation management LWRPs json-schema",
@@ -150,13 +275,22 @@ complete_js = {
   properties: {
     gecos_ws_mgmt: {
       type: "object",
-      required: ["network_mgmt","software_mgmt"],
+      required: ["network_mgmt","software_mgmt", "printers_mgmt", "misc_mgmt"],
       properties: {
         network_mgmt: {
           type: "object",
           required: ["network_res"],
           properties: {
             network_res: network_resource_js
+          }
+        },
+        misc_mgmt: {
+          type: "object",
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res"], 
+          properties: {
+            tz_date_res: tz_date_js,
+            scripts_launch_res: scripts_launch_js,
+            local_users_res: local_users_js
           }
         },
         software_mgmt: {

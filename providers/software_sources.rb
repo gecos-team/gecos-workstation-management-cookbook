@@ -25,8 +25,8 @@ action :setup do
     end
 
     # TODO:
-    # save current job ids as "ok"
-
+    # save current job ids (new_resource.jobs_id) as "ok"
+         
   rescue
     # TODO:
     # just save current job ids as "failed"
