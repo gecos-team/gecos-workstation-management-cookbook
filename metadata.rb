@@ -404,8 +404,8 @@ complete_js = {
           properties: {
             software_sources_res: software_sources_resource_js
           }
-        }
-         printers_mgmt: {
+        },
+        printers_mgmt: {
           type: "object",
           required: ["printers_res"],
           properties: {
