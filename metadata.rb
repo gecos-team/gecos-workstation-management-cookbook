@@ -13,6 +13,67 @@ end
 
 # more complete input definition via json-schemas:
 
+auto_updates_js = {
+  type: "object",
+  required: ["auto_updates_rules"],
+  properties: {
+    auto_updates_rules: {
+      type: "object",
+      required: ["logout_update", "start_update", "days"],
+      properties: {
+        logout_update: {type: "boolean"},
+        start_update: {type: "boolean"},
+        days: {
+          type: "array",
+          minItems: 0,
+          uniqueItems: true,
+          items: {
+            type: "object",
+            required: ["day", "hour", "period"],
+            properties: {
+              day: {
+                type: "string", 
+                pattern: "(monday|tuesday|wednesday|thursday|friday|saturday|sunday)"
+              },
+              hour: {
+                type: "integer",
+                pattern: "[0-12]"
+              },
+              period: {
+                type: "string",
+                pattern: "(am|pm)"
+              }
+            }
+          }
+        },
+        date: {
+          type: "object",
+          required: ["day", "month", "year"],
+          properties: {
+            day: {type: "integer", maximum: 31},
+            month: {type: "integer", maximum: 12},
+            year: {type: "integer"}
+          }
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
+
 user_apps_autostart_js = {
   type: "object",
   required: ["autostart_files"],
