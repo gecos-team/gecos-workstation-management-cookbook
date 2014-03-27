@@ -257,11 +257,71 @@ software_sources_resource_js = {
  }
 }
 
+package_js = {
+  type: "object",
+  required: ["package_list"],
+  properties: 
+  {package_list: {type:"array"},
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
+printers_resource_js = {
+  type: "object",
+  required: ["printer_list"],
+  properties: 
+  {
+    printer_list: {
+      type:"array",
+      items: {
+        type:"object",
+        required: [ "name", "manufacturer", "model", "shared", "users_allowed", "groups_allowed" ],
+        properties:{
+          name: { type: "string" },
+          manufacturer: { type: "string" },
+          model: { type: "string" },
+          uri: { type: "string" },
+          shared: { type: "boolean", default: false },
+          ppd: { type: "string", default: ""},
+          ppd_uri: { type: "string", default: ""},
+          users_allowed: { type: "array", items: { type: "string" } },
+          groups_allowed: { type: "array", items: { type: "string" } }
+        }
+      }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+          status: { type: "string" }
+        }
+      }
+    }
+  }
+}
+
 local_users_js = {
   type: "object",
-  required: ["user_list"],
+  required: ["users_list"],
   properties: 
-  {user_list: {
+  {users_list: {
       type:"array",
       items: {
         type:"object",
@@ -270,9 +330,110 @@ local_users_js = {
           actiontorun: {pattern: "(create|delete)",type: "string"},
           groups: { type: "array",items: { type: "string" } },
           user: { type: "string" },
-          password: { type: "string"},
+          password: { type: "string"}
         }
      }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
+local_groups_js = {
+  type: "object",
+  required: ["groups_list"],
+  properties: 
+  {groups_list: {
+      type:"array",
+      items: {
+        type:"object",
+        required: ["group"],
+        properties:{
+          group: { type: "string" },
+          users: { type: "array",items: { type: "string" } }
+        }
+     }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
+local_file_js = {
+  type: "object",
+  required: ["delete_files", "copy_files"],
+  properties: 
+  {delete_files: {
+      type:"array",
+      items: {
+        type:"object",
+        required: ["file"],
+        properties:{
+          file: {type: "string"},
+          backup: { type: "boolean" }
+        }
+     }
+  },
+  copy_files: {
+    type: "array",
+    items: {
+      type: "object",
+      required: ["file_orig","file_dest"],
+      properties:{
+        file_orig: {type: "string"},
+        file_dest: {type: "string"},
+        user: {type: "string"},
+        group: {type: "string"},
+        mode: {type: "string"},
+        overwrite: {type: "boolean"}
+      }
+    }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
+local_admin_users_js = {
+  type: "object",
+  required: ["local_admin_list"],
+  properties: 
+  {local_admin_list: {
+      type:"array",
+      items: { type:"string"}
   },
   job_ids: {
     type: "array",
@@ -298,7 +459,7 @@ complete_js = {
   properties: {
     gecos_ws_mgmt: {
       type: "object",
-      required: ["network_mgmt","software_mgmt","misc_mgmt"],
+      required: ["network_mgmt","software_mgmt", "printers_mgmt", "misc_mgmt"],
       properties: {
         network_mgmt: {
           type: "object",
@@ -309,19 +470,30 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "auto_updates_res"], 
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res"], 
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
             local_users_res: local_users_js,
-            auto_updates_res: auto_updates_js
+            local_file_res: local_file_js,
+            auto_updates_res: auto_updates_js,
+            local_groups_res: local_groups_js,
+            local_admin_users_res: local_admin_users_js
           }
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res"],
+          required: ["software_sources_res","package_res"],
           properties: {
-            software_sources_res: software_sources_resource_js
+            software_sources_res: software_sources_resource_js,
+            package_res: package_js
+          }
+        },
+        printers_mgmt: {
+          type: "object",
+          required: ["printers_res"],
+          properties: {
+            printers_res: printers_resource_js
           }
         }
       }
