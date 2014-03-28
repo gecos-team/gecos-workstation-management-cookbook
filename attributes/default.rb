@@ -14,4 +14,4 @@ default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printer_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
 
 default[:gecos_ws_mgmt][:misc_mgmt] = []
-default[:gecos_Ws_mgmt][:users_mgmt] = []
+default[:gecos_ws_mgmt][:users_mgmt] = []
