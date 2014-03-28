@@ -10,14 +10,14 @@ default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:repo_list] = []
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:job_ids] = []
 
-default[:gecos_ws_mgmt][:software_mgmt][:package_res] = {}
+default[:gecos_ws_mgmt][:software_mgmt][:package_res][:package_list] = []
 
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printer_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
 
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:logout_update] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:start_update] = false
-default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:days_update] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:days] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:server] = ""
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list] =[]
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files] = []
