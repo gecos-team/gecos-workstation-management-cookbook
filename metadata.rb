@@ -13,6 +13,30 @@ end
 
 # more complete input definition via json-schemas:
 
+app_config_js = {
+  type: "object",
+  required: ["adobe_config", "java_config", "firefox_config", "thunderbird_config"],
+  properties: {
+    adobe_config: {type: "object"},
+    java_config: {type: "object"},
+    firefox_config: {type: "object"},
+    thunderbird_config: {type: "object"},
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
 auto_updates_js = {
   type: "object",
   required: ["auto_updates_rules"],
@@ -483,10 +507,11 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res"],
+          required: ["software_sources_res","package_res", "app_config_res"],
           properties: {
             software_sources_res: software_sources_resource_js,
-            package_res: package_js
+            package_res: package_js,
+            app_config_res: app_config_js
           }
         },
         printers_mgmt: {

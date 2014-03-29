@@ -12,6 +12,11 @@ default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:job_ids] = []
 
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:package_list] = []
 
+default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:adobe_config] = {}  
+default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:java_config] = {} 
+default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:firefox_config] = {} 
+default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:thunderbird_config] = {} 
+
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printer_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
 
@@ -27,3 +32,4 @@ default[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:groups_list] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:local_admin_list] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:autostart_files] = []
+
