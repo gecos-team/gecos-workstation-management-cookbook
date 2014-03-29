@@ -640,9 +640,10 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
+            web_browser_res: web_browser_js,
             user_apps_autostart_res: user_apps_autostart_js
           }
         }
