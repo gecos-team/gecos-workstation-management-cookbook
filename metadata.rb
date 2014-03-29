@@ -15,18 +15,30 @@ end
 
 user_shared_folders_js = {
   type: "object",
-  required: ["gtkbookmarks"],
+  required: ["gtkbookmarksfiles"],
   properties: {
-    gtkbookmarks: {    
+    gtkbookmarksfiles: {
       type: "array",
       minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["title", "uri"],
+        required: ["user", "gtkbookmarks"],
         properties: {
-          title: {type: "string"},
-          uri: {type: "string"}
+          user: {type: "string"},
+          gtkbookmarks: {    
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "object",
+              required: ["title", "uri"],
+              properties: {
+                title: {type: "string"},
+                uri: {type: "string"}
+              }
+            }
+          }
         }
       }
     },
