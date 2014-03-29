@@ -35,3 +35,5 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:autostart_files]
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:gtkbookmarksfiles] = []
 
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:web_browser_conf] = []
+

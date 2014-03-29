@@ -13,6 +13,78 @@ end
 
 # more complete input definition via json-schemas:
 
+
+web_browser_js = {
+  type: "object",
+  required: ["web_browser_conf"],
+  properties: {
+    web_browser_conf: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["user", "plugins", "bookmarks", "config"],
+        properties: {
+          user: {type: "string"},
+          plugins: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "object",
+              required: ["title", "uri"],
+              properties: {
+                title: {type: "string"},
+                uri: {type: "string"}
+              }
+            }
+          },
+          bookmarks: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "object",
+              required: ["title", "uri"],
+              properties: {
+                title: {type: "string"},
+                uri: {type: "string"}
+              }
+            }
+          },
+          config: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "object",
+              required: ["key", "value"],
+              properties: {
+                key: {type: "string"},
+                value: {type: "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
 user_shared_folders_js = {
   type: "object",
   required: ["gtkbookmarksfiles"],
@@ -568,9 +640,10 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
+            web_browser_res: web_browser_js,
             user_apps_autostart_res: user_apps_autostart_js
           }
         }
