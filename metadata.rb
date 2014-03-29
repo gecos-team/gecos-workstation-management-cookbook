@@ -13,6 +13,39 @@ end
 
 # more complete input definition via json-schemas:
 
+user_shared_folders_js = {
+  type: "object",
+  required: ["gtkbookmarks"],
+  properties: {
+    gtkbookmarks: {    
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["title", "uri"],
+        properties: {
+          title: {type: "string"},
+          uri: {type: "string"}
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
 app_config_js = {
   type: "object",
   required: ["adobe_config", "java_config", "firefox_config", "thunderbird_config"],
@@ -523,8 +556,9 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res"],
           properties: {
+            user_shared_folders_res: user_shared_folders_js,
             user_apps_autostart_res: user_apps_autostart_js
           }
         }
