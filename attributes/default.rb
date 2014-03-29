@@ -33,3 +33,5 @@ default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:local_admin_list] =
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:autostart_files] = []
 
+default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:gtkbookmarks] = []
+
