@@ -49,3 +49,4 @@ default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users] = []
 
+default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:users] = []
