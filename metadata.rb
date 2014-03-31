@@ -13,6 +13,47 @@ end
 
 # more complete input definition via json-schemas:
 
+desktop_control_js = {
+  type: "object",
+  required: ["users"],
+  properties: {
+    users: {
+      type: "array",
+      minItem: 0,
+      uniqueItem: true,
+      items: {
+        type: "object",
+        required: ["username", "desktop_files"],
+        properties: {
+          username: {type: "string"},
+          desktop_files: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "string",
+            }
+          }
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
+
 desktop_menu_js = {
   type: "object",
   required: ["users"],
@@ -794,7 +835,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
@@ -802,6 +843,7 @@ complete_js = {
             user_launchers_res: user_launchers_js,
             desktop_background_res: desktop_background_js,
             desktop_menu_res: desktop_menu_js,
+            desktop_control_res: desktop_control_js,
             user_apps_autostart_res: user_apps_autostart_js
           }
         }
