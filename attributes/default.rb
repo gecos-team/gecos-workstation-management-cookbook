@@ -43,3 +43,5 @@ default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:launchers] = []
 
+default[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:users] = []
+
