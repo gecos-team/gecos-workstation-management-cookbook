@@ -129,7 +129,7 @@ desktop_background_js = {
 
 file_browser_js = {
   type: "object",
-  required: ["file_browser_conf"],
+  required: ["users"],
   properties:{
     file_browser_conf: {
       type: "array",
@@ -137,19 +137,13 @@ file_browser_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["user", "conf"],
+        required: ["username", "auto_mount", "explore_net", "show_options_mount", "burn_disc"],
         properties: {
           user: {type: "srting"},
-          conf: {
-            type: "object",
-            required: ["auto_mount", "explore_net", "show_options_mount", "burn_disc"],
-            properties: {
-              auto_mount: {type: "boolean"},
-              explore_net: {type: "boolean"},
-              show_options_mount: {type: "boolean"},
-              burn_disc: {type: "boolean"}
-            }
-          }
+          auto_mount: {type: "boolean"},
+          explore_net: {type: "boolean"},
+          show_options_mount: {type: "boolean"},
+          burn_disc: {type: "boolean"}
         }
       }
     },
