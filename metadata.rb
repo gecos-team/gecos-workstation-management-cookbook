@@ -377,7 +377,7 @@ auto_updates_js = {
 
 user_apps_autostart_js = {
   type: "object",
-  required: ["autostart_files"],
+  required: ["users"],
   properties: {
     autostart_files: {
       type: "array",
@@ -385,9 +385,9 @@ user_apps_autostart_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["user", "desktops"],
+        required: ["username", "desktops"],
         properties: {
-          user: {type: "string"},
+          username: {type: "string"},
           desktops: {
             type: "array",
             minItems: 0,
