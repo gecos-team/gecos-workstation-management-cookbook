@@ -1,13 +1,3 @@
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:ip_address] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:gateway] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:netmask] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:dns_servers] = []
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:network_type] = 'wired'
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:use_dhcp] = true
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:users] = []
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
-
-default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:repo_list] = []
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:job_ids] = []
 
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:package_list] = []
@@ -49,3 +39,4 @@ default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users] = []
 
+default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:users] = []

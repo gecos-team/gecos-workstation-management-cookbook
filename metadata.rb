@@ -13,6 +13,49 @@ end
 
 # more complete input definition via json-schemas:
 
+screensaver_js = {
+  type: "object",
+  required: ["users"],
+  properties: {
+    users: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["username", "lock_enabled"],
+        properties: {
+          username: {
+            type: "string"
+          },
+          idle_delay: {
+            type: "string"
+          },
+          lock_enabled: {
+            type: "boolean"
+          },
+          lock_delay: {
+            type: "string"
+          }
+        }
+      }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+          status: { type: "string" }
+        }
+      }
+    }
+  }
+}
+
 folder_sharing_js = {
   type: "object",
   required: ["users"],
@@ -878,7 +921,8 @@ complete_js = {
             desktop_menu_res: desktop_menu_js,
             desktop_control_res: desktop_control_js,
             user_apps_autostart_res: user_apps_autostart_js,
-            folder_sharing_res: folder_sharing_js
+            folder_sharing_res: folder_sharing_js,
+            screensaver_res: screensaver_js
           }
         }
       }
@@ -891,4 +935,3 @@ attribute 'json_schema',
   :description  => "Special attribute to include json-schema for defining cookbook's input",
   :type         => "hash",
   :object       => complete_js
-
