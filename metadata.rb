@@ -247,17 +247,17 @@ web_browser_js = {
 
 user_shared_folders_js = {
   type: "object",
-  required: ["gtkbookmarksfiles"],
+  required: ["users"],
   properties: {
-    gtkbookmarksfiles: {
+    users: {
       type: "array",
       minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["user", "gtkbookmarks"],
+        required: ["username", "gtkbookmarks"],
         properties: {
-          user: {type: "string"},
+          username: {type: "string"},
           gtkbookmarks: {    
             type: "array",
             minItems: 0,
