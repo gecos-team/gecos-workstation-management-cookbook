@@ -55,7 +55,7 @@ desktop_menu_js = {
 
 user_launchers_js = {
   type: "object",
-  required: ["launchers"],
+  required: ["users"],
   properties: {
     launchers: {
       type: "array",
@@ -63,9 +63,9 @@ user_launchers_js = {
       uniqueItems: true,
       items:{
         type: "object",
-        required: ["user", "launchers"],
+        required: ["username", "launchers"],
         properties: {
-          user: {type: "string"},
+          username: {type: "string"},
           launchers: {
             type: "array",
             minItems: 0,
