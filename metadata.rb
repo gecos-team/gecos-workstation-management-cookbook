@@ -176,17 +176,17 @@ file_browser_js = {
 
 web_browser_js = {
   type: "object",
-  required: ["web_browser_conf"],
+  required: ["users"],
   properties: {
-    web_browser_conf: {
+    users: {
       type: "array",
       minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["user", "plugins", "bookmarks", "config"],
+        required: ["username", "plugins", "bookmarks", "config"],
         properties: {
-          user: {type: "string"},
+          username: {type: "string"},
           plugins: {
             type: "array",
             minItems: 0,
