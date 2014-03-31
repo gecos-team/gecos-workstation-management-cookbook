@@ -103,9 +103,9 @@ desktop_background_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["user", "desktop_file"],
+        required: ["username", "desktop_file"],
         properties: {
-          user: {type: "string"},
+          username: {type: "string"},
           desktop_file: {type: "string"}
         }
       }
