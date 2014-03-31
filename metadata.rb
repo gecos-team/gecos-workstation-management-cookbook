@@ -13,6 +13,46 @@ end
 
 # more complete input definition via json-schemas:
 
+user_launchers_js = {
+  type: "object",
+  required: ["launchers"],
+  properties: {
+    launchers: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items:{
+        type: "object",
+        required: ["user", "launchers"],
+        properties: {
+          user: {type: "string"},
+          launchers: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "string"
+            }
+          }
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
 desktop_background_js = {
   type: "object",
   required: ["users"],
@@ -720,11 +760,12 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             file_browser_res: file_browser_js,
+            user_launchers_res: user_launchers_js,
             desktop_background_res: desktop_background_js,
             user_apps_autostart_res: user_apps_autostart_js
           }
