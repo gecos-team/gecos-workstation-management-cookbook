@@ -13,6 +13,39 @@ end
 
 # more complete input definition via json-schemas:
 
+desktop_background_js = {
+  type: "object",
+  required: ["users"],
+  properties: {
+    users: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["user", "desktop_file"],
+        properties: {
+          user: {type: "string"},
+          desktop_file: {type: "string"}
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  }
+}
+
 
 file_browser_js = {
   type: "object",
@@ -687,11 +720,12 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             file_browser_res: file_browser_js,
+            desktop_background_res: desktop_background_js,
             user_apps_autostart_res: user_apps_autostart_js
           }
         }
