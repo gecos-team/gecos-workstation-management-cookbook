@@ -39,3 +39,5 @@ default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:web_browser_conf] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:file_browser_conf] = []
 
+default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users] = []
+
