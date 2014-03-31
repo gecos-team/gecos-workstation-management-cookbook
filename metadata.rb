@@ -14,6 +14,53 @@ end
 # more complete input definition via json-schemas:
 
 
+file_browser_js = {
+  type: "object",
+  required: ["file_browser_conf"],
+  properties:{
+    file_browser_conf: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["user", "conf"],
+        properties: {
+          user: {type: "srting"},
+          conf: {
+            type: "object",
+            required: ["auto_mount", "explore_net", "show_options_mount", "burn_disc"],
+            properties: {
+              auto_mount: {type: "boolean"},
+              explore_net: {type: "boolean"},
+              show_options_mount: {type: "boolean"},
+              burn_disc: {type: "boolean"}
+            }
+          }
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+            status: { type: "string" }
+          }
+        }
+    }
+  } 
+}
+
+
+
+
+
+
 web_browser_js = {
   type: "object",
   required: ["web_browser_conf"],
@@ -640,10 +687,11 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
+            file_browser_res: file_browser_js,
             user_apps_autostart_res: user_apps_autostart_js
           }
         }
