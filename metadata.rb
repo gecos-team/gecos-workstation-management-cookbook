@@ -624,7 +624,20 @@ network_resource_js = {
           ip_address: { type:"string" },
           netmask: { type: "string" },
           network_type: { pattern: "(wired|wireless|vpn|proxy)", type: "string" },
-          use_dhcp: { type: "boolean" }
+          use_dhcp: { type: "boolean" },
+          certs: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "object",
+              required: ["name","uri"],
+              properties: {
+                name: {type: "string"},
+                uri: {type: "string"}
+              }
+            }
+          }
         }
       }
     },
