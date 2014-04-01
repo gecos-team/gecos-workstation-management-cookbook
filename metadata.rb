@@ -960,6 +960,37 @@ folder_sync_js = {
  }
 }
 
+shutdown_options_js = {
+  type: "object",
+  required: ["users"],
+  properties:
+  {users: {
+    type: "array",
+    items: {
+      type: "object",
+      required: ["user","options"],
+      properties:{
+        user: {type: "string"},
+        options: {type: "array",items:{pattern: "(shutdown|restart|close_session)",type:"string"}}
+      }
+    }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
 complete_js = { 
   description: "GECOS workstation management LWRPs json-schema",
   id: "http://gecos-server/cookbooks/#{name}/#{version}/network-schema#",
@@ -1008,7 +1039,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folfer_sync_res", "user_mount_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folfer_sync_res", "user_mount_res","shutdown_options_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
@@ -1021,7 +1052,8 @@ complete_js = {
             folder_sharing_res: folder_sharing_js,
             screensaver_res: screensaver_js,
             folder_sync_res: folder_sync_js,
-            user_mount_res: user_mount_js
+            user_mount_res: user_mount_js,
+            shutdown_options_res: shutdown_options_js
           }
         }
       }
