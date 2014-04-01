@@ -13,6 +13,39 @@ end
 
 # more complete input definition via json-schemas:
 
+user_mount_js = {
+  type: "object",
+  required: ["users"],
+  properties: {
+    users: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "obejct",
+        required: ["username","can_mount"],
+        properties: {
+          username: {type: "string"},
+          can_mount: {type: "boolean"}
+        }
+      }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+          status: { type: "string" }
+        }
+      }
+    }
+  }
+}
+
 screensaver_js = {
   type: "object",
   required: ["users"],
@@ -975,7 +1008,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folfer_sync_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folfer_sync_res", "user_mount_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
@@ -987,7 +1020,8 @@ complete_js = {
             user_apps_autostart_res: user_apps_autostart_js,
             folder_sharing_res: folder_sharing_js,
             screensaver_res: screensaver_js,
-            folder_sync_res: folder_sync_js
+            folder_sync_res: folder_sync_js,
+            user_mount_res: user_mount_js
           }
         }
       }
