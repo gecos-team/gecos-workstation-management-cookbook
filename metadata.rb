@@ -690,7 +690,7 @@ network_resource_js = {
   }
 }
 
-software_sources_resource_js = {
+software_sources_js = {
   type: "object",
   required: ["repo_list"],
   properties: 
@@ -698,9 +698,8 @@ software_sources_resource_js = {
       type:"array",
       items: {
         type:"object",
-        required: ["repo_name","distribution","components","actiontorun","uri","deb_src","repo_key","key_server"],
+        required: ["repo_name","distribution","components","uri","deb_src","repo_key","key_server"],
         properties:{
-          actiontorun: {pattern: "(add|remove)",type: "string"},
           components: { type: "array",items: { type: "string" } },
           deb_src: { type: "boolean", default: false },
           repo_key: { type: "string", default: ""},
@@ -710,7 +709,6 @@ software_sources_resource_js = {
           uri: { type: "string" }
         }
      }
-   
   },
   job_ids: {
     type: "array",
@@ -1025,7 +1023,7 @@ complete_js = {
           type: "object",
           required: ["software_sources_res","package_res", "app_config_res"],
           properties: {
-            software_sources_res: software_sources_resource_js,
+            software_sources_res: software_sources_js,
             package_res: package_js,
             app_config_res: app_config_js
           }
