@@ -295,7 +295,7 @@ web_browser_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["username", "plugins", "bookmarks", "config", "certs"],
+        required: ["username"],
         properties: {
           username: {type: "string"},
           plugins: {
