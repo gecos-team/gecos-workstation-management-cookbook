@@ -863,6 +863,47 @@ local_admin_users_js = {
  }
 }
 
+
+folder_sync_js = {
+  type: "object",
+  required: ["folder_sync"],
+  properties: 
+  {folder_sync: {
+    type: "array",
+    items: {
+      type: "object",
+      required: ["user","remote_folders"],
+      properties:{
+        user: {type: "string"},
+        remote_folders: {
+          type: "object",
+          required: ["Documentos","Escritorio"],
+          properties:{
+            documentos: {type: "string"},
+            Escritorio: {type: "string"}
+          }
+        }
+      }
+    }
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+      }
+    }
+   }
+ }
+}
+
+
+
 complete_js = { 
   description: "GECOS workstation management LWRPs json-schema",
   id: "http://gecos-server/cookbooks/#{name}/#{version}/network-schema#",
@@ -911,7 +952,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res","folder_sync_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
@@ -922,7 +963,8 @@ complete_js = {
             desktop_control_res: desktop_control_js,
             user_apps_autostart_res: user_apps_autostart_js,
             folder_sharing_res: folder_sharing_js,
-            screensaver_res: screensaver_js
+            screensaver_res: screensaver_js,
+            folder_sync_res: folder_sync_js
           }
         }
       }
