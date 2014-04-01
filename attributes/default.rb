@@ -52,3 +52,6 @@ default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users] = []
 default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:users] = []
+
+default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:folder_sync] = []
+
