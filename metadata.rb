@@ -140,7 +140,7 @@ desktop_control_js = {
             minItems: 0,
             uniqueItems: true,
             items: {
-              type: "string",
+              type: "string"
             }
           }
         }
@@ -181,7 +181,7 @@ desktop_menu_js = {
             minItems: 0,
             uniqueItems: true,
             items: {
-              type: "string",
+              type: "string"
             }
           }
         }
