@@ -55,3 +55,5 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:folder_sync] = []
 
+default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users] = []
+
