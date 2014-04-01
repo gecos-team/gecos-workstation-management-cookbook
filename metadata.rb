@@ -295,7 +295,7 @@ web_browser_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["username", "plugins", "bookmarks", "config"],
+        required: ["username", "plugins", "bookmarks", "config", "certs"],
         properties: {
           username: {type: "string"},
           plugins: {
@@ -334,6 +334,19 @@ web_browser_js = {
               properties: {
                 key: {type: "string"},
                 value: {type: "string"}
+              }
+            }
+          },
+          certs: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "object",
+              required: [ "name", "uri"],
+              properties: {
+                name: {type: "string"},
+                uri: {type: "string"}
               }
             }
           }
