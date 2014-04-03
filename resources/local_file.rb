@@ -8,3 +8,10 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
+
+actions :setup
+
+attribute :delete_files, :kind_of => Array
+attribute :copy_files, :kind_of => Array
+attribute :jobs_id, :kind_of => Array
+
