@@ -607,7 +607,7 @@ scripts_launch_js = {
         required: ["command","c_type"],
         properties: {
           command: {type: "string"},
-          c_type: {type: "string", pattern: "(autostart|logout)"}
+          c_type: {type: "string", pattern: "(on_startup|on_shutdown)"}
         }
       }
     },
