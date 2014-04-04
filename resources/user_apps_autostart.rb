@@ -8,3 +8,8 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
+
+actions :setup
+
+attribute :users, :kind_of => Array
+attribute :jobs_id, :kind_of => Array
