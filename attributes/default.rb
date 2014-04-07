@@ -27,7 +27,8 @@ default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:server] = ""
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list] =[]
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files] = []
-default[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:scripts] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_startup] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_shutdown] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:groups_list] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:local_admin_list] = []
 
