@@ -595,21 +595,24 @@ tz_date_js = {
 
 scripts_launch_js = {
   type: "object",
-  required: ["scripts"],
+  required: ["on_startup","on_shutdown"],
   properties:
   {
-    scripts: {
+    on_startup: {
       type: "array",
       minItems: 0,
       uniqueItems: false,
       items: {
-        type: "object",
-        required: ["command","c_type"],
-        properties: {
-          command: {type: "string"},
-          c_type: {type: "string", pattern: "(on_startup|on_shutdown)"}
+        type: "string",
         }
-      }
+    },
+   on_shutdown: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: false,
+      items: {
+        type: "string",
+        }
     },
     job_ids: {
       type: "array",
@@ -626,6 +629,7 @@ scripts_launch_js = {
     }
   } 
 }
+
 network_resource_js = {
   type: "object",
   required: ["network_type"],
