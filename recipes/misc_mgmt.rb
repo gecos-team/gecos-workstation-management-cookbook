@@ -23,3 +23,9 @@ gecos_ws_mgmt_scripts_launch 'launch commands on startup/shutdown' do
   action :setup
 end
 
+gecos_ws_mgmt_tz_date 'localtime' do
+  server node[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:server]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:job_ids]
+  action :setup
+end
+

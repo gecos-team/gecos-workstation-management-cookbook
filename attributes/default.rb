@@ -24,6 +24,7 @@ default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:log
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:start_update] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:days] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:server] = ""
+default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list] =[]
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files] = []
