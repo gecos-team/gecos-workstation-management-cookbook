@@ -13,6 +13,43 @@ end
 
 # more complete input definition via json-schemas:
 
+sssd_js = {                                                               
+  type: "object",                                                                
+  required: ["domain_list", "workgroup"],                                                      
+  properties: {
+    domain_list: {                                                                 
+      type:"array",                                                              
+      items: {                                                                   
+        type:"object",                                                           
+        required: ["domain_name"],                                        
+        properties: {                         
+          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\d+\.)[a-zA-Z0-9_\-]{1,63}\.?)+(?:[a-zA-Z]{2,})$)", type: "string"}
+        }                                                                        
+      }
+    },
+    workgroup: {
+      type: "object",
+      required: ["workgroup_name"],
+      properties: {
+        workgroup_name: {type: "string"}
+      }  
+    }                                                                           
+  },                                                                             
+  job_ids: {                                                                     
+    type: "array",                                                               
+    minItems: 0,                                                                 
+    uniqueItems: true,                                                           
+    items: {                                                                     
+      type: "object",                                                            
+      required: ["id"],                                                          
+      properties: {                                                              
+        id: { type: "string" },                                                  
+        status: { type: "string" }                                               
+      }                                                                          
+    }                                                                            
+  }                                                                             
+}                                                                               
+ 
 user_mount_js = {
   type: "object",
   required: ["users"],
