@@ -12,11 +12,17 @@
 action :setup do
   begin
     printers_list = new_resource.printers_list
-    printers_list.each do |printer|
-      Chef::Log.info("Instalando impresora #{printer.name}")
-      #TODO: a lot of stuff
-    end
-  rescue 
-    raise 
-  end 
+#    printers_list.each do |printer|
+#      Chef::Log.info("Instalando impresora #{printer.name}")
+#    end
+#    # TODO:
+#    # save current job ids (new_resource.job_ids) as "ok"
+#
+  rescue
+#    # TODO:
+#    # just save current job ids as "failed"
+#    # save_failed_job_ids
+    raise
+  end
 end
+

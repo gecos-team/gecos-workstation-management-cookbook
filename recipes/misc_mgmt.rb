@@ -12,14 +12,14 @@
 gecos_ws_mgmt_local_file 'manage local files' do
   delete_files node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files]
   copy_files node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files]
-  jobs_id node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:jobs_id]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:job_ids]
   action :setup
 end
 
 gecos_ws_mgmt_scripts_launch 'launch commands on startup/shutdown' do
   on_startup node[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_startup]
   on_shutdown node[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_shutdown]
-  jobs_id node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:jobs_id]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:job_ids]
   action :setup
 end
 

@@ -751,26 +751,23 @@ package_js = {
  }
 }
 
-printers_resource_js = {
+printers_js = {
   type: "object",
-  required: ["printer_list"],
+  required: ["printers_list"],
   properties: 
   {
-    printer_list: {
+    printers_list: {
       type:"array",
       items: {
         type:"object",
-        required: [ "name", "manufacturer", "model", "shared", "users_allowed", "groups_allowed" ],
+        required: [ "name", "manufacturer", "model", "ppd", "ppd_uri" ],
         properties:{
           name: { type: "string" },
           manufacturer: { type: "string" },
           model: { type: "string" },
           uri: { type: "string" },
-          shared: { type: "boolean", default: false },
           ppd: { type: "string", default: ""},
           ppd_uri: { type: "string", default: ""},
-          users_allowed: { type: "array", items: { type: "string" } },
-          groups_allowed: { type: "array", items: { type: "string" } }
         }
       }
     },
@@ -1036,7 +1033,7 @@ complete_js = {
           type: "object",
           required: ["printers_res"],
           properties: {
-            printers_res: printers_resource_js
+            printers_res: printers_js
           }
         },
         users_mgmt: {
