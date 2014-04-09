@@ -11,7 +11,7 @@
 
 gecos_ws_mgmt_user_apps_autostart 'user apps autostart' do
   users node[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:users]
-  jobs_id node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:jobs_id]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:job_ids]
   action :setup
 end
 

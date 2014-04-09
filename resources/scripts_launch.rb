@@ -13,5 +13,5 @@ actions :setup
 
 attribute :on_startup, :kind_of => Array
 attribute :on_shutdown, :kind_of => Array
-attribute :jobs_id, :kind_of => Array
+attribute :job_ids, :kind_of => Array
 

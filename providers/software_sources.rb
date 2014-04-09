@@ -40,7 +40,7 @@ action :setup do
       ::File.delete("/etc/apt/sources.list.d/#{value}")
     end 
     # TODO:
-    # save current job ids (new_resource.jobs_id) as "ok"
+    # save current job ids (new_resource.job_ids) as "ok"
          
   rescue
     # TODO:

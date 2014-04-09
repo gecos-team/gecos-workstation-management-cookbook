@@ -11,4 +11,4 @@
 actions :setup
 
 attribute :repo_list, :kind_of => Array
-attribute :jobs_id, :kind_of => Array
+attribute :job_ids, :kind_of => Array
