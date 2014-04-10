@@ -772,6 +772,7 @@ package_js = {
   required: ["package_list"],
   properties: 
   {package_list: {type:"array"},
+  pkgs_to_remove: {type:"array"},
   job_ids: {
     type: "array",
     minItems: 0,
