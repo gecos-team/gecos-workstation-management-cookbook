@@ -798,7 +798,7 @@ printers_js = {
       type:"array",
       items: {
         type:"object",
-        required: [ "name", "manufacturer", "model", "ppd", "ppd_uri" ],
+        required: [ "name", "manufacturer", "model", "ppd", "uri", "ppd_uri" ],
         properties:{
           name: { type: "string" },
           manufacturer: { type: "string" },
