@@ -12,5 +12,6 @@
 actions :setup
 
 attribute :package_list, :kind_of => Array
+attribute :pkgs_to_remove, :kind_of => Array
 attribute :job_ids, :kind_of => Array
 
