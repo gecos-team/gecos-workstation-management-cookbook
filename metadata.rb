@@ -23,15 +23,12 @@ sssd_js = {
         type:"object",                                                           
         required: ["domain_name"],                                        
         properties: {                         
-          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\d+\.)[a-zA-Z0-9_\-]{1,63}\.?)+(?:[a-zA-Z]{2,})$)", type: "string"}
+          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\\d+\\.)[a-zA-Z0-9_\\-]{1,63}\\.?)+(?:[a-zA-Z]{2,})$)", type: "string"}
         }                                                                        
       }
     },
     workgroup: {
-      type: "object",
-      required: ["workgroup_name"],
-      properties: {
-        workgroup_name: {type: "string"}
+        type: "string"
       }  
     }                                                                           
   },                                                                             
