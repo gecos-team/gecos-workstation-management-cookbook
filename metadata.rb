@@ -1044,7 +1044,8 @@ complete_js = {
           type: "object",
           required: ["network_res"],
           properties: {
-            network_res: network_resource_js
+            network_res: network_resource_js,
+            sssd_res: sssd_js
           }
         },
         misc_mgmt: {
