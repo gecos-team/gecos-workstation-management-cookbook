@@ -8,3 +8,23 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
+
+action :setup do
+  begin
+    
+    if new_resource.package_list.any? 
+      Chef::Log.info("Instalando lista de paquetes")      
+      package new_resource.package_list.join(" ")
+    end
+
+    # TODO:
+    # save current job ids (new_resource.job_ids) as "ok"
+
+  rescue
+    # TODO:
+    # just save current job ids as "failed"
+    # save_failed_job_ids
+    raise
+  end
+end
+
