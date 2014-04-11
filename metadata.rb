@@ -29,9 +29,7 @@ sssd_js = {
     },
     workgroup: {
         type: "string"
-      }  
-    }                                                                           
-  },                                                                             
+      },  
   job_ids: {                                                                     
     type: "array",                                                               
     minItems: 0,                                                                 
@@ -42,11 +40,12 @@ sssd_js = {
       properties: {                                                              
         id: { type: "string" },                                                  
         status: { type: "string" }                                               
-      }                                                                          
-    }                                                                            
-  }                                                                             
-}                                                                               
- 
+        }                                                                          
+      }                                                                            
+    }                                                                             
+  }                                                                               
+}
+
 user_mount_js = {
   type: "object",
   required: ["users"],
