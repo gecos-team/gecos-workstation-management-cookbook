@@ -13,37 +13,37 @@ end
 
 # more complete input definition via json-schemas:
 
-sssd_js = {                                                               
-  type: "object",                                                                
-  required: ["domain_list", "workgroup"],                                                      
+sssd_js = {
+  type: "object",
+  required: ["domain_list", "workgroup"],
   properties: {
-    domain_list: {                                                                 
-      type:"array",                                                              
-      items: {                                                                   
-        type:"object",                                                           
-        required: ["domain_name"],                                        
-        properties: {                         
+    domain_list: {
+      type:"array",
+      items: {
+        type:"object",
+        required: ["domain_name"],
+        properties: {
           domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\\d+\\.)[a-zA-Z0-9_\\-]{1,63}\\.?)+(?:[a-zA-Z]{2,})$)", type: "string"}
-        }                                                                        
+        }
       }
     },
     workgroup: {
         type: "string"
-      },  
-  job_ids: {                                                                     
-    type: "array",                                                               
-    minItems: 0,                                                                 
-    uniqueItems: true,                                                           
-    items: {                                                                     
-      type: "object",                                                            
-      required: ["id"],                                                          
-      properties: {                                                              
-        id: { type: "string" },                                                  
-        status: { type: "string" }                                               
-        }                                                                          
-      }                                                                            
-    }                                                                             
-  }                                                                               
+      },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string" },
+        status: { type: "string" }
+        }
+      }
+    }
+  }
 }
 
 user_mount_js = {
@@ -233,7 +233,7 @@ desktop_menu_js = {
           }
         }
     }
-  }      
+  }
 }
 
 user_launchers_js = {
@@ -343,7 +343,7 @@ file_browser_js = {
           }
         }
     }
-  } 
+  }
 }
 
 
@@ -448,7 +448,7 @@ user_shared_folders_js = {
         required: ["username", "gtkbookmarks"],
         properties: {
           username: {type: "string"},
-          gtkbookmarks: {    
+          gtkbookmarks: {
             type: "array",
             minItems: 0,
             uniqueItems: true,
@@ -523,7 +523,7 @@ auto_updates_js = {
             required: ["day", "hour", "period"],
             properties: {
               day: {
-                type: "string", 
+                type: "string",
                 pattern: "(monday|tuesday|wednesday|thursday|friday|saturday|sunday)"
               },
               hour: {
@@ -660,7 +660,7 @@ scripts_launch_js = {
         }
       }
     }
-  } 
+  }
 }
 
 network_resource_js = {
@@ -730,7 +730,7 @@ network_resource_js = {
 software_sources_js = {
   type: "object",
   required: ["repo_list"],
-  properties: 
+  properties:
   {repo_list: {
       type:"array",
       items: {
@@ -766,7 +766,7 @@ software_sources_js = {
 package_js = {
   type: "object",
   required: ["package_list"],
-  properties: 
+  properties:
   {package_list: {type:"array"},
   pkgs_to_remove: {type:"array"},
   job_ids: {
@@ -788,7 +788,7 @@ package_js = {
 printers_js = {
   type: "object",
   required: ["printers_list"],
-  properties: 
+  properties:
   {
     printers_list: {
       type:"array",
@@ -824,7 +824,7 @@ printers_js = {
 local_users_js = {
   type: "object",
   required: ["users_list"],
-  properties: 
+  properties:
   {users_list: {
       type:"array",
       items: {
@@ -857,7 +857,7 @@ local_users_js = {
 local_groups_js = {
   type: "object",
   required: ["groups_list"],
-  properties: 
+  properties:
   {groups_list: {
       type:"array",
       items: {
@@ -888,7 +888,7 @@ local_groups_js = {
 local_file_js = {
   type: "object",
   required: ["delete_files", "copy_files"],
-  properties: 
+  properties:
   {delete_files: {
       type:"array",
       items: {
@@ -934,7 +934,7 @@ local_file_js = {
 local_admin_users_js = {
   type: "object",
   required: ["local_admin_list"],
-  properties: 
+  properties:
   {local_admin_list: {
       type:"array",
       items: { type:"string"}
@@ -958,7 +958,7 @@ local_admin_users_js = {
 folder_sync_js = {
   type: "object",
   required: ["folder_sync"],
-  properties: 
+  properties:
   {users: {
     type: "array",
     items: {
@@ -1022,7 +1022,7 @@ shutdown_options_js = {
  }
 }
 
-complete_js = { 
+complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
   id: "http://gecos-server/cookbooks/#{name}/#{version}/network-schema#",
   required: ["gecos_ws_mgmt"],
@@ -1042,7 +1042,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res"], 
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
