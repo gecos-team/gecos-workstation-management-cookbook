@@ -999,9 +999,9 @@ shutdown_options_js = {
     type: "array",
     items: {
       type: "object",
-      required: ["user","options"],
+      required: ["username","options"],
       properties:{
-        user: {type: "string"},
+        username: {type: "string"},
         options: {type: "array",items:{pattern: "(shutdown|restart|close_session)",type:"string"}}
       }
     }
