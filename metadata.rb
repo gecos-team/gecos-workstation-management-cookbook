@@ -967,12 +967,10 @@ folder_sync_js = {
       properties:{
         user: {type: "string"},
         remote_folders: {
-          type: "object",
-          required: ["Documentos","Escritorio"],
-          properties:{
-            documentos: {type: "string"},
-            Escritorio: {type: "string"}
-          }
+          type: "array",
+          items: {type: "string"},
+          minItems: 0,
+          uniqueItems:true
         }
       }
     }
