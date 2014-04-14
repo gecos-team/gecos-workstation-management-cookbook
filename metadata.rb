@@ -959,13 +959,13 @@ folder_sync_js = {
   type: "object",
   required: ["folder_sync"],
   properties: 
-  {folder_sync: {
+  {users: {
     type: "array",
     items: {
       type: "object",
-      required: ["user","remote_folders"],
+      required: ["username","remote_folders"],
       properties:{
-        user: {type: "string"},
+        username: {type: "string"},
         remote_folders: {
           type: "array",
           items: {type: "string"},
