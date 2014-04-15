@@ -17,6 +17,9 @@ sssd_js = {
   type: "object",
   required: ["domain_list", "workgroup"],
   properties: {
+    krb_url: { type: "string" },
+    smb_url: { type: "string" },
+    sssd_url: { type: "string" },
     domain_list: {
       type:"array",
       items: {
@@ -29,17 +32,20 @@ sssd_js = {
     },
     workgroup: {
         type: "string"
-      },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
+    },
+    enabled: {
+      type: "boolean", default: false
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+          status: { type: "string" }
         }
       }
     }
