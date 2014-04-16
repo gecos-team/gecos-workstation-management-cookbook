@@ -31,10 +31,6 @@ action :setup do
         Chef::Log.info("SSSD_setup: Configurando el dominio #{domain.domain_name}")
       end 
 
-      @domain_list = new_resource.domain_list
-      @realm  = @domain_list[0].domain_name.upcase
-      @workgroup = new_resource.workgroup
-
       # Have authconfig enable SSSD in the pam files
       execute 'pam-auth-update' do
         command 'pam-auth-update --package'
@@ -76,7 +72,6 @@ action :setup do
           mode 00644
           variables ({
             :realm => new_resource.domain_list[0].domain_name.upcase,
-#            :domain => @domain_list
             :domain => new_resource.domain_list
           })
         end
