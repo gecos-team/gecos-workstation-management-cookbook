@@ -837,7 +837,7 @@ local_users_js = {
         type:"object",
         required: ["user","actiontorun"],
         properties:{
-          actiontorun: {pattern: "(create|delete)",type: "string"},
+          actiontorun: {pattern: "(create|modify|delete)",type: "string"},
           groups: { type: "array",items: { type: "string" } },
           user: { type: "string" },
           password: { type: "string"}
