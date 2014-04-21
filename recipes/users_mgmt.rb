@@ -21,3 +21,10 @@ gecos_ws_mgmt_user_shared_folders 'user shared folders' do
   action :setup
 end
 
+gecos_ws_mgmt_web_browser 'web browser' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids]
+  action :setup
+end
+
+

@@ -6,6 +6,7 @@ description       "Cookbook for GECOS workstations administration"
 version           "0.2.0"
 
 depends "apt"
+depends "sqlite"
 
 %w{ ubuntu debian }.each do |os|
   supports os
