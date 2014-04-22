@@ -25,7 +25,7 @@ action :setup do
 ## Distinguir entre sesión Cinnamon y LXDE
 
 #     session = node["desktop_session"] 
-      gecos_ws_mgmt_desktopsetting "idle-activation-enabled" do
+      gecos_ws_mgmt_desktop_setting "idle-activation-enabled" do
         type "string"
         value idle_enabled
         schema "org.cinnamon.desktop.screensaver"
@@ -34,7 +34,7 @@ action :setup do
         action :set
       end
   
-      gecos_ws_mgmt_desktopsetting "lock-enabled" do
+      gecos_ws_mgmt_desktop_setting "lock-enabled" do
         type "string"
         value lock_enabled
         schema "org.cinnamon.desktop.screensaver"
@@ -43,7 +43,7 @@ action :setup do
         action :set
       end
   
-      gecos_ws_mgmt_desktopsetting "idle-delay" do
+      gecos_ws_mgmt_desktop_setting "idle-delay" do
         type "string"
         value idle_delay
         schema "org.cinnamon.desktop.session"
@@ -52,7 +52,7 @@ action :setup do
         action :set
       end
   
-      gecos_ws_mgmt_desktopsetting "lock-delay" do
+      gecos_ws_mgmt_desktop_setting "lock-delay" do
         type "string"
         value lock_delay
         schema "org.cinnamon.desktop.screensaver"
