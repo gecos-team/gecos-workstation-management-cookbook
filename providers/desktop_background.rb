@@ -12,7 +12,7 @@
 
 action :setup do
   begin
-    if !new_resource.users.nil? and new_resource.users != []
+    if !new_resource.users.nil? and !new_resource.users.empty?
       Chef::Log.info("Estableciendo fondo de escritorio #{new_resource.users[0].desktop_file}")
       execute "update-dconf" do
         command "dconf update"
