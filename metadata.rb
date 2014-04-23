@@ -320,7 +320,7 @@ file_browser_js = {
   type: "object",
   required: ["users"],
   properties:{
-    file_browser_conf: {
+    users: {
       type: "array",
       minItems: 0,
       uniqueItems: true,
