@@ -7,7 +7,7 @@ default[:gecos_ws_mgmt][:network_mgmt][:network_res][:use_dhcp] = true
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:users] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
 
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:domain_list] = [{'domain_name': node[:fqdn]}]
+default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:domain_list] = []
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:workgroup] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:enabled] = false
 
