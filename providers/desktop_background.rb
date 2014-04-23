@@ -12,6 +12,10 @@
 
 action :setup do
   begin
+    p = package "dconf" do
+      action :nothing
+    end
+    p.run_action(:install) 
     if !new_resource.users.nil? and !new_resource.users.empty?
       Chef::Log.info("Estableciendo fondo de escritorio #{new_resource.users[0].desktop_file}")
       execute "update-dconf" do
