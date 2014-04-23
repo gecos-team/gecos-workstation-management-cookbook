@@ -679,7 +679,7 @@ network_resource_js = {
     netmask: { type: "string" },
     network_type: { pattern: "(wired|wireless)", type: "string" },
     use_dhcp: { type: "boolean" },
-    dns_server: {
+    dns_servers: {
       type: "array",
       minItems: 1,
       uniqueItems: true,
