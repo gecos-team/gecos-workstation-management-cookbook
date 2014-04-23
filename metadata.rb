@@ -246,7 +246,7 @@ user_launchers_js = {
   type: "object",
   required: ["users"],
   properties: {
-    launchers: {
+    users: {
       type: "array",
       minItems: 0,
       uniqueItems: true,
