@@ -95,10 +95,13 @@ screensaver_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["username", "lock_enabled"],
+        required: ["username", "idle_enabled", "lock_enabled"],
         properties: {
           username: {
             type: "string"
+          },
+          idle_enabled: {
+            type: "boolean"
           },
           idle_delay: {
             type: "string"
