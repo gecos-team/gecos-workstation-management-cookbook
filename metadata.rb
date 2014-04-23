@@ -61,7 +61,7 @@ user_mount_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "obejct",
+        type: "object",
         required: ["username","can_mount"],
         properties: {
           username: {type: "string"},
