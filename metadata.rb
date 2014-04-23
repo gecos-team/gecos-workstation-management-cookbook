@@ -328,7 +328,7 @@ file_browser_js = {
         type: "object",
         required: ["username", "auto_mount", "explore_net", "show_options_mount", "burn_disc"],
         properties: {
-          user: {type: "srting"},
+          user: {type: "string"},
           auto_mount: {type: "boolean"},
           explore_net: {type: "boolean"},
           show_options_mount: {type: "boolean"},
