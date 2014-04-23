@@ -110,7 +110,8 @@ action :setup do
         service 'sssd' do
           supports :status => true, :restart => true, :reload => true
           action [:enable, :start]
-        end 
+        end
+      end 
     else
       Chef::Log.info("SSSD desactivado")
       service 'sssd' do
