@@ -7,7 +7,7 @@ default[:gecos_ws_mgmt][:network_mgmt][:network_res][:use_dhcp] = true
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:users] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
 
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:domain_list] = [node[:fqdn]]
+default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:domain_list] = []
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:workgroup] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:enabled] = false
 
@@ -44,13 +44,13 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:users] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:job_ids] = []
 
-default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:web_browser_conf] = []
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = []
 
-default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:file_browser_conf] = []
+default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users] = []
 
-default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:launchers] = []
+default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:users] = []
 

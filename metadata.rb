@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.2.1"
+version           "0.2.2"
 
 depends "apt"
 
@@ -61,7 +61,7 @@ user_mount_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "obejct",
+        type: "object",
         required: ["username","can_mount"],
         properties: {
           username: {type: "string"},
@@ -246,7 +246,7 @@ user_launchers_js = {
   type: "object",
   required: ["users"],
   properties: {
-    launchers: {
+    users: {
       type: "array",
       minItems: 0,
       uniqueItems: true,
@@ -320,7 +320,7 @@ file_browser_js = {
   type: "object",
   required: ["users"],
   properties:{
-    file_browser_conf: {
+    users: {
       type: "array",
       minItems: 0,
       uniqueItems: true,
@@ -328,7 +328,7 @@ file_browser_js = {
         type: "object",
         required: ["username", "auto_mount", "explore_net", "show_options_mount", "burn_disc"],
         properties: {
-          user: {type: "srting"},
+          user: {type: "string"},
           auto_mount: {type: "boolean"},
           explore_net: {type: "boolean"},
           show_options_mount: {type: "boolean"},
@@ -679,7 +679,7 @@ network_resource_js = {
     netmask: { type: "string" },
     network_type: { pattern: "(wired|wireless)", type: "string" },
     use_dhcp: { type: "boolean" },
-    dns_server: {
+    dns_servers: {
       type: "array",
       minItems: 1,
       uniqueItems: true,
@@ -1077,7 +1077,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folfer_sync_res", "user_mount_res","shutdown_options_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
