@@ -25,14 +25,19 @@ default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:logout_update] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:start_update] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:days] = []
+
 default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:server] = ""
-default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:job_ids] = []
+
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list] =[]
+
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files] = []
+
 default[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_startup] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_shutdown] = []
+
 default[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:groups_list] = []
+
 default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:local_admin_list] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:users] = []
