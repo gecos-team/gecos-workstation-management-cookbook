@@ -12,7 +12,7 @@
 
 action :setup do
   begin
-    p = package "dconf" do
+    p = package "dconf-tools" do
       action :nothing
     end
     p.run_action(:install) 
