@@ -12,4 +12,4 @@
 actions :setup
 default_action :setup
 
-attribute :users, :name_attribute => true, :kind_of => Array
+attribute :desktop_file, :name_attribute => true, :kind_of => String

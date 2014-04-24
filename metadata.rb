@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.2.2"
+version           "0.2.3"
 
 depends "apt"
 
@@ -95,10 +95,13 @@ screensaver_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["username", "lock_enabled"],
+        required: ["username", "idle_enabled", "lock_enabled"],
         properties: {
           username: {
             type: "string"
+          },
+          idle_enabled: {
+            type: "boolean"
           },
           idle_delay: {
             type: "string"
@@ -284,22 +287,11 @@ user_launchers_js = {
 
 desktop_background_js = {
   type: "object",
-  required: ["users"],
+  required: ["desktop_file"],
   properties: {
-    users: {
-      type: "array",
-      minItems: 0,
-      uniqueItems: true,
-      items: {
-        type: "object",
-        required: ["username", "desktop_file"],
-        properties: {
-          username: {type: "string"},
-          desktop_file: {type: "string"}
-        }
-      }
-    },
-    job_ids: {
+    desktop_file: {type: "string", title: "Desktop File"}
+  },
+  job_ids: {
         type: "array",
         minItems: 0,
         uniqueItems: true,
@@ -311,10 +303,41 @@ desktop_background_js = {
             status: { type: "string" }
           }
         }
-    }
   }
 }
-
+#desktop_background_js = {
+#  type: "object",
+#  required: ["users"],
+#  properties: {
+#    users: {
+#      type: "array",
+#      minItems: 0,
+#      uniqueItems: true,
+#      items: {
+#        type: "object",
+#        required: ["username", "desktop_file"],
+#        properties: {
+#          username: {type: "string"},
+#          desktop_file: {type: "string"}
+#        }
+#      }
+#    },
+#    job_ids: {
+#        type: "array",
+#        minItems: 0,
+#        uniqueItems: true,
+#        items: {
+#          type: "object",
+#          required: ["id"],
+#          properties: {
+#            id: { type: "string" },
+#            status: { type: "string" }
+#          }
+#        }
+#    }
+#  }
+#}
+#
 
 file_browser_js = {
   type: "object",
@@ -639,6 +662,7 @@ scripts_launch_js = {
   {
     on_startup: {
       type: "array",
+      title: "Script list to run on startup",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -647,6 +671,7 @@ scripts_launch_js = {
     },
    on_shutdown: {
       type: "array",
+      title: "Script list to run on shutdown",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -674,13 +699,14 @@ network_resource_js = {
   required: ["network_type"],
   properties:
   {
-    gateway: { type: "string" },
-    ip_address: { type:"string" },
-    netmask: { type: "string" },
-    network_type: { pattern: "(wired|wireless)", type: "string" },
-    use_dhcp: { type: "boolean" },
+    gateway: { type: "string",title: "Gateway" },
+    ip_address: { type:"string", title: "Ip Address" },
+    netmask: { type: "string", title: "Netmask" },
+    network_type: { enum: ["wired","wireless"],type: "string", title: "Network Type" },
+    use_dhcp: { type: "boolean" , title: "Use DHCP?"},
     dns_servers: {
       type: "array",
+      title: "DNS Servers",
       minItems: 1,
       uniqueItems: true,
       items: {
@@ -689,28 +715,30 @@ network_resource_js = {
     },
     users: {
       type: "array",
+      title: "Users",
       minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
         required: ["username","network_type"],
         properties: {
-          username: { type: "string" },
-          gateway: { type: "string" },
-          ip_address: { type:"string" },
-          netmask: { type: "string" },
-          network_type: { pattern: "(wired|wireless|vpn|proxy)", type: "string" },
-          use_dhcp: { type: "boolean" },
+          username: { type: "string", title: "Username" },
+          gateway: { type: "string",title: "Gateway" },
+          ip_address: { type:"string", title: "Ip Address" },
+          netmask: { type: "string", title: "Netmask" },
+          network_type: { enum: ["wired","wireless","vpn","proxy"], type: "string", title: "Network Type" },
+          use_dhcp: { type: "boolean", title: "Use DHCP?" },
           certs: {
             type: "array",
+            title: "Certificates",
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "object",
               required: ["name","uri"],
               properties: {
-                name: {type: "string"},
-                uri: {type: "string"}
+                name: {type: "string", title: "Name"},
+                uri: {type: "string", title: "Url"}
               }
             }
           }
@@ -773,8 +801,20 @@ package_js = {
   type: "object",
   required: ["package_list"],
   properties:
-  {package_list: {type:"array"},
-  pkgs_to_remove: {type:"array"},
+  {package_list: {
+      type:"array",
+      title: "Package list to install",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+  },
+  pkgs_to_remove: {
+      type:"array",
+      title: "Package list to remove",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+  },
   job_ids: {
     type: "array",
     minItems: 0,
@@ -897,27 +937,29 @@ local_file_js = {
   properties:
   {delete_files: {
       type:"array",
+      title: "File list to delete",
       items: {
         type:"object",
         required: ["file"],
         properties:{
-          file: {type: "string"},
-          backup: { type: "boolean" }
+          file: {type: "string", title:"File"},
+          backup: { type: "boolean", title: "Create backup?" }
         }
      }
   },
   copy_files: {
     type: "array",
+    title: "File list to copy",
     items: {
       type: "object",
       required: ["file_orig","file_dest"],
       properties:{
-        file_orig: {type: "string"},
-        file_dest: {type: "string"},
-        user: {type: "string"},
-        group: {type: "string"},
-        mode: {type: "string"},
-        overwrite: {type: "boolean"}
+        file_orig: {type: "string", title: "Url File"},
+        file_dest: {type: "string", title: "Path destination"},
+        user: {type: "string", title:"User"},
+        group: {type: "string", title: "Group"},
+        mode: {type: "string", title: "Mode"},
+        overwrite: {type: "boolean", title: "Overwrite?"}
       }
     }
   },
@@ -1048,12 +1090,13 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res"],
+          required: ["tz_date_res", "desktop_background_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
             local_users_res: local_users_js,
             local_file_res: local_file_js,
+            desktop_background_res: desktop_background_js,
             auto_updates_res: auto_updates_js,
             local_groups_res: local_groups_js,
             local_admin_users_res: local_admin_users_js
@@ -1077,13 +1120,13 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "desktop_background_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             file_browser_res: file_browser_js,
             user_launchers_res: user_launchers_js,
-            desktop_background_res: desktop_background_js,
+            #desktop_background_res: desktop_background_js,
             desktop_menu_res: desktop_menu_js,
             desktop_control_res: desktop_control_js,
             user_apps_autostart_res: user_apps_autostart_js,

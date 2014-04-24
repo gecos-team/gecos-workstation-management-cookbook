@@ -29,3 +29,7 @@ gecos_ws_mgmt_tz_date 'localtime' do
   action :setup
 end
 
+gecos_ws_mgmt_desktop_background node[:gecos_ws_mgmt][:misc_mgmt][:desktop_background_res][:desktop_file] do
+    action  :setup
+end
+
