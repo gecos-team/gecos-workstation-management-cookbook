@@ -702,7 +702,7 @@ network_resource_js = {
     gateway: { type: "string",title: "Gateway" },
     ip_address: { type:"string", title: "Ip Address" },
     netmask: { type: "string", title: "Netmask" },
-    network_type: { enum: ["wired","wireless"],type: "string" title: "Network Type" },
+    network_type: { enum: ["wired","wireless"],type: "string", title: "Network Type" },
     use_dhcp: { type: "boolean" , title: "Use DHCP?"},
     dns_servers: {
       type: "array",
