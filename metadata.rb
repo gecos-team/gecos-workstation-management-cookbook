@@ -289,7 +289,7 @@ desktop_background_js = {
   type: "object",
   required: ["desktop_file"],
   properties: {
-    desktop_file: {type: "string"}
+    desktop_file: {type: "string", title: "Desktop File"}
   },
   job_ids: {
         type: "array",
