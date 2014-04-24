@@ -699,13 +699,14 @@ network_resource_js = {
   required: ["network_type"],
   properties:
   {
-    gateway: { type: "string" },
-    ip_address: { type:"string" },
-    netmask: { type: "string" },
-    network_type: { pattern: "(wired|wireless)", type: "string" },
-    use_dhcp: { type: "boolean" },
+    gateway: { type: "string",title: "Gateway" },
+    ip_address: { type:"string", title: "Ip Address" },
+    netmask: { type: "string", title: "Netmask" },
+    network_type: { enum: ["wired","wireless"],type: "string" title: "Network Type" },
+    use_dhcp: { type: "boolean" , title: "Use DHCP?"},
     dns_servers: {
       type: "array",
+      title: "DNS Servers",
       minItems: 1,
       uniqueItems: true,
       items: {
@@ -714,28 +715,30 @@ network_resource_js = {
     },
     users: {
       type: "array",
+      title: "Users",
       minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
         required: ["username","network_type"],
         properties: {
-          username: { type: "string" },
-          gateway: { type: "string" },
-          ip_address: { type:"string" },
-          netmask: { type: "string" },
-          network_type: { pattern: "(wired|wireless|vpn|proxy)", type: "string" },
-          use_dhcp: { type: "boolean" },
+          username: { type: "string", title: "Username" },
+          gateway: { type: "string",title: "Gateway" },
+          ip_address: { type:"string", title: "Ip Address" },
+          netmask: { type: "string", title: "Netmask" },
+          network_type: { enum: ["wired","wireless","vpn","proxy"], type: "string", title: "Network Type" },
+          use_dhcp: { type: "boolean", title: "Use DHCP?" },
           certs: {
             type: "array",
+            title: "Certificates",
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "object",
               required: ["name","uri"],
               properties: {
-                name: {type: "string"},
-                uri: {type: "string"}
+                name: {type: "string", title: "Name"},
+                uri: {type: "string", title: "Url"}
               }
             }
           }
