@@ -953,7 +953,7 @@ local_file_js = {
       properties:{
         file_orig: {type: "string", title: "Url File"},
         file_dest: {type: "string", title: "Path destination"},
-        user: {type: "string", title:"User"}
+        user: {type: "string", title:"User"},
         group: {type: "string", title: "Group"},
         mode: {type: "string", title: "Mode"},
         overwrite: {type: "boolean", title: "Overwrite?"}
