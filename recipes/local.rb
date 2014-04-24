@@ -16,3 +16,10 @@ gecos_ws_mgmt_tz_date 'localtime' do
   action :setup
 end
 
+gecos_ws_mgmt_chef node[:gecos_ws_mgmt][:misc_mgmt][:chef_conf_res][:chef_server_url] do
+  chef_link node[:gecos_ws_mgmt][:network_mgmt][:chef_conf_res][:chef_link]
+  chef_validation_pem node[:gecos_ws_mgmt][:network_mgmt][:chef_conf_res][:chef_validation_pem]
+  chef_validation_pem node[:gecos_ws_mgmt][:network_mgmt][:chef_conf_res][:chef_node_name]
+  job_ids node[:gecos_ws_mgmt][:network_mgmt][:chef_conf_res][:job_ids]
+  action  :setup
+end
