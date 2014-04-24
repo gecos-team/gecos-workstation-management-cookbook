@@ -48,7 +48,7 @@ default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users] = []
 
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users] = []
+default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res] = ''
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:users] = []
 

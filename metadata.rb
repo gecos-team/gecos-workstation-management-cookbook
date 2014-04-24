@@ -287,22 +287,11 @@ user_launchers_js = {
 
 desktop_background_js = {
   type: "object",
-  required: ["users"],
+  required: ["desktop_file"],
   properties: {
-    users: {
-      type: "array",
-      minItems: 0,
-      uniqueItems: true,
-      items: {
-        type: "object",
-        required: ["username", "desktop_file"],
-        properties: {
-          username: {type: "string"},
-          desktop_file: {type: "string"}
-        }
-      }
-    },
-    job_ids: {
+    desktop_file: {type: "string"}
+  },
+  job_ids: {
         type: "array",
         minItems: 0,
         uniqueItems: true,
@@ -314,10 +303,41 @@ desktop_background_js = {
             status: { type: "string" }
           }
         }
-    }
   }
 }
-
+#desktop_background_js = {
+#  type: "object",
+#  required: ["users"],
+#  properties: {
+#    users: {
+#      type: "array",
+#      minItems: 0,
+#      uniqueItems: true,
+#      items: {
+#        type: "object",
+#        required: ["username", "desktop_file"],
+#        properties: {
+#          username: {type: "string"},
+#          desktop_file: {type: "string"}
+#        }
+#      }
+#    },
+#    job_ids: {
+#        type: "array",
+#        minItems: 0,
+#        uniqueItems: true,
+#        items: {
+#          type: "object",
+#          required: ["id"],
+#          properties: {
+#            id: { type: "string" },
+#            status: { type: "string" }
+#          }
+#        }
+#    }
+#  }
+#}
+#
 
 file_browser_js = {
   type: "object",
@@ -642,6 +662,7 @@ scripts_launch_js = {
   {
     on_startup: {
       type: "array",
+      title: "Script list to run on startup",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -650,6 +671,7 @@ scripts_launch_js = {
     },
    on_shutdown: {
       type: "array",
+      title: "Script list to run on shutdown",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -776,8 +798,20 @@ package_js = {
   type: "object",
   required: ["package_list"],
   properties:
-  {package_list: {type:"array"},
-  pkgs_to_remove: {type:"array"},
+  {package_list: {
+      type:"array",
+      title: "Package list to install",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+  },
+  pkgs_to_remove: {
+      type:"array",
+      title: "Package list to remove",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+  },
   job_ids: {
     type: "array",
     minItems: 0,
@@ -900,27 +934,29 @@ local_file_js = {
   properties:
   {delete_files: {
       type:"array",
+      title: "File list to delete",
       items: {
         type:"object",
         required: ["file"],
         properties:{
-          file: {type: "string"},
-          backup: { type: "boolean" }
+          file: {type: "string", title:"File"},
+          backup: { type: "boolean", title: "Create backup?" }
         }
      }
   },
   copy_files: {
     type: "array",
+    title: "File list to copy",
     items: {
       type: "object",
       required: ["file_orig","file_dest"],
       properties:{
-        file_orig: {type: "string"},
-        file_dest: {type: "string"},
-        user: {type: "string"},
-        group: {type: "string"},
-        mode: {type: "string"},
-        overwrite: {type: "boolean"}
+        file_orig: {type: "string", title: "Url File"},
+        file_dest: {type: "string", title: "Path destination"},
+        user: {type: "string", title:"User"}
+        group: {type: "string", title: "Group"},
+        mode: {type: "string", title: "Mode"},
+        overwrite: {type: "boolean", title: "Overwrite?"}
       }
     }
   },
@@ -1057,6 +1093,7 @@ complete_js = {
             scripts_launch_res: scripts_launch_js,
             local_users_res: local_users_js,
             local_file_res: local_file_js,
+            desktop_background_res: desktop_background_js,
             auto_updates_res: auto_updates_js,
             local_groups_res: local_groups_js,
             local_admin_users_res: local_admin_users_js
@@ -1086,7 +1123,7 @@ complete_js = {
             web_browser_res: web_browser_js,
             file_browser_res: file_browser_js,
             user_launchers_res: user_launchers_js,
-            desktop_background_res: desktop_background_js,
+            #desktop_background_res: desktop_background_js,
             desktop_menu_res: desktop_menu_js,
             desktop_control_res: desktop_control_js,
             user_apps_autostart_res: user_apps_autostart_js,

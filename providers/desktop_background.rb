@@ -16,8 +16,10 @@ action :setup do
       action :nothing
     end
     p.run_action(:install) 
-    if !new_resource.users.nil? and !new_resource.users.empty?
-      Chef::Log.info("Estableciendo fondo de escritorio #{new_resource.users[0].desktop_file}")
+    #if !new_resource.users.nil? and !new_resource.users.empty?
+    if !new_resource.desktop_file.nil? and !new_resource.desktop_file.empty?
+      #Chef::Log.info("Estableciendo fondo de escritorio #{new_resource.users[0].desktop_file}")
+      Chef::Log.info("Estableciendo fondo de escritorio #{new_resource.desktop_file}")
       execute "update-dconf" do
         command "dconf update"
         action :nothing
@@ -48,10 +50,16 @@ user-db:user
         backup false
         content <<-eof
 [org/gnome/desktop/background]
-picture-uri='file://#{new_resource.users[0].desktop_file}'
+picture-uri='file://#{new_resource.desktop_file}'
 [org/cinnamon/desktop/background]
-picture-uri='file://#{new_resource.users[0].desktop_file}'
+picture-uri='file://#{new_resource.desktop_file}'
         eof
+#        content <<-eof
+#        [org/gnome/desktop/background]
+#        picture-uri='file://#{new_resource.users[0].desktop_file}'
+#        [org/cinnamon/desktop/background]
+#        picture-uri='file://#{new_resource.users[0].desktop_file}'
+#        eof
         action :create
         notifies :run, "execute[update-dconf]", :delayed
       end
