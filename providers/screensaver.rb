@@ -21,8 +21,8 @@ action :setup do
       lock_enabled = user.lock_enabled
       lock_delay = user.lock_delay
 ### TO-DO:
-## Sacar el tipo de sesión con el plugin de ohai x-session-manager.rb (amunoz)
-## Distinguir entre sesión Cinnamon y LXDE
+## Sacar el tipo de sesion con el plugin de ohai x-session-manager.rb (amunoz)
+## Distinguir entre sesion Cinnamon y LXDE
 
 #     session = node["desktop_session"] 
       gecos_ws_mgmt_desktop_setting "idle-activation-enabled" do
