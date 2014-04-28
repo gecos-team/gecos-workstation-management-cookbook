@@ -25,9 +25,11 @@ action :setup do
         action :nothing
       end
       directory "/etc/dconf/profile" do
+        recursive true
         action :create
       end
       directory "/etc/dconf/db/gecos.d/locks" do
+        recursive true
         action :create
       end
       file "/etc/dconf/profile/user" do
