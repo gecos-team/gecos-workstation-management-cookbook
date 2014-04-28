@@ -16,12 +16,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'json'
-require 'rest_client'
-
 action :setup do
   begin
+    gem_depends = [ 'rest_client' , 'json' ]
 
+    gem_depends.each do |gem|
+
+      r = gem_package gem do
+        action :nothing
+      end
+      r.run_action(:install)
+
+    end
+    Gem.clear_paths
+    require 'json'
+    require 'rest_client'
     if new_resource.gcc_link
       if not new_resource.uri_gcc.nil? and not new_resource.gcc_nodename.nil? and not new_resource.gcc_username.nil? and not new_resource.gcc_pwd_user.nil? and not new_resource.gcc_selected_ou.nil?
         Chef::Log.info("GCC: Configurndo GECOS Control Center")
