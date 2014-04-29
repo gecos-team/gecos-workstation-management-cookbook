@@ -13,31 +13,98 @@ action :setup do
 
   begin
 
-package 'libsqlite3-ruby'
-package 'libsqlite3-dev'
-
-require 'sqlite3'
-
-new_resource.users.each do |user|
-  username = user.username
-  homedir = `eval echo ~#{user.username}`.gsub("\n","")
-  plugins = user.plugins
-  bookmarks =  user.bookmarks
-
-## GENERAL STUFF
-  sqlitefiles = []
-  profiles = "#{homedir}/.mozilla/firefox/profiles.ini"
-  if ::File.exist? profiles
-    ::File.open(profiles, "r") do |infile|
-      while (line = infile.gets)
-        aline=line.split('=')
-        if aline[0] == 'Path'
-          sqlitefiles << "#{homedir}/.mozilla/firefox/#{aline[1].chomp}/places.sqlite"
+  package 'libsqlite3-ruby'
+  package 'libsqlite3-dev'
+  
+  require 'sqlite3'
+  
+  new_resource.users.each do |user|
+    username = user.username
+    homedir = `eval echo ~#{user.username}`.gsub("\n","")
+    plugins = user.plugins
+    bookmarks =  user.bookmarks
+  
+    profiles = "#{homedir}/.mozilla/firefox/profiles.ini"
+  
+    extensions_dirs = []
+    sqlitefiles = []
+    profiles = "#{homedir}/.mozilla/firefox/profiles.ini"
+    if ::File.exist? profiles
+      ::File.open(profiles, "r") do |infile|
+        while (line = infile.gets)
+          aline=line.split('=')
+          if aline[0] == 'Path'
+            extensions_dirs << "#{homedir}/.mozilla/firefox/#{aline[1].chomp}/extensions"
+            sqlitefiles << "#{homedir}/.mozilla/firefox/#{aline[1].chomp}/places.sqlite"
+          end
         end
       end
-    end
 
-## BOOKMARKS STUFf
+## PLugins STUFF
+    Chef::Log.info("Setting user #{username} web plugins")  
+    template node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:firefox_scope_js] do
+      source "web_browser_scope.js.erb"
+      action :create
+    end
+  
+    extensions_dirs.each do |xdir|
+      directory xdir do
+        owner username
+        group username
+        action :create
+      end
+  
+    ::Dir.glob("#{xdir}/*").select do |dir|
+      if ::File.directory?(dir) 
+        FileUtils.rm_rf(dir)
+      end
+    end
+  
+      plugins.each do |plugin|
+        puts plugin.title 
+        puts plugin.uri
+        
+        plugin_file = "#{xdir}/#{plugin.title.gsub(" ","_")}.xpi"
+        plugin_dir_temp = "#{plugin_file}_temp"
+  
+        remote_file plugin_file do
+          source plugin.uri
+          user username
+          group username
+          action :create_if_missing
+        end
+        
+        directory "#{plugin_dir_temp}" do
+          owner username
+          group username
+          action :create
+        end
+  
+        bash "extract plugin #{plugin_file}" do
+          user username
+          code <<-EOH
+            unzip #{plugin_file} -d #{plugin_dir_temp}
+            EOH
+        end
+  
+        ruby_block "get plugin id" do
+          block do
+            file_w_id = ::IO.read("#{plugin_dir_temp}/install.rdf")
+            idmatch = file_w_id.match(/<em:id>([^<\/]+)<\/em:id>/)
+            str_idmatch = idmatch[0]
+            clean_id = str_idmatch.gsub("<em:id>","").gsub("</em:id>","")
+
+            ::FileUtils.mv(plugin_dir_temp , "#{xdir}/#{clean_id}")
+
+          end
+
+        end
+      
+      end
+ 
+    end
+    
+## BOOKMARKS STUFF
     Chef::Log.info("Setting user #{username} web bookmarks")     
     sqlitefiles.each do |sqlitedb|
       if ::FileTest.exist? sqlitedb
@@ -80,9 +147,9 @@ new_resource.users.each do |user|
         end
       end
     end
-
-      puts user.config
-      puts user.certs
+    
+    puts user.config
+    puts user.certs
   end
    
     # TODO:
