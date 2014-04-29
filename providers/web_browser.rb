@@ -41,25 +41,28 @@ action :setup do
       end
 
 ## PLugins STUFF
+
     Chef::Log.info("Setting user #{username} web plugins")  
     template node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:firefox_scope_js] do
       source "web_browser_scope.js.erb"
       action :create
     end
-  
+    
     extensions_dirs.each do |xdir|
       directory xdir do
         owner username
         group username
         action :create
       end
-  
+    
     ::Dir.glob("#{xdir}/*").select do |dir|
       if ::File.directory?(dir) 
         FileUtils.rm_rf(dir)
       end
     end
-  
+    
+    unless plugins.empty?
+ 
       plugins.each do |plugin|
         puts plugin.title 
         puts plugin.uri
@@ -101,8 +104,10 @@ action :setup do
         end
       
       end
- 
+
     end
+
+  end
     
 ## BOOKMARKS STUFF
     Chef::Log.info("Setting user #{username} web bookmarks")     
