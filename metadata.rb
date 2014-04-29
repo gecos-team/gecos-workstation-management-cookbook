@@ -6,6 +6,7 @@ description       "Cookbook for GECOS workstations administration"
 version           "0.2.3"
 
 depends "apt"
+depends "chef-client"
 
 %w{ ubuntu debian }.each do |os|
   supports os
