@@ -26,14 +26,17 @@ action :setup do
   
     profiles = "#{homedir}/.mozilla/firefox/profiles.ini"
   
+    profile_dirs = []
     extensions_dirs = []
     sqlitefiles = []
+
     profiles = "#{homedir}/.mozilla/firefox/profiles.ini"
     if ::File.exist? profiles
       ::File.open(profiles, "r") do |infile|
         while (line = infile.gets)
           aline=line.split('=')
           if aline[0] == 'Path'
+            profile_dirs << "#{homedir}/.mozilla/firefox/#{aline[1].chomp}"
             extensions_dirs << "#{homedir}/.mozilla/firefox/#{aline[1].chomp}/extensions"
             sqlitefiles << "#{homedir}/.mozilla/firefox/#{aline[1].chomp}/places.sqlite"
           end
@@ -55,10 +58,10 @@ action :setup do
         action :create
       end
     
-    ::Dir.glob("#{xdir}/*").select do |dir|
-      if ::File.directory?(dir) 
-        FileUtils.rm_rf(dir)
-      end
+      ::Dir.glob("#{xdir}/*").select do |dir|
+        if ::File.directory?(dir) 
+          FileUtils.rm_rf(dir)
+       end
     end
     
     unless plugins.empty?
@@ -152,9 +155,28 @@ action :setup do
         end
       end
     end
+   
+## CONFIGS STUFF   
     
-    puts user.config
-    puts user.certs
+   
+    Chef::Log.info("Setting user #{username} web configs")
+
+    profile_dirs.each do |prof|
+
+      template "#{prof}/user.js" do
+        owner username
+        source "web_browser_user.js.erb"
+        variables ({:config => user.config})
+        action :create
+      end
+    end
+
+
+
+
+
+
+#    puts user.certs
   end
    
     # TODO:

@@ -399,7 +399,7 @@ web_browser_js = {
               required: ["key", "value"],
               properties: {
                 key: {type: "string"},
-                value: {type: "string"}
+                value: {type: "any"}
               }
             }
           },
