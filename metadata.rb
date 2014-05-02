@@ -370,10 +370,11 @@ web_browser_js = {
             uniqueItems: true,
             items: {
               type: "object",
-              required: ["title", "uri"],
+              required: ["title", "uri", "action"],
               properties: {
                 title: {type: "string"},
-                uri: {type: "string"}
+                uri: {type: "string"},
+                action: {type: "string" ,pattern: "(add|remove)"}
               }
             }
           },

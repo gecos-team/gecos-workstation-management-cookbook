@@ -9,15 +9,63 @@
 # http://www.osor.eu/eupl
 #
 
+
 action :setup do
 
   begin
 
+
+  #TODO: fix dependencies sqlite3 on first run
   package 'libsqlite3-ruby'
   package 'libsqlite3-dev'
-  
-  require 'sqlite3'
-  
+  package 'unzip'
+
+  require "sqlite3"
+  chef_gem "sqlite3" 
+
+  def plugin_id(username,ext_path,plugin_name,plugin_file,action_to_run)
+
+    plugin_dir_temp = "#{plugin_file}_temp"
+    directory plugin_dir_temp do
+      owner username
+      group username
+      action :create
+    end
+
+    bash "extract plugin #{plugin_file}" do
+      user username
+      code <<-EOH
+
+        unzip #{plugin_file} -d #{plugin_dir_temp}
+      EOH
+    end
+
+    ruby_block "get plugin id" do
+      block do
+        file_w_id = ::IO.read("#{plugin_dir_temp}/install.rdf")
+        idmatch = file_w_id.match(/<em:id>([^<\/]+)<\/em:id>/)
+        str_idmatch = idmatch[0]
+        clean_id = str_idmatch.gsub("<em:id>","").gsub("</em:id>","")
+        
+        if action_to_run == "remove" 
+          
+          if ::File.directory?("#{ext_path}/#{clean_id}") 
+            ::FileUtils.rm_rf("#{ext_path}/#{clean_id}")
+          end          
+          ::FileUtils.rm_rf(plugin_file)
+          ::FileUtils.rm_rf(plugin_dir_temp)
+        else
+          if !::File.directory?("#{ext_path}/#{clean_id}") 
+          ::FileUtils.mv(plugin_dir_temp , "#{ext_path}/#{clean_id}")
+          end
+        end
+      
+      end
+    end
+
+  end 
+
+
   new_resource.users.each do |user|
     username = user.username
     homedir = `eval echo ~#{user.username}`.gsub("\n","")
@@ -42,80 +90,86 @@ action :setup do
           end
         end
       end
-
-## PLugins STUFF
-
-    Chef::Log.info("Setting user #{username} web plugins")  
-    template node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:firefox_scope_js] do
-      source "web_browser_scope.js.erb"
-      action :create
-    end
     
-    extensions_dirs.each do |xdir|
-      directory xdir do
-        owner username
-        group username
+## Plugins STUFF
+
+      Chef::Log.info("Setting user #{username} web plugins")  
+      template node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:firefox_scope_js] do
+        source "web_browser_scope.js.erb"
         action :create
       end
-    
-      ::Dir.glob("#{xdir}/*").select do |dir|
-        if ::File.directory?(dir) 
-          FileUtils.rm_rf(dir)
-       end
-    end
-    
-    unless plugins.empty?
- 
-      plugins.each do |plugin|
-        puts plugin.title 
-        puts plugin.uri
-        
-        plugin_file = "#{xdir}/#{plugin.title.gsub(" ","_")}.xpi"
-        plugin_dir_temp = "#{plugin_file}_temp"
-  
-        remote_file plugin_file do
-          source plugin.uri
-          user username
-          group username
-          action :create_if_missing
-        end
-        
-        directory "#{plugin_dir_temp}" do
+      
+      extensions_dirs.each do |xdir|
+        directory xdir do
           owner username
           group username
           action :create
         end
-  
-        bash "extract plugin #{plugin_file}" do
-          user username
-          code <<-EOH
-            unzip #{plugin_file} -d #{plugin_dir_temp}
-            EOH
-        end
-  
-        ruby_block "get plugin id" do
-          block do
-            file_w_id = ::IO.read("#{plugin_dir_temp}/install.rdf")
-            idmatch = file_w_id.match(/<em:id>([^<\/]+)<\/em:id>/)
-            str_idmatch = idmatch[0]
-            clean_id = str_idmatch.gsub("<em:id>","").gsub("</em:id>","")
-
-            ::FileUtils.mv(plugin_dir_temp , "#{xdir}/#{clean_id}")
-
-          end
-
-        end
       
-      end
-
-    end
-
-  end
+        unless plugins.empty?
+     
+          plugins.each do |plugin|
     
+            
+            puts plugin.title 
+            puts plugin.uri
+             
+            plugin_name = "#{plugin.title.gsub(" ","_")}.xpi"
+            plugin_file = "#{xdir}/#{plugin_name}"
+            plugin_dir_temp = "#{plugin_file}_temp"
+    
+            if !::File.exists?(plugin_file) and plugin.action == "add"
+  
+              remote_file plugin_file do
+                source plugin.uri
+                user username
+                group username
+                action :create
+              end
+              plugin_id(username,xdir,plugin_name,plugin_file,plugin.action)
+
+            elsif ::File.exists?(plugin_file) and plugin.action == "remove"
+  
+#              directory "#{plugin_dir_temp}" do
+#                owner username
+#                group username
+#                action :create
+#              end
+#  
+#              bash "extract plugin #{plugin_file}" do
+#                user username
+#                code <<-EOH
+#                  unzip #{plugin_file} -d #{plugin_dir_temp}
+#                  EOH
+#              end
+#   
+#              ruby_block "get plugin id" do
+#                block do
+#                  file_w_id = ::IO.read("#{plugin_dir_temp}/install.rdf")
+#                  idmatch = file_w_id.match(/<em:id>([^<\/]+)<\/em:id>/)
+#                  str_idmatch = idmatch[0]
+#                  clean_id = str_idmatch.gsub("<em:id>","").gsub("</em:id>","")
+#                  if ::File.directory?("#{xdir}/#{clean_id}")
+#                    ::FileUtils.rm_rf("#{xdir}/#{clean_id}")
+#                  end          
+#                  ::FileUtils.rm_rf(plugin_file)
+#                  ::FileUtils.rm_rf(plugin_dir_temp)
+#                end
+#              end 
+# 
+              plugin_id(username,xdir,plugin_name,plugin_file,plugin.action)             
+            end
+    
+          end
+        end
+      end 
+  
+  
+
 ## BOOKMARKS STUFF
-    Chef::Log.info("Setting user #{username} web bookmarks")     
-    sqlitefiles.each do |sqlitedb|
-      if ::FileTest.exist? sqlitedb
+      Chef::Log.info("Setting user #{username} web bookmarks")     
+      sqlitefiles.each do |sqlitedb|
+        if ::FileTest.exist? sqlitedb
          db = SQLite3::Database.open(sqlitedb)
 
           id_folder_bookmarks = db.get_first_value("SELECT id FROM moz_bookmarks WHERE title=\'Marcadores corporativos\'")
@@ -154,29 +208,27 @@ action :setup do
           end
         end
       end
-    end
+    
    
 ## CONFIGS STUFF   
     
-   
-    Chef::Log.info("Setting user #{username} web configs")
+     
+      Chef::Log.info("Setting user #{username} web configs")
 
-    profile_dirs.each do |prof|
+      profile_dirs.each do |prof|
 
-      template "#{prof}/user.js" do
-        owner username
-        source "web_browser_user.js.erb"
-        variables ({:config => user.config})
-        action :create
+        template "#{prof}/user.js" do
+          owner username
+          source "web_browser_user.js.erb"
+          variables ({:config => user.config})
+          action :create
+        end
       end
-    end
-
-
-
-
-
+     
 
 #    puts user.certs
+    end
+
   end
    
     # TODO:
