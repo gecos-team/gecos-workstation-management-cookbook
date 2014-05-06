@@ -8,3 +8,8 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
+
+actions :setup
+default_action :setup
+
+attribute :desktop_file, :name_attribute => true, :kind_of => String
