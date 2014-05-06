@@ -93,27 +93,23 @@ action :setup do
     
 ## Plugins STUFF
 
-      Chef::Log.info("Setting user #{username} web plugins")  
-      template node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:firefox_scope_js] do
-        source "web_browser_scope.js.erb"
-        action :create
-      end
-      
-      extensions_dirs.each do |xdir|
-        directory xdir do
-          owner username
-          group username
+      unless plugins.empty?
+        Chef::Log.info("Setting user #{username} web plugins")  
+        template node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:firefox_scope_js] do
+          source "web_browser_scope.js.erb"
           action :create
         end
+        
+        extensions_dirs.each do |xdir|
+          directory xdir do
+            owner username
+            group username
+            action :create
+          end
       
-        unless plugins.empty?
      
           plugins.each do |plugin|
-    
             
-            puts plugin.title 
-            puts plugin.uri
-             
             plugin_name = "#{plugin.title.gsub(" ","_")}.xpi"
             plugin_file = "#{xdir}/#{plugin_name}"
             plugin_dir_temp = "#{plugin_file}_temp"
@@ -126,38 +122,13 @@ action :setup do
                 group username
                 action :create
               end
+
               plugin_id(username,xdir,plugin_name,plugin_file,plugin.action)
 
             elsif ::File.exists?(plugin_file) and plugin.action == "remove"
-  
-#              directory "#{plugin_dir_temp}" do
-#                owner username
-#                group username
-#                action :create
-#              end
-#  
-#              bash "extract plugin #{plugin_file}" do
-#                user username
-#                code <<-EOH
-#                  unzip #{plugin_file} -d #{plugin_dir_temp}
-#                  EOH
-#              end
-#   
-#              ruby_block "get plugin id" do
-#                block do
-#                  file_w_id = ::IO.read("#{plugin_dir_temp}/install.rdf")
-#                  idmatch = file_w_id.match(/<em:id>([^<\/]+)<\/em:id>/)
-#                  str_idmatch = idmatch[0]
-#                  clean_id = str_idmatch.gsub("<em:id>","").gsub("</em:id>","")
-#                  if ::File.directory?("#{xdir}/#{clean_id}")
-#                    ::FileUtils.rm_rf("#{xdir}/#{clean_id}")
-#                  end          
-#                  ::FileUtils.rm_rf(plugin_file)
-#                  ::FileUtils.rm_rf(plugin_dir_temp)
-#                end
-#              end 
-# 
+ 
               plugin_id(username,xdir,plugin_name,plugin_file,plugin.action)             
+
             end
     
           end
@@ -211,24 +182,44 @@ action :setup do
     
    
 ## CONFIGS STUFF   
-    
-     
-      Chef::Log.info("Setting user #{username} web configs")
 
+      if !user.config.empty?
+        Chef::Log.info("Setting user #{username} web configs")
+ 
+        profile_dirs.each do |prof|
+  
+          template "#{prof}/user.js" do
+            owner username
+            source "web_browser_user.js.erb"
+            variables ({:config => user.config})
+            action :create
+          end
+        end
+      end     
+
+## CERTS STUFF
       profile_dirs.each do |prof|
+        user.certs.each do |cert|
 
-        template "#{prof}/user.js" do
-          owner username
-          source "web_browser_user.js.erb"
-          variables ({:config => user.config})
-          action :create
+          certfile = "/var/tmp/#{cert.name}.pem"
+
+          remote_file certfile do
+            source cert.uri
+            action :create_if_missing
+          end
+
+          bash "Installing #{cert.name} cert to user #{username}" do
+            user username
+            code <<-EOH
+              certutil -A -d #{prof} -n #{cert.name} -i #{certfile} -t C,C,C
+            EOH
+          end
+
         end
       end
-     
 
-#    puts user.certs
+
     end
-
   end
    
     # TODO:

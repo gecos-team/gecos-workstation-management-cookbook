@@ -40,7 +40,8 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:users] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:job_ids] = []
 
-default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:web_browser_conf] = []
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = []
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:file_browser_conf] = []
 
