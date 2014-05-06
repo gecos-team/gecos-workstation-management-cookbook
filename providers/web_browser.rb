@@ -14,14 +14,24 @@ action :setup do
 
   begin
 
+  package 'libsqlite3-ruby' do
+    action :nothing
+  end.run_action(:install)
 
-  #TODO: fix dependencies sqlite3 on first run
-  package 'libsqlite3-ruby'
-  package 'libsqlite3-dev'
-  package 'unzip'
+  package 'libsqlite3-dev' do
+    action :nothing
+  end.run_action(:install)
+
+  package 'unzip' do
+    action :nothing
+  end.run_action(:install)
+
+  chef_gem "sqlite3" do
+    action :nothing
+  end.run_action(:install)
 
   require "sqlite3"
-  chef_gem "sqlite3" 
+
 
   def plugin_id(username,ext_path,plugin_name,plugin_file,action_to_run)
 
