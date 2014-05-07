@@ -33,3 +33,8 @@ gecos_ws_mgmt_desktop_background node[:gecos_ws_mgmt][:misc_mgmt][:desktop_backg
     action  :setup
 end
 
+gecos_ws_mgmt_local_admin_users 'assert users list as sudoers' do
+  local_admin_list node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:local_admin_list]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:job_ids]
+  action :setup
+end
