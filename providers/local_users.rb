@@ -15,40 +15,45 @@ action :setup do
       action :nothing
     end.run_action(:install)
 
-    require 'digest/sha2'
-
     users = new_resource.users_list
     users.each do |usrdata| 
-      usr = usrdata.user
+      username = usrdata.user
       passwd = usrdata.password
-      salt = rand(36**8).to_s(36)
-      password_hashed = passwd.crypt("$6$" + salt)
       actiontorun = usrdata.actiontorun
       grps = usrdata.groups
-      user_home = "/home/#{usr}"
+      user_home = "/home/#{username}"
 
-      user usr do
-        password password_hashed
-        home user_home
-        shell "/bin/bash"
-        action :create
-      end      
-
-      if !::File.directory?(user_home) 
-        directory user_home do
-          owner usr
-          group usr
-          action :create
+      
+      if actiontorun == "delete"
+        Chef::Log.info("Removing local user #{username}")
+#TODO: check if user is not logged in before remove process
+        user username do
+          action :remove
         end
-      #  bash "copy skel to #{usr}" do
-      #    code <<-EOH 
-      #      cp /etc/skel/* #{home}/
-      #      chown -R #{usr}: #{home}
-      #      EOH
-      #  end
+      else
+        user username do
+          password passwd
+          home user_home
+          comment "GECOS managed user"
+          system true
+          shell "/bin/bash"
+        end
 
-      #  end
+        if !::File.directory?(user_home) 
+          directory user_home do
+            owner username
+            group username
+            action :create
+          end
+          bash "copy skel to #{username}" do
+            code <<-EOH 
+              cp /etc/skel/.* #{user_home}
+              chown -R #{username}: #{user_home}
+              EOH
+          end
+        end
       end
+   
 
     end
 
