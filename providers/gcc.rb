@@ -55,7 +55,7 @@ action :setup do
     else
       if not new_resource.uri_gcc.nil? and not new_resource.gcc_nodename.nil? and not new_resource.gcc_username.nil? and not new_resource.gcc_pwd_user.nil? and not new_resource.gcc_selected_ou.nil?
         Chef::Log.info("GCC: Desenlazando cliente de GECOS Control Center")
-        response = RestClient.post new_resource.uri_gcc + '/delete/computer/', {'node_id' => new_resource.gcc_nodename,'ou_name'=>new_resource.gcc_selected_ou}.to_json, :user => new_resource.gcc_username, :password => new_resource.gcc_pwd_user, :content_type => :json, :accept => :json
+        response = RestClient.delete new_resource.uri_gcc + '/register/computer/', {'node_id' => new_resource.gcc_nodename,'ou_name'=>new_resource.gcc_selected_ou}.to_json, :user => new_resource.gcc_username, :password => new_resource.gcc_pwd_user, :content_type => :json, :accept => :json
         if not response.code.between?(200,299)
           raise 'The GCC URI not response' 
         end
