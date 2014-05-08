@@ -33,3 +33,8 @@ gecos_ws_mgmt_desktop_background node[:gecos_ws_mgmt][:misc_mgmt][:desktop_backg
     action  :setup
 end
 
+gecos_ws_mgmt_local_groups 'add users to system local groups' do
+  groups_list node[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:groups_list]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:job_ids]
+  action :setup
+end
