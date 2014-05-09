@@ -10,6 +10,7 @@
 #
 action :setup do
   begin
+    require 'etc'
 
     package "libshadow-ruby1.8" do
       action :nothing
@@ -26,18 +27,20 @@ action :setup do
       
       if actiontorun == "delete"
         Chef::Log.info("Removing local user #{username}")
-#TODO: check if user is not logged in before remove process
+#TODO1 : check if user is not logged before removing process
         user username do
           action :remove
         end
       else
+        Chef::Log.info("Managing local user #{username}")
         user username do
           password passwd
           home user_home
           comment "GECOS managed user"
           system true
           shell "/bin/bash"
-        end
+          action :nothing
+        end.run_action(:create)
 
         if !::File.directory?(user_home) 
           directory user_home do
@@ -52,11 +55,21 @@ action :setup do
               EOH
           end
         end
+
+        grps.each do |g|
+          begin
+            info = Etc.getgrnam(g)
+            group "#{g}" do
+              append true
+              members username
+              action :modify
+            end
+          rescue ArgumentError => e
+            Chef::Log.info("Group #{g} does not exist, ignoring..")
+          end
+        end
       end
-   
-
     end
-
 
     # TODO:
     # save current job ids (new_resource.job_ids) as "ok"
