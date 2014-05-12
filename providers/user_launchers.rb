@@ -19,9 +19,12 @@ action :setup do
       homedir = `eval echo ~#{user.username}`.gsub("\n","")
       desktop_path = "#{homedir}/Escritorio/"
 
+      gid = Etc.getpwnam(username).gid
       user.launchers.each do |desktopfile|
-        if FileTest.exist? applications_path + desktopfile and not desktopfile.empty? 
+        if FileTest.exist? applications_path + desktopfile and not desktopfile.empty?
           FileUtils.cp "#{applications_path}#{desktopfile}",  desktop_path
+          FileUtils.chown(username, gid, desktop_path + desktopfile)
+          FileUtils.chmod 0755, desktop_path + desktopfile
         end
       end
 
