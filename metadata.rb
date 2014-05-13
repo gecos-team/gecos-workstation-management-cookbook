@@ -15,6 +15,7 @@ end
 # more complete input definition via json-schemas:
 
 sssd_js = {
+  title: "Authenticate System",
   type: "object",
   required: ["domain_list", "workgroup"],
   properties: {
@@ -54,6 +55,7 @@ sssd_js = {
 }
 
 user_mount_js = {
+  title: "User mount extern units",
   type: "object",
   required: ["users"],
   properties: {
@@ -87,6 +89,7 @@ user_mount_js = {
 }
 
 screensaver_js = {
+  title: "Screensaver",
   type: "object",
   required: ["users"],
   properties: {
@@ -133,6 +136,7 @@ screensaver_js = {
 }
 
 folder_sharing_js = {
+  title: "Sharing permissions",
   type: "object",
   required: ["users"],
   properties: {
@@ -166,6 +170,7 @@ folder_sharing_js = {
 }
 
 desktop_control_js = {
+  title: "Desktop Control",
   type: "object",
   required: ["users"],
   properties: {
@@ -207,6 +212,7 @@ desktop_control_js = {
 
 
 desktop_menu_js = {
+  title: "Desktop Menu",
   type: "object",
   required: ["users"],
   properties: {
@@ -247,6 +253,7 @@ desktop_menu_js = {
 }
 
 user_launchers_js = {
+  title: "User Launchers",
   type: "object",
   required: ["users"],
   properties: {
@@ -287,6 +294,7 @@ user_launchers_js = {
 }
 
 desktop_background_js = {
+  title: "Desktop Background",
   type: "object",
   required: ["desktop_file"],
   properties: {
@@ -341,6 +349,7 @@ desktop_background_js = {
 #
 
 file_browser_js = {
+  title: "File Browser",
   type: "object",
   required: ["users"],
   properties:{
@@ -382,6 +391,7 @@ file_browser_js = {
 
 
 web_browser_js = {
+  title: "Web Browser",
   type: "object",
   required: ["users"],
   properties: {
@@ -467,6 +477,7 @@ web_browser_js = {
 }
 
 user_shared_folders_js = {
+  title: "Shared Folders",
   type: "object",
   required: ["users"],
   properties: {
@@ -512,6 +523,7 @@ user_shared_folders_js = {
 }
 
 app_config_js = {
+  title: "Applications Config"
   type: "object",
   required: ["adobe_config", "java_config", "firefox_config", "thunderbird_config"],
   properties: {
@@ -536,6 +548,7 @@ app_config_js = {
 }
 
 auto_updates_js = {
+  title: "Automatic Updates",
   type: "object",
   required: ["auto_updates_rules"],
   properties: {
@@ -597,6 +610,7 @@ auto_updates_js = {
 
 
 user_apps_autostart_js = {
+  title: "Autostart applications",
   type: "object",
   required: ["users"],
   properties: {
@@ -635,6 +649,7 @@ user_apps_autostart_js = {
 }
 
 tz_date_js = {
+  title: "Date/Time Manager",
   type: "object",
   required: ["server"],
   properties: {
@@ -658,6 +673,7 @@ tz_date_js = {
 }
 
 scripts_launch_js = {
+  title: "Scripts Launcher",
   type: "object",
   required: ["on_startup","on_shutdown"],
   properties:
@@ -671,7 +687,7 @@ scripts_launch_js = {
         type: "string",
         }
     },
-   on_shutdown: {
+    on_shutdown: {
       type: "array",
       title: "Script list to run on shutdown",
       minItems: 0,
@@ -697,6 +713,7 @@ scripts_launch_js = {
 }
 
 network_resource_js = {
+  title: "Network Manager",
   type: "object",
   required: ["network_type", "dns_servers"],
   properties:
@@ -764,6 +781,7 @@ network_resource_js = {
 }
 
 software_sources_js = {
+  title: "Software Soruces",
   type: "object",
   required: ["repo_list"],
   properties:
@@ -800,6 +818,7 @@ software_sources_js = {
 }
 
 package_js = {
+  title: "Packages",
   type: "object",
   properties:
   {package_list: {
@@ -833,6 +852,7 @@ package_js = {
 }
 
 printers_js = {
+  title: "Printers",
   type: "object",
   required: ["printers_list"],
   properties:
@@ -869,6 +889,7 @@ printers_js = {
 }
 
 local_users_js = {
+  title: "Local users",
   type: "object",
   required: ["users_list"],
   properties:
@@ -902,6 +923,7 @@ local_users_js = {
 }
 
 local_groups_js = {
+  title: "Grupos locales",
   type: "object",
   required: ["groups_list"],
   properties:
@@ -933,6 +955,7 @@ local_groups_js = {
 }
 
 local_file_js = {
+  title: "Local files",
   type: "object",
   required: ["delete_files", "copy_files"],
   properties:
@@ -981,6 +1004,7 @@ local_file_js = {
 }
 
 local_admin_users_js = {
+  title: "Local Admin Users",
   type: "object",
   required: ["local_admin_list"],
   properties:
@@ -1005,6 +1029,7 @@ local_admin_users_js = {
 }
 
 folder_sync_js = {
+  title: "Folder to sync",
   type: "object",
   required: ["folder_sync"],
   properties:
@@ -1041,6 +1066,7 @@ folder_sync_js = {
 }
 
 shutdown_options_js = {
+  title: "Shutdown Options",
   type: "object",
   required: ["users"],
   properties:
