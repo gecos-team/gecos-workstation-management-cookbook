@@ -625,7 +625,7 @@ user_apps_autostart_js = {
         properties: {
           username: {type: "string", title: "Username"},
           desktops: {
-            title: "Desktops"
+            title: "Desktops",
             type: "array",
             minItems: 0,
             uniqueItems: true,
