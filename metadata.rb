@@ -440,7 +440,7 @@ web_browser_js = {
               required: ["key", "value"],
               properties: {
                 key: {type: "string"},
-                value: {type: "any"}
+                value: {type: "string"}
               }
             }
           },
@@ -523,7 +523,7 @@ user_shared_folders_js = {
 }
 
 app_config_js = {
-  title: "Applications Config"
+  title: "Applications Config",
   type: "object",
   required: ["adobe_config", "java_config", "firefox_config", "thunderbird_config"],
   properties: {
