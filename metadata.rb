@@ -19,16 +19,16 @@ sssd_js = {
   type: "object",
   required: ["domain_list", "workgroup"],
   properties: {
-    krb_url: { type: "string" },
-    smb_url: { type: "string" },
-    sssd_url: { type: "string" },
+    krb_url: { type: "string" , title: "Url Kerberos file configuration"},
+    smb_url: { type: "string" , title: "Url Samba file configuration" },
+    sssd_url: { type: "string" , title: "Url SSSD file configuration" },
     domain_list: {
       type:"array",
       items: {
         type:"object",
         required: ["domain_name"],
         properties: {
-          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\\d+\\.)[a-zA-Z0-9_\\-]{1,63}\\.?)+(?:[a-zA-Z]{2,})$)", type: "string"}
+          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\\d+\\.)[a-zA-Z0-9_\\-]{1,63}\\.?)+(?:[a-zA-Z]{2,})$)", type: "string", title: "Domain name"}
         }
       }
     },
