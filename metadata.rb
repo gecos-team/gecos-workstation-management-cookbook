@@ -615,6 +615,7 @@ user_apps_autostart_js = {
   required: ["users"],
   properties: {
     users: {
+      title: "Users",
       type: "array",
       minItems: 0,
       uniqueItems: true,
@@ -622,8 +623,9 @@ user_apps_autostart_js = {
         type: "object",
         required: ["username", "desktops"],
         properties: {
-          username: {type: "string"},
+          username: {type: "string", title: "Username"},
           desktops: {
+            title: "Desktops"
             type: "array",
             minItems: 0,
             uniqueItems: true,
