@@ -678,7 +678,7 @@ network_resource_js = {
     dns_servers: {
       type: "array",
       title: "DNS Servers",
-      minItems: 1,
+      minItems: 0,
       uniqueItems: true,
       items: {
         type: "string"
