@@ -16,12 +16,6 @@ gecos_ws_mgmt_local_file 'manage local files' do
   action :setup
 end
 
-gecos_ws_mgmt_local_users 'manage local users' do
-  users_list node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list]
-  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:job_ids]
-  action :setup
-end
-
 gecos_ws_mgmt_scripts_launch 'launch commands on startup/shutdown' do
   on_startup node[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_startup]
   on_shutdown node[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_shutdown]
@@ -37,6 +31,12 @@ end
 
 gecos_ws_mgmt_desktop_background node[:gecos_ws_mgmt][:misc_mgmt][:desktop_background_res][:desktop_file] do
     action  :setup
+end
+
+gecos_ws_mgmt_local_groups 'add users to system local groups' do
+  groups_list node[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:groups_list]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:job_ids]
+  action :setup
 end
 
 gecos_ws_mgmt_local_admin_users 'assert users list as sudoers' do
