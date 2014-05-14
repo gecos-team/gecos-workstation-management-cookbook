@@ -461,7 +461,7 @@ web_browser_js = {
               required: ["key", "value"],
               properties: {
                 key: {type: "string", title: "Key"},
-                value: {type: "string", title: "Value"}
+                value: {type: ["string","boolean","number"], title: "Value"}
               }
             }
           },
