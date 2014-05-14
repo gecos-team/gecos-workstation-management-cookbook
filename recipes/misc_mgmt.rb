@@ -38,3 +38,9 @@ gecos_ws_mgmt_local_groups 'add users to system local groups' do
   job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_groups_res][:job_ids]
   action :setup
 end
+
+gecos_ws_mgmt_local_admin_users 'assert users list as sudoers' do
+  local_admin_list node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:local_admin_list]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:job_ids]
+  action :setup
+end
