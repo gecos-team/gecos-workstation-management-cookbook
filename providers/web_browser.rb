@@ -120,7 +120,7 @@ action :setup do
      
           plugins.each do |plugin|
             
-            plugin_name = "#{plugin.title.gsub(" ","_")}.xpi"
+            plugin_name = "#{plugin.name.gsub(" ","_")}.xpi"
             plugin_file = "#{xdir}/#{plugin_name}"
             plugin_dir_temp = "#{plugin_file}_temp"
     
@@ -159,7 +159,7 @@ action :setup do
           end
  
           bookmarks.each  do |bkm|
-            unless bkm.title.empty? 
+            unless bkm.name.empty? 
               date_now = Time.now.to_i*1000000
               url = db.get_first_value("SELECT url FROM moz_places WHERE url LIKE \'#{bkm.uri}\'")
               if !url.nil?
@@ -179,10 +179,10 @@ action :setup do
                 last_pos_folder = db.get_first_value("SELECT MAX(position) FROM moz_bookmarks WHERE id=#{id_folder_bookmarks}")
               end
 
-              db.execute("INSERT INTO moz_places (url,title,rev_host,visit_count,hidden,typed,last_visit_date) VALUES  (\'#{bkm.uri}\',\'#{bkm.title}\',\'#{bkm.uri.reverse}.\',1,0,1,#{date_now})")
+              db.execute("INSERT INTO moz_places (url,title,rev_host,visit_count,hidden,typed,last_visit_date) VALUES  (\'#{bkm.uri}\',\'#{bkm.name}\',\'#{bkm.uri.reverse}.\',1,0,1,#{date_now})")
                foreign_key = db.get_first_value("SELECT last_insert_rowid()")
  
-              db.execute("INSERT INTO moz_bookmarks (type,fk,parent,position,title,dateAdded,lastModified) VALUES (1,#{foreign_key},#{id_folder_bookmarks},#{last_pos_folder+1},\'#{bkm.title}\',#{date_now},#{date_now})") 
+              db.execute("INSERT INTO moz_bookmarks (type,fk,parent,position,title,dateAdded,lastModified) VALUES (1,#{foreign_key},#{id_folder_bookmarks},#{last_pos_folder+1},\'#{bkm.name}\',#{date_now},#{date_now})") 
 
             end
 
