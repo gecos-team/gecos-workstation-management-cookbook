@@ -26,12 +26,17 @@ action :setup do
     action :nothing
   end.run_action(:install)
 
-  chef_gem "sqlite3" do
-    action :nothing
-  end.run_action(:install)
+  gem_depends = [ 'sqlite3' ]
+  gem_depends.each do |gem|
+    r = gem_package gem do
+      gem_binary("/opt/chef/embedded/bin/gem")
+      action :nothing
+     end
+     r.run_action(:install)
+  end
+  Gem.clear_paths
 
   require "sqlite3"
-
 
   def plugin_id(username,ext_path,plugin_name,plugin_file,action_to_run)
 
