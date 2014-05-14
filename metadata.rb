@@ -518,10 +518,10 @@ auto_updates_js = {
     auto_updates_rules: {
       type: "object",
       title: "Auto Updates Rules",
-      required: ["logout_update", "start_update", "days"],
+      required: ["onstop_update", "onstart_update", "days"],
       properties: {
-        logout_update: {title: "Logout Update?", type: "boolean"},
-        start_update: {title: "Start Update?", type: "boolean"},
+        onstop_update: {title: " On stop Update?", type: "boolean"},
+        onstart_update: {title: "On start Update?", type: "boolean"},
         days: {
           type: "array",
           title: "Days",
@@ -541,11 +541,12 @@ auto_updates_js = {
                 type: "integer",
                 maximum: 12
               },
-              period: {
-                title: "Period",
-                type: "string",
-                enum: ["am","pm"]
+              minute: {
+                title: "Minute",
+                type: "integer",
+                maximum: 12
               }
+
             }
           }
         },
@@ -556,7 +557,8 @@ auto_updates_js = {
           properties: {
             day: {title: "Day", type: "integer", maximum: 31},
             month: {title: "Month", type: "integer", maximum: 12},
-            year: {title: "Year", type: "integer"}
+            hour: {title: "Hour", type: "integer", maximum: 12},
+            minute: {title: "Minute", type: "integer", maximum: 12}
           }
         }
       }
