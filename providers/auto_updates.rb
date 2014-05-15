@@ -22,7 +22,6 @@ action :setup do
       days = new_resource.days
     end
 
-    Chef::Log.info("Setting automatic updates")
     log_file = '/var/log/automatic-updates.log'
     err_file = '/var/log/automatic-updates.err'
   
@@ -31,6 +30,7 @@ action :setup do
     if onstop_update; arrboot << "6"; end
 
     if onstart_update or onstop_update or !days.empty? or !date.empty?
+      Chef::Log.info("Setting automatic updates")
       template "/etc/init.d/auto_updates" do
         source "auto_updates.erb"
         mode "0755"
