@@ -16,9 +16,9 @@ action :setup do
     days = []
     date = {}
     if not new_resource.date.nil?
-      date = new_resource.days
+      date = new_resource.date
     if not new_resource.days.nil?
-      days = new_resource.days.nil?
+      days = new_resource.days
 
       Chef::Log.info("Setting automatic updates")
       log_file = '/var/log/automatic-updates.log'
