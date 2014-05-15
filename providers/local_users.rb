@@ -74,13 +74,13 @@ action :setup do
     
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['jobs_status'][jid]['status'] = 0
+      node.set['job_status'][jid]['status'] = 0
     end
   rescue Exception => e
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['jobs_status'][jid]['status'] = 1
-      node.set['jobs_status'][jid]['message'] = e.message
+      node.set['job_status'][jid]['status'] = 1
+      node.set['job_status'][jid]['message'] = e.message
     end
   end
 end
