@@ -45,7 +45,7 @@ sssd_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "integer"
+        type: "string"
       }
     }
   }
@@ -75,7 +75,7 @@ user_mount_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "integer"
+        type: "string"
       }
     }
   }
@@ -123,7 +123,7 @@ screensaver_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "integer"
+        type: "string"
       }
     }
   }
@@ -153,7 +153,7 @@ folder_sharing_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -191,7 +191,7 @@ desktop_control_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -230,7 +230,7 @@ desktop_menu_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -268,7 +268,7 @@ user_launchers_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -286,7 +286,7 @@ desktop_background_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
   }
 }
@@ -351,7 +351,7 @@ file_browser_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -442,7 +442,7 @@ web_browser_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -484,7 +484,7 @@ user_shared_folders_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -504,7 +504,7 @@ app_config_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -568,7 +568,7 @@ auto_updates_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -605,7 +605,7 @@ user_apps_autostart_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -625,7 +625,7 @@ tz_date_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "integer"
+          type: "string"
         }
     }
   }
@@ -660,7 +660,7 @@ scripts_launch_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "integer"
+        type: "string"
       }
     }
   }
@@ -723,7 +723,7 @@ network_resource_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "integer"
+        type: "string"
       }
     }
   }
@@ -755,7 +755,7 @@ software_sources_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
@@ -784,7 +784,7 @@ package_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
@@ -816,7 +816,7 @@ printers_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "integer"
+        type: "string"
       }
     }
   }
@@ -846,7 +846,7 @@ local_users_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
@@ -874,7 +874,7 @@ local_groups_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
@@ -918,7 +918,7 @@ local_file_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
@@ -939,7 +939,7 @@ local_admin_users_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
@@ -973,7 +973,7 @@ folder_sync_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
@@ -1001,7 +1001,7 @@ shutdown_options_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "integer"
+      type: "string"
     }
    }
  }
