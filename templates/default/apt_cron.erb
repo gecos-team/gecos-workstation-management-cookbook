@@ -8,7 +8,7 @@
     <% @days_map.each do |k,v| %>
       <% ks = k.to_s %> 
       <% if ks == dc.day %>
-<%= dc.minute %> <%= dc.hour %> * * <%= v %> /etc/init.d/auto_updates
+<%= dc.minute %> <%= dc.hour %> * * <%= v %> /etc/init.d/auto_updates start
       <% end %>
     <% end%>
   <% end %>

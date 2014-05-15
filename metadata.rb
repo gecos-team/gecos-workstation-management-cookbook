@@ -529,7 +529,7 @@ auto_updates_js = {
           uniqueItems: true,
           items: {
             type: "object",
-            required: ["day", "hour", "period"],
+            required: ["day", "hour", "minute"],
             properties: {
               day: {
                 title: "Day",
@@ -553,7 +553,7 @@ auto_updates_js = {
         date: {
           title: "Date",
           type: "object",
-          required: ["day", "month", "year"],
+          required: ["day", "month", "hour", "minute"],
           properties: {
             day: {title: "Day", type: "integer", maximum: 31},
             month: {title: "Month", type: "integer", maximum: 12},
