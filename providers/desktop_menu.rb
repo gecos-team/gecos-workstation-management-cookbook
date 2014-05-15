@@ -94,48 +94,65 @@ def user_xdg_menu_preferences(to_include, to_exclude, xdg_menu)
 end
 
 action :setup do
-begin
-
-  users = new_resource.users 
+  begin
+    users = new_resource.users 
 
     # TODO: Check if this is enough or if it would need some intelligence to get this path
     xdg_menu_name = "cinnamon-applications.menu"
 
     # It builds the complete user menu as a ruby hash (ruby-xdg menu)
-    xdg_menu = Menu.new XDG::CONST::XDG["XDG CONFIG DIRS"] + "/menus/" + xdg_menu_name
+    xdg_menu = Menu.new XDG::CONST::XDG["XDG CONFIG DIRS"][0] + "/menus/" + xdg_menu_name
     xdg_menu.build
 
     users.each do |user|
-      username = user.username
+      username = user.username     
       desktop_files_include = user.desktop_files_include
-      desktop_files_excludeinclude = user.desktop_files_exclude
+      desktop_files_exclude = user.desktop_files_exclude
+      homedir = Etc.getpwnam(username).dir
 
       # Loads the desktop menu xml file
-      preferences_menu_xml = user_xdg_menu_preferences(to_include, to_exclude, xdg_menu)
+      preferences_menu_xml = user_xdg_menu_preferences(desktop_files_include, desktop_files_exclude, xdg_menu)
 
       # If there are some preferences, save them in the proper user config file
       if !preferences_menu_xml.empty?
         gid = Etc.getpwnam(username).gid
-        file "#{XDG::CONST::XDG["XDG CONFIG HOME"]}/menus/#{xdg_menu_name}" do
+
+        # Create directory if it doesn't exists
+        directory "#{homedir}/.config/menus" do
+          owner username
+          group gid
+          recursive true
+        end.run_action(:create)
+
+        file "#{homedir}/.config/menus/#{xdg_menu_name}" do
           owner username
           group gid
           mode 0644
           content preferences_menu_xml
-          action :create
-        end
-      else # If there isn't any preferences, remove the file
-        file "#{XDG::CONST::XDG["XDG CONFIG HOME"]}/menus/#{xdg_menu_name}" do
-          action :delete
-        end
-      end
-  end
-  # TODO:
-  # save current job ids (new_resource.job_ids) as "ok"
+          action :nothing
+        end.run_action(:create)
 
-  rescue
-    # TODO:
+      else # If there isn't any preferences, remove the file
+        file "#{homedir}/.config/menus/#{xdg_menu_name}" do
+          action :nothing
+        end.run_action(:delete)
+      end
+    end
+
+    # save current job ids (new_resource.job_ids) as "ok"
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 0
+    end
+
+  rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
-    raise
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 1
+      node.set['job_status'][jid]['message'] = e.message
+    end
+    Chef::Log.info(node['job_status'])
   end
 end
