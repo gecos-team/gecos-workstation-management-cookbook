@@ -13,8 +13,8 @@ action :setup do
   begin
     onstart_update = new_resource.onstart_update
     onstop_update = new_resource.onstop_update
-    days = new_resource.days
-    date = new_resource.date
+    days = [] if new_resource.days.nil?
+    date = {} if new_resource.date.nil?
 
       Chef::Log.info("Setting automatic updates")
       log_file = '/var/log/automatic-updates.log'
