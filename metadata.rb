@@ -799,13 +799,12 @@ printers_js = {
       title: "Printer list to enable",
       items: {
         type:"object",
-        required: [ "name", "manufacturer", "model", "ppd", "ppd_uri" ],
+        required: [ "name", "manufacturer", "model", "ppd_uri" ],
         properties:{
           name: { type: "string", title: "Name" },
           manufacturer: { type: "string", title: "Manufacturer" },
           model: { type: "string" , title: "Model"},
           uri: { type: "string", title: "Uri" },
-          ppd: { type: "string", title: "PPD", default: ""},
           ppd_uri: { type: "string", title: "Uri PPD", default: ""},
         }
       }
