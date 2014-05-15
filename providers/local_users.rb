@@ -82,7 +82,6 @@ action :setup do
       node.set['jobs_status'][jid]['status'] = 1
       node.set['jobs_status'][jid]['message'] = e.message
     end
-    raise e
   end
 end
 
