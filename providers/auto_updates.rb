@@ -59,8 +59,8 @@ action :setup do
     if onstop_update 
       bash "enable on stop auto_update script" do
         code <<-EOH
-      update-rc.d auto_updates start 60 6 .
-      EOH
+          update-rc.d auto_updates start 60 6 .
+          EOH
       end
     else
       link "/etc/rc6.d/S60auto_updates" do
