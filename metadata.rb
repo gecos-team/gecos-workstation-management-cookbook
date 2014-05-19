@@ -985,14 +985,18 @@ shutdown_options_js = {
   required: ["users"],
   properties:
   {users: {
-    type: "array",
+    type: "array", 
     title: "Users",
     items: {
       type: "object",
-      required: ["username","options"],
+      required: ["username", "disable_log_out"],
       properties:{
         username: {title: "Username", type: "string"},
-        options: {type: "array",items:{enum: ["shutdown","restart","close_session"],title: "Options", type:"string"}}
+        disable_log_out: {
+          title: "Disable log out?",
+          type: "boolean",
+          default: false
+        }
       }
     }
   },

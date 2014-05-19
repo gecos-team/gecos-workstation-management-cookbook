@@ -107,4 +107,3 @@ default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:job_ids] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users] = []
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:job_ids] = []
-
