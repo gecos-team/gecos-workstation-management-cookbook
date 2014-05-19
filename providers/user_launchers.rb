@@ -34,7 +34,7 @@ action :setup do
       node.set['job_status'][jid]['status'] = 0
     end   
 
-  rescue
+  rescue Exception => e
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
