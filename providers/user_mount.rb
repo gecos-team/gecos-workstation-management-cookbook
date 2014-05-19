@@ -20,7 +20,8 @@ action :setup do
       owner "root"
       group "root"
       mode "0644"
-    end
+      action :nothing
+    end.run_action(:create)
 
     granted_users = Array.new
 
@@ -35,14 +36,15 @@ action :setup do
     end
 
     desktop_pkla = "/var/lib/polkit-1/localauthority/10-vendor.d/com.ubuntu.desktop.pkla"
-    
+
     template desktop_pkla do
       source "com.ubuntu.desktop.pkla.erb"
       owner "root"
       group "root"
       mode "0644"
       variables :user_mount => users
-    end
+      action :nothing
+    end.run_action(:create)
 
 
     job_ids = new_resource.job_ids
