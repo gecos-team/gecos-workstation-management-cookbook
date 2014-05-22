@@ -336,13 +336,14 @@ file_browser_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["username", "auto_mount", "explore_net", "show_options_mount", "burn_disc"],
+        required: ["username", "default_folder_viewer", "show_hidden_files", "show_search_icon_toolbar", "click_policy", "confirm_trash"],
         properties: {
-          user: {type: "string", title: "User"},
-          auto_mount: {type: "boolean", title: "Auto Mount?"},
-          explore_net: {type: "boolean", title: "Explore Net?"},
-          show_options_mount: {type: "boolean", title: "Show Options Mount?"},
-          burn_disc: {type: "boolean", title: "Burn Disc?"}
+          username: {type: "string", title: "User"},
+          default_folder_viewer: {type: "string", title: "Folder viewer", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
+          show_hidden_files: {type: "string", title: "Show hidden files?", enum: ["true","false"], default: "false"},
+          show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", enum: ["true", "false"], default: "true"},
+          confirm_trash: {type: "string", title: "Confirm trash?", enum: ["true","false"], default: "true"},
+          click_policy: {type: "string", title: "Click policy", enum: ["single", "double"], default: "double"}
         }
       }
     },
