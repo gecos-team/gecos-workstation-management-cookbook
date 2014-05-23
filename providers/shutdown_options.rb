@@ -10,36 +10,32 @@
 #
 
 def dconf_lockdown (username, schema, key, value)
-  p = package "dconf-tools" do
+  package "dconf-tools" do
     action :nothing
-  end
-  p.run_action(:install) 
+  end.run_action(:install) 
 
   if !key.nil? and !key.empty?
     ["/etc/dconf/profile", "/etc/dconf/db/#{username}.d/locks"].each do |dir|
       directory dir do
         recursive true
-        action :create
-      end
-    end
+      end.run_action(:create)
+  end
 
     file "/etc/dconf/profile/#{username}" do
       backup false
       content <<-eof
-system-db:#{username}
-user-db:user
+user-db:#{username}
+system-db:local
       eof
-      action :create
-    end
+    end.run_action(:create)
 
-    key_path = '/' + File.join(schema.gsub('.','/'), key)
+    key_path = '/' + schema.gsub('.','/') + '/' + key
     file "/etc/dconf/db/#{username}.d/locks/#{key}.lock" do
       backup false
       content <<-eof
 #{key_path}
       eof
-      action :create
-    end
+    end.run_action(:create)
 
     file "/etc/dconf/db/#{username}.d/#{key}.key" do
       backup false
@@ -47,9 +43,8 @@ user-db:user
 [#{schema}]
 #{key}='#{value}'
       eof
-      action :create
       notifies :run, "execute[update-dconf]", :delayed
-    end
+    end.run_action(:create)
 
     execute "update-dconf" do
       command "dconf update"
@@ -72,8 +67,7 @@ action :setup do
         type "boolean"
         username username
         value "#{disable_log_out}"
-        action :set
-      end
+      end.run_action(:set)
 
       dconf_lockdown(username, "org.cinnamon.desktop.lockdown", "disable-log-out", disable_log_out)
     end
@@ -92,6 +86,5 @@ action :setup do
       node.set['job_status'][jid]['status'] = 1
       node.set['job_status'][jid]['message'] = e.message
     end
-    Chef::Log.info(node['job_status'])
   end
 end
