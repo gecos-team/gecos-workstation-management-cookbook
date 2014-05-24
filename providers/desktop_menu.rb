@@ -153,6 +153,5 @@ action :setup do
       node.set['job_status'][jid]['status'] = 1
       node.set['job_status'][jid]['message'] = e.message
     end
-    Chef::Log.info(node['job_status'])
   end
 end

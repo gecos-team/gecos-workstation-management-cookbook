@@ -85,15 +85,20 @@ action :setup do
       end
     end
 
-    #@chefapi = ChefApi::API.new({server:'https://192.168.13.224', client_name: 'test', key_file: '/etc/chef/validation.pem'})
-    #puts @chefapi.get_request('/nodes')      
-    # TODO:
     # save current job ids (new_resource.job_ids) as "ok"
-  rescue
-  # TODO:
-  # just save current job ids as "failed"
-  # save_failed_job_ids
-    raise
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 0
+    end
+
+  rescue Exception => e
+    # just save current job ids as "failed"
+    # save_failed_job_ids
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 1
+      node.set['job_status'][jid]['message'] = e.message
+    end
   end
 end
 
