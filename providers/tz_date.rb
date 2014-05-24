@@ -20,8 +20,8 @@ action :setup do
     unless ntp_server.nil?
       execute "ntpdate" do
         command "ntpdate-debian -u #{ntp_server}"
-        action :run
-      end
+        action :nothing
+      end.run_action(:run)
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

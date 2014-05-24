@@ -18,10 +18,10 @@ action :setup do
   		uids = item.users
 
   		group "#{gid}" do
-  		  action :modify
   		  members uids
   		  append true
-  		end
+  		  action :nothing
+      end.run_action(:modify)
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

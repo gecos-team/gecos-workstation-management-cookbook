@@ -25,8 +25,8 @@ action :setup do
         file gtkbookmark_file do
           owner user.username
           group user.username
-          action :create
-        end
+          action :nothing
+        end.run_action(:create)
       end
 
       user.gtkbookmarks.each do |bookmark|

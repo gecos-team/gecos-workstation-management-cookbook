@@ -20,8 +20,8 @@ action :setup do
     if new_resource.pkgs_to_remove.any?
       Chef::Log.info("Desinstalando paquetes no asignados al nodo")
       package new_resource.pkgs_to_remove.join(" ") do
-        action :purge
-      end
+        action :nothing
+      end.run_action(:purge)
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

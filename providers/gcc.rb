@@ -23,14 +23,12 @@ action :setup do
     gem_depends = [ 'rest_client' ]
 
     gem_depends.each do |gem|
-
-      r = gem_package gem do
+      gem_package gem do
         gem_binary("/opt/chef/embedded/bin/gem")
         action :nothing
-      end
-      r.run_action(:install)
-
+      end.run_action(:install)
     end
+
     Gem.clear_paths
     require 'rest_client'
     if new_resource.gcc_link
@@ -80,8 +78,8 @@ action :setup do
           Chef::Log.error(e.message)
         end
         file "/etc/gcc.control" do
-          action :delete
-        end
+          action :nothing
+        end.run_action(:delete)
       end
     end
 

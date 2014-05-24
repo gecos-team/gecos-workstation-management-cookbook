@@ -21,8 +21,8 @@ action :setup do
         mode "0755"
         owner "root" 
         variables({ :startup => on_startup})
-        action :create
-      end
+        action :nothing
+      end.run_action(:create)
 
       bash "enable on start scripts" do
         code <<-EOH
@@ -35,8 +35,8 @@ action :setup do
       end.run_action(:delete)
 
       link "/etc/rc2.d/S60scripts-onstartup" do
-        action :nothing
         only_if "test -L /etc/rc2.d/S60scripts-onstartup"
+        action :nothing
       end.run_action(:delete)
     end
 
@@ -46,8 +46,8 @@ action :setup do
         mode "0755"
         owner "root" 
         variables({ :shutdown => on_shutdown})
-        action :create
-      end
+        action :nothing
+      end.run_action(:create)
 
       bash "enable on shutdown scripts" do
         code <<-EOH
@@ -60,8 +60,8 @@ action :setup do
       end.run_action(:delete)
 
       link "/etc/rc6.d/S20scripts-onshutdown" do
-        action :nothing
         only_if "test -L /etc/rc6.d/S20scripts-onshutdown"
+        action :nothing
       end.run_action(:delete)
     end
 

@@ -28,11 +28,10 @@ action :setup do
 
     gem_depends = [ 'sqlite3' ]
     gem_depends.each do |gem|
-      r = gem_package gem do
+      gem_package gem do
         gem_binary("/opt/chef/embedded/bin/gem")
         action :nothing
-       end
-       r.run_action(:install)
+      end.run_action(:install)
     end
 
     Gem.clear_paths
@@ -45,8 +44,8 @@ action :setup do
       directory plugin_dir_temp do
         owner username
         group username
-        action :create
-      end
+        action :nothing
+      end.run_action(:create)
 
       bash "extract plugin #{plugin_file}" do
         user username
@@ -110,15 +109,15 @@ action :setup do
           Chef::Log.info("Setting user #{username} web plugins")  
           template node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:firefox_scope_js] do
             source "web_browser_scope.js.erb"
-            action :create
-          end
+            action :nothing
+          end.run_action(:create)
           
           extensions_dirs.each do |xdir|
             directory xdir do
               owner username
               group username
-              action :create
-            end
+              action :nothing
+            end.run_action(:create)
         
             plugins.each do |plugin|
               plugin_name = "#{plugin.name.gsub(" ","_")}.xpi"
@@ -131,8 +130,8 @@ action :setup do
                   source plugin.uri
                   user username
                   group username
-                  action :create
-                end
+                  action :nothing
+                end.run_action(:create)
 
                 plugin_id(username,xdir,plugin_name,plugin_file,plugin.action)
 
@@ -191,8 +190,8 @@ action :setup do
               owner username
               source "web_browser_user.js.erb"
               variables ({:config => user.config})
-              action :create
-            end
+              action :nothing
+            end.run_action(:create)
           end
         end     
 
@@ -204,8 +203,8 @@ action :setup do
 
             remote_file certfile do
               source cert.uri
-              action :create_if_missing
-            end
+              action :nothing
+            end.run_action(:create_if_missing)
 
             bash "Installing #{cert.name} cert to user #{username}" do
               user username

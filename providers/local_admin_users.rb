@@ -14,10 +14,10 @@ action :setup do
     local_admin_list = new_resource.local_admin_list
 
 	group "sudo" do
-	  action :modify
 	  members local_admin_list
 	  append true
-	end
+    action :nothing
+	end.run_action(:modify)
 
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

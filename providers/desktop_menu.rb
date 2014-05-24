@@ -122,6 +122,7 @@ action :setup do
           owner username
           group gid
           recursive true
+          action :nothing
         end.run_action(:create)
 
         file "#{homedir}/.config/menus/#{xdg_menu_name}" do

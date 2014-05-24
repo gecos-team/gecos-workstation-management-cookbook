@@ -29,6 +29,7 @@ action :setup do
           mode "0755"
           owner "root"
           variables({ :log_file => log_file, :err_file => err_file, :arrinit => arrinit, :arrhalt => arrhalt })
+          action :nothing
         end.run_action(:create)
       else
         file "/etc/init.d/auto_updates" do

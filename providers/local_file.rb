@@ -19,13 +19,13 @@ action :setup do
          if ::File.file?(value.file)
            file value.file do
              backup makebackup
-             action :delete
-           end
+             action :nothing
+           end.run_action(:delete)
          elsif ::File.directory?(value.file)
            directory value.file do
              recursive true
-             action :delete
-           end
+             action :nothing
+           end.run_action(:delete)
          end
        end
       end
@@ -48,8 +48,8 @@ action :setup do
               owner file.user
               mode file.mode
               group file.group
-              action :create_if_missing
-           end
+              action :nothing
+           end.run_action(:create_if_missing)
         end
       end
     end
