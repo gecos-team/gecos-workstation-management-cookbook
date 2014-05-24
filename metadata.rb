@@ -210,10 +210,18 @@ desktop_menu_js = {
       uniqueItem: true,
       items: {
         type: "object",
-        required: ["username", "desktop_files"],
+        required: ["username", "desktop_files_include", "desktop_files_exclude"],
         properties: {
-          username: {title: "Username", type: "string"},
-          desktop_files: {
+          username: {type: "string"},
+          desktop_files_include: {
+            type: "array",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "string"
+            }
+          },
+          desktop_files_exclude: {
             type: "array",
             title: "Desktop Files",
             minItems: 0,
