@@ -48,3 +48,21 @@ gecos_ws_mgmt_desktop_menu 'desktop menu' do
   job_ids node[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:job_ids]
   action :setup
 end
+
+gecos_ws_mgmt_file_browser 'file browser' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:job_ids]
+  action :setup
+end
+
+gecos_ws_mgmt_folder_sharing 'folder sharing' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:job_ids]
+  action :setup
+end
+
+gecos_ws_mgmt_user_mount 'user mount' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:job_ids]
+  action :setup
+end

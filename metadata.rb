@@ -33,9 +33,11 @@ sssd_js = {
       }
     },
     workgroup: {
+        title: "Workgroup",
         type: "string"
     },
     enabled: {
+      title: "Enabled",
       type: "boolean", default: false
     },
     job_ids: {
@@ -43,12 +45,7 @@ sssd_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["id"],
-        properties: {
-          id: { type: "string" },
-          status: { type: "string" }
-        }
+        type: "string"
       }
     }
   }
@@ -60,6 +57,7 @@ user_mount_js = {
   required: ["users"],
   properties: {
     users: {
+      title: "Users",
       type: "array",
       minItems: 0,
       uniqueItems: true,
@@ -67,8 +65,8 @@ user_mount_js = {
         type: "object",
         required: ["username","can_mount"],
         properties: {
-          username: {type: "string"},
-          can_mount: {type: "boolean"}
+          username: {type: "string", title: "Username"},
+          can_mount: {type: "boolean", title: "Can Mount?"}
         }
       }
     },
@@ -77,12 +75,7 @@ user_mount_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["id"],
-        properties: {
-          id: { type: "string" },
-          status: { type: "string" }
-        }
+        type: "string"
       }
     }
   }
@@ -94,6 +87,7 @@ screensaver_js = {
   required: ["users"],
   properties: {
     users: {
+      title: "Users",
       type: "array",
       minItems: 0,
       uniqueItems: true,
@@ -102,19 +96,24 @@ screensaver_js = {
         required: ["username", "idle_enabled", "lock_enabled"],
         properties: {
           username: {
-            type: "string"
+            type: "string",
+            title: "Username"
           },
           idle_enabled: {
-            type: "boolean"
+            type: "boolean",
+            title: "Idle Enabled?"
           },
           idle_delay: {
-            type: "string"
+            type: "string",
+            title: "Idle Delay"
           },
           lock_enabled: {
-            type: "boolean"
+            type: "boolean",
+            title: "Lock Enabled?"
           },
           lock_delay: {
-            type: "string"
+            type: "string",
+            title: "Lock Delay"
           }
         }
       }
@@ -124,12 +123,7 @@ screensaver_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["id"],
-        properties: {
-          id: { type: "string" },
-          status: { type: "string" }
-        }
+        type: "string"
       }
     }
   }
@@ -141,6 +135,7 @@ folder_sharing_js = {
   required: ["users"],
   properties: {
     users: {
+      title: "Users",
       type: "array",
       minItem: 0,
       uniqueItem: true,
@@ -148,8 +143,8 @@ folder_sharing_js = {
         type: "object",
         required: ["username", "can_share"],
         properties: {
-          username: {type: "string"},
-          can_share: {type: "boolean"}
+          username: {title: "Username", type: "string"},
+          can_share: {title: "Can Share?", type: "boolean"}
         }
       }
     },
@@ -158,12 +153,7 @@ folder_sharing_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -175,6 +165,7 @@ desktop_control_js = {
   required: ["users"],
   properties: {
     users: {
+      title: "Users",
       type: "array",
       minItem: 0,
       uniqueItem: true,
@@ -182,9 +173,10 @@ desktop_control_js = {
         type: "object",
         required: ["username", "desktop_files"],
         properties: {
-          username: {type: "string"},
+          username: {title: "Username", type: "string"},
           desktop_files: {
             type: "array",
+            title: "Desktop Files",
             minItems: 0,
             uniqueItems: true,
             items: {
@@ -199,12 +191,7 @@ desktop_control_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -217,6 +204,7 @@ desktop_menu_js = {
   required: ["users"],
   properties: {
     users: {
+      title: "Users",
       type: "array",
       minItem: 0,
       uniqueItem: true,
@@ -235,6 +223,7 @@ desktop_menu_js = {
           },
           desktop_files_exclude: {
             type: "array",
+            title: "Desktop Files",
             minItems: 0,
             uniqueItems: true,
             items: {
@@ -249,12 +238,7 @@ desktop_menu_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -266,6 +250,7 @@ user_launchers_js = {
   required: ["users"],
   properties: {
     users: {
+      title: "Users",
       type: "array",
       minItems: 0,
       uniqueItems: true,
@@ -273,9 +258,10 @@ user_launchers_js = {
         type: "object",
         required: ["username", "launchers"],
         properties: {
-          username: {type: "string"},
+          username: {title: "Username", type: "string"},
           launchers: {
             type: "array",
+            title: "Launchers",
             minItems: 0,
             uniqueItems: true,
             items: {
@@ -290,12 +276,7 @@ user_launchers_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -309,17 +290,12 @@ desktop_background_js = {
     desktop_file: {type: "string", title: "Desktop File"}
   },
   job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
-        }
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "string"
+    }
   }
 }
 #desktop_background_js = {
@@ -362,18 +338,20 @@ file_browser_js = {
   required: ["users"],
   properties:{
     users: {
+      title: "Users",
       type: "array",
       minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["username", "auto_mount", "explore_net", "show_options_mount", "burn_disc"],
+        required: ["username", "default_folder_viewer", "show_hidden_files", "show_search_icon_toolbar", "click_policy", "confirm_trash"],
         properties: {
-          user: {type: "string"},
-          auto_mount: {type: "boolean"},
-          explore_net: {type: "boolean"},
-          show_options_mount: {type: "boolean"},
-          burn_disc: {type: "boolean"}
+          username: {type: "string", title: "User"},
+          default_folder_viewer: {type: "string", title: "Folder viewer", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
+          show_hidden_files: {type: "string", title: "Show hidden files?", enum: ["true","false"], default: "false"},
+          show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", enum: ["true", "false"], default: "true"},
+          confirm_trash: {type: "string", title: "Confirm trash?", enum: ["true","false"], default: "true"},
+          click_policy: {type: "string", title: "Click policy", enum: ["single", "double"], default: "double"}
         }
       }
     },
@@ -382,12 +360,7 @@ file_browser_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -405,63 +378,68 @@ web_browser_js = {
   properties: {
     users: {
       type: "array",
+      title: "Users",
       minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
         required: ["username"],
         properties: {
-          username: {type: "string"},
+          username: {title: "Username", type: "string"},
           plugins: {
             type: "array",
+            title: "Plugins", 
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "object",
-              required: ["title", "uri", "action"],
+              required: ["name", "uri", "action"],
               properties: {
-                title: {type: "string"},
-                uri: {type: "string"},
-                action: {type: "string" ,pattern: "(add|remove)"}
+                name: {title: "Name", type: "string"},
+                uri: {title: "Uri", type: "string"},
+                action: {title: "Action", type: "string", enum: ["add", "remove"]}
               }
             }
           },
           bookmarks: {
             type: "array",
+            title: "Bookmarks",
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "object",
-              required: ["title", "uri"],
+              required: ["name", "uri"],
               properties: {
-                title: {type: "string"},
-                uri: {type: "string"}
+                name: {title: "Name", type: "string"},
+                uri: {title: "Uri", type: "string"}
               }
             }
           },
           config: {
             type: "array",
+            title: "Configs",
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "object",
               required: ["key", "value"],
               properties: {
-                key: {type: "string"},
-                value: {type: "string"}
+                key: {type: "string", title: "Key"},
+                value: {type: ["string","boolean","number"], title: "Value"}
               }
             }
           },
           certs: {
             type: "array",
+            title: "Certificates",
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "object",
               required: [ "name", "uri"],
               properties: {
-                name: {type: "string"},
-                uri: {type: "string"}
+                name: {title: "Name", type: "string"},
+                uri: {title: "Uri", type: "string"}
               }
             }
           }
@@ -473,12 +451,7 @@ web_browser_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -497,17 +470,18 @@ user_shared_folders_js = {
         type: "object",
         required: ["username", "gtkbookmarks"],
         properties: {
-          username: {type: "string"},
+          username: {title: "Username", type: "string"},
           gtkbookmarks: {
             type: "array",
+            title: "Bookmarks", 
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "object",
-              required: ["title", "uri"],
+              required: ["name", "uri"],
               properties: {
-                title: {type: "string"},
-                uri: {type: "string"}
+                name: {title: "Name", type: "string"},
+                uri: {title: "Uri", type: "string"}
               }
             }
           }
@@ -519,12 +493,7 @@ user_shared_folders_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -535,21 +504,16 @@ app_config_js = {
   type: "object",
   required: ["adobe_config", "java_config", "firefox_config", "thunderbird_config"],
   properties: {
-    adobe_config: {type: "object"},
-    java_config: {type: "object"},
-    firefox_config: {type: "object"},
-    thunderbird_config: {type: "object"},
+    adobe_config: {title: "Adobe Configuration", type: "object"},
+    java_config: {title: "Java Configuration", type: "object"},
+    firefox_config: {title: "Firefox Configuration", type: "object"},
+    thunderbird_config: {title: "Thuderbird Configuration", type: "object"},
     job_ids: {
         type: "array",
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -562,40 +526,48 @@ auto_updates_js = {
   properties: {
     auto_updates_rules: {
       type: "object",
-      required: ["logout_update", "start_update", "days"],
+      title: "Auto Updates Rules",
+      required: ["onstop_update", "onstart_update", "days"],
       properties: {
-        logout_update: {type: "boolean"},
-        start_update: {type: "boolean"},
+        onstop_update: {title: " On stop Update?", type: "boolean"},
+        onstart_update: {title: "On start Update?", type: "boolean"},
         days: {
           type: "array",
+          title: "Days",
           minItems: 0,
           uniqueItems: true,
           items: {
             type: "object",
-            required: ["day", "hour", "period"],
+            required: ["day", "hour", "minute"],
             properties: {
               day: {
+                title: "Day",
                 type: "string",
-                pattern: "(monday|tuesday|wednesday|thursday|friday|saturday|sunday)"
+                enum: ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]
               },
               hour: {
+                title: "Hour",
                 type: "integer",
-                pattern: "[0-12]"
+                maximum: 12
               },
-              period: {
-                type: "string",
-                pattern: "(am|pm)"
+              minute: {
+                title: "Minute",
+                type: "integer",
+                maximum: 12
               }
+
             }
           }
         },
         date: {
+          title: "Date",
           type: "object",
-          required: ["day", "month", "year"],
+          required: ["day", "month", "hour", "minute"],
           properties: {
-            day: {type: "integer", maximum: 31},
-            month: {type: "integer", maximum: 12},
-            year: {type: "integer"}
+            day: {title: "Day", type: "integer", maximum: 31},
+            month: {title: "Month", type: "integer", maximum: 12},
+            hour: {title: "Hour", type: "integer", maximum: 12},
+            minute: {title: "Minute", type: "integer", maximum: 12}
           }
         }
       }
@@ -605,12 +577,7 @@ auto_updates_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -647,12 +614,7 @@ user_apps_autostart_js = {
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -664,19 +626,15 @@ tz_date_js = {
   required: ["server"],
   properties: {
     server: {
-      type: "string"
+      type: "string",
+      title: "Server"
     },
     job_ids: {
         type: "array",
         minItems: 0,
         uniqueItems: true,
         items: {
-          type: "object",
-          required: ["id"],
-          properties: {
-            id: { type: "string" },
-            status: { type: "string" }
-          }
+          type: "string"
         }
     }
   }
@@ -711,12 +669,7 @@ scripts_launch_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["id"],
-        properties: {
-          id: { type: "string" },
-          status: { type: "string" }
-        }
+        type: "string"
       }
     }
   }
@@ -736,7 +689,7 @@ network_resource_js = {
     dns_servers: {
       type: "array",
       title: "DNS Servers",
-      minItems: 1,
+      minItems: 0,
       uniqueItems: true,
       items: {
         type: "string"
@@ -779,12 +732,7 @@ network_resource_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["id"],
-        properties: {
-          id: { type: "string" },
-          status: { type: "string" }
-        }
+        type: "string"
       }
     }
   }
@@ -801,13 +749,13 @@ software_sources_js = {
         type:"object",
         required: ["repo_name","distribution","components","uri","deb_src","repo_key","key_server"],
         properties:{
-          components: { type: "array",items: { type: "string" } },
-          deb_src: { type: "boolean", default: false },
-          repo_key: { type: "string", default: ""},
-          key_server: { type: "string", default: ""},
-          distribution: { type: "string"},
-          repo_name: { type: "string"},
-          uri: { type: "string" }
+          components: { title: "Components", type: "array",items: { type: "string" } },
+          deb_src: { title: "Sources", type: "boolean", default: false },
+          repo_key: { title: "Repository key", type: "string", default: ""},
+          key_server: { title: "Server key", type: "string", default: ""},
+          distribution: { title: "Distribution", type: "string"},
+          repo_name: { title: "Repository name", type: "string"},
+          uri: { title: "Uri", type: "string" }
         }
      }
   },
@@ -816,12 +764,7 @@ software_sources_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
@@ -850,12 +793,7 @@ package_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
@@ -869,16 +807,16 @@ printers_js = {
   {
     printers_list: {
       type:"array",
+      title: "Printer list to enable",
       items: {
         type:"object",
-        required: [ "name", "manufacturer", "model", "ppd", "ppd_uri" ],
+        required: [ "name", "manufacturer", "model", "ppd_uri" ],
         properties:{
-          name: { type: "string" },
-          manufacturer: { type: "string" },
-          model: { type: "string" },
-          uri: { type: "string" },
-          ppd: { type: "string", default: ""},
-          ppd_uri: { type: "string", default: ""},
+          name: { type: "string", title: "Name" },
+          manufacturer: { type: "string", title: "Manufacturer" },
+          model: { type: "string" , title: "Model"},
+          uri: { type: "string", title: "Uri" },
+          ppd_uri: { type: "string", title: "Uri PPD", default: ""},
         }
       }
     },
@@ -887,12 +825,7 @@ printers_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["id"],
-        properties: {
-          id: { type: "string" },
-          status: { type: "string" }
-        }
+        type: "string"
       }
     }
   }
@@ -905,14 +838,15 @@ local_users_js = {
   properties:
   {users_list: {
       type:"array",
+      title: "User list to manage",
       items: {
         type:"object",
         required: ["user","actiontorun"],
         properties:{
-          actiontorun: {pattern: "(create|modify|delete)",type: "string"},
-          groups: { type: "array",items: { type: "string" } },
-          user: { type: "string" },
-          password: { type: "string"}
+          actiontorun: {enum: ["create","modify","delete"],type: "string"},
+          groups: { title: "Groups", type: "array",items: { type: "string" } },
+          user: { title: "User", type: "string" },
+          password: { title: "Password", type: "string"}
         }
      }
   },
@@ -921,12 +855,7 @@ local_users_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
@@ -939,12 +868,13 @@ local_groups_js = {
   properties:
   {groups_list: {
       type:"array",
+      title: "Group List to manage",
       items: {
         type:"object",
         required: ["group"],
         properties:{
-          group: { type: "string" },
-          users: { type: "array",items: { type: "string" } }
+          group: { type: "string", title: "Group" },
+          users: { type: "array",title: "Users", items: { type: "string" } }
         }
      }
   },
@@ -953,12 +883,7 @@ local_groups_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
@@ -1002,12 +927,7 @@ local_file_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
@@ -1020,6 +940,7 @@ local_admin_users_js = {
   properties:
   {local_admin_list: {
       type:"array",
+      title: "Local users to grant admin permissions", 
       items: { type:"string"}
   },
   job_ids: {
@@ -1027,12 +948,7 @@ local_admin_users_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
@@ -1044,14 +960,16 @@ folder_sync_js = {
   required: ["folder_sync"],
   properties:
   {users: {
+    title: "Users", 
     type: "array",
     items: {
       type: "object",
       required: ["username","remote_folders"],
       properties:{
-        username: {type: "string"},
+        username: {title: "Username", type: "string"},
         remote_folders: {
           type: "array",
+          title: "Remote Folders",
           items: {type: "string"},
           minItems: 0,
           uniqueItems:true
@@ -1064,12 +982,7 @@ folder_sync_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
@@ -1082,12 +995,13 @@ shutdown_options_js = {
   properties:
   {users: {
     type: "array",
+    title: "Users",
     items: {
       type: "object",
       required: ["username","options"],
       properties:{
-        username: {type: "string"},
-        options: {type: "array",items:{pattern: "(shutdown|restart|close_session)",type:"string"}}
+        username: {title: "Username", type: "string"},
+        options: {type: "array",items:{enum: ["shutdown","restart","close_session"],title: "Options", type:"string"}}
       }
     }
   },
@@ -1096,12 +1010,7 @@ shutdown_options_js = {
     minItems: 0,
     uniqueItems: true,
     items: {
-      type: "object",
-      required: ["id"],
-      properties: {
-        id: { type: "string" },
-        status: { type: "string" }
-      }
+      type: "string"
     }
    }
  }
