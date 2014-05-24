@@ -17,4 +17,5 @@ attribute :netmask, :kind_of => String
 attribute :network_type, :kind_of => String
 attribute :use_dhcp, :kind_of => String
 attribute :dns_servers, :kind_of => Array
-attribute :user, :kind_of => String
+attribute :users, :kind_of => Array
+attribute :job_ids, :kind_of => Array
