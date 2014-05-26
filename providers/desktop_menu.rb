@@ -122,6 +122,7 @@ action :setup do
           owner username
           group gid
           recursive true
+          action :nothing
         end.run_action(:create)
 
         file "#{homedir}/.config/menus/#{xdg_menu_name}" do
@@ -153,6 +154,5 @@ action :setup do
       node.set['job_status'][jid]['status'] = 1
       node.set['job_status'][jid]['message'] = e.message
     end
-    Chef::Log.info(node['job_status'])
   end
 end

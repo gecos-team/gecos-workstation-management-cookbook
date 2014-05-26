@@ -24,8 +24,8 @@ action :setup do
           schema "org.nemo.preferences"
           username usr.username
           provider "gecos_ws_mgmt_gsettings"
-          action :set
-        end
+          action :nothing
+        end.run_action(:set)
       end
 
       #show_hidden_files
@@ -35,8 +35,8 @@ action :setup do
           schema "org.nemo.preferences"
           username usr.username
           provider "gecos_ws_mgmt_gsettings"
-          action :set
-        end
+          action :nothing
+        end.run_action(:set)
       end
    
       #show_search_icon_toolbar
@@ -46,8 +46,8 @@ action :setup do
           schema "org.nemo.preferences"
           username usr.username
           provider "gecos_ws_mgmt_gsettings"
-          action :set
-        end
+          action :nothing
+        end.run_action(:set)
       end
 
       #click_policy
@@ -57,8 +57,8 @@ action :setup do
           schema "org.nemo.preferences"
           username usr.username
           provider "gecos_ws_mgmt_gsettings"
-          action :set
-        end
+          action :nothing
+        end.run_action(:set)
       end
 
       #confirm_trash
@@ -68,18 +68,22 @@ action :setup do
           schema "org.nemo.preferences"
           username usr.username
           provider "gecos_ws_mgmt_gsettings"
-          action :set
-        end
+          action :nothing
+        end.run_action(:set)
       end
 
 
     end
 
+    # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 0
     end
+
   rescue Exception => e
+    # just save current job ids as "failed"
+    # save_failed_job_ids
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
