@@ -84,6 +84,10 @@ action :setup do
         end.run_action(:delete) 
       end
 
+## TODO: add script to init.d, both in start fucntion, on login in rc2 and on logout in rc6
+
+
+    # TODO:
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
