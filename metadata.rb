@@ -786,6 +786,7 @@ software_sources_js = {
           repo_name: { title: "Repository name", type: "string"},
           uri: { title: "Uri", type: "string" }
         }
+      }
     },
     job_ids: {
       type: "array",
@@ -796,9 +797,9 @@ software_sources_js = {
       }
     }, 
     updated_by: updated_js
-  }
- }
+   }
 }
+
 
 package_js = {
   title: "Packages",
