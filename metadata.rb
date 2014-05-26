@@ -14,6 +14,18 @@ end
 
 # more complete input definition via json-schemas:
 
+updated_js = {
+  title: "Updated by",
+  type: "object",
+  properties: {
+    group: {title: "Groups", type: "array", items: {type:"string"}},
+    user: {title: "Users", type: "array", items: {type:"string"}},
+    computer: {type:"string"},
+    ou: {title: "Ous", type: "array", items: {type:"string"}}
+  }
+}
+    
+
 sssd_js = {
   title: "Authenticate System",
   type: "object",
@@ -47,7 +59,8 @@ sssd_js = {
       items: {
         type: "string"
       }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -77,7 +90,8 @@ user_mount_js = {
       items: {
         type: "string"
       }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -125,7 +139,8 @@ screensaver_js = {
       items: {
         type: "string"
       }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -155,7 +170,8 @@ folder_sharing_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -193,7 +209,8 @@ desktop_control_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -240,7 +257,8 @@ desktop_menu_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -278,7 +296,8 @@ user_launchers_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -287,15 +306,16 @@ desktop_background_js = {
   type: "object",
   required: ["desktop_file"],
   properties: {
-    desktop_file: {type: "string", title: "Desktop File"}
-  },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
+    desktop_file: {type: "string", title: "Desktop File"},
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }, 
+    updated_by: updated_js
   }
 }
 #desktop_background_js = {
@@ -362,7 +382,8 @@ file_browser_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -453,7 +474,8 @@ web_browser_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -495,7 +517,8 @@ user_shared_folders_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -515,7 +538,8 @@ app_config_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -579,7 +603,8 @@ auto_updates_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -616,7 +641,8 @@ user_apps_autostart_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -636,7 +662,8 @@ tz_date_js = {
         items: {
           type: "string"
         }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -671,7 +698,8 @@ scripts_launch_js = {
       items: {
         type: "string"
       }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -734,7 +762,8 @@ network_resource_js = {
       items: {
         type: "string"
       }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -742,8 +771,8 @@ software_sources_js = {
   title: "Software Soruces",
   type: "object",
   required: ["repo_list"],
-  properties:
-  {repo_list: {
+  properties:{
+    repo_list: {
       type:"array",
       items: {
         type:"object",
@@ -757,16 +786,17 @@ software_sources_js = {
           repo_name: { title: "Repository name", type: "string"},
           uri: { title: "Uri", type: "string" }
         }
-     }
-  },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-   }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }, 
+    updated_by: updated_js
+  }
  }
 }
 
@@ -774,29 +804,31 @@ package_js = {
   title: "Packages",
   type: "object",
   properties:
-  {package_list: {
+  {
+    package_list: {
       type:"array",
       title: "Package list to install",
       minItems: 0,
       uniqueItems: true,
       items: {type: "string"}
-  },
-  pkgs_to_remove: {
+    },
+    pkgs_to_remove: {
       type:"array",
       title: "Package list to remove",
       minItems: 0,
       uniqueItems: true,
       items: {type: "string"}
-  },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-   }
- }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    updated_by: updated_js
+  }
 }
 
 printers_js = {
@@ -827,7 +859,8 @@ printers_js = {
       items: {
         type: "string"
       }
-    }
+    }, 
+    updated_by: updated_js
   }
 }
 
@@ -857,7 +890,8 @@ local_users_js = {
     items: {
       type: "string"
     }
-   }
+  }, 
+  updated_by: updated_js
  }
 }
 
@@ -885,7 +919,8 @@ local_groups_js = {
     items: {
       type: "string"
     }
-   }
+  }, 
+  updated_by: updated_js
  }
 }
 
@@ -929,7 +964,8 @@ local_file_js = {
     items: {
       type: "string"
     }
-   }
+  }, 
+  updated_by: updated_js
  }
 }
 
@@ -950,7 +986,8 @@ local_admin_users_js = {
     items: {
       type: "string"
     }
-   }
+  }, 
+  updated_by: updated_js
  }
 }
 
@@ -984,7 +1021,8 @@ folder_sync_js = {
     items: {
       type: "string"
     }
-   }
+  }, 
+  updated_by: updated_js
  }
 }
 
@@ -1012,7 +1050,8 @@ shutdown_options_js = {
     items: {
       type: "string"
     }
-   }
+  }, 
+  updated_by: updated_js
  }
 }
 
