@@ -572,12 +572,12 @@ auto_updates_js = {
               hour: {
                 title: "Hour",
                 type: "integer",
-                maximum: 12
+                maximum: 23
               },
               minute: {
                 title: "Minute",
                 type: "integer",
-                maximum: 12
+                maximum: 59
               }
 
             }
@@ -590,8 +590,8 @@ auto_updates_js = {
           properties: {
             day: {title: "Day", type: "integer", maximum: 31},
             month: {title: "Month", type: "integer", maximum: 12},
-            hour: {title: "Hour", type: "integer", maximum: 12},
-            minute: {title: "Minute", type: "integer", maximum: 12}
+            hour: {title: "Hour", type: "integer", maximum: 23},
+            minute: {title: "Minute", type: "integer", maximum: 59}
           }
         }
       }
@@ -1027,6 +1027,44 @@ folder_sync_js = {
  }
 }
 
+power_conf_js = {
+  title: "Power management",
+  type: "object",
+  required: ["cpu_freq_gov","auto_shutdown"],
+  properties:
+    {cpu_freq_gov: {
+       title: "CPU frequency governor", 
+       type: "string",
+       enum: ["userspace","powersave","conservative","ondemand","performance"]
+       },
+     auto_shutdown: {
+       type: "object",
+       requited: ["hour","minute"],
+       properties: {
+         hour: {
+           title: "Hour",
+           type: "integer",
+           maximum: 23
+           },
+         minute: {
+           title: "Minute",                                                                                                                                                                                     
+           type: "integer",
+           maximum: 59
+         }
+       }  
+  },
+  job_ids: {
+    type: "array",
+    minItems: 0,
+    uniqueItems: true,
+    items: {
+      type: "string"
+    }
+  }, 
+  updated_by: updated_js
+ }
+}
+
 shutdown_options_js = {
   title: "Shutdown Options",
   type: "object",
@@ -1076,7 +1114,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "desktop_background_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res"],
+          required: ["tz_date_res", "desktop_background_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
@@ -1085,6 +1123,7 @@ complete_js = {
             desktop_background_res: desktop_background_js,
             auto_updates_res: auto_updates_js,
             local_groups_res: local_groups_js,
+            power_conf_res: power_conf_js,
             local_admin_users_res: local_admin_users_js
           }
         },
