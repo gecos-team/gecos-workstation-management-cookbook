@@ -13,5 +13,6 @@ actions :setup
 
 attribute :cpu_freq_gov, :kind_of => String
 attribute :auto_shutdown, :kind_of => Object
+attribute :usb_autosuspend, :kind_of => String
 attribute :job_ids, :kind_of => Array
 

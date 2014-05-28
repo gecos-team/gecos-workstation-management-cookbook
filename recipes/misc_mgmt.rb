@@ -25,6 +25,7 @@ end
 gecos_ws_mgmt_power_conf 'manage power conf' do
   cpu_freq_gov node[:gecos_ws_mgmt][:misc_mgmt][:power_conf_res][:cpu_freq_gov]
   auto_shutdown node[:gecos_ws_mgmt][:misc_mgmt][:power_conf_res][:auto_shutdown]
+  usb_autosuspend node[:gecos_ws_mgmt][:misc_mgmt][:power_conf_res][:usb_autosuspend]
   job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:job_ids]
   action :setup
 end
