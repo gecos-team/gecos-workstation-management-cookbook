@@ -1030,12 +1030,18 @@ folder_sync_js = {
 power_conf_js = {
   title: "Power management",
   type: "object",
-  required: ["cpu_freq_gov","auto_shutdown"],
+  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   properties:
     {cpu_freq_gov: {
        title: "CPU frequency governor", 
        type: "string",
        enum: ["userspace","powersave","conservative","ondemand","performance"]
+       },
+    usb_autosuspend: 
+      {
+       title: "USB autosuspend",
+       type: "string",  
+       enum: ["enable","disable"]
        },
      auto_shutdown: {
        type: "object",
