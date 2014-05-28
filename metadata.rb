@@ -768,7 +768,7 @@ network_resource_js = {
 }
 
 software_sources_js = {
-  title: "Software Soruces",
+  title: "Software Sources",
   type: "object",
   required: ["repo_list"],
   properties:{
@@ -897,7 +897,7 @@ local_users_js = {
 }
 
 local_groups_js = {
-  title: "Grupos locales",
+  title: "Local groups",
   type: "object",
   required: ["groups_list"],
   properties:
