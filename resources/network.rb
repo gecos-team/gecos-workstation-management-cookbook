@@ -16,6 +16,6 @@ attribute :gateway, :kind_of => String
 attribute :netmask, :kind_of => String
 attribute :network_type, :kind_of => String
 attribute :use_dhcp, :kind_of => [NilClass, TrueClass, FalseClass]
-attribute :dns_servers, :kind_of => Array
+attribute :dns_servers_array, :kind_of => Array
 attribute :users, :kind_of => Array
 attribute :job_ids, :kind_of => Array
