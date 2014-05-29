@@ -22,6 +22,14 @@ gecos_ws_mgmt_local_users 'manage local users' do
   action :setup
 end
 
+gecos_ws_mgmt_power_conf 'manage power conf' do
+  cpu_freq_gov node[:gecos_ws_mgmt][:misc_mgmt][:power_conf_res][:cpu_freq_gov]
+  auto_shutdown node[:gecos_ws_mgmt][:misc_mgmt][:power_conf_res][:auto_shutdown]
+  usb_autosuspend node[:gecos_ws_mgmt][:misc_mgmt][:power_conf_res][:usb_autosuspend]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:job_ids]
+  action :setup
+end
+
 gecos_ws_mgmt_scripts_launch 'launch commands on startup/shutdown' do
   on_startup node[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_startup]
   on_shutdown node[:gecos_ws_mgmt][:misc_mgmt][:scripts_launch_res][:on_shutdown]
@@ -44,8 +52,10 @@ gecos_ws_mgmt_tz_date 'localtime' do
   action :setup
 end
 
-gecos_ws_mgmt_desktop_background node[:gecos_ws_mgmt][:misc_mgmt][:desktop_background_res][:desktop_file] do
-    action  :setup
+gecos_ws_mgmt_desktop_background 'desktop background' do
+  desktop_file node[:gecos_ws_mgmt][:misc_mgmt][:desktop_background_res][:desktop_file]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:desktop_background_res][:job_ids]
+  action :setup
 end
 
 gecos_ws_mgmt_local_groups 'add users to system local groups' do

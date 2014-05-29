@@ -17,14 +17,12 @@ action :setup do
     gem_depends = [ 'netaddr' ]
 
     gem_depends.each do |gem|
-
-      r = gem_package gem do
+      gem_package gem do
         gem_binary("/opt/chef/embedded/bin/gem")
         action :nothing
-      end
-      r.run_action(:install)
-
+      end.run_action(:install)
     end
+
     Gem.clear_paths
     require 'netaddr'
     require 'fileutils'
@@ -39,7 +37,6 @@ action :setup do
 
     users_array = [] if not node[:gecos_ws_mgmt][:network_mgmt][:network_res][:users].nil?
 
-
     nm_conn_backup_dir = '/etc/NetworkManager/system-connections/chef-backups'
     nm_conn_production_dir = '/etc/NetworkManager/system-connections/chef-conns'
  
@@ -50,8 +47,7 @@ action :setup do
     unless Kernel::test('d', nm_conn_production_dir)
       FileUtils.mkdir nm_conn_production_dir
     end
-    
-    
+        
     nm_wired_dhcp_conn_source = 'wired-dhcp-conn.erb'
     nm_wired_static_ip_conn_source = 'wired-static-ip-conn.erb'
     
@@ -138,9 +134,7 @@ action :setup do
       end
     # TODO: else: wireless connection
     #else 
-    
     end
-
 
     # setup user connections
     users_array.each do |user_conn|
@@ -153,12 +147,19 @@ action :setup do
       backup false
     end
     
-    # TODO:
-    # save current job ids as "ok"
-  rescue
-    # TODO:
+    # save current job ids (new_resource.job_ids) as "ok"
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 0
+    end
+
+  rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
-    raise
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 1
+      node.set['job_status'][jid]['message'] = e.message
+    end
   end
 end
