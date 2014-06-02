@@ -19,6 +19,7 @@ action :setup do
     users = new_resource.users_list
     users.each do |usrdata| 
       username = usrdata.user
+      fullname = usrdata.name
       passwd = usrdata.password
       actiontorun = usrdata.actiontorun
       grps = usrdata.groups
@@ -36,7 +37,7 @@ action :setup do
         user username do
           password passwd
           home user_home
-          comment "GECOS managed user"
+          comment fullname
           shell "/bin/bash"
           action :nothing
         end.run_action(:create)
