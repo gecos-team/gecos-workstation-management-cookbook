@@ -46,13 +46,18 @@ if not node[:gecos_ws_mgmt][:misc_mgmt][:gcc_res].nil?
 end
 
 if not node[:gecos_ws_mgmt][:network_mgmt][:sssd_res].nil?
-  gecos_ws_mgmt_sssd node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:domain_list] do
+  gecos_ws_mgmt_sssd node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:domain] do
     enabled node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:enabled]
     workgroup node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:workgroup]
     job_ids node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:job_ids]
+    krb5_url node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:krb5_url]
+    smb_url node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:smb_url]
+    sssd_url node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:sssd_url]
+    mkhomedir_url node[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:mkhomedir_url]
     action  :setup
   end
 end
+
 if not node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res].nil?
   gecos_ws_mgmt_local_users 'manage local users' do
     users_list node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list]
