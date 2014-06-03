@@ -88,6 +88,7 @@ action :setup do
             owner 'root'
             group 'root'
             mode 00600
+            notifies :restart, "service[sssd]", :delayed
           end
         else
           template '/etc/sssd/sssd.conf' do
@@ -98,6 +99,7 @@ action :setup do
             variables ({
               :domain => domain
             })
+            notifies :restart, "service[sssd]", :delayed
           end
         end
 
