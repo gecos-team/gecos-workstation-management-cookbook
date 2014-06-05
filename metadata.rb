@@ -615,7 +615,6 @@ auto_updates_js = {
         date: {
           title: "Date",
           type: "object",
-          required: ["day", "month", "hour", "minute"],
           properties: {
             day: {title: "Day", type: "integer", maximum: 31},
             month: {title: "Month", type: "integer", maximum: 12},
