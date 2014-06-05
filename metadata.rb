@@ -1070,11 +1070,11 @@ power_conf_js = {
       {
        title: "USB autosuspend",
        type: "string",  
-       enum: ["enable","disable"]
+       enum: ["enable","disable", ""]
        },
      auto_shutdown: {
        type: "object",
-       requited: ["hour","minute"],
+       required: ["hour","minute"],
        properties: {
          hour: {
            title: "Hour",
