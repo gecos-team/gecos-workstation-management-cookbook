@@ -84,6 +84,17 @@ action :setup do
         end
       end
     else
+      template "/etc/gcc.control" do
+        source 'gcc.control.erb'
+        owner "root"
+        group "root"
+        mode 00755
+        variables({
+          :uri_gcc => new_resource.uri_gcc,
+          :gcc_username => new_resource.gcc_username, 
+          :gcc_nodename => new_resource.gcc_nodename
+        })
+      end
       Chef::Log.info('Not running')
     end
 
@@ -96,6 +107,7 @@ action :setup do
   rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
+    Chef::Log.error(e.message)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1

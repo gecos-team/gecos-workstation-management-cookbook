@@ -734,7 +734,7 @@ scripts_launch_js = {
 network_resource_js = {
   title: "Network Manager",
   type: "object",
-  required: ["network_type", "dns_servers"],
+  required: ["network_type", "dns_servers_array"],
   properties:
   {
     gateway: { type: "string",title: "Gateway" },
@@ -742,7 +742,7 @@ network_resource_js = {
     netmask: { type: "string", title: "Netmask" },
     network_type: { enum: ["wired","wireless"],type: "string", title: "Network Type" },
     use_dhcp: { type: "boolean" , title: "Use DHCP?"},
-    dns_servers: {
+    dns_servers_array: {
       type: "array",
       title: "DNS Servers",
       minItems: 0,
