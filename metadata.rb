@@ -1064,7 +1064,7 @@ power_conf_js = {
     {cpu_freq_gov: {
        title: "CPU frequency governor", 
        type: "string",
-       enum: ["userspace","powersave","conservative","ondemand","performance"]
+       enum: ["userspace","powersave","conservative","ondemand","performance",""]
        },
     usb_autosuspend: 
       {
