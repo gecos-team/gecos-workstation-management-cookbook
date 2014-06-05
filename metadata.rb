@@ -1074,7 +1074,6 @@ power_conf_js = {
        },
      auto_shutdown: {
        type: "object",
-       required: ["hour","minute"],
        properties: {
          hour: {
            title: "Hour",
