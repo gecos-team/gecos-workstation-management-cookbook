@@ -260,6 +260,7 @@ desktop_menu_js = {
           username: {type: "string"},
           desktop_files_include: {
             type: "array",
+            title: "Desktop Files to include",
             minItems: 0,
             uniqueItems: true,
             items: {
@@ -268,7 +269,7 @@ desktop_menu_js = {
           },
           desktop_files_exclude: {
             type: "array",
-            title: "Desktop Files",
+            title: "Desktop Files to exclude",
             minItems: 0,
             uniqueItems: true,
             items: {
