@@ -137,8 +137,8 @@ action :setup do
     end
 
     # setup user connections
-    users_array.each do |user_conn|
-      username = user_conn[:username]
+    users_array.each_key do |user_key|
+      username = user_key
     end
 
     cookbook_file "/etc/init/gecos-nm.conf" do

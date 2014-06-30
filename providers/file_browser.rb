@@ -13,10 +13,10 @@ action :setup do
   begin
 
     users = new_resource.users
+    users.each_key do |user_key|
+      username = user_key 
+      user = users[user_key]
     
-    users.each do |usr|
-
-
       #default_folder_viewer
       if !usr.default_folder_viewer.empty? and !usr.default_folder_viewer.nil?
         gecos_ws_mgmt_desktop_setting "default-folder-viewer" do

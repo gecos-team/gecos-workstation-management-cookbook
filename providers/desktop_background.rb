@@ -18,9 +18,10 @@ action :setup do
     if !new_resource.users.nil? and !new_resource.users.empty?
       users = new_resource.users
 #     if !new_resource.desktop_file.nil? and !new_resource.desktop_file.empty?
-      users.each do |user|
+      users.each_key do |user_key|
+        username = user_key 
+        user = users[user_key]
         Chef::Log.info("Estableciendo fondo de escritorio #{user.desktop_file}")
-        username = user.username
         desktop_file = user.desktop_file
         gecos_ws_mgmt_desktop_setting "picture-uri" do
           type "string"
