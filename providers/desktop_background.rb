@@ -27,7 +27,7 @@ action :setup do
           type "string"
           value "file://" + desktop_file.to_s
           schema "org.cinnamon.desktop.background"
-          username user.username
+          username username
           provider "gecos_ws_mgmt_gsettings"
           action :set
         end
@@ -36,7 +36,7 @@ action :setup do
           type "string"
           value "file://" + desktop_file.to_s
           schema "org.gnome.desktop.background"
-          username user.username
+          username username
           provider "gecos_ws_mgmt_gsettings"
           action :set
         end

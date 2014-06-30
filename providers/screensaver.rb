@@ -30,7 +30,7 @@ action :setup do
         type "string"
         value idle_enabled.to_s
         schema "org.cinnamon.desktop.screensaver"
-        username user.username
+        username username
         provider "gecos_ws_mgmt_gsettings"
         action :set
       end
@@ -39,7 +39,7 @@ action :setup do
         type "string"
         value lock_enabled.to_s
         schema "org.cinnamon.desktop.screensaver"
-        username user.username
+        username username
         provider "gecos_ws_mgmt_gsettings"
         action :set
       end
@@ -48,7 +48,7 @@ action :setup do
         type "string"
         value idle_delay
         schema "org.cinnamon.desktop.session"
-        username user.username
+        username username
         provider "gecos_ws_mgmt_gsettings"
         action :set
       end
@@ -57,7 +57,7 @@ action :setup do
         type "string"
         value lock_delay
         schema "org.cinnamon.desktop.screensaver"
-        username user.username
+        username username
         provider "gecos_ws_mgmt_gsettings"
         action :set
       end
