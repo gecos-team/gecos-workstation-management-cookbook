@@ -14,9 +14,15 @@ action :setup do
 
   begin
 
-    package 'libsqlite3-ruby' do
-      action :nothing
-    end.run_action(:install)
+    begin
+      package 'libsqlite3-ruby' do
+        action :nothing
+      end.run_action(:install)
+    rescue Chef::Exceptions::Package
+      package 'ruby-sqlite3' do
+        action :nothing
+      end.run_action(:install)
+    end
 
     package 'libsqlite3-dev' do
       action :nothing
