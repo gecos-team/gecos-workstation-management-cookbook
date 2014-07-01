@@ -725,7 +725,7 @@ network_resource_js = {
         type: "string"
       }
     },
-    users: {
+  /*  users: {
       type: "object",
       title: "Users",
       patternProperties: {
@@ -755,7 +755,7 @@ network_resource_js = {
           }
         }
       }
-    },
+    },*/
     job_ids: {
       type: "array",
       minItems: 0,
