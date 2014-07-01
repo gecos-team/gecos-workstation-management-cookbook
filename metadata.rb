@@ -104,7 +104,8 @@ user_mount_js = {
         ".*" => { type: "object", title: "Username",
           required: ["can_mount"],
           properties: {
-            can_mount: {type: "boolean", title: "Can Mount?"}
+            can_mount: {type: "boolean", title: "Can Mount?"}, 
+            updated_by: updated_js
           }
         }
       }
@@ -116,8 +117,7 @@ user_mount_js = {
       items: {
         type: "string"
       }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -148,7 +148,8 @@ screensaver_js = {
             lock_delay: {
               type: "string",
               title: "Lock Delay"
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -160,8 +161,7 @@ screensaver_js = {
       items: {
         type: "string"
       }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -177,7 +177,8 @@ folder_sharing_js = {
         ".*" => { type: "object", title: "Username",
           required: ["can_share"],
           properties: {
-            can_share: {title: "Can Share?", type: "boolean"}
+            can_share: {title: "Can Share?", type: "boolean"}, 
+            updated_by: updated_js
           }
         }
       }
@@ -189,8 +190,7 @@ folder_sharing_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -214,7 +214,8 @@ desktop_control_js = {
               items: {
                 type: "string"
               }
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -226,8 +227,7 @@ desktop_control_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -261,7 +261,8 @@ desktop_menu_js = {
               items: {
                 type: "string"
               }
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -273,8 +274,7 @@ desktop_menu_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -298,7 +298,8 @@ user_launchers_js = {
               items: {
                 type: "string"
               }
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -310,8 +311,7 @@ user_launchers_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -378,7 +378,8 @@ file_browser_js = {
             show_hidden_files: {type: "string", title: "Show hidden files?", enum: ["true","false"], default: "false"},
             show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", enum: ["true", "false"], default: "true"},
             confirm_trash: {type: "string", title: "Confirm trash?", enum: ["true","false"], default: "true"},
-            click_policy: {type: "string", title: "Click policy", enum: ["single", "double"], default: "double"}
+            click_policy: {type: "string", title: "Click policy", enum: ["single", "double"], default: "double"}, 
+            updated_by: updated_js
           }
         }
       }
@@ -390,8 +391,7 @@ file_browser_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -467,7 +467,8 @@ web_browser_js = {
                   uri: {title: "Uri", type: "string"}
                 }
               }
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -479,8 +480,7 @@ web_browser_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -496,7 +496,6 @@ user_shared_folders_js = {
         ".*" => { type: "object", title: "Username",
           required: ["gtkbookmarks"],
           properties: {
-            username: {title: "Username", type: "string"},
             gtkbookmarks: {
               type: "array",
               title: "Bookmarks", 
@@ -510,7 +509,8 @@ user_shared_folders_js = {
                   uri: {title: "Uri", type: "string"}
                 }
               }
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -522,8 +522,7 @@ user_shared_folders_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -631,7 +630,8 @@ user_apps_autostart_js = {
               minItems: 0,
               uniqueItems: true,
               items: {type: "string"}
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -643,8 +643,7 @@ user_apps_autostart_js = {
         items: {
           type: "string"
         }
-    }, 
-    updated_by: updated_js
+    }
   }
 }
 
@@ -1013,7 +1012,8 @@ folder_sync_js = {
             items: {type: "string"},
             minItems: 0,
             uniqueItems:true
-          }
+          }, 
+          updated_by: updated_js
         }
       }
     }
@@ -1025,8 +1025,7 @@ folder_sync_js = {
     items: {
       type: "string"
     }
-  }, 
-  updated_by: updated_js
+  }
  }
 }
 
@@ -1090,7 +1089,8 @@ shutdown_options_js = {
               title: "Disable log out?",
               type: "boolean",
               default: false
-            }
+            }, 
+            updated_by: updated_js
           }
         }
       }
@@ -1102,8 +1102,7 @@ shutdown_options_js = {
       items: {
         type: "string"
       }
-    }, 
-    updated_by: updated_js
+    }
  }
 }
 
