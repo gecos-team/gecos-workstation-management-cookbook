@@ -177,9 +177,7 @@ folder_sharing_js = {
         ".*" => { type: "object", title: "Username",
           required: ["can_share"],
           properties: {
-            properties: {
-              can_share: {title: "Can Share?", type: "boolean"}
-            }
+            can_share: {title: "Can Share?", type: "boolean"}
           }
         }
       }
