@@ -344,7 +344,8 @@ desktop_background_js = {
         ".*" => { type: "object", title: "Username",
           required: ["desktop_file"],
           properties: {
-            desktop_file: {type: "string", title: "Desktop File"}
+            desktop_file: {type: "string", title: "Desktop File"},
+            updated_by: updated_js
           }
         }
       }
@@ -356,8 +357,7 @@ desktop_background_js = {
         items: {
           type: "string",
         }
-    },
-    updated_by: updated_js
+    }
   }
 }
 
