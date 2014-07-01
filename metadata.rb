@@ -725,37 +725,37 @@ network_resource_js = {
         type: "string"
       }
     },
-  /*  users: {
-      type: "object",
-      title: "Users",
-      patternProperties: {
-        ".*" => { type: "object", title: "Username",
-          required: ["network_type"],
-          properties: {
-            username: { type: "string", title: "Username" },
-            gateway: { type: "string",title: "Gateway" },
-            ip_address: { type:"string", title: "Ip Address" },
-            netmask: { type: "string", title: "Netmask" },
-            network_type: { enum: ["wired","wireless","vpn","proxy"], type: "string", title: "Network Type" },
-            use_dhcp: { type: "boolean", title: "Use DHCP?" },
-            certs: {
-              type: "array",
-              title: "Certificates",
-              minItems: 0,
-              uniqueItems: true,
-              items: {
-                type: "object",
-                required: ["name","uri"],
-                properties: {
-                  name: {type: "string", title: "Name"},
-                  uri: {type: "string", title: "Url"}
-                }
-              }
-            }
-          }
-        }
-      }
-    },*/
+#    users: {
+#      type: "object",
+#      title: "Users",
+#      patternProperties: {
+#        ".*" => { type: "object", title: "Username",
+#          required: ["network_type"],
+#          properties: {
+#            username: { type: "string", title: "Username" },
+#            gateway: { type: "string",title: "Gateway" },
+#            ip_address: { type:"string", title: "Ip Address" },
+#            netmask: { type: "string", title: "Netmask" },
+#            network_type: { enum: ["wired","wireless","vpn","proxy"], type: "string", title: "Network Type" },
+#            use_dhcp: { type: "boolean", title: "Use DHCP?" },
+#            certs: {
+#              type: "array",
+#              title: "Certificates",
+#              minItems: 0,
+#              uniqueItems: true,
+#              items: {
+#                type: "object",
+#                required: ["name","uri"],
+#                properties: {
+#                  name: {type: "string", title: "Name"},
+#                  uri: {type: "string", title: "Url"}
+#                }
+#              }
+#            }
+#          }
+#        }
+#      }
+#    },
     job_ids: {
       type: "array",
       minItems: 0,
