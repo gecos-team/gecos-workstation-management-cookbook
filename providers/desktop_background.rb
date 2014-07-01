@@ -29,8 +29,8 @@ action :setup do
           schema "org.cinnamon.desktop.background"
           username username
           provider "gecos_ws_mgmt_gsettings"
-          action :set
-        end
+          action :nothing
+        end.run_action(:set)
 
         gecos_ws_mgmt_desktop_setting "picture-uri" do
           type "string"
@@ -38,8 +38,8 @@ action :setup do
           schema "org.gnome.desktop.background"
           username username
           provider "gecos_ws_mgmt_gsettings"
-          action :set
-        end
+          action :nothing
+        end.run_action(:set)
 
       end
 
