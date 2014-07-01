@@ -173,7 +173,7 @@ folder_sharing_js = {
     users: {
       title: "Users",
       type: "object",
-      properties: {
+      patternProperties: {
         ".*" => { type: "object", title: "Username",
           required: ["can_share"],
           properties: {
