@@ -74,55 +74,42 @@ default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:updated_by] = {}
 
-default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:folder_sync] = []
+default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:users] = []
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:updated_by] = {}
 
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemset] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemlock] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:updated_by] = {}
 
