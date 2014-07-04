@@ -996,7 +996,7 @@ local_admin_users_js = {
 folder_sync_js = {
   title: "Folder to sync",
   type: "object",
-  required: ["folder_sync"],
+  required: ["users"],
   properties:
   {users: {
     title: "Users", 
