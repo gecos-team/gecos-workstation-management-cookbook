@@ -32,8 +32,8 @@ action :setup do
         schema "org.cinnamon.desktop.screensaver"
         username username
         provider "gecos_ws_mgmt_gsettings"
-        action :set
-      end
+        action :nothing
+      end.run_action(:set)
   
       gecos_ws_mgmt_desktop_setting "lock-enabled" do
         type "string"
@@ -41,8 +41,8 @@ action :setup do
         schema "org.cinnamon.desktop.screensaver"
         username username
         provider "gecos_ws_mgmt_gsettings"
-        action :set
-      end
+        action :nothing
+      end.run_action(:set)
   
       gecos_ws_mgmt_desktop_setting "idle-delay" do
         type "string"
@@ -50,8 +50,8 @@ action :setup do
         schema "org.cinnamon.desktop.session"
         username username
         provider "gecos_ws_mgmt_gsettings"
-        action :set
-      end
+        action :nothing
+      end.run_action(:set)
   
       gecos_ws_mgmt_desktop_setting "lock-delay" do
         type "string"
@@ -59,8 +59,8 @@ action :setup do
         schema "org.cinnamon.desktop.screensaver"
         username username
         provider "gecos_ws_mgmt_gsettings"
-        action :set
-      end
+        action :nothing
+      end.run_action(:set)
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

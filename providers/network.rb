@@ -85,7 +85,8 @@ action :setup do
               mode 0600
               variables ( { :mac_address => nm_macaddress } )
               source nm_wired_dhcp_conn_source
-            end
+              action :nothing
+            end.run_action(:create)
           end
         else
           conn_file = "/etc/NetworkManager/system-connections/chef-conns/chef-managed-connection"
@@ -95,7 +96,8 @@ action :setup do
             mode 0600
             variables ( { :mac_address => nm_macaddress } )
             source nm_wired_dhcp_conn_source
-          end
+            action :nothing
+          end.run_action(:create)
         end
       else
         netmask_int = NetAddr.netmask_to_i(netmask)
@@ -115,7 +117,8 @@ action :setup do
                             :netmask => netmask,
                             :gateway => gateway } )
               source nm_wired_static_ip_conn_source
-            end
+              action :nothing
+            end.run_action(:create)
           end
         else
           conn_file = "/etc/NetworkManager/system-connections/chef-conns/chef-managed-connection"
@@ -129,7 +132,8 @@ action :setup do
                           :netmask => netmask,
                           :gateway => gateway })
             source nm_wired_static_ip_conn_source
-          end
+            action :nothing
+          end.run_action(:create)
         end
       end
     # TODO: else: wireless connection
@@ -145,7 +149,8 @@ action :setup do
       source "gecos-nm.conf" 
       mode "0644"
       backup false
-    end
+      action :nothing
+    end.run_action(:create)
     
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

@@ -54,12 +54,13 @@ action :setup do
       end.run_action(:create)
 
       bash "extract plugin #{plugin_file}" do
+        action :nothing
         user username
         code <<-EOH
 
           unzip #{plugin_file} -d #{plugin_dir_temp}
         EOH
-      end
+      end.run_action(:run)
 
       ruby_block "get plugin id" do
         block do
@@ -216,11 +217,12 @@ action :setup do
             end.run_action(:create_if_missing)
 
             bash "Installing #{cert.name} cert to user #{username}" do
+              action :nothing
               user username
               code <<-EOH
                 certutil -A -d #{prof} -n #{cert.name} -i #{certfile} -t C,C,C
               EOH
-            end
+            end.run_action(:run)
           end
         end
       end

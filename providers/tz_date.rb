@@ -23,6 +23,7 @@ action :setup do
         action :nothing
       end.run_action(:run)
       template '/etc/default/ntpdate' do
+        action :nothing
         source 'ntpdate.erb'
         owner 'root'
         group 'root'
@@ -30,7 +31,7 @@ action :setup do
         variables ({
           :ntp_server => new_resource.server
         })
-      end 
+      end.run_action(:create)
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
