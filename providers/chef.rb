@@ -53,6 +53,7 @@ action :setup do
        
           Chef::Log.info("Activando servicio chef-client")
           service 'chef-client' do
+            provider Chef::Provider::Service::Upstart
             supports :status => true, :restart => true, :reload => true
             action [:enable, :start]
           end
