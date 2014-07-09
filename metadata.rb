@@ -19,7 +19,7 @@ updated_js = {
   type: "object",
   properties: {
     group: {title: "Groups", type: "array", items: {type:"string"}},
-    user: {title: "Users", type: "array", items: {type:"string"}},
+    user: {type:"string"},
     computer: {type:"string"},
     ou: {title: "Ous", type: "array", items: {type:"string"}}
   }
