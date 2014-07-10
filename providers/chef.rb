@@ -111,6 +111,7 @@ action :setup do
 
         Chef::Log.info("Desactivando servicio chef-client")
         service 'chef-client' do
+          provider Chef::Provider::Service::Upstart
           supports :status => true, :restart => true, :reload => true
           action [:disable, :stop]
         end

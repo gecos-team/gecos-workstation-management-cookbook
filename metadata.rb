@@ -951,7 +951,7 @@ local_file_js = {
       required: ["file_orig","file_dest"],
       properties:{
         file_orig: {type: "string", title: "Url File"},
-        file_dest: {type: "string", title: "Path destination"},
+        file_dest: {type: "string", title: "File path destination"},
         user: {type: "string", title:"User"},
         group: {type: "string", title: "Group"},
         mode: {type: "string", title: "Mode"},
