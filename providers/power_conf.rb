@@ -28,6 +28,12 @@ action :setup do
 
     min_cpu_file = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
 
+    service "cron" do
+      provider Chef::Provider::Service::Upstart
+      supports :restart => true
+      action :nothing
+    end.run_action(:nothing)
+
     unless cpu_freq_gov.empty?
       execute "Setting CPU freq governor to #{cpu_freq_gov}" do
         command "echo #{cpu_freq_gov} | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
@@ -38,12 +44,6 @@ action :setup do
     end
 
     unless auto_shutdown.empty?
-      service "cron" do
-        provider Chef::Provider::Service::Upstart
-        supports :restart => true
-        action :nothing
-      end.run_action(:nothing)
-      
       date = ::Time.parse("#{auto_shutdown.hour}:#{auto_shutdown.minute}")
 
       first_warn = date - 1800
