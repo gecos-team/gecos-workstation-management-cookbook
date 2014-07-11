@@ -48,7 +48,7 @@ action :setup do
   ensure
     gecos_ws_mgmt_jobids "software_mgmt" do
       provider "gecos_ws_mgmt_jobids"
-      resource "pakcage_res"
+      resource "package_res"
     end.run_action(:reset)
   end
 end
