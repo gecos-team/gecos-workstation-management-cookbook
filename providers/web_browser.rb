@@ -91,7 +91,7 @@ action :setup do
       username = user_key
       user = users[user_key]
 
-      homedir = `eval echo ~#{user.username}`.gsub("\n","")
+      homedir = `eval echo ~#{username}`.gsub("\n","")
       plugins = user.plugins
       bookmarks =  user.bookmarks
     

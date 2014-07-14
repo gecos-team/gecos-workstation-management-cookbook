@@ -17,8 +17,8 @@ action :setup do
       username = user_key
       user = users[user_key]
    
-      homedir = `eval echo ~#{user.username}`.gsub("\n","")
-      gtkbookmark_file =  "#{homedir}/.gtk-bookmarks"
+      homedir = `eval echo ~#{username}`.gsub("\n","")
+      gtkbookmark_file =  "#{homedir}/.config/gtk-3.0/bookmarks"
 
       if ::File.exists? gtkbookmark_file
         clean_file = Chef::Util::FileEdit.new gtkbookmark_file
@@ -26,8 +26,8 @@ action :setup do
         clean_file.write_file
       else
         file gtkbookmark_file do
-          owner user.username
-          group user.username
+          owner username
+          group username
           action :nothing
         end.run_action(:create)
       end
