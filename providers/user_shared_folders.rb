@@ -18,30 +18,32 @@ action :setup do
       user = users[user_key]
    
       homedir = `eval echo ~#{username}`.gsub("\n","")
-      gtkbookmark_file =  "#{homedir}/.config/gtk-3.0/bookmarks"
-
-      if ::File.exists? gtkbookmark_file
-        clean_file = Chef::Util::FileEdit.new gtkbookmark_file
-        clean_file.search_file_delete_line(pattern)
-        clean_file.write_file
-      else
-        file gtkbookmark_file do
-          owner username
-          group username
-          action :nothing
-        end.run_action(:create)
-      end
-
-      user.gtkbookmarks.each do |bookmark|
-        if bookmark.uri.match(pattern)
-          line_to_add = "#{bookmark.uri} #{bookmark.uri}"
-          
-          Chef::Log.info("Agregando accesos directos a carpetas compartidas")         
-          add_to_file = Chef::Util::FileEdit.new gtkbookmark_file
-          add_to_file.insert_line_if_no_match(pattern, line_to_add)
-          add_to_file.write_file
+      gtkbookmark_files =  ["#{homedir}/.config/gtk-3.0/bookmarks", "#{homedir}/.gtk-bookmarks"]
+      gtkbookmark_files.each do |gtkbook|
+        if ::File.exists? gtkbook
+          clean_file = Chef::Util::FileEdit.new gtkbook
+          clean_file.search_file_delete_line(pattern)
+          clean_file.write_file
+        else
+          file gtkbook do
+            owner username
+            group username
+            action :nothing
+          end.run_action(:create)
         end
+      
 
+        user.gtkbookmarks.each do |bookmark|
+          if bookmark.uri.match(pattern)
+            line_to_add = "#{bookmark.uri} #{bookmark.uri}"
+            
+            Chef::Log.info("Agregando accesos directos a carpetas compartidas")         
+            add_to_file = Chef::Util::FileEdit.new gtkbook
+            add_to_file.insert_line_if_no_match(pattern, line_to_add)
+            add_to_file.write_file
+          end
+
+        end
       end
    end
 
