@@ -450,6 +450,7 @@ web_browser_js = {
                 required: ["key", "value"],
                 properties: {
                   key: {type: "string", title: "Key"},
+                  #Changed to three types of config
                   value: {type: ["string","boolean","number"], title: "Value"}
                 }
               }
@@ -1160,7 +1161,7 @@ complete_js = {
           required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
-            web_browser_res: web_browser_js,
+            #web_browser_res: web_browser_js,
             file_browser_res: file_browser_js,
             user_launchers_res: user_launchers_js,
             desktop_background_res: desktop_background_js,
