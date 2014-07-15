@@ -139,7 +139,7 @@ screensaver_js = {
             },
             idle_delay: {
               type: "string",
-              title: "Idle Delay"
+              title: "Idle Delay (sec)"
             },
             lock_enabled: {
               type: "boolean",
@@ -147,7 +147,7 @@ screensaver_js = {
             },
             lock_delay: {
               type: "string",
-              title: "Lock Delay"
+              title: "Lock Delay (sec)"
             }, 
             updated_by: updated_js
           }
