@@ -37,10 +37,10 @@ action :setup do
           if bookmark.uri.match(pattern)
             line_to_add = "#{bookmark.uri} #{bookmark.uri}"
             
-            Chef::Log.info("Agregando accesos directos a carpetas compartidas")         
-            add_to_file = Chef::Util::FileEdit.new gtkbook
-            add_to_file.insert_line_if_no_match(pattern, line_to_add)
-            add_to_file.write_file
+            Chef::Log.info("Agregando accesos directos a carpetas compartidas")
+            ::File.open(gtkbook, 'a') do |file|
+              file.puts line_to_add
+            end
           end
 
         end
