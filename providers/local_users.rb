@@ -88,9 +88,9 @@ action :setup do
       node.set['job_status'][jid]['message'] = e.message
     end
   ensure
-    gecos_ws_mgmt_jobids "misc_mgmt" do
+    gecos_ws_mgmt_jobids "local_users_res" do
       provider "gecos_ws_mgmt_jobids"
-      resource "local_users_res"
+      recipe "misc_mgmt"
     end.run_action(:reset)
   end
 end
