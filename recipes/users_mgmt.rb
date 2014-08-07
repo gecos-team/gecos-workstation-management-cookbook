@@ -30,6 +30,7 @@ end
 gecos_ws_mgmt_desktop_background 'desktop background' do
   users node[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users]
   job_ids node[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:support_os]
   action  :setup
 end
 
