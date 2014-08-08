@@ -17,4 +17,4 @@ attribute :name, :kind_of => String, :name_attribute => true
 attribute :value, :kind_of => String
 attribute :type, :kind_of => String, :required => true
 attribute :username, :kind_of => String, :name_attribute => true
-attribute :support_os, :kind_of => Array
+
