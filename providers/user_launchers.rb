@@ -11,25 +11,30 @@
 
 action :setup do
   begin
-    users = new_resource.users 
-    applications_path = "/usr/share/applications/"
+    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+    if new_resource.support_os.include?(os)
+      users = new_resource.users 
+      applications_path = "/usr/share/applications/"
 
-    users.each_key do |user_key|
-      username = user_key
-      user = users[user_key]
+      users.each_key do |user_key|
+        username = user_key
+        user = users[user_key]
 
-      homedir = `eval echo ~#{username}`.gsub("\n","")
-      desktop_path = "#{homedir}/Escritorio/"
+        homedir = `eval echo ~#{username}`.gsub("\n","")
+        desktop_path = "#{homedir}/Escritorio/"
 
-      gid = Etc.getpwnam(username).gid
-      user.launchers.each do |desktopfile|
-        if FileTest.exist? applications_path + desktopfile and not desktopfile.empty?
-          FileUtils.cp "#{applications_path}#{desktopfile}",  desktop_path
-          FileUtils.chown(username, gid, desktop_path + desktopfile)
-          FileUtils.chmod 0755, desktop_path + desktopfile
+        gid = Etc.getpwnam(username).gid
+        user.launchers.each do |desktopfile|
+          if FileTest.exist? applications_path + desktopfile and not desktopfile.empty?
+            FileUtils.cp "#{applications_path}#{desktopfile}",  desktop_path
+            FileUtils.chown(username, gid, desktop_path + desktopfile)
+            FileUtils.chmod 0755, desktop_path + desktopfile
+          end
         end
-      end
 
+      end
+    else
+      Chef::Log.info("This resource are not support into your OS")
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

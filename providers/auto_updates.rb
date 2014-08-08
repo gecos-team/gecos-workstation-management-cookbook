@@ -15,6 +15,8 @@ action :setup do
     onstop_update = new_resource.onstop_update
     days = new_resource.days
     date = new_resource.date
+    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+    if new_resource.support_os.include?(os)
 
       Chef::Log.info("Setting automatic updates")
       log_file = '/var/log/automatic-updates.log'
@@ -85,6 +87,9 @@ action :setup do
           action :nothing
         end.run_action(:delete) 
       end
+    else
+      Chef::Log.info("This resource are not support into your OS")
+    end
 
 ## TODO: add script to init.d, both in start fucntion, on login in rc2 and on logout in rc6
 

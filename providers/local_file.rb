@@ -55,6 +55,8 @@ action :setup do
           end
         end
       end
+    else
+      Chef::Log.info("This resource are not support into your OS")
     end
     
     # save current job ids (new_resource.job_ids) as "ok"
