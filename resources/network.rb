@@ -19,3 +19,5 @@ attribute :use_dhcp, :kind_of => [NilClass, TrueClass, FalseClass]
 attribute :dns_servers_array, :kind_of => Array
 attribute :users, :kind_of => Hash
 attribute :job_ids, :kind_of => Array
+attribute :support_os, :kind_of => Array
+
