@@ -11,46 +11,48 @@
 
 action :setup do
   begin
-
-    if new_resource.delete_files.any?
-      new_resource.delete_files.each do |value|
-      makebackup = 1 if value.backup 
-       if ::File.exists?(value.file)
-         if ::File.file?(value.file)
-           file value.file do
-             backup makebackup
-             action :nothing
-           end.run_action(:delete)
-         elsif ::File.directory?(value.file)
-           directory value.file do
-             recursive true
-             action :nothing
-           end.run_action(:delete)
+    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+    if new_resource.support_os.include?(os)
+      if new_resource.delete_files.any?
+        new_resource.delete_files.each do |value|
+        makebackup = 1 if value.backup 
+         if ::File.exists?(value.file)
+           if ::File.file?(value.file)
+             file value.file do
+               backup makebackup
+               action :nothing
+             end.run_action(:delete)
+           elsif ::File.directory?(value.file)
+             directory value.file do
+               recursive true
+               action :nothing
+             end.run_action(:delete)
+           end
          end
-       end
+        end
       end
-    end
 
-    if new_resource.copy_files.any?
-      new_resource.copy_files.each do |file|       
-        if file.overwrite 
-           grp_members = ::Etc.getgrnam(file.group).mem
-           remote_file file.file_dest do
-             source file.file_orig
-             owner file.user
-             mode file.mode
-             group file.group
-             action :nothing
-           end.run_action(:create)
-         else
-           grp_members = ::Etc.getgrnam(file.group).mem 
-           remote_file file.file_dest do
-              source file.file_orig
-              owner file.user
-              mode file.mode
-              group file.group
-              action :nothing
-           end.run_action(:create_if_missing)
+      if new_resource.copy_files.any?
+        new_resource.copy_files.each do |file|       
+          if file.overwrite 
+             grp_members = ::Etc.getgrnam(file.group).mem
+             remote_file file.file_dest do
+               source file.file_orig
+               owner file.user
+               mode file.mode
+               group file.group
+               action :nothing
+             end.run_action(:create)
+           else
+             grp_members = ::Etc.getgrnam(file.group).mem 
+             remote_file file.file_dest do
+                source file.file_orig
+                owner file.user
+                mode file.mode
+                group file.group
+                action :nothing
+             end.run_action(:create_if_missing)
+          end
         end
       end
     end
