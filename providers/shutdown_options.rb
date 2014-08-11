@@ -11,39 +11,44 @@
 
 action :setup do
   begin
-    package "dconf-tools" do
-     action :nothing
-    end.run_action(:install) 
+    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+    if new_resource.support_os.include?(os)
+      package "dconf-tools" do
+       action :nothing
+      end.run_action(:install) 
 
-    systemlock = new_resource.systemlock
-    systemset = new_resource.systemset
-    users = new_resource.users
+      systemlock = new_resource.systemlock
+      systemset = new_resource.systemset
+      users = new_resource.users
 
-    # System-level lock settings
-    #system = gecos_ws_mgmt_system_settings "disable-log-out" do
-    #    provider "gecos_ws_mgmt_system_settings"
-    #    schema "org.cinnamon.desktop.lockdown"
-    #    type "boolean"
-    #    value "#{systemset}"
-    #    action :nothing
-    #end
-    #system.run_action(:lock) if systemlock
-    #system.run_action(:unlock) if !systemlock
+      # System-level lock settings
+      #system = gecos_ws_mgmt_system_settings "disable-log-out" do
+      #    provider "gecos_ws_mgmt_system_settings"
+      #    schema "org.cinnamon.desktop.lockdown"
+      #    type "boolean"
+      #    value "#{systemset}"
+      #    action :nothing
+      #end
+      #system.run_action(:lock) if systemlock
+      #system.run_action(:unlock) if !systemlock
 
-    # User-level key values
-    users.each_key do |user_key|
-      username = user_key
-      user = users[user_key]
+      # User-level key values
+      users.each_key do |user_key|
+        username = user_key
+        user = users[user_key]
 
-      disable_log_out = user.disable_log_out
+        disable_log_out = user.disable_log_out
 
-      gecos_ws_mgmt_desktop_settings "disable-log-out" do
-        provider "gecos_ws_mgmt_gsettings"
-        schema "org.cinnamon.desktop.lockdown"
-        type "boolean"
-        username username
-        value "#{disable_log_out}"
-      end.run_action(:set)
+        gecos_ws_mgmt_desktop_settings "disable-log-out" do
+          provider "gecos_ws_mgmt_gsettings"
+          schema "org.cinnamon.desktop.lockdown"
+          type "boolean"
+          username username
+          value "#{disable_log_out}"
+        end.run_action(:set)
+      end
+    else
+      Chef::Log.info("This resource are not support into your OS")
     end
     
     # save current job ids (new_resource.job_ids) as "ok"

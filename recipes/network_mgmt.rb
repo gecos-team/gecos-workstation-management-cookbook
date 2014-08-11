@@ -18,5 +18,6 @@ gecos_ws_mgmt_network "localhost" do
   dns_servers_array node[:gecos_ws_mgmt][:network_mgmt][:network_res][:dns_servers_array]
   users node[:gecos_ws_mgmt][:network_mgmt][:network_res][:users]
   job_ids node[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os]
   action :setup
 end

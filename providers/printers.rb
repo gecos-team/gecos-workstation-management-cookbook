@@ -11,7 +11,12 @@
 
 action :setup do
   begin
-    printers_list = new_resource.printers_list
+  	os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+    if new_resource.support_os.include?(os)
+      printers_list = new_resource.printers_list
+    else
+      Chef::Log.info("This resource are not support into your OS")
+    end
 #    printers_list.each do |printer|
 #      Chef::Log.info("Instalando impresora #{printer.name}")
 #    end
