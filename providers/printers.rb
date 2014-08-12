@@ -16,8 +16,8 @@ action :setup do
     if printers_list.any?
 
       service "cups" do
-        action :restart
-      end
+        action :nothing
+      end.run_action(:restart)
 
       package 'python-cups' 
       package 'cups-driver-gutenprint' 
@@ -48,11 +48,13 @@ action :setup do
           remote_file "/usr/share/ppd/#{make}/#{model}/#{ppd}" do
             source ppd_uri
             mode "0644"
-          end
+            action :nothing
+          end.run_action(:create)
         end
 
         script "install_printer" do
           interpreter "python"
+          action :nothing
           user "root"
           code <<-EOH
 import cups
@@ -72,18 +74,27 @@ connection.enablePrinter('#{name}')
 connection.acceptJobs('#{name}')
 
     EOH
-         end
+        end.run_action(:run)
 
       end
     end
     # TODO:
     # save current job ids (new_resource.job_ids) as "ok"
-
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 0
+    end
   rescue
     # TODO:
     # just save current job ids as "failed"
     # save_failed_job_ids
-    raise
+    Chef::Log.error(e.message)
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+      node.set['job_status'][jid]['status'] = 1
+      node.set['job_status'][jid]['message'] = e.message
+    end
+    
   end
 end
 
