@@ -38,7 +38,7 @@ default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:support_os] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:support_os] = []
+default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:support_os] = ["GECOS V2"]
 
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:onstop_update] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:onstart_update] = false

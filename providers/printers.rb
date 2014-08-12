@@ -31,9 +31,17 @@ action :setup do
         name = printer.name
         make = printer.manufacturer
         model = printer.model
-        ppd = printer.ppd
+        ppd = ""
+        if printer.attribute?("ppd")
+          ppd = printer.ppd
+        end
+
         uri = printer.uri
-        ppd_uri = printer.ppd_uri
+        ppd_uri = ""
+        if printer.attribute?("ppd_uri")
+          ppd_uri = printer.ppd_uri
+        end
+
 
         if ppd_uri != '' and ppd != ''
           FileUtils.mkdir_p("/usr/share/ppd/#{make}/#{model}")    
