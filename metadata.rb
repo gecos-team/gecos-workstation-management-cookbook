@@ -880,8 +880,8 @@ printers_js = {
           manufacturer: { type: "string", title: "Manufacturer" },
           model: { type: "string" , title: "Model"},
           uri: { type: "string", title: "Uri" },
-          ppd_uri: { type: "string", title: "Uri PPD", default: ""},
-          ppd: { type: "string", title: "PPD Name"},
+          ppd_uri: { type: "string", title: "Uri PPD", default: "", pattern: "(\b(https?|ftp|file)://)?[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
+          ppd: { type: "string", title: "PPD Name"}
         }
       }
     },
