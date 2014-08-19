@@ -97,16 +97,22 @@ action :setup do
   begin
     users = new_resource.users 
 
+
     # TODO: Check if this is enough or if it would need some intelligence to get this path
     xdg_menu_name = "cinnamon-applications.menu"
 
     # It builds the complete user menu as a ruby hash (ruby-xdg menu)
-    xdg_menu = Menu.new XDG::CONST::XDG["XDG CONFIG DIRS"][0] + "/menus/" + xdg_menu_name
-    xdg_menu.build
+    
 
     users.each_key do |user_key|
       username = user_key 
       user = users[user_key]
+      ENV['HOME'] = '/home/' + user 
+      locale = `cat /etc/locale.gen`
+      locale = locale.split()[0]
+      ENV['LANG'] = locale
+      xdg_menu = Menu.new XDG::CONST::XDG["XDG CONFIG DIRS"][0] + "/menus/" + xdg_menu_name
+      xdg_menu.build
 
       desktop_files_include = user.desktop_files_include
       desktop_files_exclude = user.desktop_files_exclude
