@@ -9,8 +9,7 @@
 # http://www.osor.eu/eupl
 #
 
-require "rexml/document"
-require "xdg"
+
 
 APPLICATIONS_DIR = "/usr/share/applications/"
 
@@ -111,6 +110,8 @@ action :setup do
       locale = `cat /etc/locale.gen`
       locale = locale.split()[0]
       ENV['LANG'] = locale
+      require "rexml/document"
+      require "xdg"
       xdg_menu = Menu.new XDG::CONST::XDG["XDG CONFIG DIRS"][0] + "/menus/" + xdg_menu_name
       xdg_menu.build
 
