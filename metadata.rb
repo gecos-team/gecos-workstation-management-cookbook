@@ -874,13 +874,14 @@ printers_js = {
       title: "Printer list to enable",
       items: {
         type:"object",
-        required: [ "name", "manufacturer", "model", "ppd_uri" ],
+        required: [ "name", "manufacturer", "model", "uri"],
         properties:{
           name: { type: "string", title: "Name" },
           manufacturer: { type: "string", title: "Manufacturer" },
           model: { type: "string" , title: "Model"},
           uri: { type: "string", title: "Uri" },
-          ppd_uri: { type: "string", title: "Uri PPD", default: ""},
+          ppd_uri: { type: "string", title: "Uri PPD", default: "", pattern: "(\b?(https?|ftp|file)://)[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
+          ppd: { type: "string", title: "PPD Name"}
         }
       }
     },
