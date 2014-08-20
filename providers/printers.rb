@@ -18,12 +18,13 @@ action :setup do
       service "cups" do
         action :nothing
       end.run_action(:restart)
-
-      package 'python-cups' 
-      package 'cups-driver-gutenprint' 
-      package 'foomatic-db' 
-      package 'foomatic-db-engine' 
-      package 'foomatic-db-gutenprint'
+      pkgs = ['python-cups', 'cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
+      pkgs.each do |pkg|
+        package pkg do
+          action :nothing
+        end.run_action(:install)
+      end
+      
  
       printers_list.each do |printer|
         Chef::Log.info("Instalando impresora #{printer.name}")
