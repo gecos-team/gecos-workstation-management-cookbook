@@ -470,8 +470,11 @@ web_browser_js = {
                 required: ["key", "value"],
                 properties: {
                   key: {type: "string", title: "Key"},
-                  #Changed to three types of config
-                  value: {anyOf:[{type: "string"},{type:"boolean"},{type:"number"}], title: "Value"}
+                  value_str: {type: "string", title: "Value (string)"},
+                  value_num: {type: "number", title: "Value (number)"},
+                  value_bool: {type: "boolean", title: "Value (boolean)"},
+                  value_type: {title: "Value type", type: "string", enum: ["string", "number", "boolean"]}
+
                 }
               }
             },
