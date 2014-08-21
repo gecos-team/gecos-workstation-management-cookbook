@@ -196,12 +196,23 @@ action :setup do
           ## CONFIGS STUFF   
           if !user.config.empty?
             Chef::Log.info("Setting user #{username} web configs")
+            value = nil
+            if user.config[:value_type] == "string"
+              value = user.config[:value_str]
+            elsif user.config[:value_type] == "boolean"
+              value = user.config[:value_bool]
+            elsif user.config[:value_type] == "number"
+              value = user.config[:value_num]
+            end
+            config = {}
+            config['key'] = user.config[:key]
+            config['value'] = value
      
             profile_dirs.each do |prof|
               template "#{prof}/user.js" do
                 owner username
                 source "web_browser_user.js.erb"
-                variables ({:config => user.config})
+                variables ({:config => config})
                 action :nothing
               end.run_action(:create)
             end
