@@ -9,6 +9,10 @@
 # http://www.osor.eu/eupl
 #
 
+puts 
+
 gecos_ws_mgmt_network "localhost" do
+	connections node[:gecos_ws_mgmt][:network_mgmt][:network_res][:connections]
+    job_ids node[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids]
   action  :setup
 end

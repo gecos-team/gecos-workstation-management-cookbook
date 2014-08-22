@@ -1,4 +1,4 @@
-#
+ #
 # Cookbook Name:: gecos-ws-mgmt
 # Recipe:: network_management
 #
