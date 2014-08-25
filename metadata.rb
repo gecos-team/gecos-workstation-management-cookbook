@@ -679,7 +679,7 @@ network_resource_js = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["name", "mac_address","use_dhcp", "net_type"],
+        required: ["name", "mac_address", "use_dhcp", "net_type"],
         properties: {
           name: {type: "string", title: "Name"},
           mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address"},
@@ -711,64 +711,6 @@ network_resource_js = {
             title: "Gateway",
             format: "ipv4"
           },
-
-          # conn_config: {
-          #   type: "object",
-          #   title: "Connection Config",
-          #   oneOf:[
-          #   {
-          #     additionalProperties: false,
-          #     required: [ "use_dhcp"],
-          #     properties: {
-          #       use_dhcp: { type: "boolean", enum: [ true ], title: "DHCP"}
-          #     }
-          #   },
-          #   {
-          #     additionalProperties: false,
-          #     required: [ "use_dhcp", "addresses", "gateway"],
-          #     properties: {
-          #       use_dhcp: { type: "boolean", enum: [ false ] , title: "Manual"},
-          #       addresses: {
-          #         type: "array",
-          #         uniqueItems: true,
-          #         minItems: 1,
-          #         title: "IP addresses",
-          #         items: {
-          #           type: "object",
-          #           additionalProperties: false,
-          #           required: [ "ip_addr","netmask"],
-          #           properties:{
-          #             ip_addr: {
-          #               type: "string",
-          #               title: "IP address",
-          #               oneOf: [
-          #                 { format: "ipv4" },
-          #                 { format: "ipv6" }
-          #               ]
-          #             },
-          #             netmask: {
-          #               type: "string",
-          #               title: "Netmask",
-          #               oneOf: [
-          #                 { format: "ipv4" },
-          #                 { format: "ipv6" }
-          #               ]
-          #             }
-          #           }
-          #         }
-          #       },
-          #       gateway: {
-          #         type: "string",
-          #         title: "Gateway",
-          #         oneOf: [
-          #           { format: "ipv4" },
-          #           { format: "ipv6" }
-          #         ]
-          #       }
-          #     }
-          #   }
-          #   ]
-          # },
           dns_servers: {
             type: "array",
             title: "DNS Servers (Without DHCP)",
@@ -778,11 +720,6 @@ network_resource_js = {
               type: "string",
               title: "DNS",
               format: "ipv4"
-
-              # oneOf: [
-              #   { format: "ipv4" },
-              #   { format: "ipv6" }
-              # ]
             }
           },
           net_type:{
@@ -801,76 +738,7 @@ network_resource_js = {
 
             }
           }
-          
-          # conn_type: {
-          #   type: "object",
-          #   title: "Connection type",
-          #   oneOf: [ 
-          #   {
-          #     additionalProperties: false,
-          #     properties: {
-          #       net_type: {enum: ["wired"], title: "Wired", type: "string"}
-          #     }
-          #   },
-          #   {
-          #     required: [ "net_type", "essid", "security"],
-          #     additionalProperties: false,
-          #     properties: {
-          #       net_type: {enum: ["wireless"], title: "Wireless", type: "string"},
-          #       essid: { type: "string", title: "ESSID" },
-          #       security: { 
-          #         type: "object", 
-          #         oneOf: 
-          #         [{
-          #           properties: {
-          #             sec_type: { enum: [ "none" ], title: "Security type", type:"string"}
-          #           },
-          #           additionalProperties: false
-          #         },
-          #         { 
-          #           required: [ "sec_type", "enc_pass", "auth_type" ],
-          #           properties: {
-          #             sec_type: { enum: [ "WEP" ], title: "Security type", type:"string"},
-          #             enc_pass: { type: "string", title: "Password" },
-          #             auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type", type: "string", default: "OpenSystem"}
-          #           },
-          #           additionalProperties: false
-          #         },
-          #         { 
-          #           required: [ "sec_type", "auth_user", "auth_password"],
-          #           properties: {
-          #             sec_type: { enum: [ "Leap"], title: "Security type", type:"string" },
-          #             auth_user: { type: "string", title: "Password" },
-          #             auth_password: { type: "string", title: "Username" }
-          #           },
-          #           additionalProperties: false
-          #         },
-          #         { 
-          #           additionalProperties: false,
-          #           properties: {
-          #             sec_type: { enum: [ "D_WEP"], title: "Security type", type:"string"}
-          #           }
-          #         },
-          #         { 
-          #           required: [ "sec_type", "enc_pass"],
-          #           additionalProperties: false,
-          #           properties: {
-          #             sec_type: { enum: [ "WPA_PSK"], title: "Security type", type:"string"},
-          #             enc_pass: { type: "string", title: "Password" }
-          #           }
-          #         },
-          #         { 
-          #           additionalProperties: false,
-          #           properties: {
-          #             sec_type: { enum: ["WPA_ENT"], title: "Security type", type: "string"}
-          #           }
-                    
-          #         }]
-          #       }
-          #     }
-          #   }
-          #   ]
-          # }
+
         }
       }
     },
