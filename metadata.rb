@@ -679,7 +679,7 @@ network_resource_js = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["name", "mac_address", "conn_type", "use_dhcp", "net_type"],
+        required: ["name", "mac_address","use_dhcp", "net_type"],
         properties: {
           name: {type: "string", title: "Name"},
           mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address"},
