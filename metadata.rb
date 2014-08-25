@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.2.3"
+version           "0.2.9"
 
 depends "apt"
 depends "chef-client"
@@ -668,7 +668,7 @@ scripts_launch_js = {
 
 network_resource_js = {
   type: "object",
-  title: "Network"
+  title: "Network",
   required: ["connections"],
   properties:
   {
