@@ -736,56 +736,80 @@ scripts_launch_js = {
 }
 
 network_resource_js = {
-  title: "Network Manager",
   type: "object",
-  required: ["network_type", "dns_servers_array"],
+  title: "Network",
+  required: ["connections"],
   properties:
   {
-    gateway: { type: "string",title: "Gateway" },
-    ip_address: { type:"string", title: "Ip Address" },
-    netmask: { type: "string", title: "Netmask" },
-    network_type: { enum: ["wired","wireless"],type: "string", title: "Network Type" },
-    use_dhcp: { type: "boolean" , title: "Use DHCP?"},
-    dns_servers_array: {
+    connections: {
       type: "array",
-      title: "DNS Servers",
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: "object",
+        required: ["name", "mac_address", "use_dhcp", "net_type"],
+        properties: {
+          name: {type: "string", title: "Name"},
+          mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address"},
+          use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP"},
+          addresses: {
+            type: "array",
+            uniqueItems: true,
+            minItems: 0,
+            title: "IP addresses (Without DHCP)",
+            items: {
+              type: "object",
+              #required: [ "ip_addr","netmask"],
+              properties:{
+                ip_addr: {
+                  type: "string",
+                  title: "IP address",
+                  format: "ipv4"
+                },
+                netmask: {
+                  type: "string",
+                  title: "Netmask",
+                  format: "ipv4"
+                }
+              }
+            }
+          },
+          gateway: {
+            type: "string",
+            title: "Gateway",
+            format: "ipv4"
+          },
+          dns_servers: {
+            type: "array",
+            title: "DNS Servers (Without DHCP)",
+            minItems: 0,
+            uniqueItems: true,
+            items: {
+              type: "string",
+              title: "DNS",
+              format: "ipv4"
+            }
+          },
+          net_type:{
+            enum: ["wired", "wireless"], title: "Connection type", type: "string"
+          },
+          essid: { type: "string", title: "ESSID" },
+          security: { 
+            type: "object", 
+            required: ["sec_type"],
+            properties:{
+              sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", type:"string"},
+              enc_pass: { type: "string", title: "Password (WEP, WPA_PSK security)" },
+              auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type (WEP security)", type: "string", default: "OpenSystem"},
+              auth_user: { type: "string", title: "Username (Leap security)" },
+              auth_password: { type: "string", title: "Password (Leap security)" }
+
+            }
+          }
+
+        }
       }
     },
-#    users: {
-#      type: "object",
-#      title: "Users",
-#      patternProperties: {
-#        ".*" => { type: "object", title: "Username",
-#          required: ["network_type"],
-#          properties: {
-#            username: { type: "string", title: "Username" },
-#            gateway: { type: "string",title: "Gateway" },
-#            ip_address: { type:"string", title: "Ip Address" },
-#            netmask: { type: "string", title: "Netmask" },
-#            network_type: { enum: ["wired","wireless","vpn","proxy"], type: "string", title: "Network Type" },
-#            use_dhcp: { type: "boolean", title: "Use DHCP?" },
-#            certs: {
-#              type: "array",
-#              title: "Certificates",
-#              minItems: 0,
-#              uniqueItems: true,
-#              items: {
-#                type: "object",
-#                required: ["name","uri"],
-#                properties: {
-#                  name: {type: "string", title: "Name"},
-#                  uri: {type: "string", title: "Url"}
-#                }
-#              }
-#            }
-#          }
-#        }
-#      }
-#    },
     job_ids: {
       type: "array",
       minItems: 0,

@@ -1,13 +1,7 @@
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:ip_address] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:gateway] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:netmask] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:dns_servers_array] = []
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:network_type] = 'wired'
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:use_dhcp] = true
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:users] = {}
+
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os] = []
+default[:gecos_ws_mgmt][:network_mgmt][:network_res][:connections] = []
+default[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os] = ["GECOS V2"]
 
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:auth_type] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:enabled] = false
