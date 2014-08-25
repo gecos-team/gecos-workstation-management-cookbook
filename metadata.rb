@@ -687,8 +687,8 @@ network_resource_js = {
           addresses: {
             type: "array",
             uniqueItems: true,
-            minItems: 1,
-            title: "IP addresses",
+            minItems: 0,
+            title: "IP addresses (Without DHCP)",
             items: {
               type: "object",
               required: [ "ip_addr","netmask"],
@@ -771,8 +771,8 @@ network_resource_js = {
           # },
           dns_servers: {
             type: "array",
-            title: "DNS Servers",
-            minItems: 1,
+            title: "DNS Servers (Without DHCP)",
+            minItems: 0,
             uniqueItems: true,
             items: {
               type: "string",
