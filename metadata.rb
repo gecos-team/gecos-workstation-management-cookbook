@@ -668,6 +668,7 @@ scripts_launch_js = {
 
 network_resource_js = {
   type: "object",
+  title: "Network"
   required: ["connections"],
   properties:
   {
