@@ -674,7 +674,7 @@ network_resource_js = {
   {
     connections: {
       type: "array",
-      minItems: 1,
+      minItems: 0,
       uniqueItems: true,
       items: {
         type: "object",
