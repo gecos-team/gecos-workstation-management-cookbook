@@ -678,7 +678,6 @@ network_resource_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        additionalProperties: false,
         required: ["name", "mac_address", "use_dhcp", "net_type"],
         properties: {
           name: {type: "string", title: "Name"},
@@ -691,7 +690,7 @@ network_resource_js = {
             title: "IP addresses (Without DHCP)",
             items: {
               type: "object",
-              required: [ "ip_addr","netmask"],
+              #required: [ "ip_addr","netmask"],
               properties:{
                 ip_addr: {
                   type: "string",
@@ -730,7 +729,7 @@ network_resource_js = {
             type: "object", 
             required: ["sec_type"],
             properties:{
-              sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], title: "Security type", type:"string"},
+              sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", type:"string"},
               enc_pass: { type: "string", title: "Password (WEP, WPA_PSK security)" },
               auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type (WEP security)", type: "string", default: "OpenSystem"},
               auth_user: { type: "string", title: "Username (Leap security)" },
