@@ -39,6 +39,7 @@ action :setup do
 
       nm_conn_backup_dir = '/etc/NetworkManager/system-connections/chef-backups'
       nm_conn_production_dir = '/etc/NetworkManager/system-connections/chef-conns'
+      nm_conn_path = '/etc/NetworkManager/system-connections/'
    
       unless Kernel::test('d', nm_conn_backup_dir)
         FileUtils.mkdir nm_conn_backup_dir
@@ -59,6 +60,13 @@ action :setup do
               #generar uno nuevo
               uuid = SecureRandom.uuid
             end
+            Dir.chdir(nm_conn_path) do
+              Dir.glob('*').each do |file|
+                if ::File.file?(file)
+                  FileUtils.mv file, nm_conn_backup_dir
+                end
+              end
+            end
             # mover todas las conexiones a backup
             Chef::Log.info("Setting connection for #{interface} [#{mac_addr}] - #{connection[:conn_type][:net_type]}")
             template conn_file do
@@ -70,6 +78,13 @@ action :setup do
                 :connection => connection
                 })
               source 'connection.erb'
+            end
+          end
+        end
+        Dir.chdir(nm_conn_backup_dir) do
+          Dir.glob('*').each do |file|
+            if ::File.file?(file)
+              FileUtils.mv file, nm_conn_path
             end
           end
         end 
@@ -192,7 +207,7 @@ action :setup do
   rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
-    raise
+    Chef::Log.error(e)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
