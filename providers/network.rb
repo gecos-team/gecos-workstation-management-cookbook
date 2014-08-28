@@ -34,6 +34,7 @@ action :setup do
 
       # setup system connections
       connections = new_resource.connections
+      Chef::Log.info("Conections: #{connections}")
       interfaces = node[:network][:interfaces]
 
 
@@ -50,14 +51,26 @@ action :setup do
       end
 
       interfaces.select { |interface, properties| properties[:encapsulation] == 'Ethernet'}.each do |interface, properties|
+        Chef::Log.info(interface)
         properties[:addresses].select { |mac_addr, addr_data| addr_data[:family]=='lladdr' }.each do |mac_addr, addr_data|
-          connections.select { |connection| connection[:mac_address] == mac_addr}.each do |connection|
-            conn_file = nm_conn_production_dir + '/' + connection[:name]
+          Chef::Log.info("Mac_properties: #{mac_addr}")
+          Chef::Log.info("Mac_connection: #{connections[0][:mac_address]}")
+          Chef::Log.info(connections[0][:mac_address].upcase == mac_addr.upcase)
+          connections.select { |connection| connection[:mac_address].upcase == mac_addr.upcase}.each do |connection|
+            Chef::Log.info("Conentra #{connection}")
+            Chef::Log.info("dir: #{nm_conn_production_dir.to_s}")
+            Chef::Log.info("name: #{connection[:name].to_s}")
+            Chef::Log.info("union: #{nm_conn_production_dir.to_s}/#{connection[:name].to_s}")
+            conn_file = nm_conn_production_dir.to_s + '/' + connection[:name].to_s
+            Chef::Log.info("file: #{conn_file}")
             if Kernel::test('f',conn_file)
               #extraer el uuid
+              #
+              Chef::Log.info("Entra1")
               uuid = open(conn_file).grep(/uuid/)[0].gsub("\n",'').split('=')[1]
             else
               #generar uno nuevo
+              Chef::Log.info("Entra2")
               uuid = SecureRandom.uuid
             end
             Dir.chdir(nm_conn_path) do
@@ -68,7 +81,7 @@ action :setup do
               end
             end
             # mover todas las conexiones a backup
-            Chef::Log.info("Setting connection for #{interface} [#{mac_addr}] - #{connection[:conn_type][:net_type]}")
+            Chef::Log.info("Setting connection for #{interface} [#{mac_addr}] - #{connection[:net_type]}")
             template conn_file do
               owner "root"
               group "root"
@@ -81,7 +94,7 @@ action :setup do
             end
           end
         end
-        Dir.chdir(nm_conn_backup_dir) do
+        Dir.chdir(nm_conn_production_dir) do
           Dir.glob('*').each do |file|
             if ::File.file?(file)
               FileUtils.mv file, nm_conn_path
