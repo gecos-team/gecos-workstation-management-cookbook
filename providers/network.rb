@@ -51,26 +51,16 @@ action :setup do
       end
 
       interfaces.select { |interface, properties| properties[:encapsulation] == 'Ethernet'}.each do |interface, properties|
-        Chef::Log.info(interface)
+        
         properties[:addresses].select { |mac_addr, addr_data| addr_data[:family]=='lladdr' }.each do |mac_addr, addr_data|
-          Chef::Log.info("Mac_properties: #{mac_addr}")
-          Chef::Log.info("Mac_connection: #{connections[0][:mac_address]}")
-          Chef::Log.info(connections[0][:mac_address].upcase == mac_addr.upcase)
           connections.select { |connection| connection[:mac_address].upcase == mac_addr.upcase}.each do |connection|
-            Chef::Log.info("Conentra #{connection}")
-            Chef::Log.info("dir: #{nm_conn_production_dir.to_s}")
-            Chef::Log.info("name: #{connection[:name].to_s}")
-            Chef::Log.info("union: #{nm_conn_production_dir.to_s}/#{connection[:name].to_s}")
             conn_file = nm_conn_production_dir.to_s + '/' + connection[:name].to_s
-            Chef::Log.info("file: #{conn_file}")
             if Kernel::test('f',conn_file)
               #extraer el uuid
               #
-              Chef::Log.info("Entra1")
               uuid = open(conn_file).grep(/uuid/)[0].gsub("\n",'').split('=')[1]
             else
               #generar uno nuevo
-              Chef::Log.info("Entra2")
               uuid = SecureRandom.uuid
             end
             Dir.chdir(nm_conn_path) do
