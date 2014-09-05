@@ -785,7 +785,7 @@ network_resource_js = {
           },
           dns_servers: {
             type: "array",
-            title: "DNS Servers (Without DHCP)",
+            title: "DNS Servers",
             description: "With DHCP disable",
             minItems: 0,
             uniqueItems: true,
