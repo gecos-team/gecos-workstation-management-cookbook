@@ -756,7 +756,8 @@ network_resource_js = {
             type: "array",
             uniqueItems: true,
             minItems: 0,
-            title: "IP addresses (Without DHCP)",
+            description: "With DHCP disable",
+            title: "IP addresses",
             items: {
               type: "object",
               #required: [ "ip_addr","netmask"],
@@ -764,11 +765,13 @@ network_resource_js = {
                 ip_addr: {
                   type: "string",
                   title: "IP address",
+                  description: "ipv4 format",
                   format: "ipv4"
                 },
                 netmask: {
                   type: "string",
                   title: "Netmask",
+                  description: "ipv4 format",
                   format: "ipv4"
                 }
               }
@@ -777,16 +780,19 @@ network_resource_js = {
           gateway: {
             type: "string",
             title: "Gateway",
+            description: "ipv4 format",
             format: "ipv4"
           },
           dns_servers: {
             type: "array",
             title: "DNS Servers (Without DHCP)",
+            description: "With DHCP disable",
             minItems: 0,
             uniqueItems: true,
             items: {
               type: "string",
               title: "DNS",
+              description: "ipv4 format",
               format: "ipv4"
             }
           },
@@ -799,10 +805,10 @@ network_resource_js = {
             required: ["sec_type"],
             properties:{
               sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", type:"string"},
-              enc_pass: { type: "string", title: "Password (WEP, WPA_PSK security)" },
-              auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type (WEP security)", type: "string", default: "OpenSystem"},
-              auth_user: { type: "string", title: "Username (Leap security)" },
-              auth_password: { type: "string", title: "Password (Leap security)" }
+              enc_pass: { type: "string", title: "Password", description: "WEP, WPA_PSK security", },
+              auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type", description: "WEP security", type: "string", default: "OpenSystem"},
+              auth_user: { type: "string", title: "Username", description: "Leap security" },
+              auth_password: { type: "string", title: "Password", description: "Leap security" }
 
             }
           }

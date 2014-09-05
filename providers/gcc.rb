@@ -50,6 +50,7 @@ action :setup do
               end
             rescue Exception => e
               Chef::Log.error(e.message)
+              raise e
             end
             template "/etc/gcc.control" do
               source 'gcc.control.erb'
@@ -79,6 +80,7 @@ action :setup do
               end
             rescue Exception => e
               Chef::Log.error(e.message)
+              raise e
             end
             file "/etc/gcc.control" do
               action :nothing
@@ -113,6 +115,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    raise e
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
