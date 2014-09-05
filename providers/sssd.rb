@@ -46,7 +46,7 @@ action :setup do
         
         if domain.type == "ad"
           if ! (domain.key?('ad_user') and domain.key?('ad_passwd'))
-            Chef::Log.info("SSSD_setup: is not possible to register the team for lack of administrator credentials")
+            Chef::Log.info("SSSD_setup: Error to register computer. Administrator credentials incorrects")
             netjoin_command = "net ads info"
           else
             netjoin_command = "net ads join -U #{domain.ad_user}%#{domain.ad_passwd}"
