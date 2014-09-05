@@ -1121,11 +1121,13 @@ power_conf_js = {
        properties: {
          hour: {
            title: "Hour",
+           description:"Time to shutdown",
            type: "integer",
            maximum: 23
            },
          minute: {
-           title: "Minute",                                                                                                                                                                                     
+           title: "Minute",
+           description:"Time to shutdown",                                                                                                                                                                                     
            type: "integer",
            maximum: 59
          }
