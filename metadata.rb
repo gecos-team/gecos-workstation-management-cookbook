@@ -152,7 +152,8 @@ screensaver_js = {
             },
             idle_delay: {
               type: "string",
-              title: "Idle Delay (sec)"
+              title: "Idle Delay",
+              description: "Seconds"
             },
             lock_enabled: {
               type: "boolean",
@@ -160,7 +161,8 @@ screensaver_js = {
             },
             lock_delay: {
               type: "string",
-              title: "Lock Delay (sec)"
+              title: "Lock Delay",
+              description: "Seconds"
             }, 
             updated_by: updated_js
           }
@@ -470,9 +472,9 @@ web_browser_js = {
                 required: ["key", "value"],
                 properties: {
                   key: {type: "string", title: "Key"},
-                  value_str: {type: "string", title: "Value (string)"},
-                  value_num: {type: "number", title: "Value (number)"},
-                  value_bool: {type: "boolean", title: "Value (boolean)"},
+                  value_str: {type: "string", title: "Value", description: "Only if Value Type is string"},
+                  value_num: {type: "number", title: "Value", description: "Only if Value Type is number"},
+                  value_bool: {type: "boolean", title: "Value", description: "Only if Value Type is boolean"},
                   value_type: {title: "Value type", type: "string", enum: ["string", "number", "boolean"]}
 
                 }
