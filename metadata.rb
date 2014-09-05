@@ -472,9 +472,9 @@ web_browser_js = {
                 required: ["key", "value"],
                 properties: {
                   key: {type: "string", title: "Key"},
-                  value_str: {type: "string", title: "Value", description: "Only in string"},
-                  value_num: {type: "number", title: "Value", description: "Only in number"},
-                  value_bool: {type: "boolean", title: "Value", description: "Only in boolean"},
+                  value_str: {type: "string", title: "Value", description: "Only if Value Type is string"},
+                  value_num: {type: "number", title: "Value", description: "Only if Value Type is number"},
+                  value_bool: {type: "boolean", title: "Value", description: "Only if Value Type is boolean"},
                   value_type: {title: "Value type", type: "string", enum: ["string", "number", "boolean"]}
 
                 }
