@@ -737,7 +737,7 @@ scripts_launch_js = {
 
 network_resource_js = {
   type: "object",
-  title: "Network",
+  title: "Network Manager",
   required: ["connections"],
   properties:
   {
