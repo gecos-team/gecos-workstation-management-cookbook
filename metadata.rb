@@ -751,69 +751,85 @@ network_resource_js = {
         type: "object",
         required: ["name", "mac_address", "use_dhcp", "net_type"],
         properties: {
-          name: {type: "string", title: "Name"},
-          mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address"},
-          use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP"},
-          addresses: {
-            type: "array",
-            uniqueItems: true,
-            minItems: 0,
-            description: "With DHCP disable",
-            title: "IP addresses",
-            items: {
-              type: "object",
-              #required: [ "ip_addr","netmask"],
-              properties:{
-                ip_addr: {
+          fixed_con: {
+            title: "DHCP Disabled properties",
+            description: "Only if DHCP is disabled",
+            type: "object",
+            properties:{
+              addresses: {
+                type: "array",
+                uniqueItems: true,
+                minItems: 0,
+                description: "With DHCP disable",
+                title: "IP addresses",
+                items: {
+                  type: "object",
+                  #required: [ "ip_addr","netmask"],
+                  properties:{
+                    ip_addr: {
+                      type: "string",
+                      title: "IP address",
+                      description: "ipv4 format",
+                      format: "ipv4"
+                    },
+                    netmask: {
+                      type: "string",
+                      title: "Netmask",
+                      description: "ipv4 format",
+                      format: "ipv4"
+                    }
+                  }
+                } 
+              },
+              gateway: {
+                type: "string",
+                title: "Gateway",
+                description: "ipv4 format",
+                format: "ipv4"
+              },
+              dns_servers: {
+                type: "array",
+                title: "DNS Servers",
+                description: "With DHCP disable",
+                minItems: 0,
+                uniqueItems: true,
+                items: {
                   type: "string",
-                  title: "IP address",
-                  description: "ipv4 format",
-                  format: "ipv4"
-                },
-                netmask: {
-                  type: "string",
-                  title: "Netmask",
+                  title: "DNS",
                   description: "ipv4 format",
                   format: "ipv4"
                 }
               }
             }
           },
-          gateway: {
-            type: "string",
-            title: "Gateway",
-            description: "ipv4 format",
-            format: "ipv4"
-          },
-          dns_servers: {
-            type: "array",
-            title: "DNS Servers",
-            description: "With DHCP disable",
-            minItems: 0,
-            uniqueItems: true,
-            items: {
-              type: "string",
-              title: "DNS",
-              description: "ipv4 format",
-              format: "ipv4"
-            }
-          },
+          name: {type: "string", title: "Name"},
+          mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address"},
+          use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP"},
           net_type:{
             enum: ["wired", "wireless"], title: "Connection type", type: "string"
           },
-          essid: { type: "string", title: "ESSID" },
-          security: { 
-            type: "object", 
-            required: ["sec_type"],
+          wireless_conn:{
+            type:"object",
+            title: "Wireless Configuration",
             properties:{
-              sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", type:"string"},
-              enc_pass: { type: "string", title: "Password", description: "WEP, WPA_PSK security", },
-              auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type", description: "WEP security", type: "string", default: "OpenSystem"},
-              auth_user: { type: "string", title: "Username", description: "Leap security" },
-              auth_password: { type: "string", title: "Password", description: "Leap security" }
+              essid: { type: "string", title: "ESSID" },
+              security: { 
+                type: "object", 
+                title: "Security Configuration",
+                required: ["sec_type"],
+                properties:{
+                  sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", type:"string"},
+                  enc_pass: { type: "string", title: "Password", description: "WEP, WPA_PSK security", },
+                  auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type", description: "WEP security", type: "string", default: "OpenSystem"},
+                  auth_user: { type: "string", title: "Username", description: "Leap security" },
+                  auth_password: { type: "string", title: "Password", description: "Leap security" }
 
+                }
+              }
             }
+
           }
+          
 
         }
       }

@@ -188,7 +188,7 @@ action :setup do
     end
   rescue Exception => e
     Chef::Log.error(e.message)
-    raise e
+    #raise e
   end
 end
 
