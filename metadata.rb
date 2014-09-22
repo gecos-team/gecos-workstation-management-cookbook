@@ -606,6 +606,7 @@ app_config_js = {
         array_attrs: {
           type: "array",
           minItems: 0,
+          title: "Another configuration properties"
           uniqueItems: true,
           items:{
             type: "object",
