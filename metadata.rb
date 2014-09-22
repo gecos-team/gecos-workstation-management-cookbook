@@ -563,7 +563,7 @@ app_config_js = {
     java_config: {
       title: "Java Configuration",
       type: "object",
-      required: ["version","plug_version","sec","crl","ocsp","warn_cert","mix_code"]
+      required: ["version","plug_version","sec","crl","ocsp","warn_cert","mix_code"],
       properties: {
         version: {
           title: "Java Version",
