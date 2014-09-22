@@ -9,7 +9,7 @@
 # http://www.osor.eu/eupl
 #
 
-action :setup
+actions :setup
 
 attribute :java_config, :kind_of => Object
 attribute :firefox_config, :kind_of => Object
