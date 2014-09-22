@@ -30,8 +30,8 @@ action :setup do
 
         cookbook_file "deployment.config" do
           path "/etc/.java/deployment/deployment.config"
-          action :create_if_missing
-        end
+          action :nothing
+        end.run_action(:create_if_missing)
 
         #Setting java version
         alternative_exists = shell_out("#{alternatives_cmd} --display java| grep #{version}").exitstatus == 0
@@ -54,8 +54,9 @@ action :setup do
         end
 
         #Setting deployment.properties with concrete properties
-        template "/etc/.java/deployment/deployment.properties"
+        template "/etc/.java/deployment/deployment.properties" do
           source "deployment.properties.erb"
+          action :nothing
           variables(
             :sec => sec,
             :crl => crl,
@@ -64,7 +65,7 @@ action :setup do
             :mix_code => mix_code,
             :array_attrs => array_attrs
             )
-        end
+        end.run_action(:create)
 
       end
     else
