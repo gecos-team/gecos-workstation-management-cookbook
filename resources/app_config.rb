@@ -16,3 +16,5 @@ attribute :firefox_config, :kind_of => Object
 attribute :thunderbird_config, :kind_of => Object
 attribute :citrix_config, :kind_of => Object
 attribute :loffice_config, :kind_of => Object
+attribute :job_ids, :kind_of => Array
+attribute :support_os, :kind_of => Array
