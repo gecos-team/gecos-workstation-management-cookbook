@@ -572,7 +572,7 @@ app_config_js = {
         plug_version: {
           title: "Plugins Java version",
           type: "string"
-        }
+        },
         sec: {
           title: "Security Level",
           type: "string",
