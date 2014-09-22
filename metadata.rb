@@ -557,7 +557,8 @@ user_shared_folders_js = {
 app_config_js = {
   title: "Applications Config",
   type: "object",
-  required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
+ # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
+  required: ["java_config"],
   properties: {
     citrix_config: {title: "Citrix Configuration", type: "object"},
     java_config: {
