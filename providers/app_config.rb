@@ -18,7 +18,7 @@ action :setup do
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     if new_resource.support_os.include?(os)
 
-      if not user.java_config.empty?
+      if not new_resource.java_config.empty?
         version = new_resource.java_config['version']
         plug_version = new_resource.java_config['plug_version']
         sec = new_resource.java_config['sec']
