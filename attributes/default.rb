@@ -21,9 +21,10 @@ default[:gecos_ws_mgmt][:software_mgmt][:package_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:support_os] = ["GECOS V2"]
 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:adobe_config] = {}  
+default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:citrix_config] = {}  
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:java_config] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:firefox_config] = {} 
+default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:loffice_config] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:thunderbird_config] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:job_ids] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:updated_by] = {} 

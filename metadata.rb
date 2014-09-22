@@ -469,7 +469,7 @@ web_browser_js = {
               uniqueItems: true,
               items: {
                 type: "object",
-                required: ["key", "value"],
+                required: ["key"],
                 properties: {
                   key: {type: "string", title: "Key"},
                   value_str: {type: "string", title: "Value", description: "Only if Value Type is string"},
@@ -557,12 +557,71 @@ user_shared_folders_js = {
 app_config_js = {
   title: "Applications Config",
   type: "object",
-  required: ["adobe_config", "java_config", "firefox_config", "thunderbird_config"],
+  required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   properties: {
-    adobe_config: {title: "Adobe Configuration", type: "object"},
-    java_config: {title: "Java Configuration", type: "object"},
+    citrix_config: {title: "Citrix Configuration", type: "object"},
+    java_config: {
+      title: "Java Configuration",
+      type: "object",
+      required: ["version","plug_version","sec","crl","ocsp","warn_cert","mix_code"]
+      properties: {
+        version: {
+          title: "Java Version",
+          type: "string"
+        },
+        plug_version: {
+          title: "Plugins Java version",
+          type: "string"
+        }
+        sec: {
+          title: "Security Level",
+          type: "string",
+          enum: ["MEDIUM", "HIGH", "VERY_HIGH"],
+          default: "MEDIUM"
+        },
+        crl: {
+          title: "Use Certificate Revocation List",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        ocsp: {
+          title: "Enable or disable Online Certificate Status Protocol",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        warn_cert: {
+          title: "Show host-mismatch warning for certificate?",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        mix_code: {
+          title: "Security verification of mix code",
+          type: "string",
+          enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
+          default: "ENABLE"
+        },
+        array_attrs: {
+          type: "array",
+          minItems: 0,
+          uniqueItems: true,
+          items:{
+            type: "object",
+            required: ["key", "value"],
+            properties: {
+              key: {type: "string", title: "Key"},
+              value: {type: "string", title: "Value"}
+            }
+          }
+        }
+
+      }
+    },
     firefox_config: {title: "Firefox Configuration", type: "object"},
     thunderbird_config: {title: "Thuderbird Configuration", type: "object"},
+    loffice_config: {title: "Libre Office Configuration", type: "object"},
     job_ids: {
         type: "array",
         minItems: 0,
