@@ -19,7 +19,7 @@ default[:gecos_ws_mgmt][:software_mgmt][:package_res][:package_list] = []
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:pkgs_to_remove] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:package_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:software_mgmt][:package_res][:support_os] = ["GECOS V2", "Ubuntu 14.04.1 LTS"]
 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:citrix_config] = {}  
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:java_config] = {} 
