@@ -29,7 +29,7 @@ action :setup do
         array_attrs = new_resource.java_config['array_attrs']
 
         unless Kernel::test('d', '/etc/.java/deployment/')
-          FileUtils.mkdir '/etc/.java/deployment/'
+          FileUtils.mkdir_p '/etc/.java/deployment/'
         end
 
         cookbook_file "deployment.config" do
