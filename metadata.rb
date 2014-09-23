@@ -99,7 +99,7 @@ sssd_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -122,7 +122,7 @@ user_mount_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
@@ -169,7 +169,7 @@ screensaver_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
@@ -199,7 +199,7 @@ folder_sharing_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -237,7 +237,7 @@ desktop_control_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -285,7 +285,7 @@ desktop_menu_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -323,7 +323,7 @@ user_launchers_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -370,7 +370,7 @@ desktop_background_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -405,7 +405,7 @@ file_browser_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -499,7 +499,7 @@ web_browser_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -542,7 +542,7 @@ user_shared_folders_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -631,7 +631,7 @@ app_config_js = {
           type: "string"
         }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -688,7 +688,7 @@ auto_updates_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -726,7 +726,7 @@ user_apps_autostart_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -747,7 +747,7 @@ tz_date_js = {
       type: "string",
       title: "Server"
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -784,7 +784,7 @@ scripts_launch_js = {
         type: "string",
         }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
@@ -902,7 +902,7 @@ network_resource_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -936,7 +936,7 @@ software_sources_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
    }
 }
@@ -969,7 +969,7 @@ package_js = {
         type: "string"
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -1004,7 +1004,7 @@ printers_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -1037,7 +1037,7 @@ local_users_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1067,7 +1067,7 @@ local_groups_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1113,7 +1113,7 @@ local_file_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1136,7 +1136,7 @@ local_admin_users_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1166,7 +1166,7 @@ folder_sync_js = {
       }
     }
   },
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   job_ids: {
     type: "array",
     minItems: 0,
@@ -1211,7 +1211,7 @@ power_conf_js = {
          }
        }  
   },
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   job_ids: {
     type: "array",
     minItems: 0,
@@ -1247,7 +1247,7 @@ shutdown_options_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
