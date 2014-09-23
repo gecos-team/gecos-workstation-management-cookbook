@@ -28,6 +28,10 @@ action :setup do
         mix_code = new_resource.java_config['mix_code']
         array_attrs = new_resource.java_config['array_attrs']
 
+        unless Kernel::test('d', '/etc/.java/deployment/')
+          FileUtils.mkdir '/etc/.java/deployment/'
+        end
+
         cookbook_file "deployment.config" do
           path "/etc/.java/deployment/deployment.config"
           action :nothing

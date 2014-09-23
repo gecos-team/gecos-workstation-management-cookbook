@@ -105,7 +105,7 @@ sssd_js = {
 }
 
 user_mount_js = {
-  title: "User mount extern units",
+  title: "User mount external units",
   type: "object",
   required: ["users"],
   properties: {
