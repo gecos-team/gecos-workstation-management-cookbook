@@ -28,7 +28,7 @@ default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:loffice_config] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:thunderbird_config] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:job_ids] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:updated_by] = {} 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:support_os] = []
+default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:support_os] = ["GECOS V2"]
 
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
@@ -92,7 +92,7 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:support_os] = ["
 
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:support_os] = []
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:support_os] = ["GECOS V2"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:job_ids] = []

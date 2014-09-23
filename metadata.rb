@@ -991,7 +991,7 @@ printers_js = {
           manufacturer: { type: "string", title: "Manufacturer" },
           model: { type: "string" , title: "Model"},
           uri: { type: "string", title: "Uri" },
-          ppd_uri: { type: "string", title: "Uri PPD", default: "", pattern: "(\b?(https?|ftp|file)://)[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
+          ppd_uri: { type: "string", title: "Uri PPD", default: "", pattern: "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
           ppd: { type: "string", title: "PPD Name"}
         }
       }
@@ -1258,6 +1258,34 @@ shutdown_options_js = {
     }
  }
 }
+
+network_resource_js['support_os']['default']=["GECOS V2"]
+tz_date_js['support_os']['default']=["GECOS V2"]
+scripts_launch_js['support_os']['default']=["GECOS V2"]
+local_users_js['support_os']['default']=["GECOS V2"]
+local_file_js['support_os']['default']=["GECOS V2"]
+auto_updates_js['support_os']['default']=["GECOS V2"]
+local_groups_js['support_os']['default']=["GECOS V2"]
+power_conf_js['support_os']['default']=["GECOS V2"]
+local_admin_users_js['support_os']['default']=["GECOS V2"]
+software_sources_js['support_os']['default']=["GECOS V2"]
+package_js['support_os']['default']=["GECOS V2"]
+app_config_js['support_os']['default']=["GECOS V2"]
+printers_js['support_os']['default']=["GECOS V2"]
+user_shared_folders_js['support_os']['default']=["GECOS V2"]
+web_browser_js['support_os']['default']=["GECOS V2"]
+file_browser_js['support_os']['default']=["GECOS V2"]
+user_launchers_js['support_os']['default']=["GECOS V2"]
+desktop_background_js['support_os']['default']=["GECOS V2"]
+desktop_menu_js['support_os']['default']=[]
+desktop_control_js['support_os']['default']=[]
+user_apps_autostart_js['support_os']['default']=["GECOS V2"]
+folder_sharing_js['support_os']['default']=["GECOS V2"]
+screensaver_js['support_os']['default']=["GECOS V2"]
+folder_sync_js['support_os']['default']=[]
+user_mount_js['support_os']['default']=["GECOS V2"]
+shutdown_options_js['support_os']['default']=["GECOS V2"]
+
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
