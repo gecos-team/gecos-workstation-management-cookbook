@@ -99,13 +99,13 @@ sssd_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
 
 user_mount_js = {
-  title: "User mount extern units",
+  title: "User mount external units",
   type: "object",
   required: ["users"],
   properties: {
@@ -122,7 +122,7 @@ user_mount_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
@@ -169,7 +169,7 @@ screensaver_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
@@ -199,7 +199,7 @@ folder_sharing_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -237,7 +237,7 @@ desktop_control_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -285,7 +285,7 @@ desktop_menu_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -323,7 +323,7 @@ user_launchers_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -370,7 +370,7 @@ desktop_background_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -405,7 +405,7 @@ file_browser_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -469,7 +469,7 @@ web_browser_js = {
               uniqueItems: true,
               items: {
                 type: "object",
-                required: ["key", "value"],
+                required: ["key"],
                 properties: {
                   key: {type: "string", title: "Key"},
                   value_str: {type: "string", title: "Value", description: "Only if Value Type is string"},
@@ -499,7 +499,7 @@ web_browser_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -542,7 +542,7 @@ user_shared_folders_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -557,12 +557,72 @@ user_shared_folders_js = {
 app_config_js = {
   title: "Applications Config",
   type: "object",
-  required: ["adobe_config", "java_config", "firefox_config", "thunderbird_config"],
+ # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
+  required: ["java_config"],
   properties: {
-    adobe_config: {title: "Adobe Configuration", type: "object"},
-    java_config: {title: "Java Configuration", type: "object"},
+    citrix_config: {title: "Citrix Configuration", type: "object"},
+    java_config: {
+      title: "Java Configuration",
+      type: "object",
+      properties: {
+        version: {
+          title: "Java Version",
+          type: "string"
+        },
+        plug_version: {
+          title: "Plugins Java version",
+          type: "string"
+        },
+        sec: {
+          title: "Security Level",
+          type: "string",
+          enum: ["MEDIUM", "HIGH", "VERY_HIGH"],
+          default: "MEDIUM"
+        },
+        crl: {
+          title: "Use Certificate Revocation List",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        ocsp: {
+          title: "Enable or disable Online Certificate Status Protocol",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        warn_cert: {
+          title: "Show host-mismatch warning for certificate?",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        mix_code: {
+          title: "Security verification of mix code",
+          type: "string",
+          enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
+          default: "ENABLE"
+        },
+        array_attrs: {
+          type: "array",
+          minItems: 0,
+          title: "Another configuration properties",
+          uniqueItems: true,
+          items:{
+            type: "object",
+            required: ["key", "value"],
+            properties: {
+              key: {type: "string", title: "Key"},
+              value: {type: "string", title: "Value"}
+            }
+          }
+        }
+
+      }
+    },
     firefox_config: {title: "Firefox Configuration", type: "object"},
     thunderbird_config: {title: "Thuderbird Configuration", type: "object"},
+    loffice_config: {title: "Libre Office Configuration", type: "object"},
     job_ids: {
         type: "array",
         minItems: 0,
@@ -571,7 +631,7 @@ app_config_js = {
           type: "string"
         }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -628,7 +688,7 @@ auto_updates_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -666,7 +726,7 @@ user_apps_autostart_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -687,7 +747,7 @@ tz_date_js = {
       type: "string",
       title: "Server"
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -724,7 +784,7 @@ scripts_launch_js = {
         type: "string",
         }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
@@ -842,7 +902,7 @@ network_resource_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -876,7 +936,7 @@ software_sources_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
    }
 }
@@ -909,7 +969,7 @@ package_js = {
         type: "string"
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -931,7 +991,7 @@ printers_js = {
           manufacturer: { type: "string", title: "Manufacturer" },
           model: { type: "string" , title: "Model"},
           uri: { type: "string", title: "Uri" },
-          ppd_uri: { type: "string", title: "Uri PPD", default: "", pattern: "(\b?(https?|ftp|file)://)[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
+          ppd_uri: { type: "string", title: "Uri PPD", default: "", pattern: "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
           ppd: { type: "string", title: "PPD Name"}
         }
       }
@@ -944,7 +1004,7 @@ printers_js = {
         type: "string"
       }
     }, 
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
@@ -977,7 +1037,7 @@ local_users_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1007,7 +1067,7 @@ local_groups_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1053,7 +1113,7 @@ local_file_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1076,7 +1136,7 @@ local_admin_users_js = {
       type: "string"
     }
   }, 
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   updated_by: updated_js
  }
 }
@@ -1106,7 +1166,7 @@ folder_sync_js = {
       }
     }
   },
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   job_ids: {
     type: "array",
     minItems: 0,
@@ -1151,7 +1211,7 @@ power_conf_js = {
          }
        }  
   },
-  support_os: support_os_js,
+  support_os: support_os_js.clone,
   job_ids: {
     type: "array",
     minItems: 0,
@@ -1187,7 +1247,7 @@ shutdown_options_js = {
         }
       }
     },
-    support_os: support_os_js,
+    support_os: support_os_js.clone,
     job_ids: {
       type: "array",
       minItems: 0,
@@ -1198,6 +1258,34 @@ shutdown_options_js = {
     }
  }
 }
+
+network_resource_js[:properties][:support_os][:default]=["GECOS V2"]
+tz_date_js[:properties][:support_os][:default]=["GECOS V2"]
+scripts_launch_js[:properties][:support_os][:default]=["GECOS V2"]
+local_users_js[:properties][:support_os][:default]=["GECOS V2"]
+local_file_js[:properties][:support_os][:default]=["GECOS V2"]
+auto_updates_js[:properties][:support_os][:default]=["GECOS V2"]
+local_groups_js[:properties][:support_os][:default]=["GECOS V2"]
+power_conf_js[:properties][:support_os][:default]=["GECOS V2"]
+local_admin_users_js[:properties][:support_os][:default]=["GECOS V2"]
+software_sources_js[:properties][:support_os][:default]=["GECOS V2"]
+package_js[:properties][:support_os][:default]=["GECOS V2"]
+app_config_js[:properties][:support_os][:default]=["GECOS V2"]
+printers_js[:properties][:support_os][:default]=["GECOS V2"]
+user_shared_folders_js[:properties][:support_os][:default]=["GECOS V2"]
+web_browser_js[:properties][:support_os][:default]=["GECOS V2"]
+file_browser_js[:properties][:support_os][:default]=["GECOS V2"]
+user_launchers_js[:properties][:support_os][:default]=["GECOS V2"]
+desktop_background_js[:properties][:support_os][:default]=["GECOS V2"]
+desktop_menu_js[:properties][:support_os][:default]=[]
+desktop_control_js[:properties][:support_os][:default]=[]
+user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V2"]
+folder_sharing_js[:properties][:support_os][:default]=["GECOS V2"]
+screensaver_js[:properties][:support_os][:default]=["GECOS V2"]
+folder_sync_js[:properties][:support_os][:default]=[]
+user_mount_js[:properties][:support_os][:default]=["GECOS V2"]
+shutdown_options_js[:properties][:support_os][:default]=["GECOS V2"]
+
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
