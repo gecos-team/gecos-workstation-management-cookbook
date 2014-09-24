@@ -620,7 +620,18 @@ app_config_js = {
 
       }
     },
-    firefox_config: {title: "Firefox Configuration", type: "object"},
+    firefox_config: {
+      title: "Firefox Configuration",
+      type: "object",
+      properties: {
+        app_update:{
+          title: "Enable/Disable auto update",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        }
+      }
+    },
     thunderbird_config: {title: "Thuderbird Configuration", type: "object"},
     loffice_config: {title: "Libre Office Configuration", type: "object"},
     job_ids: {

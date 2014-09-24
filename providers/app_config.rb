@@ -18,6 +18,23 @@ action :setup do
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     if new_resource.support_os.include?(os)
 
+      if not new_resource.firefox_config.empty?
+        app_update = new_resource.firefox_config['app_update']
+        unless Kernel::test('d', '/etc/firefox/pref')
+          FileUtils.mkdir_p '/etc/firefox/pref'
+        end
+
+        template "/etc/firefox/pref/update.js" do
+          source "update.js.erb"
+          action :nothing
+          variables(
+            :app_update => app_update
+            )
+        end.run_action(:create)
+
+
+      end
+
       if not new_resource.java_config.empty?
         version = new_resource.java_config['version']
         plug_version = new_resource.java_config['plug_version']
