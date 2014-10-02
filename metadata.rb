@@ -152,8 +152,8 @@ screensaver_js = {
             },
             idle_delay: {
               type: "string",
-              title: "Idle Delay",
-              description: "Seconds"
+              #description: "Seconds",
+              title: "Idle Delay"              
             },
             lock_enabled: {
               type: "boolean",
@@ -161,8 +161,8 @@ screensaver_js = {
             },
             lock_delay: {
               type: "string",
-              title: "Lock Delay",
-              description: "Seconds"
+              #description: "Seconds",
+              title: "Lock Delay"              
             }, 
             updated_by: updated_js
           }
@@ -472,9 +472,18 @@ web_browser_js = {
                 required: ["key"],
                 properties: {
                   key: {type: "string", title: "Key"},
-                  value_str: {type: "string", title: "Value", description: "Only if Value Type is string"},
-                  value_num: {type: "number", title: "Value", description: "Only if Value Type is number"},
-                  value_bool: {type: "boolean", title: "Value", description: "Only if Value Type is boolean"},
+                  value_str: {type: "string",
+                              #description: "Only if Value Type is string",
+                              title: "Value"                              
+                              },
+                  value_num: {type: "number", 
+                              #description: "Only if Value Type is number",
+                              title: "Value"                              
+                              },
+                  value_bool: {type: "boolean", 
+                               #description: "Only if Value Type is boolean",
+                               title: "Value"                               
+                               },
                   value_type: {title: "Value type", type: "string", enum: ["string", "number", "boolean"]}
 
                 }
@@ -824,14 +833,14 @@ network_resource_js = {
         properties: {
           fixed_con: {
            # title: "DHCP Disabled properties",
-            description: "Only if DHCP is disabled",
+           # description: "Only if DHCP is disabled",
             type: "object",
             properties:{
               addresses: {
                 type: "array",
                 uniqueItems: true,
                 minItems: 0,
-                description: "With DHCP disable",
+            #    description: "With DHCP disable",
                 title: "IP addresses",
                 items: {
                   type: "object",
@@ -840,13 +849,13 @@ network_resource_js = {
                     ip_addr: {
                       type: "string",
                       title: "IP address",
-                      description: "ipv4 format",
+                      #description: "ipv4 format",
                       format: "ipv4"
                     },
                     netmask: {
                       type: "string",
                       title: "Netmask",
-                      description: "ipv4 format",
+                      #description: "ipv4 format",
                       format: "ipv4"
                     }
                   }
@@ -855,19 +864,19 @@ network_resource_js = {
               gateway: {
                 type: "string",
                 title: "Gateway",
-                description: "ipv4 format",
+                #description: "ipv4 format",
                 format: "ipv4"
               },
               dns_servers: {
                 type: "array",
                 title: "DNS Servers",
-                description: "With DHCP disable",
+                #description: "With DHCP disable",
                 minItems: 0,
                 uniqueItems: true,
                 items: {
                   type: "string",
                   title: "DNS",
-                  description: "ipv4 format",
+                  #description: "ipv4 format",
                   format: "ipv4"
                 }
               }
@@ -890,10 +899,23 @@ network_resource_js = {
                 required: ["sec_type"],
                 properties:{
                   sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", type:"string"},
-                  enc_pass: { type: "string", title: "Password", description: "WEP, WPA_PSK security", },
-                  auth_type: { enum: ["OpenSystem", "SharedKey"], title: "Authentication type", description: "WEP security", type: "string", default: "OpenSystem"},
-                  auth_user: { type: "string", title: "Username", description: "Leap security" },
-                  auth_password: { type: "string", title: "Password", description: "Leap security" }
+                  enc_pass: { type: "string", 
+                              #description: "WEP, WPA_PSK security",
+                              title: "Password"                   
+                            },
+                  auth_type: { enum: ["OpenSystem", "SharedKey"], 
+                               title: "Authentication type",
+                               #description: "WEP security",
+                               type: "string", 
+                               default: "OpenSystem"},
+                  auth_user: { type: "string",
+                               #description: "Leap security",
+                               title: "Username"                                
+                               },
+                  auth_password: { type: "string",
+                                   #description: "Leap security",
+                                   title: "Password"
+                                 }
 
                 }
               }
@@ -1210,13 +1232,13 @@ power_conf_js = {
        properties: {
          hour: {
            title: "Hour",
-           description:"Time to shutdown",
+           #description:"Time to shutdown",
            type: "integer",
            maximum: 23
            },
          minute: {
            title: "Minute",
-           description:"Time to shutdown",                                                                                                                                                                                     
+           #description:"Time to shutdown",                                                                                                                                                                                     
            type: "integer",
            maximum: 59
          }
