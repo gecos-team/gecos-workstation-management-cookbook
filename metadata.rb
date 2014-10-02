@@ -823,7 +823,7 @@ network_resource_js = {
         required: ["name", "mac_address", "use_dhcp", "net_type"],
         properties: {
           fixed_con: {
-            title: "DHCP Disabled properties",
+           # title: "DHCP Disabled properties",
             description: "Only if DHCP is disabled",
             type: "object",
             properties:{
@@ -881,7 +881,7 @@ network_resource_js = {
           },
           wireless_conn:{
             type:"object",
-            title: "Wireless Configuration",
+            #title: "Wireless Configuration",
             properties:{
               essid: { type: "string", title: "ESSID" },
               security: { 
