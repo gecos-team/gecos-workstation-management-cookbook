@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.2"
+version           "0.3.3"
 
 depends "apt"
 depends "chef-client"
@@ -700,10 +700,10 @@ auto_updates_js = {
           title: "Date",
           type: "object",
           properties: {
-            day: {title: "Day", type: "integer", maximum: 31},
-            month: {title: "Month", type: "integer", maximum: 12},
-            hour: {title: "Hour", type: "integer", maximum: 23},
-            minute: {title: "Minute", type: "integer", maximum: 59}
+            day: {title: "Day", type: "string", pattern: "^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$"},
+            month: {title: "Month", type: "string",pattern: "^(0?[1-9]|1[0-2]|\\\*)$"},
+            hour: {title: "Hour", type: "string", pattern: "^((([0-1][0-9])|[0-2][0-3])|\\\*)$"},
+            minute: {title: "Minute", type: "string",pattern: "^([0-5][0-9]|\\\*)$"},
           }
         }
       }
