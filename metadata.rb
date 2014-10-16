@@ -569,7 +569,7 @@ app_config_js = {
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config"],
   properties: {
-    citrix_config: {title: "Citrix Configuration", type: "object"},
+    #citrix_config: {title: "Citrix Configuration", type: "object"},
     java_config: {
       title: "Java Configuration",
       type: "object",
