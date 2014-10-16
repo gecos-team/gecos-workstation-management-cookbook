@@ -489,20 +489,20 @@ web_browser_js = {
                 }
               }
             },
-            certs: {
-              type: "array",
-              title: "Certificates",
-              minItems: 0,
-              uniqueItems: true,
-              items: {
-                type: "object",
-                required: [ "name", "uri"],
-                properties: {
-                  name: {title: "Name", type: "string"},
-                  uri: {title: "Uri", type: "string"}
-                }
-              }
-            }, 
+            #certs: {
+            #  type: "array",
+            #  title: "Certificates",
+            #  minItems: 0,
+            #  uniqueItems: true,
+            #  items: {
+            #    type: "object",
+            #    required: [ "name", "uri"],
+            #    properties: {
+            #      name: {title: "Name", type: "string"},
+            #      uri: {title: "Uri", type: "string"}
+            #    }
+            #  }
+            #}, 
             updated_by: updated_js
           }
         }
@@ -641,8 +641,8 @@ app_config_js = {
         }
       }
     },
-    thunderbird_config: {title: "Thuderbird Configuration", type: "object"},
-    loffice_config: {title: "Libre Office Configuration", type: "object"},
+    #thunderbird_config: {title: "Thuderbird Configuration", type: "object"},
+    #loffice_config: {title: "Libre Office Configuration", type: "object"},
     job_ids: {
         type: "array",
         minItems: 0,
