@@ -16,6 +16,7 @@ end
 
 updated_js = {
   title: "Updated by",
+  title_es: "Actualizado por",
   type: "object",
   properties: {
     group: {title: "Groups", type: "array", items: {type:"string"}},
@@ -27,6 +28,7 @@ updated_js = {
 
 support_os_js = {
   title: "Support OS",
+  title_es: "Sistemas operativos compatibles",
   type: "array",
   minItems: 0,
   uniqueItems: true,
@@ -39,6 +41,7 @@ support_os_js = {
 
 sssd_js = {
   title: "Authenticate System",
+  title_es: "Autenticación del sistema",
   type: "object",
   required: ["auth_type", "enabled"],
   properties: {
@@ -57,38 +60,47 @@ sssd_js = {
     },
     workgroup: {
         title: "Workgroup",
+        title_es: "Grupo de trabajo",
         type: "string"
     },
     enabled: {
       title: "Enabled",
+      title_es: "Habilitado",
       type: "boolean", default: false
     },
     auth_type:{
       title: "Authenticate type",
+      title_es: "Autenticación del tipo",
       type: "string"
     },
     uri:{
       title: "LDAP Uri",
+      title_es: "Uri LDAP",
       type: "string"
     },
     basegroup:{
       title: "Base Group",
+      title_es: "Grupo de base",
       type: "string"
     },
     base:{
       title: "Search Base",
+      title_es: "Grupo de búsqueda",
       type: "string"
     },
     basegroup:{
       title: "Base Group",
+      title_es: "Grupo de base",
       type: "string"
     },
     binddn:{
       title: "BindDN",
+      title_es: "BindDN",
       type: "string"
     },
     bindpwd:{
       title: "Bin Password",
+      title_es: "Bin contraseña",
       type: "string"
     },
     job_ids: {
@@ -106,6 +118,7 @@ sssd_js = {
 
 user_mount_js = {
   title: "User mount external units",
+  title_es: "Montaje de unidades externas",
   type: "object",
   required: ["users"],
   properties: {
@@ -136,11 +149,13 @@ user_mount_js = {
 
 screensaver_js = {
   title: "Screensaver",
+  title_es: "Salvapantallas",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -148,21 +163,27 @@ screensaver_js = {
           properties: {
             idle_enabled: {
               type: "boolean",
-              title: "Idle Enabled?"
+              title: "Idle Enabled?",
+	      title_es: "¿Inactividad habilitada?"
             },
             idle_delay: {
               type: "string",
-              #description: "Seconds",
-              title: "Idle Delay"              
+              description: "Seconds",
+              description_es: "Segundos",
+              title: "Idle Delay",
+              title_es: "Retraso de inactividad"              
             },
             lock_enabled: {
               type: "boolean",
-              title: "Lock Enabled?"
+              title: "Lock Enabled?",
+              title_es: "¿Bloqueo habilitado?"
             },
             lock_delay: {
               type: "string",
-              #description: "Seconds",
-              title: "Lock Delay"              
+              description: "Seconds",
+              description_es: "Segundos",
+              title: "Lock Delay",
+              title_es: "Tiempo de bloqueo"              
             }, 
             updated_by: updated_js
           }
@@ -183,11 +204,13 @@ screensaver_js = {
 
 folder_sharing_js = {
   title: "Sharing permissions",
+  title_es: "Permisos para compartir",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -213,11 +236,13 @@ folder_sharing_js = {
 
 desktop_control_js = {
   title: "Desktop Control",
+  title_es: "Control de escritorio",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -226,6 +251,7 @@ desktop_control_js = {
             desktop_files: {
               type: "array",
               title: "Desktop Files",
+              title_es: "Archivos de escritorio",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -252,11 +278,13 @@ desktop_control_js = {
 
 desktop_menu_js = {
   title: "Desktop Menu",
+  title_es: "Menú de escritorio",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -265,6 +293,7 @@ desktop_menu_js = {
             desktop_files_include: {
               type: "array",
               title: "Desktop Files to include",
+              title_es: "Archivos de escritorio para incluir",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -274,6 +303,7 @@ desktop_menu_js = {
             desktop_files_exclude: {
               type: "array",
               title: "Desktop Files to exclude",
+              title_es: "Archivos de escritorio para excluir",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -299,11 +329,13 @@ desktop_menu_js = {
 
 user_launchers_js = {
   title: "User Launchers",
+  title_es: "Lanzadores de usuario",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -312,6 +344,7 @@ user_launchers_js = {
             launchers: {
               type: "array",
               title: "Launchers",
+              title_es: "Lanzadores",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -355,10 +388,12 @@ user_launchers_js = {
 desktop_background_js = {
   type: "object",
   title: "Desktop Background",
+  title_es: "Fondo de escritorio",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -385,11 +420,13 @@ desktop_background_js = {
 
 file_browser_js = {
   title: "File Browser",
+  title_es: "Explorador de archivos",
   type: "object",
   required: ["users"],
   properties:{
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -424,18 +461,21 @@ file_browser_js = {
 
 web_browser_js = {
   title: "Web Browser",
+  title_es: "Navegador Web",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       type: "object",
       title: "Users",
+      title_es: "Usuarios",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
           properties: {
             plugins: {
               type: "array",
-              title: "Plugins", 
+              title: "Plugins",
+              title_es: "Plugins", 
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -451,6 +491,7 @@ web_browser_js = {
             bookmarks: {
               type: "array",
               title: "Bookmarks",
+              title_es: "Marcadores",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -465,6 +506,7 @@ web_browser_js = {
             config: {
               type: "array",
               title: "Configs",
+              title_es: "Configuraciones",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -473,16 +515,22 @@ web_browser_js = {
                 properties: {
                   key: {type: "string", title: "Key"},
                   value_str: {type: "string",
-                              #description: "Only if Value Type is string",
-                              title: "Value"                              
+                              description: "Only if Value Type is string",
+                              description_es: "Solo si el tipo de valor es una cadena",
+                              title: "Value",
+                              title_es: "Valor"                              
                               },
                   value_num: {type: "number", 
-                              #description: "Only if Value Type is number",
-                              title: "Value"                              
+                              description: "Only if Value Type is number",
+                              description_es: "Solo si el tipo de valor es un numero",
+                              title: "Value",
+                              title_es: "Valor"                              
                               },
                   value_bool: {type: "boolean", 
-                               #description: "Only if Value Type is boolean",
-                               title: "Value"                               
+                               description: "Only if Value Type is boolean",
+                               description_es: "Solo si el tipo de valor es booleano",
+                               title: "Value",
+                               title_es: "Valor"                               
                                },
                   value_type: {title: "Value type", type: "string", enum: ["string", "number", "boolean"]}
 
@@ -492,6 +540,7 @@ web_browser_js = {
             #certs: {
             #  type: "array",
             #  title: "Certificates",
+            #  title_es: "Certificados",
             #  minItems: 0,
             #  uniqueItems: true,
             #  items: {
@@ -522,11 +571,13 @@ web_browser_js = {
 
 user_shared_folders_js = {
   title: "Shared Folders",
+  title_es: "Carpetas Compartidas",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -534,7 +585,8 @@ user_shared_folders_js = {
           properties: {
             gtkbookmarks: {
               type: "array",
-              title: "Bookmarks", 
+              title: "Bookmarks",
+              title_es: "Marcadores", 
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -565,6 +617,7 @@ user_shared_folders_js = {
 
 app_config_js = {
   title: "Applications Config",
+  title_es: "Configuración de aplicaciones",
   type: "object",
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config"],
@@ -572,42 +625,50 @@ app_config_js = {
     #citrix_config: {title: "Citrix Configuration", type: "object"},
     java_config: {
       title: "Java Configuration",
+      title_es: "Configuración de Java",
       type: "object",
       properties: {
         version: {
           title: "Java Version",
+          title_es: "Versión de Java",
           type: "string"
         },
         plug_version: {
           title: "Plugins Java version",
+          title_es: "Plugins versión de Java",
           type: "string"
         },
         sec: {
           title: "Security Level",
+          title_es: "Nivel de Seguridad",
           type: "string",
           enum: ["MEDIUM", "HIGH", "VERY_HIGH"],
           default: "MEDIUM"
         },
         crl: {
           title: "Use Certificate Revocation List",
+          title_es: "Utilizar lista de revocación de certificados",
           type: "boolean",
           enum: [true,false],
           default: false
         },
         ocsp: {
           title: "Enable or disable Online Certificate Status Protocol",
+          title_es: "Activar o desactivar el protocolo de estado de certificados en linea",
           type: "boolean",
           enum: [true,false],
           default: false
         },
         warn_cert: {
           title: "Show host-mismatch warning for certificate?",
+          title_es: "¿Mostrar advertencia de incompatibilidad de host para el certificado?",
           type: "boolean",
           enum: [true,false],
           default: false
         },
         mix_code: {
           title: "Security verification of mix code",
+          title_es: "Verificación de la seguridad de la combinación de código",
           type: "string",
           enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
           default: "ENABLE"
