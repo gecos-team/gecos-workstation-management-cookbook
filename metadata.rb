@@ -677,6 +677,7 @@ app_config_js = {
           type: "array",
           minItems: 0,
           title: "Another configuration properties",
+          title_es: "Otras propiedades de configuración",
           uniqueItems: true,
           items:{
             type: "object",
@@ -692,18 +693,20 @@ app_config_js = {
     },
     firefox_config: {
       title: "Firefox Configuration",
+      title_es: "Configuración de Firefox",
       type: "object",
       properties: {
         app_update:{
           title: "Enable/Disable auto update",
+          title_es: "Activar/Desactivar actualizaciones automáticas",
           type: "boolean",
           enum: [true,false],
           default: false
         }
       }
     },
-    #thunderbird_config: {title: "Thuderbird Configuration", type: "object"},
-    #loffice_config: {title: "Libre Office Configuration", type: "object"},
+    #thunderbird_config: {title: "Thuderbird Configuration", title_es: "Configuración de Thunderbird", type: "object"},
+    #loffice_config: {title: "Libre Office Configuration", title_es: "Configuración de Libre Office", type: "object"},
     job_ids: {
         type: "array",
         minItems: 0,
@@ -719,12 +722,14 @@ app_config_js = {
 
 auto_updates_js = {
   title: "Automatic Updates",
+  title_es: "Actualizaciones automáticas",
   type: "object",
   required: ["auto_updates_rules"],
   properties: {
     auto_updates_rules: {
       type: "object",
       title: "Auto Updates Rules",
+      title_es: "Reglas de actualizaciones automaticas",
       required: ["onstop_update", "onstart_update", "days"],
       properties: {
         onstop_update: {title: " On stop Update?", type: "boolean"},
@@ -732,6 +737,7 @@ auto_updates_js = {
         days: {
           type: "array",
           title: "Days",
+          title_es: "Días",
           minItems: 0,
           uniqueItems: true,
           items: {
@@ -740,16 +746,19 @@ auto_updates_js = {
             properties: {
               day: {
                 title: "Day",
+                title_es: "Día",
                 type: "string",
                 enum: ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]
               },
               hour: {
                 title: "Hour",
+                title_es: "Hora",
                 type: "integer",
                 maximum: 23
               },
               minute: {
                 title: "Minute",
+                title_es: "Minuto",
                 type: "integer",
                 maximum: 59
               }
@@ -759,6 +768,7 @@ auto_updates_js = {
         },
         date: {
           title: "Date",
+          title_es: "Fecha",
           type: "object",
           properties: {
             day: {title: "Day", type: "string", pattern: "^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$"},
@@ -785,11 +795,13 @@ auto_updates_js = {
 
 user_apps_autostart_js = {
   title: "Autostart applications",
+  title_es: "Aplicaciones automáticas al iniciar",
   type: "object",
   required: ["users"],
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username",
@@ -797,6 +809,7 @@ user_apps_autostart_js = {
           properties: {
             desktops: {
               title: "Desktops",
+              title_es: "Escritorios",
               type: "array",
               minItems: 0,
               uniqueItems: true,
@@ -821,12 +834,14 @@ user_apps_autostart_js = {
 
 tz_date_js = {
   title: "Date/Time Manager",
+  title_es: "Manager Fecha/Hora",
   type: "object",
   required: ["server"],
   properties: {
     server: {
       type: "string",
-      title: "Server"
+      title: "Server",
+      title_es: "Servidor"
     },
     support_os: support_os_js.clone,
     job_ids: {
@@ -843,6 +858,7 @@ tz_date_js = {
 
 scripts_launch_js = {
   title: "Scripts Launcher",
+  title_es: "Lanzador de Scripts",
   type: "object",
   required: ["on_startup","on_shutdown"],
   properties:
@@ -850,6 +866,7 @@ scripts_launch_js = {
     on_startup: {
       type: "array",
       title: "Script list to run on startup",
+      title_es: "Lista de Script para ejecutar al inicio",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -859,6 +876,7 @@ scripts_launch_js = {
     on_shutdown: {
       type: "array",
       title: "Script list to run on shutdown",
+      title_es: "Lista de Script para ejecutar al apagado",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -881,6 +899,7 @@ scripts_launch_js = {
 network_resource_js = {
   type: "object",
   title: "Network Manager",
+  title_es: "Administrador de red",
   required: ["connections"],
   properties:
   {
@@ -893,7 +912,8 @@ network_resource_js = {
         required: ["name", "mac_address", "use_dhcp", "net_type"],
         properties: {
           fixed_con: {
-           # title: "DHCP Disabled properties",
+            title: "DHCP Disabled properties", 
+            title_es: "Propiedades desactivadas de DHCP",
            # description: "Only if DHCP is disabled",
             type: "object",
             properties:{
@@ -951,7 +971,8 @@ network_resource_js = {
           },
           wireless_conn:{
             type:"object",
-            #title: "Wireless Configuration",
+            title: "Wireless Configuration",
+            title_es: "Configuración Wireless",
             properties:{
               essid: { type: "string", title: "ESSID" },
               security: { 
