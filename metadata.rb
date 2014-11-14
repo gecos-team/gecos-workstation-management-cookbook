@@ -19,10 +19,10 @@ updated_js = {
   title_es: "Actualizado por",
   type: "object",
   properties: {
-    group: {title: "Groups", type: "array", items: {type:"string"}},
+    group: {title: "Groups", title_es: "Grupos", type: "array", items: {type:"string"}},
     user: {type:"string"},
     computer: {type:"string"},
-    ou: {title: "Ous", type: "array", items: {type:"string"}}
+    ou: {title: "Ous", title_es: "Ous", type: "array", items: {type:"string"}}
   }
 }
 
@@ -45,16 +45,16 @@ sssd_js = {
   type: "object",
   required: ["auth_type", "enabled"],
   properties: {
-    krb_url: { type: "string" , title: "Url Kerberos file configuration"},
-    smb_url: { type: "string" , title: "Url Samba file configuration" },
-    sssd_url: { type: "string" , title: "Url SSSD file configuration" },
+    krb_url: { type: "string" , title: "Url Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
+    smb_url: { type: "string" , title: "Url Samba file configuration", title_es: "Archivo de configuración Url Samba"},
+    sssd_url: { type: "string" , title: "Url SSSD file configuration", title_es: "Archivo de configuración Url SSSD"},
     domain_list: {
       type:"array",
       items: {
         type:"object",
         required: ["domain_name"],
         properties: {
-          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\\d+\\.)[a-zA-Z0-9_\\-]{1,63}\\.?)+(?:[a-zA-Z]{2,})$)", type: "string", title: "Domain name"}
+          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\\d+\\.)[a-zA-Z0-9_\\-]{1,63}\\.?)+(?:[a-zA-Z]{2,})$)", type: "string", title: "Domain name", title_es: "Nombre de dominio"}
         }
       }
     },
@@ -124,12 +124,13 @@ user_mount_js = {
   properties: {
     users: {
       title: "Users",
+      title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["can_mount"],
           properties: {
-            can_mount: {type: "boolean", title: "Can Mount?"}, 
+            can_mount: {type: "boolean", title: "Can Mount?", title_es: "¿Puede montar?"}, 
             updated_by: updated_js
           }
         }
@@ -158,7 +159,7 @@ screensaver_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["idle_enabled", "lock_enabled"],
           properties: {
             idle_enabled: {
@@ -213,10 +214,10 @@ folder_sharing_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["can_share"],
           properties: {
-            can_share: {title: "Can Share?", type: "boolean"}, 
+            can_share: {title: "Can Share?", title_es: "¿Puede compartir?", type: "boolean"}, 
             updated_by: updated_js
           }
         }
@@ -245,7 +246,7 @@ desktop_control_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["desktop_files"],
           properties: {
             desktop_files: {
@@ -287,7 +288,7 @@ desktop_menu_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario", 
           required: ["desktop_files_include", "desktop_files_exclude"],
           properties: {
             desktop_files_include: {
@@ -338,7 +339,7 @@ user_launchers_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["launchers"],
           properties: {
             launchers: {
@@ -370,10 +371,11 @@ user_launchers_js = {
 
 #desktop_background_js = {
 #  title: "Desktop Background",
+# title_es: "Fondo de escritorio",
 #  type: "object",
 #  required: ["desktop_file"],
 #  properties: {
-#    desktop_file: {type: "string", title: "Desktop File"},
+#    desktop_file: {type: "string", title: "Desktop File", title_es: "Archivo de escritorio"},
 #    job_ids: {
 #      type: "array",
 #      minItems: 0,
@@ -396,10 +398,10 @@ desktop_background_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["desktop_file"],
           properties: {
-            desktop_file: {type: "string", title: "Desktop File"},
+            desktop_file: {type: "string", title: "Desktop File", title_es: "Archivo de escritorio"},
             updated_by: updated_js
           }
         }
@@ -429,14 +431,14 @@ file_browser_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["default_folder_viewer", "show_hidden_files", "show_search_icon_toolbar", "click_policy", "confirm_trash"],
           properties: {
-            default_folder_viewer: {type: "string", title: "Folder viewer", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
-            show_hidden_files: {type: "string", title: "Show hidden files?", enum: ["true","false"], default: "false"},
-            show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", enum: ["true", "false"], default: "true"},
-            confirm_trash: {type: "string", title: "Confirm trash?", enum: ["true","false"], default: "true"},
-            click_policy: {type: "string", title: "Click policy", enum: ["single", "double"], default: "double"}, 
+            default_folder_viewer: {type: "string", title: "Folder viewer", title_es: "Visor de carpeta", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
+            show_hidden_files: {type: "string", title: "Show hidden files?", title_es: "¿Mostrar archivos ocultos?", enum: ["true","false"], default: "false"},
+            show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", title_es: "¿Mostrar el icono de búsqueda en la barra de herramientas?", enum: ["true", "false"], default: "true"},
+            confirm_trash: {type: "string", title: "Confirm trash?", title_es: "¿Confirmar papelera?", enum: ["true","false"], default: "true"},
+            click_policy: {type: "string", title: "Click policy", title_es: "Click en la política", enum: ["single", "double"], default: "double"}, 
             updated_by: updated_js
           }
         }
@@ -470,7 +472,7 @@ web_browser_js = {
       title: "Users",
       title_es: "Usuarios",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           properties: {
             plugins: {
               type: "array",
@@ -482,9 +484,9 @@ web_browser_js = {
                 type: "object",
                 required: ["name", "uri", "action"],
                 properties: {
-                  name: {title: "Name", type: "string"},
-                  uri: {title: "Uri", type: "string"},
-                  action: {title: "Action", type: "string", enum: ["add", "remove"]}
+                  name: {title: "Name", title_es: "Nombre", type: "string"},
+                  uri: {title: "Uri", title_es: "Uri", type: "string"},
+                  action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
                 }
               }
             },
@@ -498,8 +500,8 @@ web_browser_js = {
                 type: "object",
                 required: ["name", "uri"],
                 properties: {
-                  name: {title: "Name", type: "string"},
-                  uri: {title: "Uri", type: "string"}
+                  name: {title: "Name", title_es: "Nombre", type: "string"},
+                  uri: {title: "Uri", title_es: "Uri", type: "string"}
                 }
               }
             },
@@ -513,7 +515,7 @@ web_browser_js = {
                 type: "object",
                 required: ["key"],
                 properties: {
-                  key: {type: "string", title: "Key"},
+                  key: {type: "string", title: "Key", title_es: "Clave"},
                   value_str: {type: "string",
                               description: "Only if Value Type is string",
                               description_es: "Solo si el tipo de valor es una cadena",
@@ -532,7 +534,7 @@ web_browser_js = {
                                title: "Value",
                                title_es: "Valor"                               
                                },
-                  value_type: {title: "Value type", type: "string", enum: ["string", "number", "boolean"]}
+                  value_type: {title: "Value type", title_es: "Tipo de valor", type: "string", enum: ["string", "number", "boolean"]}
 
                 }
               }
@@ -547,8 +549,8 @@ web_browser_js = {
             #    type: "object",
             #    required: [ "name", "uri"],
             #    properties: {
-            #      name: {title: "Name", type: "string"},
-            #      uri: {title: "Uri", type: "string"}
+            #      name: {title: "Name", title_es: "Nombre", type: "string"},
+            #      uri: {title: "Uri", title_es: "Uri", type: "string"}
             #    }
             #  }
             #}, 
@@ -580,7 +582,7 @@ user_shared_folders_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["gtkbookmarks"],
           properties: {
             gtkbookmarks: {
@@ -593,8 +595,8 @@ user_shared_folders_js = {
                 type: "object",
                 required: ["name", "uri"],
                 properties: {
-                  name: {title: "Name", type: "string"},
-                  uri: {title: "Uri", type: "string"}
+                  name: {title: "Name", title_es: "Nombre", type: "string"},
+                  uri: {title: "Uri", title_es: "Uri", type: "string"}
                 }
               }
             }, 
@@ -622,7 +624,7 @@ app_config_js = {
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config"],
   properties: {
-    #citrix_config: {title: "Citrix Configuration", type: "object"},
+    #citrix_config: {title: "Citrix Configuration", title_es: "Configuración de Citrix", type: "object"},
     java_config: {
       title: "Java Configuration",
       title_es: "Configuración de Java",
@@ -683,8 +685,8 @@ app_config_js = {
             type: "object",
             required: ["key", "value"],
             properties: {
-              key: {type: "string", title: "Key"},
-              value: {type: "string", title: "Value"}
+              key: {type: "string", title: "Key", title_es: "Clave"},
+              value: {type: "string", title: "Value", title_es: "Valor"}
             }
           }
         }
@@ -732,8 +734,8 @@ auto_updates_js = {
       title_es: "Reglas de actualizaciones automaticas",
       required: ["onstop_update", "onstart_update", "days"],
       properties: {
-        onstop_update: {title: " On stop Update?", type: "boolean"},
-        onstart_update: {title: "On start Update?", type: "boolean"},
+        onstop_update: {title: " On stop Update?", title_es: "¿Al parar actualizar?",  type: "boolean"},
+        onstart_update: {title: "On start Update?", title_es: "¿Al iniciar actualizar?", type: "boolean"},
         days: {
           type: "array",
           title: "Days",
@@ -771,10 +773,10 @@ auto_updates_js = {
           title_es: "Fecha",
           type: "object",
           properties: {
-            day: {title: "Day", type: "string", pattern: "^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$"},
-            month: {title: "Month", type: "string",pattern: "^(0?[1-9]|1[0-2]|\\\*)$"},
-            hour: {title: "Hour", type: "string", pattern: "^((([0-1][0-9])|[0-2][0-3])|\\\*)$"},
-            minute: {title: "Minute", type: "string",pattern: "^([0-5][0-9]|\\\*)$"},
+            day: {title: "Day", title_es: "Día", type: "string", pattern: "^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$"},
+            month: {title: "Month", title_es: "Mes", type: "string",pattern: "^(0?[1-9]|1[0-2]|\\\*)$"},
+            hour: {title: "Hour", title_es: "Hora", type: "string", pattern: "^((([0-1][0-9])|[0-2][0-3])|\\\*)$"},
+            minute: {title: "Minute", title_es: "Minuto", type: "string",pattern: "^([0-5][0-9]|\\\*)$"},
           }
         }
       }
@@ -804,7 +806,7 @@ user_apps_autostart_js = {
       title_es: "Usuarios",
       type: "object",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["desktops"],
           properties: {
             desktops: {
@@ -914,15 +916,18 @@ network_resource_js = {
           fixed_con: {
             title: "DHCP Disabled properties", 
             title_es: "Propiedades desactivadas de DHCP",
-           # description: "Only if DHCP is disabled",
+            description: "Only if DHCP is disabled",
+            description_es: "Solo si el DHCP esta desactivado",
             type: "object",
             properties:{
               addresses: {
                 type: "array",
                 uniqueItems: true,
                 minItems: 0,
-            #    description: "With DHCP disable",
+                description: "With DHCP disable",
+                description_es: "Con desactivar el DHCP",
                 title: "IP addresses",
+                title_es: "Dirección IP",
                 items: {
                   type: "object",
                   #required: [ "ip_addr","netmask"],
@@ -930,13 +935,17 @@ network_resource_js = {
                     ip_addr: {
                       type: "string",
                       title: "IP address",
-                      #description: "ipv4 format",
+                      title_es: "Dirección IP",
+                      description: "ipv4 format",
+                      description_es: "Formato IPV4",
                       format: "ipv4"
                     },
                     netmask: {
                       type: "string",
                       title: "Netmask",
-                      #description: "ipv4 format",
+                      title_es: "Máscara de red",
+                      description: "ipv4 format",
+                      description_es: "Formato IPV4",
                       format: "ipv4"
                     }
                   }
@@ -945,58 +954,73 @@ network_resource_js = {
               gateway: {
                 type: "string",
                 title: "Gateway",
-                #description: "ipv4 format",
+                title_es: "Puerta de enlace",
+                description: "ipv4 format",
+                description_es: "Formato ipv4",
                 format: "ipv4"
               },
               dns_servers: {
                 type: "array",
                 title: "DNS Servers",
-                #description: "With DHCP disable",
+                title_es: "Servidor DNS",
+                description: "With DHCP disable",
+                description_es: "Con DHCP desactivado",
                 minItems: 0,
                 uniqueItems: true,
                 items: {
                   type: "string",
                   title: "DNS",
-                  #description: "ipv4 format",
+                  title_es: "DNS",
+                  description: "ipv4 format",
+                  description_es: "Formato ipv4",
                   format: "ipv4"
                 }
               }
             }
           },
-          name: {type: "string", title: "Name"},
-          mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address"},
-          use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP"},
+          name: {type: "string", title: "Name" title_es: "Nombre"},
+          mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address", title_es: "Dirección MAC"},
+          use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP", title_es: "DHCP"},
           net_type:{
-            enum: ["wired", "wireless"], title: "Connection type", type: "string"
+            enum: ["wired", "wireless"], title: "Connection type", title_es: "Tipo de conexión", type: "string"
           },
           wireless_conn:{
             type:"object",
             title: "Wireless Configuration",
             title_es: "Configuración Wireless",
             properties:{
-              essid: { type: "string", title: "ESSID" },
+              essid: { type: "string", title: "ESSID", title_es: "ESSID" },
               security: { 
                 type: "object", 
                 title: "Security Configuration",
+                title_es: "Configuración de Seguridad",
                 required: ["sec_type"],
                 properties:{
-                  sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", type:"string"},
+                  sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", title_es: "Tipo de seguridad", type:"string"},
                   enc_pass: { type: "string", 
-                              #description: "WEP, WPA_PSK security",
-                              title: "Password"                   
+                              description: "WEP, WPA_PSK security",
+                              description_es: "WEP, seguridad WPA_PSK ",
+                              title: "Password",
+                              title_es: "Contraseña"                   
                             },
                   auth_type: { enum: ["OpenSystem", "SharedKey"], 
                                title: "Authentication type",
-                               #description: "WEP security",
+                               title_es: "Tipo de autenticación",
+                               description: "WEP security",
+                               description_es: "Seguridad WEP",
                                type: "string", 
                                default: "OpenSystem"},
                   auth_user: { type: "string",
-                               #description: "Leap security",
-                               title: "Username"                                
+                               description: "Leap security",
+                               description_es: "Seguridad Leap",
+                               title: "Username",
+                               title_es: "Nombre de usuario"                                
                                },
                   auth_password: { type: "string",
-                                   #description: "Leap security",
-                                   title: "Password"
+                                   description: "Leap security",
+                                   description_es: "Seguridad Leap",
+                                   title: "Password",
+                                   title_es: "Contraseña"
                                  }
 
                 }
@@ -1024,6 +1048,7 @@ network_resource_js = {
 
 software_sources_js = {
   title: "Software Sources",
+  title_es: "Fuentes de software",
   type: "object",
   required: ["repo_list"],
   properties:{
@@ -1033,13 +1058,13 @@ software_sources_js = {
         type:"object",
         required: ["repo_name","distribution","components","uri","deb_src","repo_key","key_server"],
         properties:{
-          components: { title: "Components", type: "array",items: { type: "string" } },
-          deb_src: { title: "Sources", type: "boolean", default: false },
-          repo_key: { title: "Repository key", type: "string", default: ""},
-          key_server: { title: "Server key", type: "string", default: ""},
-          distribution: { title: "Distribution", type: "string"},
-          repo_name: { title: "Repository name", type: "string"},
-          uri: { title: "Uri", type: "string" }
+          components: { title: "Components", title_es: "Componentes", type: "array",items: { type: "string" } },
+          deb_src: { title: "Sources", title_es: "Fuentes", type: "boolean", default: false },
+          repo_key: { title: "Repository key", title_es: "Clave del repositorio", type: "string", default: ""},
+          key_server: { title: "Server key", title_es: "Clave del servidor", type: "string", default: ""},
+          distribution: { title: "Distribution", title_es: "Distribución", type: "string"},
+          repo_name: { title: "Repository name", title_es: "Nombre del repositorio", type: "string"},
+          uri: { title: "Uri", title_es: "Uri", type: "string" }
         }
       }
     },
@@ -1059,12 +1084,14 @@ software_sources_js = {
 
 package_js = {
   title: "Packages",
+  title_es: "Paquetes",
   type: "object",
   properties:
   {
     package_list: {
       type:"array",
       title: "Package list to install",
+      title_es: "Lista de paquetes para instalar",
       minItems: 0,
       uniqueItems: true,
       items: {type: "string"}
@@ -1072,6 +1099,7 @@ package_js = {
     pkgs_to_remove: {
       type:"array",
       title: "Package list to remove",
+      title_es: "Lista de paquetes para eliminar",
       minItems: 0,
       uniqueItems: true,
       items: {type: "string"}
@@ -1091,6 +1119,7 @@ package_js = {
 
 printers_js = {
   title: "Printers",
+  title_es: "Impresoras",
   type: "object",
   required: ["printers_list"],
   properties:
@@ -1098,16 +1127,17 @@ printers_js = {
     printers_list: {
       type:"array",
       title: "Printer list to enable",
+      title_es: "Lista de impresoras para activar",
       items: {
         type:"object",
         required: [ "name", "manufacturer", "model", "uri"],
         properties:{
-          name: { type: "string", title: "Name" },
-          manufacturer: { type: "string", title: "Manufacturer" },
-          model: { type: "string" , title: "Model"},
-          uri: { type: "string", title: "Uri" },
-          ppd_uri: { type: "string", title: "Uri PPD", default: "", pattern: "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
-          ppd: { type: "string", title: "PPD Name"}
+          name: { type: "string", title: "Name", title_es: "Nombre"},
+          manufacturer: { type: "string", title: "Manufacturer", title_es: "Manufactura" },
+          model: { type: "string" , title: "Model", title_es: "Modelo"},
+          uri: { type: "string", title: "Uri", title_es: "Uri"},
+          ppd_uri: { type: "string", title: "Uri PPD", title_es: "Uri PPD", default: "", pattern: "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
+          ppd: { type: "string", title: "PPD Name", title_es: "Nombre PPD"}
         }
       }
     },
@@ -1126,21 +1156,23 @@ printers_js = {
 
 local_users_js = {
   title: "Local users",
+  title_es: "Usuarios locales",
   type: "object",
   required: ["users_list"],
   properties:
   {users_list: {
       type:"array",
       title: "User list to manage",
+      title_es: "Lista de usuarios para gestionar",
       items: {
         type:"object",
         required: ["user","actiontorun"],
         properties:{
           actiontorun: {enum: ["create","modify","delete"],type: "string"},
-          groups: { title: "Groups", type: "array",items: { type: "string" } },
-          user: { title: "User", type: "string" },
-          name: { title: "Full Name", type: "string" },
-          password: { title: "Password", type: "string"}
+          groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
+          user: { title: "User", title_es: "Usuarios", type: "string" },
+          name: { title: "Full Name", title_es: "Nombre Completo", type: "string" },
+          password: { title: "Password", title_es: "Contraseña", type: "string"}
         }
      }
   },
@@ -1159,18 +1191,20 @@ local_users_js = {
 
 local_groups_js = {
   title: "Local groups",
+  title_es: "Grupos locales",
   type: "object",
   required: ["groups_list"],
   properties:
   {groups_list: {
       type:"array",
       title: "Group List to manage",
+      title_es: "Lista de grupos para gestionar",
       items: {
         type:"object",
         required: ["group"],
         properties:{
-          group: { type: "string", title: "Group" },
-          users: { type: "array",title: "Users", items: { type: "string" } }
+          group: { type: "string", title: "Group", title_es: "Grupo" },
+          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } }
         }
      }
   },
@@ -1189,34 +1223,37 @@ local_groups_js = {
 
 local_file_js = {
   title: "Local files",
+  title_es: "Archivos locales",
   type: "object",
   required: ["delete_files", "copy_files"],
   properties:
   {delete_files: {
       type:"array",
       title: "File list to delete",
+      title_es: "Lista de archivos para eliminar",
       items: {
         type:"object",
         required: ["file"],
         properties:{
-          file: {type: "string", title:"File"},
-          backup: { type: "boolean", title: "Create backup?" }
+          file: {type: "string", title:"File", title_es: "Archivo"},
+          backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" }
         }
      }
   },
   copy_files: {
     type: "array",
     title: "File list to copy",
+    title_es: "Lista de archivos para copiar",
     items: {
       type: "object",
       required: ["file_orig","file_dest"],
       properties:{
-        file_orig: {type: "string", title: "Url File"},
-        file_dest: {type: "string", title: "File path destination"},
-        user: {type: "string", title:"User"},
-        group: {type: "string", title: "Group"},
-        mode: {type: "string", title: "Mode"},
-        overwrite: {type: "boolean", title: "Overwrite?"}
+        file_orig: {type: "string", title: "Url File", title_es: "Archivo de Url"},
+        file_dest: {type: "string", title: "File path destination", title_es: "Destino de la ruta del archivo"},
+        user: {type: "string", title:"User", title_es: "Usuario"},
+        group: {type: "string", title: "Group", title_es: "Grupo"},
+        mode: {type: "string", title: "Mode", title_es: "Modo"},
+        overwrite: {type: "boolean", title: "Overwrite?", title_es: "¿Sobrescribir?"}
       }
     }
   },
@@ -1235,12 +1272,14 @@ local_file_js = {
 
 local_admin_users_js = {
   title: "Local Admin Users",
+  title_es: "Usuarios administradores locales",
   type: "object",
   required: ["local_admin_list"],
   properties:
   {local_admin_list: {
       type:"array",
-      title: "Local users to grant admin permissions", 
+      title: "Local users to grant admin permissions",
+      title_es: "Usuarios locales para conceder permisos de administrador", 
       items: { type:"string"}
   },
   job_ids: {
@@ -1258,20 +1297,23 @@ local_admin_users_js = {
 
 folder_sync_js = {
   title: "Folder to sync",
+  title_es: "Carpeta para sincronizar",
   type: "object",
   required: ["users"],
   properties:
   {users: {
     title: "Users", 
+    title_es: "Usuarios",
     type: "object",
     patternProperties: {
-      ".*" => { type: "object", title: "Username",
+      ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
         required: ["remote_folders"],
         properties: {
-          username: {title: "Username", type: "string"},
+          username: {title: "Username", title_es: "Nombre de usuario", type: "string"},
           remote_folders: {
             type: "array",
             title: "Remote Folders",
+            title_es: "Carpetas remotas",
             items: {type: "string"},
             minItems: 0,
             uniqueItems:true
@@ -1295,17 +1337,20 @@ folder_sync_js = {
 
 power_conf_js = {
   title: "Power management",
+  title_es: "Administracion de energía",
   type: "object",
   required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   properties:
     {cpu_freq_gov: {
-       title: "CPU frequency governor", 
+       title: "CPU frequency governor",
+       title_es: "Control de la frecuencia de la CPU", 
        type: "string",
        enum: ["userspace","powersave","conservative","ondemand","performance",""]
        },
     usb_autosuspend: 
       {
        title: "USB autosuspend",
+       title_es: "Suspensión automática de USB",
        type: "string",  
        enum: ["enable","disable", ""]
        },
@@ -1314,14 +1359,18 @@ power_conf_js = {
        properties: {
          hour: {
            title: "Hour",
-           #description:"Time to shutdown",
+           title_es: "Hora",
+           description:"Time to shutdown",
+           description_es: "Tiempo para el apagado",
            type: "integer",
            maximum: 23
            },
          minute: {
            title: "Minute",
-           #description:"Time to shutdown",                                                                                                                                                                                     
-           type: "integer",
+           title_es: "Minuto",
+           description:"Time to shutdown",
+           description_es: "Tiempo para el apagado",
+                                                                                                                                           type: "integer",
            maximum: 59
          }
        }  
@@ -1341,19 +1390,22 @@ power_conf_js = {
 
 shutdown_options_js = {
   title: "Shutdown Options",
+  title_es: "Opciones de apagado",
   type: "object",
   required: ["users"],
   properties: { 
-    systemlock: { type: "boolean", title: "System-wide lockdown of the key" },
+    systemlock: { type: "boolean", title: "System-wide lockdown of the key", title_es: "Bloqueo para todo el sistema de la llave"},
     users: {
       type: "object", 
       title: "Users",
+      title_es: "Usuarios",
       patternProperties: {
-        ".*" => { type: "object", title: "Username",
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["disable_log_out"],
           properties:{
             disable_log_out: {
               title: "Disable log out?",
+              title_es: "¿Desactivar el cierre de sesión?",
               type: "boolean",
               default: false
             }, 
@@ -1404,6 +1456,7 @@ shutdown_options_js[:properties][:support_os][:default]=["GECOS V2"]
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
+  description_es: "Estación de trabajo de gestión GECOS LWRPs json-schema",
   id: "http://gecos-server/cookbooks/#{name}/#{version}/network-schema#",
   required: ["gecos_ws_mgmt"],
   type: "object",
