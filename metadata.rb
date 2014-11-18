@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.3"
+version           "0.3.5"
 
 depends "apt"
 depends "chef-client"
@@ -978,7 +978,7 @@ network_resource_js = {
               }
             }
           },
-          name: {type: "string", title: "Name" title_es: "Nombre"},
+          name: {type: "string", title: "Name", title_es: "Nombre"},
           mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address", title_es: "Dirección MAC"},
           use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP", title_es: "DHCP"},
           net_type:{
