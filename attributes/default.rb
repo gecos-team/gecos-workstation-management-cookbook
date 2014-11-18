@@ -1,13 +1,13 @@
 
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:connections] = []
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:auth_type] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:enabled] = false
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
+default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:repo_list] = []
@@ -29,7 +29,6 @@ default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:thunderbird_config] = 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:job_ids] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:updated_by] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
-
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:updated_by] = {}
@@ -84,27 +83,27 @@ default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:support_os] = ["GEC
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:job_ids] = []
@@ -116,15 +115,15 @@ default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:support_os] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:job_ids] = []
@@ -134,5 +133,5 @@ default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemset] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemlock] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
