@@ -1084,7 +1084,7 @@ software_sources_js = {
 
 package_js = {
   title: "Installing packages",
-  title_es: "Instalación de aquetes",
+  title_es: "Instalación de paquetes",
   type: "object",
   properties:
   {
