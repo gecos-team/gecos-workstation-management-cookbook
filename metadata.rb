@@ -1083,8 +1083,8 @@ software_sources_js = {
 
 
 package_js = {
-  title: "Packages",
-  title_es: "Paquetes",
+  title: "Installing packages",
+  title_es: "Instalación de paquetes",
   type: "object",
   properties:
   {
@@ -1337,7 +1337,7 @@ folder_sync_js = {
 
 power_conf_js = {
   title: "Power management",
-  title_es: "Administracion de energía",
+  title_es: "Administración de energía",
   type: "object",
   required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   properties:
@@ -1370,7 +1370,7 @@ power_conf_js = {
            title_es: "Minuto",
            description:"Time to shutdown",
            description_es: "Tiempo para el apagado",
-                                                                                                                                           type: "integer",
+           type: "integer",
            maximum: 59
          }
        }  
