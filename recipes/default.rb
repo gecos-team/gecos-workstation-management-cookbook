@@ -37,7 +37,10 @@ bash "Added cron line for wrapper" do
   user "root"
   cwd "/var/spool/cron/crontabs/"
   code <<-EOF
-    echo "*/30 * * * * chef-client-wrapper" >> root
+    grep chef-client-wrapper root
+    if [[ $? -eq 1 ]]; then
+       echo "*/30 * * * * chef-client-wrapper" >> root
+    fi
   EOF
   not_if "grep chef-client-wrapper root"
 end.run_action(:run)
@@ -47,3 +50,6 @@ include_recipe "gecos_ws_mgmt::misc_mgmt"
 include_recipe "gecos_ws_mgmt::network_mgmt"
 include_recipe "gecos_ws_mgmt::users_mgmt"
 include_recipe "gecos_ws_mgmt::printers_mgmt"
+
+
+node.set['use_node']= {}
