@@ -18,7 +18,10 @@ action :setup do
 
       # TODO:  instalar package owncloud-client version 7
 
-      puts users
+      package "owncloud-client" do
+        action :install
+        options "--force-yes"
+      end
 
       username = users.username
       owncloud_authtype = users.owncloud_authtype
