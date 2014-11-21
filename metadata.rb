@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.5"
+version           "0.3.6"
 
 depends "apt"
 depends "chef-client"
@@ -1310,14 +1310,8 @@ folder_sync_js = {
         required: ["remote_folders"],
         properties: {
           username: {title: "Username", title_es: "Nombre de usuario", type: "string"},
-          remote_folders: {
-            type: "array",
-            title: "Remote Folders",
-            title_es: "Carpetas remotas",
-            items: {type: "string"},
-            minItems: 0,
-            uniqueItems:true
-          }, 
+          owncloud_url: {title: "Owncloud URL", title_es: "URL de Owncloud", type: "string"},
+          owncloud_authtype: {title: "Owncloud Auth Type", title_es: "Tipo de autenticación en owncloud", type: "string", enum: ["http", "https"]},
           updated_by: updated_js
         }
       }

@@ -125,9 +125,9 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
-default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:users] = {}
+default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:users] = {"username" => "kike", "owncloud_url" => "http://0.0.0.0/owncloud", "owncloud_authtype" => "http"  }
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:support_os] = []
+default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemset] = false
