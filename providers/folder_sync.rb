@@ -22,67 +22,71 @@ action :setup do
         action :install
         options "--force-yes"
       end
+      
+      users.each_key do |user_key|
 
-      username = users.username
-      owncloud_authtype = users.owncloud_authtype
-      owncloud_url = users.owncloud_url
+        username = user_key
+        user = users[user_key]        
+        owncloud_url = user.owncloud_url
+        url_array = owncloud_url.partition(":")
+        owncloud_authtype = url_array[0]
 
-      autostart_dir = "/home/#{username}/.config/autostart"
-      home = "/home/#{username}"
-      owncloud_dir = "#{home}/.local/share/data/ownCloud"
-
-      directory  autostart_dir do
-        recursive true
-        owner username
-        group username
-        action :create
-      end
-
-      cookbook_file "owncloud.desktop" do
-        path "#{autostart_dir}/ownCloud.desktop" 
-        owner username
-        group username
-        action :create
-      end
-
-      directory owncloud_dir do
-        recursive true
-        owner username
-        group username
-        action :create
-      end
+        autostart_dir = "/home/#{username}/.config/autostart"
+        home = "/home/#{username}"
+        owncloud_dir = "#{home}/.local/share/data/ownCloud"
   
-      template "#{owncloud_dir}/owncloud.cfg" do
-        source "owncloud.cfg.erb"
-        owner "root"
-        mode "0644"
-        action :create
-        variables({
-          :username => username,
-          :owncloud_authtype => owncloud_authtype,
-          :owncloud_url => owncloud_url
-        })
-      end
-
-      directory "#{owncloud_dir}/folders" do
-        recursive true
-        owner username
-        group username
-        action :create
-      end
- 
-      template "#{owncloud_dir}/folders/ownCloud" do
-        source "owncloud_folders.erb"
-        owner "root"
-        mode "0644"
-        action :create
-        variables({
-          :username => username,
-        })
-
-      end
-
-       else
+        directory  autostart_dir do
+          recursive true
+          owner username
+          group username
+          action :create
+        end
+  
+        cookbook_file "owncloud.desktop" do
+          path "#{autostart_dir}/ownCloud.desktop" 
+          owner username
+          group username
+          action :create
+        end
+  
+        directory owncloud_dir do
+          recursive true
+          owner username
+          group username
+          action :create
+        end
+    
+        template "#{owncloud_dir}/owncloud.cfg" do
+          source "owncloud.cfg.erb"
+          owner "root"
+          mode "0644"
+          action :create
+          variables({
+            :username => username,
+            :owncloud_authtype => owncloud_authtype,
+            :owncloud_url => owncloud_url
+          })
+        end
+  
+        directory "#{owncloud_dir}/folders" do
+          recursive true
+          owner username
+          group username
+          action :create
+        end
+   
+        template "#{owncloud_dir}/folders/ownCloud" do
+          source "owncloud_folders.erb"
+          owner "root"
+          mode "0644"
+          action :create
+          variables({
+            :username => username,
+          })
+  
+        end
+      end 
+    else
       Chef::Log.info("This resource is not support into your OS")
     end
 

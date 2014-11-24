@@ -1307,11 +1307,8 @@ folder_sync_js = {
     type: "object",
     patternProperties: {
       ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-        required: ["remote_folders"],
         properties: {
-          username: {title: "Username", title_es: "Nombre de usuario", type: "string"},
           owncloud_url: {title: "Owncloud URL", title_es: "URL de Owncloud", type: "string"},
-          owncloud_authtype: {title: "Owncloud Auth Type", title_es: "Tipo de autenticación en owncloud", type: "string", enum: ["http", "https"]},
           updated_by: updated_js
         }
       }
@@ -1443,7 +1440,7 @@ desktop_control_js[:properties][:support_os][:default]=[]
 user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 folder_sharing_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 screensaver_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-folder_sync_js[:properties][:support_os][:default]=[]
+folder_sync_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 
