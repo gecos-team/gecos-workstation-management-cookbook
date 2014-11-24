@@ -1060,7 +1060,7 @@ software_sources_js = {
       type:"array",
       items: {
         type:"object",
-        required: ["repo_name","distribution","components","uri","deb_src","repo_key","key_server"],
+        required: ["repo_name","uri","deb_src","repo_key","key_server"],
         properties:{
           components: { title: "Components", title_es: "Componentes", type: "array",items: { type: "string" } },
           deb_src: { title: "Sources", title_es: "Fuentes", type: "boolean", default: false },
