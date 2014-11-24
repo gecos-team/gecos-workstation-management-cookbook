@@ -76,6 +76,10 @@ action :setup do
         owner "root"
         mode "0644"
         action :create
+        variables({
+          :username => username,
+        })
+
       end
 
        else
