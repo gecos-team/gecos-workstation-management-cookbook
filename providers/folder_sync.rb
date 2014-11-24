@@ -16,8 +16,6 @@ action :setup do
     
       users = new_resource.users
 
-      # TODO:  instalar package owncloud-client version 7
-
       package "owncloud-client" do
         action :install
         options "--force-yes"
