@@ -93,3 +93,10 @@ gecos_ws_mgmt_user_mount 'user mount' do
   support_os node[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:support_os]
   action :setup
 end
+
+gecos_ws_mgmt_user_modify_nm 'user modify nm' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:user_modify_nm_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:user_modify_nm_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:user_modify_nm_res][:support_os]
+  action :setup
+end

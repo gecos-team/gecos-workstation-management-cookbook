@@ -798,6 +798,43 @@ auto_updates_js = {
   }
 }
 
+user_modify_nm_js = {
+  title: "Give network privileges to user",
+  title_es: "Conceder permisos de red al usuario",
+  type: "object",
+  required: ["users"],
+  properties: {
+    users: {
+      title: "Users",
+      title_es: "Usuarios",
+      type: "object",
+      patternProperties: {
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
+          required: ["can_modify"],
+          properties: {
+            can_modify: {
+              title: "Can modify network?",
+              title_es: "¿Permisos para modificar la red?",
+              type: "boolean",
+              enum: [true,false],
+              default:true
+            },
+            updated_by: updated_js
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
+}
 
 user_apps_autostart_js = {
   title: "Autostart applications",
@@ -1446,6 +1483,7 @@ folder_sharing_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite
 screensaver_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 folder_sync_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 
 
@@ -1515,6 +1553,7 @@ complete_js = {
             screensaver_res: screensaver_js,
             folder_sync_res: folder_sync_js,
             user_mount_res: user_mount_js,
+            user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js
           }
         }
