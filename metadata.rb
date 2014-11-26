@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.3"
+version           "0.3.6"
 
 depends "apt"
 depends "chef-client"
@@ -539,21 +539,25 @@ web_browser_js = {
                 }
               }
             },
-            #certs: {
-            #  type: "array",
-            #  title: "Certificates",
-            #  title_es: "Certificados",
-            #  minItems: 0,
-            #  uniqueItems: true,
-            #  items: {
-            #    type: "object",
-            #    required: [ "name", "uri"],
-            #    properties: {
-            #      name: {title: "Name", title_es: "Nombre", type: "string"},
-            #      uri: {title: "Uri", title_es: "Uri", type: "string"}
-            #    }
-            #  }
-            #}, 
+            certs: {
+             type: "array",
+             title: "Certificates",
+             title_es: "Certificados",
+             minItems: 0,
+             uniqueItems: true,
+             items: {
+               type: "object",
+               required: [ "name", "uri"],
+               properties: {
+                 name: {title: "Name", title_es: "Nombre", type: "string"},
+                 uri: {title: "Uri", 
+                       title_es: "Uri", 
+                       type: "string", 
+                       description: "Only accept CRT and PEM certificate", 
+                       description_es: "Solo acepta certificados CRT y PEM"}
+               }
+             }
+            }, 
             updated_by: updated_js
           }
         }
@@ -794,6 +798,43 @@ auto_updates_js = {
   }
 }
 
+user_modify_nm_js = {
+  title: "Give network privileges to user",
+  title_es: "Conceder permisos de red al usuario",
+  type: "object",
+  required: ["users"],
+  properties: {
+    users: {
+      title: "Users",
+      title_es: "Usuarios",
+      type: "object",
+      patternProperties: {
+        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
+          required: ["can_modify"],
+          properties: {
+            can_modify: {
+              title: "Can modify network?",
+              title_es: "¿Permisos para modificar la red?",
+              type: "boolean",
+              enum: [true,false],
+              default:true
+            },
+            updated_by: updated_js
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
+}
 
 user_apps_autostart_js = {
   title: "Autostart applications",
@@ -1056,7 +1097,7 @@ software_sources_js = {
       type:"array",
       items: {
         type:"object",
-        required: ["repo_name","distribution","components","uri","deb_src","repo_key","key_server"],
+        required: ["repo_name","uri","deb_src","repo_key","key_server"],
         properties:{
           components: { title: "Components", title_es: "Componentes", type: "array",items: { type: "string" } },
           deb_src: { title: "Sources", title_es: "Fuentes", type: "boolean", default: false },
@@ -1308,17 +1349,8 @@ folder_sync_js = {
     type: "object",
     patternProperties: {
       ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-        required: ["remote_folders"],
         properties: {
-          username: {title: "Username", title_es: "Nombre de usuario", type: "string"},
-          remote_folders: {
-            type: "array",
-            title: "Remote Folders",
-            title_es: "Carpetas remotas",
-            items: {type: "string"},
-            minItems: 0,
-            uniqueItems:true
-          }, 
+          owncloud_url: {title: "Owncloud URL", title_es: "URL de Owncloud", type: "string"},
           updated_by: updated_js
         }
       }
@@ -1427,32 +1459,33 @@ shutdown_options_js = {
  }
 }
 
-network_resource_js[:properties][:support_os][:default]=["GECOS V2"]
-tz_date_js[:properties][:support_os][:default]=["GECOS V2"]
-scripts_launch_js[:properties][:support_os][:default]=["GECOS V2"]
-local_users_js[:properties][:support_os][:default]=["GECOS V2"]
-local_file_js[:properties][:support_os][:default]=["GECOS V2"]
-auto_updates_js[:properties][:support_os][:default]=["GECOS V2"]
-local_groups_js[:properties][:support_os][:default]=["GECOS V2"]
-power_conf_js[:properties][:support_os][:default]=["GECOS V2"]
-local_admin_users_js[:properties][:support_os][:default]=["GECOS V2"]
-software_sources_js[:properties][:support_os][:default]=["GECOS V2"]
-package_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS"]
-app_config_js[:properties][:support_os][:default]=["GECOS V2"]
-printers_js[:properties][:support_os][:default]=["GECOS V2"]
-user_shared_folders_js[:properties][:support_os][:default]=["GECOS V2"]
-web_browser_js[:properties][:support_os][:default]=["GECOS V2"]
-file_browser_js[:properties][:support_os][:default]=["GECOS V2"]
-user_launchers_js[:properties][:support_os][:default]=["GECOS V2"]
-desktop_background_js[:properties][:support_os][:default]=["GECOS V2"]
+network_resource_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+tz_date_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+scripts_launch_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+local_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+local_file_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+auto_updates_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+local_groups_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+power_conf_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+local_admin_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+software_sources_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+package_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+app_config_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+printers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_shared_folders_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+web_browser_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+file_browser_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_launchers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+desktop_background_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 desktop_menu_js[:properties][:support_os][:default]=[]
 desktop_control_js[:properties][:support_os][:default]=[]
-user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V2"]
-folder_sharing_js[:properties][:support_os][:default]=["GECOS V2"]
-screensaver_js[:properties][:support_os][:default]=["GECOS V2"]
-folder_sync_js[:properties][:support_os][:default]=[]
-user_mount_js[:properties][:support_os][:default]=["GECOS V2"]
-shutdown_options_js[:properties][:support_os][:default]=["GECOS V2"]
+user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+folder_sharing_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+screensaver_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+folder_sync_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 
 
 complete_js = {
@@ -1521,6 +1554,7 @@ complete_js = {
             screensaver_res: screensaver_js,
             folder_sync_res: folder_sync_js,
             user_mount_res: user_mount_js,
+            user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js
           }
         }
