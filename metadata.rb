@@ -1124,8 +1124,8 @@ software_sources_js = {
 
 
 package_js = {
-  title: "Installing packages",
-  title_es: "Instalación de paquetes",
+  title: "Packages management",
+  title_es: "Administración de paquetes",
   type: "object",
   properties:
   {
@@ -1208,7 +1208,7 @@ local_users_js = {
       items: {
         type:"object",
         required: ["user","actiontorun"],
-        order:["user", "password", "name", "groups", "actionrun"],
+        order:["user", "password", "name", "groups", "actiontorun"],
         properties:{
           actiontorun: {enum: ["create","modify","delete"],type: "string"},
           groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
@@ -1277,7 +1277,7 @@ local_file_js = {
         type:"object",
         required: ["file"],
         properties:{
-          file: {type: "string", title:"File", title_es: "Archivo"},
+          file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path", description_es: "Introduzca la ruta absoluta"},
           backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" }
         }
      }
@@ -1289,13 +1289,14 @@ local_file_js = {
     items: {
       type: "object",
       required: ["file_orig","file_dest"],
+      order:["user", "group", "file_orig", "file_dest", "mode", "overwrite"],
       properties:{
         file_orig: {type: "string", title: "Url File", title_es: "Archivo de Url"},
-        file_dest: {type: "string", title: "File path destination", title_es: "Destino de la ruta del archivo"},
+        file_dest: {type: "string", title: "File path destination", title_es: "Destino de la ruta del archivo", description: "Enter the absolute path", description_es: "Introduzca la ruta absoluta"},
         user: {type: "string", title:"User", title_es: "Usuario"},
         group: {type: "string", title: "Group", title_es: "Grupo"},
         mode: {type: "string", title: "Mode", title_es: "Modo"},
-        overwrite: {type: "boolean", title: "Overwrite?", title_es: "¿Sobrescribir?"}
+        overwrite: {type: "boolean", title: "Overwrite?", title_es: "Sobrescribir"}
       }
     }
   },
