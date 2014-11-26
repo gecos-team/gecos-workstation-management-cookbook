@@ -1167,6 +1167,7 @@ local_users_js = {
       items: {
         type:"object",
         required: ["user","actiontorun"],
+        order:["user", "password", "name", "groups", "actionrun"],
         properties:{
           actiontorun: {enum: ["create","modify","delete"],type: "string"},
           groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
