@@ -130,7 +130,7 @@ user_mount_js = {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["can_mount"],
           properties: {
-            can_mount: {type: "boolean", title: "Can Mount?", title_es: "¿Puede montar?"}, 
+            can_mount: {type: "boolean", title: "Can Mount?", title_es: "¿Puede montar?", description: "User can mount external units", description_es: "El usuario podra montar unidades externas"}, 
             updated_by: updated_js
           }
         }
@@ -164,14 +164,14 @@ screensaver_js = {
           properties: {
             idle_enabled: {
               type: "boolean",
-              title: "Idle Enabled?",
+              title: "Idle enabled?",
 	      title_es: "¿Inactividad habilitada?"
             },
             idle_delay: {
               type: "string",
-              description: "Seconds",
-              description_es: "Segundos",
-              title: "Idle Delay",
+              description: "Idle delay in seconds",
+              description_es: "Retraso de inactividad en segundos",
+              title: "Idle delay",
               title_es: "Retraso de inactividad"              
             },
             lock_enabled: {
@@ -181,9 +181,9 @@ screensaver_js = {
             },
             lock_delay: {
               type: "string",
-              description: "Seconds",
-              description_es: "Segundos",
-              title: "Lock Delay",
+              description: "Lock delay in seconds",
+              description_es: "Retraso de bloqueo en segundos",
+              title: "Lock delay",
               title_es: "Tiempo de bloqueo"              
             }, 
             updated_by: updated_js
@@ -217,7 +217,7 @@ folder_sharing_js = {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["can_share"],
           properties: {
-            can_share: {title: "Can Share?", title_es: "¿Puede compartir?", type: "boolean"}, 
+            can_share: {title: "Can Share?", title_es: "¿Puede compartir?", description: "User can share folders", description_es: "El usuario tendrá permisos para compartir carpetas", type: "boolean"}, 
             updated_by: updated_js
           }
         }
@@ -278,8 +278,8 @@ desktop_control_js = {
 
 
 desktop_menu_js = {
-  title: "Desktop Menu",
-  title_es: "Menú de escritorio",
+  title: "Application Menu",
+  title_es: "Menú de aplicaciones",
   type: "object",
   required: ["users"],
   properties: {
@@ -293,8 +293,8 @@ desktop_menu_js = {
           properties: {
             desktop_files_include: {
               type: "array",
-              title: "Desktop Files to include",
-              title_es: "Archivos de escritorio para incluir",
+              title: "Add application menu",
+              title_es: "Añadir aplicación al menú",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -303,8 +303,8 @@ desktop_menu_js = {
             },
             desktop_files_exclude: {
               type: "array",
-              title: "Desktop Files to exclude",
-              title_es: "Archivos de escritorio para excluir",
+              title: "Remove application menu",
+              title_es: "Quitar aplicación al menú",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -330,7 +330,7 @@ desktop_menu_js = {
 
 user_launchers_js = {
   title: "User Launchers",
-  title_es: "Lanzadores de usuario",
+  title_es: "Acceso directo al escritorio",
   type: "object",
   required: ["users"],
   properties: {
@@ -344,8 +344,10 @@ user_launchers_js = {
           properties: {
             launchers: {
               type: "array",
-              title: "Launchers",
-              title_es: "Lanzadores",
+              title: "Shortcut",
+              title_es: "Acceso directo",
+              description: "Enter the absolute path and add .desktop at the end of the application", 
+              description_es: "Introduzca la ruta absoluta",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -401,7 +403,7 @@ desktop_background_js = {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["desktop_file"],
           properties: {
-            desktop_file: {type: "string", title: "Desktop File", title_es: "Archivo de escritorio"},
+            desktop_file: {type: "string", title: "File", title_es: "Archivo de imagen", description: "Fill with the absolute path to the image file", description_es: "Introduzca la ruta absoluta al archivo de imagen"},
             updated_by: updated_js
           }
         }
@@ -851,8 +853,10 @@ user_apps_autostart_js = {
           required: ["desktops"],
           properties: {
             desktops: {
-              title: "Desktops",
-              title_es: "Escritorios",
+              title: "Desktop files",
+              title_es: "Aplicaciones",
+              description: "It is necessary to add .desktop at the end of the application",
+              description_es: "Es necesario añadir .desktop al final de la aplicación",
               type: "array",
               minItems: 0,
               uniqueItems: true,
@@ -884,7 +888,9 @@ tz_date_js = {
     server: {
       type: "string",
       title: "Server",
-      title_es: "Servidor"
+      title_es: "Servidor",
+      description: "Enter a NTP server",
+      description_es: "Introduzca un servidor NTP"
     },
     support_os: support_os_js.clone,
     job_ids: {
@@ -908,8 +914,10 @@ scripts_launch_js = {
   {
     on_startup: {
       type: "array",
-      title: "Script list to run on startup",
-      title_es: "Lista de Script para ejecutar al inicio",
+      title: "Script to run on startup",
+      title_es: "Script para ejecutar al inicio",
+      description: "Enter the absolute path to the script",
+      description_es: "Introduzca la ruta absoluta al script",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -918,8 +926,10 @@ scripts_launch_js = {
     },
     on_shutdown: {
       type: "array",
-      title: "Script list to run on shutdown",
-      title_es: "Lista de Script para ejecutar al apagado",
+      title: "Script to run on shutdown",
+      title_es: "Script para ejecutar al apagado",
+      description: "Enter the absolute path to the script",
+      description_es: "Introduzca la ruta absoluta al script",
       minItems: 0,
       uniqueItems: false,
       items: {
@@ -1127,6 +1137,7 @@ package_js = {
   title: "Packages management",
   title_es: "Administración de paquetes",
   type: "object",
+  order:["package_list", "pkgs_to_remove"],
   properties:
   {
     package_list: {
@@ -1208,9 +1219,9 @@ local_users_js = {
       items: {
         type:"object",
         required: ["user","actiontorun"],
-        order:["user", "password", "name", "groups", "actiontorun"],
+        order:["actiontorun", "user", "password", "name", "groups"],
         properties:{
-          actiontorun: {enum: ["create","modify","delete"],type: "string"},
+          actiontorun: {enum: ["create","modify","delete"],type: "string", title: "Action", title_es: "Acción"},
           groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
           user: { title: "User", title_es: "Usuarios", type: "string" },
           name: { title: "Full Name", title_es: "Nombre Completo", type: "string" },
@@ -1239,11 +1250,12 @@ local_groups_js = {
   properties:
   {groups_list: {
       type:"array",
-      title: "Group List to manage",
-      title_es: "Lista de grupos para gestionar",
+      title: "Group to manage",
+      title_es: "Grupos para gestionar",
       items: {
         type:"object",
         required: ["group"],
+        order:["users", "group"],
         properties:{
           group: { type: "string", title: "Group", title_es: "Grupo" },
           users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } }
@@ -1292,7 +1304,7 @@ local_file_js = {
       order:["user", "group", "file_orig", "file_dest", "mode", "overwrite"],
       properties:{
         file_orig: {type: "string", title: "Url File", title_es: "Archivo de Url"},
-        file_dest: {type: "string", title: "File path destination", title_es: "Destino de la ruta del archivo", description: "Enter the absolute path", description_es: "Introduzca la ruta absoluta"},
+        file_dest: {type: "string", title: "File path destination", title_es: "Ruta del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
         user: {type: "string", title:"User", title_es: "Usuario"},
         group: {type: "string", title: "Group", title_es: "Grupo"},
         mode: {type: "string", title: "Mode", title_es: "Modo"},
@@ -1439,7 +1451,7 @@ shutdown_options_js = {
           properties:{
             disable_log_out: {
               title: "Disable log out?",
-              title_es: "¿Desactivar el cierre de sesión?",
+              title_es: "¿Desactivar apagado?",
               type: "boolean",
               default: false
             }, 
