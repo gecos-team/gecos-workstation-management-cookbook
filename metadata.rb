@@ -161,30 +161,31 @@ screensaver_js = {
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["idle_enabled", "lock_enabled"],
+          order: ["lock_enabled", "lock_delay", "idle_enabled", "idle_delay"],
           properties: {
             idle_enabled: {
               type: "boolean",
-              title: "Idle enabled?",
-	      title_es: "¿Inactividad habilitada?"
+              title: "Dim screen",
+	            title_es: "Oscurecer pantalla"
             },
             idle_delay: {
               type: "string",
-              description: "Idle delay in seconds",
-              description_es: "Retraso de inactividad en segundos",
+              description: "Time to dim screen in seconds",
+              description_es: "Tiempo hasta el oscurecimiento en segundos",
               title: "Idle delay",
               title_es: "Retraso de inactividad"              
             },
             lock_enabled: {
               type: "boolean",
-              title: "Lock Enabled?",
-              title_es: "¿Bloqueo habilitado?"
+              title: "Allow screen lock",
+              title_es: "Permitir bloqueo de pantalla"
             },
             lock_delay: {
               type: "string",
-              description: "Lock delay in seconds",
-              description_es: "Retraso de bloqueo en segundos",
-              title: "Lock delay",
-              title_es: "Tiempo de bloqueo"              
+              description: "Time to lock the screen in seconds",
+              description_es: " Tiempo hasta el bloqueo de la pantalla en segundos",
+              title: "Time to lock",
+              title_es: "Tiempo hasta el bloqueo"              
             }, 
             updated_by: updated_js
           }
@@ -236,8 +237,8 @@ folder_sharing_js = {
 }
 
 desktop_control_js = {
-  title: "Desktop Control",
-  title_es: "Control de escritorio",
+  title: "Control panel",
+  title_es: "Panel de control",
   type: "object",
   required: ["users"],
   properties: {
@@ -251,8 +252,10 @@ desktop_control_js = {
           properties: {
             desktop_files: {
               type: "array",
-              title: "Desktop Files",
-              title_es: "Archivos de escritorio",
+              title: "Categories",
+              title_es: "Categorias",
+              description: "Deletes the control panel category",
+              description_es: "Elimina la categoría del panel de control",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -304,7 +307,7 @@ desktop_menu_js = {
             desktop_files_exclude: {
               type: "array",
               title: "Remove application menu",
-              title_es: "Quitar aplicación al menú",
+              title_es: "Quitar aplicación del menú",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -347,7 +350,7 @@ user_launchers_js = {
               title: "Shortcut",
               title_es: "Acceso directo",
               description: "Enter the absolute path and add .desktop at the end of the application", 
-              description_es: "Introduzca la ruta absoluta y añada al final .desktop despues de la aplicación",
+              description_es: "Introduzca la ruta absoluta y añada al final .desktop después de la aplicación",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -403,7 +406,7 @@ desktop_background_js = {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["desktop_file"],
           properties: {
-            desktop_file: {type: "string", title: "File", title_es: "Archivo de imagen", description: "Fill with the absolute path to the image file", description_es: "Introduzca la ruta absoluta al archivo de imagen"},
+            desktop_file: {type: "string", title: "Image", title_es: "Imagen", description: "Fill with the absolute path to the image file", description_es: "Introduzca la ruta absoluta al archivo de imagen"},
             updated_by: updated_js
           }
         }
@@ -436,11 +439,11 @@ file_browser_js = {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["default_folder_viewer", "show_hidden_files", "show_search_icon_toolbar", "click_policy", "confirm_trash"],
           properties: {
-            default_folder_viewer: {type: "string", title: "Folder viewer", title_es: "Visor de carpeta", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
-            show_hidden_files: {type: "string", title: "Show hidden files?", title_es: "¿Mostrar archivos ocultos?", enum: ["true","false"], default: "false"},
-            show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", title_es: "¿Mostrar el icono de búsqueda en la barra de herramientas?", enum: ["true", "false"], default: "true"},
-            confirm_trash: {type: "string", title: "Confirm trash?", title_es: "¿Confirmar papelera?", enum: ["true","false"], default: "true"},
-            click_policy: {type: "string", title: "Click policy", title_es: "Click en la política", enum: ["single", "double"], default: "double"}, 
+            default_folder_viewer: {type: "string", title: "files viewer", title_es: "Visualización de archivos", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
+            show_hidden_files: {type: "string", title: "Show hidden files?", title_es: "Mostrar archivos ocultos", enum: ["true","false"], default: "false"},
+            show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", title_es: "Mostrar el icono de búsqueda en la barra de herramientas", enum: ["true", "false"], default: "true"},
+            confirm_trash: {type: "string", title: "Confirm trash?", title_es: "Confirmar al vaciar la papelera", enum: ["true","false"], default: "true"},
+            click_policy: {type: "string", title: "Click policy", title_es: "Política de click", enum: ["single", "double"], default: "double"}, 
             updated_by: updated_js
           }
         }
@@ -630,6 +633,7 @@ app_config_js = {
   type: "object",
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config"],
+  order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "array_attrs"],
   properties: {
     #citrix_config: {title: "Citrix Configuration", title_es: "Configuración de Citrix", type: "object"},
     java_config: {
@@ -730,8 +734,8 @@ app_config_js = {
 }
 
 auto_updates_js = {
-  title: "Automatic Updates",
-  title_es: "Actualizaciones automáticas",
+  title: "Automatic Updates Repository",
+  title_es: "Actualizaciones automáticas de repositorios",
   type: "object",
   required: ["auto_updates_rules"],
   properties: {
@@ -741,17 +745,18 @@ auto_updates_js = {
       title_es: "Reglas de actualizaciones automaticas",
       required: ["onstop_update", "onstart_update", "days"],
       properties: {
-        onstop_update: {title: " On stop Update?", title_es: "¿Al parar actualizar?",  type: "boolean"},
-        onstart_update: {title: "On start Update?", title_es: "¿Al iniciar actualizar?", type: "boolean"},
+        onstop_update: {title: "Update on shutdown?", title_es: "Actualizar al apagado",  type: "boolean"},
+        onstart_update: {title: "Update on start", title_es: "Actualizar al inicio", type: "boolean"},
         days: {
           type: "array",
-          title: "Days",
-          title_es: "Días",
+          title: "Periodic dates",
+          title_es: "Fechas periódicas",
           minItems: 0,
           uniqueItems: true,
           items: {
             type: "object",
             required: ["day", "hour", "minute"],
+            order: ["day", "hour", "minute"],
             properties: {
               day: {
                 title: "Day",
@@ -776,9 +781,10 @@ auto_updates_js = {
           }
         },
         date: {
-          title: "Date",
-          title_es: "Fecha",
+          title: "Specific Date",
+          title_es: "Fecha específica",
           type: "object",
+          order: ["month", "day", "hour", "minute"],
           properties: {
             day: {title: "Day", title_es: "Día", type: "string", pattern: "^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$"},
             month: {title: "Month", title_es: "Mes", type: "string",pattern: "^(0?[1-9]|1[0-2]|\\\*)$"},
@@ -840,8 +846,8 @@ user_modify_nm_js = {
 }
 
 user_apps_autostart_js = {
-  title: "Autostart applications",
-  title_es: "Aplicaciones automáticas al iniciar",
+  title: "Applications that will run at the start of the system",
+  title_es: "Aplicaciones que se ejecutarán al inicio",
   type: "object",
   required: ["users"],
   properties: {
@@ -881,17 +887,17 @@ user_apps_autostart_js = {
 }
 
 tz_date_js = {
-  title: "Date/Time Manager",
-  title_es: "Manager Fecha/Hora",
+  title: "Administration Date/Time",
+  title_es: "Administración fecha/hora",
   type: "object",
   required: ["server"],
   properties: {
     server: {
       type: "string",
-      title: "Server",
-      title_es: "Servidor",
-      description: "Enter a NTP server",
-      description_es: "Introduzca un servidor NTP"
+      title: "Server NTP",
+      title_es: "Servidor NTP",
+      description: "Enter the URI of an NTP server",
+      description_es: "Introduzca la URI de un servidor NTP"
     },
     support_os: support_os_js.clone,
     job_ids: {
@@ -908,7 +914,7 @@ tz_date_js = {
 
 scripts_launch_js = {
   title: "Scripts Launcher",
-  title_es: "Lanzador de Scripts",
+  title_es: "Lanzador de scripts",
   type: "object",
   required: ["on_startup","on_shutdown"],
   properties:
@@ -976,8 +982,8 @@ network_resource_js = {
                 type: "array",
                 uniqueItems: true,
                 minItems: 0,
-                description: "With DHCP disable",
-                description_es: "Con desactivar el DHCP",
+                description: "This field is only used if DHCP is disabled",
+                description_es: "Este campo solo se usará si el DHCP está desactivado",
                 title: "IP addresses",
                 title_es: "Dirección IP",
                 items: {
@@ -1030,7 +1036,7 @@ network_resource_js = {
               }
             }
           },
-          name: {type: "string", title: "Name", title_es: "Nombre"},
+          name: {type: "string", title: "Network name", title_es: "Nombre de la red"},
           mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address", title_es: "Dirección MAC"},
           use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP", title_es: "DHCP"},
           net_type:{
@@ -1047,6 +1053,7 @@ network_resource_js = {
                 title: "Security Configuration",
                 title_es: "Configuración de Seguridad",
                 required: ["sec_type"],
+                order: ["sec_type", "auth_type", "enc_pass", "auth_user", "auth_password"],
                 properties:{
                   sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", title_es: "Tipo de seguridad", type:"string"},
                   enc_pass: { type: "string", 
@@ -1223,7 +1230,7 @@ local_users_js = {
         order:["actiontorun", "user", "password", "name", "groups"],
         properties:{
           actiontorun: {enum: ["create","modify","delete"],type: "string", title: "Action", title_es: "Acción"},
-          groups: { title: "Group", title_es: "Grupo", type: "array",items: { type: "string" } },
+          groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
           user: { title: "User", title_es: "Usuario", type: "string" },
           name: { title: "Full Name", title_es: "Nombre Completo", type: "string" },
           password: { title: "Password", title_es: "Contraseña", type: "string"}
@@ -1290,7 +1297,7 @@ local_file_js = {
         type:"object",
         required: ["file"],
         properties:{
-          file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path where the file is delete", description_es: "Introduzca la ruta absoluta donde se borrara el archivo"},
+          file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path of the file to delete", description_es: "Introduzca la ruta absoluta del archivo a borrar"},
           backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" }
         }
      }
@@ -1305,7 +1312,7 @@ local_file_js = {
       order:["user", "group", "file_orig", "file_dest", "mode", "overwrite"],
       properties:{
         file_orig: {type: "string", title: "Url File", title_es: "Archivo de Url"},
-        file_dest: {type: "string", title: "File path destination", title_es: "Ruta del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
+        file_dest: {type: "string", title: "File URL", title_es: "URL del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
         user: {type: "string", title:"User", title_es: "Usuario"},
         group: {type: "string", title: "Group", title_es: "Grupo"},
         mode: {type: "string", title: "Mode", title_es: "Modo"},
@@ -1327,8 +1334,8 @@ local_file_js = {
 }
 
 local_admin_users_js = {
-  title: "Local Admin Users",
-  title_es: "Usuarios administradores locales",
+  title: "Local Administrators",
+  title_es: "Administradores locales",
   type: "object",
   required: ["local_admin_list"],
   properties:
@@ -1337,7 +1344,7 @@ local_admin_users_js = {
       title: "users",
       title_es: "Usuarios", 
       description: "Enter a local user to grant administrator",
-      description_es: "Escriba un usuario local para conceder permisos de administrador",
+      description_es: "Escriba un usuario local para concederle permisos de administrador",
       items: { type:"string"}
   },
   job_ids: {
@@ -1409,16 +1416,16 @@ power_conf_js = {
          hour: {
            title: "Hour",
            title_es: "Hora",
-           description:"Time to shutdown",
-           description_es: "Tiempo para el apagado",
+           description:"Time when the computer is shutdown",
+           description_es: "Hora en que se apagará el equipo",
            type: "integer",
            maximum: 23
            },
          minute: {
            title: "Minute",
            title_es: "Minuto",
-           description:"Time to shutdown",
-           description_es: "Tiempo para el apagado",
+           description:"Minute the computer will shutdown",
+           description_es: "Minuto en que se apagará el equipo",
            type: "integer",
            maximum: 59
          }
