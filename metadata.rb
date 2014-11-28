@@ -347,7 +347,7 @@ user_launchers_js = {
               title: "Shortcut",
               title_es: "Acceso directo",
               description: "Enter the absolute path and add .desktop at the end of the application", 
-              description_es: "Introduzca la ruta absoluta",
+              description_es: "Introduzca la ruta absoluta y añada al final .desktop despues de la aplicación",
               minItems: 0,
               uniqueItems: true,
               items: {
@@ -516,8 +516,9 @@ web_browser_js = {
               items: {
                 type: "object",
                 required: ["key"],
+                order: ["key", "value_type", "value_str", "value_num", "value_bool"],
                 properties: {
-                  key: {type: "string", title: "Key", title_es: "Clave"},
+                  key: {type: "string", title: "Key", title_es: "Clave", description: "Enter a key to about:config", description_es: "Introduzca una clave de about:config"},
                   value_str: {type: "string",
                               description: "Only if Value Type is string",
                               description_es: "Solo si el tipo de valor es una cadena",
@@ -1222,8 +1223,8 @@ local_users_js = {
         order:["actiontorun", "user", "password", "name", "groups"],
         properties:{
           actiontorun: {enum: ["create","modify","delete"],type: "string", title: "Action", title_es: "Acción"},
-          groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
-          user: { title: "User", title_es: "Usuarios", type: "string" },
+          groups: { title: "Group", title_es: "Grupo", type: "array",items: { type: "string" } },
+          user: { title: "User", title_es: "Usuario", type: "string" },
           name: { title: "Full Name", title_es: "Nombre Completo", type: "string" },
           password: { title: "Password", title_es: "Contraseña", type: "string"}
         }
@@ -1289,7 +1290,7 @@ local_file_js = {
         type:"object",
         required: ["file"],
         properties:{
-          file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path", description_es: "Introduzca la ruta absoluta"},
+          file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path where the file is delete", description_es: "Introduzca la ruta absoluta donde se borrara el archivo"},
           backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" }
         }
      }
@@ -1333,8 +1334,10 @@ local_admin_users_js = {
   properties:
   {local_admin_list: {
       type:"array",
-      title: "Local users to grant admin permissions",
-      title_es: "Usuarios locales para conceder permisos de administrador", 
+      title: "users",
+      title_es: "Usuarios", 
+      description: "Enter a local user to grant administrator",
+      description_es: "Escriba un usuario local para conceder permisos de administrador",
       items: { type:"string"}
   },
   job_ids: {
@@ -1452,6 +1455,8 @@ shutdown_options_js = {
             disable_log_out: {
               title: "Disable log out?",
               title_es: "¿Desactivar apagado?",
+              description: "Checking the box will not allow the computer turns off",
+              description_es: "Si activa la casilla no permitira el apagado del equipo",
               type: "boolean",
               default: false
             }, 
