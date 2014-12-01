@@ -633,13 +633,13 @@ app_config_js = {
   type: "object",
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config"],
-  order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "array_attrs"],
   properties: {
     #citrix_config: {title: "Citrix Configuration", title_es: "Configuración de Citrix", type: "object"},
     java_config: {
       title: "Java Configuration",
       title_es: "Configuración de Java",
       type: "object",
+      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "array_attrs"],
       properties: {
         version: {
           title: "Java Version",
