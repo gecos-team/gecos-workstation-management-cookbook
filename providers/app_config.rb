@@ -18,6 +18,37 @@ action :setup do
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     if new_resource.support_os.include?(os)
 
+      if not new_resource.loffice_config.empty?
+        app_update = new_resource.loffice_config['app_update']
+
+        if app_update
+          execute "enable libreoffice upgrades" do
+            command "apt-mark hold libreoffice libreoffice*"
+            action :nothing
+          end.run_action(:run)
+        else
+          execute "disable libreoffice upgrades" do
+            command "apt-mark unhold libreoffice libreoffice*"
+            action :nothing
+          end.run_action(:run)
+        end
+      end
+
+      if not new_resource.firefox_config.empty?
+        app_update = new_resource.firefox_config['app_update']
+        unless Kernel::test('d', '/etc/firefox/pref')
+          FileUtils.mkdir_p '/etc/firefox/pref'
+        end
+
+        template "/etc/firefox/pref/update.js" do
+          source "update.js.erb"
+          action :nothing
+          variables(
+            :app_update => app_update
+            )
+        end.run_action(:create)
+      end
+
       if not new_resource.java_config.empty?
         version = new_resource.java_config['version']
         plug_version = new_resource.java_config['plug_version']
@@ -43,17 +74,17 @@ action :setup do
           Chef::Log.info("Setting alternative for java with value #{version}/jre/bin/java")
           set_cmd = shell_out("#{alternatives_cmd} --set java #{version}/jre/bin/java")
           unless set_cmd.exitstatus == 0
-            Chef::Application.fatal!(%Q[ set alternative failed ])
+            Chef::Log.error(%Q[ set alternative failed ])
           end
         end
 
         #Setting java plugin version
-        alternative_exists = shell_out("#{alternatives_cmd} --display mozilla-javaplugin.so| grep #{version}").exitstatus == 0
+        alternative_exists = shell_out("#{alternatives_cmd} --display mozilla-javaplugin.so| grep #{plug_version}").exitstatus == 0
         if alternative_exists
-          Chef::Log.info("Setting alternative for mozilla-javaplugin.so with value #{version}/jre/lib/i386/libnpjp2.so")
-          set_cmd = shell_out("#{alternatives_cmd} --set java #{version}/jre/lib/i386/libnpjp2.so")
+          Chef::Log.info("Setting alternative for mozilla-javaplugin.so with value #{plug_version}/jre/lib/i386/libnpjp2.so")
+          set_cmd = shell_out("#{alternatives_cmd} --set mozilla-javaplugin.so #{plug_version}/jre/lib/i386/libnpjp2.so")
           unless set_cmd.exitstatus == 0
-            Chef::Application.fatal!(%Q[ set alternative failed ])
+            Chef::Log.error(%Q[ set alternative failed ])
           end
         end
 
@@ -89,7 +120,7 @@ action :setup do
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
-      node.set['job_status'][jid]['message'] = e.message
+      node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
     end
   ensure
     gecos_ws_mgmt_jobids "app_config_res" do
