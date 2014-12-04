@@ -242,5 +242,10 @@ action :setup do
       node.set['job_status'][jid]['status'] = 1
       node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
     end
+  ensure
+    gecos_ws_mgmt_jobids "network_res" do
+      provider "gecos_ws_mgmt_jobids"
+      recipe "network_mgmt"
+    end.run_action(:reset)
   end
 end
