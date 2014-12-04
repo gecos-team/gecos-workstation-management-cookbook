@@ -1140,6 +1140,33 @@ software_sources_js = {
    }
 }
 
+package_profile_js = {
+  title: "Packages Profile management",
+  title_es: "Administración de perfiles de software",
+  type: "object",
+  order:["package_list"],
+  properties:
+  {
+    package_list: {
+      type:"array",
+      title: "Package list to install",
+      title_es: "Lista de paquetes para instalar",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
 
 package_js = {
   title: "Packages management",
@@ -1495,6 +1522,7 @@ power_conf_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 local_admin_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 software_sources_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 package_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+package_profile_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 app_config_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 printers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 user_shared_folders_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
@@ -1553,6 +1581,7 @@ complete_js = {
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
+            package_profile_res: package_profile_js,
             app_config_res: app_config_js
           }
         },
