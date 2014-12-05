@@ -42,10 +42,12 @@ action :setup do
               response = resource.post :node_id => new_resource.gcc_nodename,:ou_id=>new_resource.gcc_selected_ou, :content_type => :json, :accept => :json
               if not response.code.between?(200,299)
                 Chef::Log.error('The GCC URI not response')  
+                raise Exception, "The GCC URI not response"
               else
                 response_json = JSON.load(response.to_str)
-                if not response_json['ok']
+                if not response_json["ok"]
                   Chef::Log.error(response_json['message'])
+                  raise Exception, response_json['message']
                 end
               end
             rescue Exception => e
@@ -88,6 +90,25 @@ action :setup do
           end
         end
       else
+        Chef::Log.info("GCC: Configuring GECOS Control Center")
+        begin
+          resource = RestClient::Resource.new(new_resource.uri_gcc + '/register/computer/', :user => new_resource.gcc_username, :password => new_resource.gcc_pwd_user)
+          response = resource.put :node_id => new_resource.gcc_nodename, :content_type => :json, :accept => :json
+          if not response.code.between?(200,299)
+            Chef::Log.error('The GCC URI not response')  
+            raise Exception, "The GCC URI not response"
+          else
+            response_json = JSON.load(response.to_str)
+            if not response_json["ok"]
+              Chef::Log.error(response_json['message'])
+              raise Exception, response_json['message']
+            end
+          end
+        rescue Exception => e
+          Chef::Log.error(e.message)
+          raise e
+        end
+
         template "/etc/gcc.control" do
           source 'gcc.control.erb'
           owner "root"
@@ -119,7 +140,7 @@ action :setup do
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
-      node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      node.set['job_status'][jid]['message'] = e.message
     end
   end
 end

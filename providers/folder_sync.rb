@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gecos-ws-mgmt
-# Provider:: folder_sharing
+# Provider:: folder_sync
 #
 # Copyright 2013, Junta de Andalucia
 # http://www.juntadeandalucia.es/

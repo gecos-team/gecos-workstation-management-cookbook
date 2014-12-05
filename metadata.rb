@@ -166,7 +166,7 @@ screensaver_js = {
             idle_enabled: {
               type: "boolean",
               title: "Dim screen",
-	            title_es: "Oscurecer pantalla"
+	          title_es: "Oscurecer pantalla"
             },
             idle_delay: {
               type: "string",

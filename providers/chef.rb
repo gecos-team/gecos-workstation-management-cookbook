@@ -100,17 +100,6 @@ action :setup do
               :chef_admin_name => new_resource.chef_admin_name
             })
           end
-
-          Chef::Log.info("Chef: Removing control file")
-          file "/etc/chef.control" do
-            action :delete
-          end
-
-          Chef::Log.info("Chef: Removing client.pem")
-          file "/etc/chef/client.pem" do
-            action :delete
-          end
-
           Chef::Log.info("Deleting node " + new_resource.chef_node_name)
           execute 'Knife Delete' do
             command 'knife node delete \'' + new_resource.chef_node_name + '\' -c /etc/chef/knife.rb -y'
@@ -129,6 +118,14 @@ action :setup do
             action [:disable, :stop]
           end
           
+          Chef::Log.info("Chef: Removing control file")
+          file "/etc/chef.control" do
+            action :delete
+          end
+          Chef::Log.info("Chef: Removing client.pem")
+          file "/etc/chef/client.pem" do
+            action :delete
+          end
           Chef::Log.info("Chef: Removing validation.pem")
           file "/etc/chef/validation.pem" do
             action :delete
