@@ -38,6 +38,47 @@ support_os_js = {
 
 }
     
+forticlientvpn_js = {
+  title: "FortiClient VPN connections",
+  title_es: "Conexiones VPN de FortiClient",
+  type: "object",
+  required: ["connections"],
+  properties: {
+    connections: {
+      title: "Connections",
+      title_es: "Conexiones",
+      type: "object",
+      patternProperties: {
+        ".*" => { type: "object", title: "Name", title_es: "Nombre",
+          required: ["server","port"],
+          properties: {
+            server: {
+              type: "string",
+              title: "Server",
+              title_es: "Servidor"
+            },
+            port: {
+              type: "string",
+              title: "Port",
+              title_es: "Puerto"
+            },
+            updated_by: updated_js
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
+}
+
 
 sssd_js = {
   title: "Authenticate System",
@@ -1526,9 +1567,10 @@ complete_js = {
       properties: {
         network_mgmt: {
           type: "object",
-          required: ["network_res"],
+          required: ["network_res","forticlientvpn_res"],
           properties: {
-            network_res: network_resource_js
+            network_res: network_resource_js,
+            forticlientvpn_res: forticlientvpn_js
             #sssd_res: sssd_js
           }
         },
