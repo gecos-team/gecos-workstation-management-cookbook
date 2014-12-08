@@ -37,6 +37,44 @@ support_os_js = {
   }
 
 }
+
+mobile_broadband_js = {
+  title: "Mobile broadband connections",
+  title_es: "Conexiones de banda ancha móvil",
+  type: "object",
+  required: ["connections"],
+  properties: {
+    connections: {
+      title: "Connections",
+      title_es: "Conexiones",
+      type: "object",
+      patternProperties: {
+        ".*" => { type: "object", title: "Provider", title_es: "Proveedor",
+          required: ["country"],
+          enum: ['Euskaltel','Másmovil','móbil R (Mundo-R)','moviData','ONO','Pepephone','Orange','Simyo/Blau','Telecable','Movistar (Telefónica)','Vodafone (Airtel)','Yoigo','Jazztel','Carrefour Móvil','Eroski Móvil'],
+          properties: {
+            country: {
+              type: "string",
+              title: "Country code",
+              title_es: "Código de país",
+              enum: ["es"]
+            },
+            updated_by: updated_js
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
+}
     
 
 sssd_js = {
@@ -1526,9 +1564,10 @@ complete_js = {
       properties: {
         network_mgmt: {
           type: "object",
-          required: ["network_res"],
+          required: ["network_res","mobile_broadband_res"],
           properties: {
-            network_res: network_resource_js
+            network_res: network_resource_js,
+            mobile_broadband_res: mobile_broadband_res_js
             #sssd_res: sssd_js
           }
         },
