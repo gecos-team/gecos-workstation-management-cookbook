@@ -71,3 +71,9 @@ gecos_ws_mgmt_local_admin_users 'assert users list as sudoers' do
   support_os node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:support_os]
   action :setup
 end
+
+gecos_ws_mgmt_cert 'manage ca root certs' do
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:support_os]
+  action :setup
+end
