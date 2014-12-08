@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gecos_ws_mgmt
-# Recipe:: forticlient
+# Provider:: forticlient
 #
 # Copyright 2013, Junta de Andalucia
 # http://www.juntadeandalucia.es/
