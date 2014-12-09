@@ -20,15 +20,20 @@ action :setup do
       require 'fileutils'
 
       res_ca_root_certs = new_resource.ca_root_certs || node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:ca_root_certs]
-      res_java_keystores = new_resource.java_keystores || node[:gecos_ws_mgmt][:misc_mgmt][:cert_res[:java_keystores]
+      res_java_keystores = new_resource.java_keystores || node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:java_keystores]
 
       # TODO: improve poor performance of idempotenly execute this
       #   * maybe do it once?
       # import system certs into java keystores
       res_java_keystores.each do |keystore|
         Dir["/usr/share/ca-certificates/*/*"].each do |cert|
-          execute "importing mozilla ca root cert into java keystore" do
-            command "echo '' | sudo keytool -cacert -keystore '#{keystore}' -file '#{cert}'"
+          begin
+            execute "importing '#{cert}' into java keystore" do
+              command "/bin/bash -c \"echo '' | sudo keytool -cacert -keystore '#{keystore}' -file '#{cert}' &>/dev/null; exit 0\""
+              action :nothing
+            end.run_action(:run)
+          rescue
+            next
           end
         end
       end
@@ -49,8 +54,13 @@ action :setup do
           source cert[:uri]
         end
         Dir["/home/*/.mozilla/firefox/*default"].each do |profile|
-          execute "install root cert" do 
-            command "certutil -A -n '#{cert[:name]}' -t 'TC,Cw,Tw' -i '#{cert_file}' -d '#{profile}'"
+          begin
+            execute "install root cert #{cert}" do
+              command "/bin/bash -c \"certutil -A -n '#{cert[:name]}' -t 'TC,Cw,Tw' -i '#{cert_file}' -d '#{profile}' &>/dev/null; exit 0\""
+              action :nothing
+            end.run_action(:run)
+          rescue
+            next
           end
         end
       end      
