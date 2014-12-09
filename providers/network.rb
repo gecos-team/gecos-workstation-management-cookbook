@@ -89,8 +89,8 @@ action :setup do
             Dir.chdir(nm_conn_path) do
               Dir.glob('*').each do |file|
                 if ::File.file?(file)
-                  Chef::Log.info("Moving files: #{nm_conn_path}/#{file} to #{nm_conn_backup_dir}")
-                  FileUtils.mv file, nm_conn_backup_dir
+                  Chef::Log.info("Copying files: #{nm_conn_path}/#{file} to #{nm_conn_backup_dir}")
+                  FileUtils.cp_r file, nm_conn_backup_dir
                 end
               end
             end
