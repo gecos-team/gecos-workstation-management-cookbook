@@ -16,7 +16,7 @@ action :setup do
     # setup resource depends
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     if new_resource.support_os.include?(os)
-      gem_depends = [ 'securerandom', 'activesupport', 'json' ]
+      gem_depends = [ 'activesupport', 'json' ]
 
       gem_depends.each do |gem|
 
@@ -36,7 +36,7 @@ action :setup do
       connections = new_resource.connections
       Chef::Log.info("Connections: #{connections}")
 
-      nm_conn_path = '/etc/NetworkManager/system-connections/'
+      nm_conn_path = '/etc/NetworkManager/system-connections'
       node[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections].each_pair do |provider, conn|
         Chef::Log.info("Setting '#{provider}' broadband connection")
         if conn[:uuid].nil?
@@ -46,24 +46,38 @@ action :setup do
           # start providers xml parsing
           # some bash rationale (extracts spanish providers' names):
           # cat /usr/share/mobile-broadband-provider-info/serviceproviders.xml | xml2json| jq .serviceproviders.country | sed -e 's|@code|code|g' -e 's|#tail|tail|g' -e 's|#text|text|g' /var/tmp/countries.json|jq '.[] | select(.code=="es")'|jq .provider[].name.text
-          providers_hash = Hash.from_xml(File.read "/usr/share/mobile-broadband-provider-info/serviceproviders.xml")
-          conn_country = node[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][provider][:country]
+          providers_hash = Hash.from_xml(::File.read "/usr/share/mobile-broadband-provider-info/serviceproviders.xml")
+          conn_country = node[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections][provider]['country']
           dig1 = providers_hash["serviceproviders"]["country"].select {|country| country["code"] == conn_country }
           providers = dig1[0]["provider"]
           provider_info = providers.select {|p| p["name"] == provider }
-          conn_apn = provider_info.sort[0][1]["apn"]["value"]
+          provider_info.sort!
+          case provider_info[0]
+            when Array
+              gsm_object = provider_info[0][1]["gsm"]
+            when Hash
+              gsm_object = provider_info[0]["gsm"]
+          end
+          case gsm_object["apn"]
+            when Array
+              apn_object = gsm_object["apn"][0]
+            when Hash
+              apn_object = gsm_object["apn"]
+          end
+
+          conn_apn = apn_object["value"]
+          conn_username = apn_object["username"]
           node.normal[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][provider][:apn] = conn_apn
-          conn_username = provider_info.sort[0][1]["apn"]["username"]
           node.normal[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][provider][:username] = conn_username
         end
-        template "#{nm_conn_path}/gecos_mobile_broadband_#{conn[:uuid]}" do
+        template "#{nm_conn_path}/gecos_mobile_broadband_#{conn_uuid}" do
           source "nm_mobile_broadband.erb"
           action :create
           variables(
             :conn_name => provider,
-            :conn_uuid => conn[:uiid],
-            :conn_username => conn[:username],
-            :conn_apn => conn[:apn]
+            :conn_uuid => conn_uuid,
+            :conn_username => conn_username,
+            :conn_apn => conn_apn
           )
         end
       end

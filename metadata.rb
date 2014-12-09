@@ -1567,7 +1567,7 @@ complete_js = {
           required: ["network_res","mobile_broadband_res"],
           properties: {
             network_res: network_resource_js,
-            mobile_broadband_res: mobile_broadband_res_js
+            mobile_broadband_res: mobile_broadband_js
             #sssd_res: sssd_js
           }
         },

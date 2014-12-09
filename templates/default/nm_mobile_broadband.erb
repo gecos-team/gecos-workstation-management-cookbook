@@ -6,7 +6,7 @@ autoconnect=false
 
 [gsm]
 number=*99#
-<% if not @conn_username.nil? or not @conn_username.empty? %>
+<% if not @conn_username.nil? and not @conn_username.empty? %>
 username=<%= @conn_username %>
 <% end %>
 password-flags=1
