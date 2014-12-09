@@ -12,11 +12,11 @@
 actions :setup
 default_action :setup
 
-attribute :proxyserver, :kind_of => String
-attribute :proxyport, :kind_of => String
-attribute :proxyuser, :kind_of => String
-attribute :keepalive, :kind_of => Integer
-attribute :autostart, :kind_of => Integer
-attribute :connections, :kind_of => Hash
+attribute :proxyserver, :kind_of => String, :required => false
+attribute :proxyport, :kind_of => String, :required => false
+attribute :proxyuser, :kind_of => String, :required => false
+attribute :keepalive, :kind_of => Integer, :required => false
+attribute :autostart, :kind_of => Integer, :required => false
+attribute :connections, :kind_of => Hash, :required => false
 attribute :job_ids, :kind_of => Array
 attribute :support_os, :kind_of => Array

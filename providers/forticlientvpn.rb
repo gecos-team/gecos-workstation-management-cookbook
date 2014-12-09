@@ -24,7 +24,8 @@ action :setup do
       require 'fileutils'
 
       Dir["/home/*"].each do |homedir|
-        user_fctlsslvpnhistory = homedir + "/.fctlsslvpnhistory"
+
+        user_fctlsslvpnhistory = homedir + "/.fctsslvpnhistory"
         if Kernel::test('f', user_fctlsslvpnhistory)
           current_profile_line = `grep "^current=" #{user_fctlsslvpnhistory}`
           current_profile = current_profile_line.split("=")[1]
@@ -42,6 +43,7 @@ action :setup do
           end
           connections = current_conns
         else
+          connections = Hash.new
           current_profile = "default"
         end
 
@@ -51,7 +53,6 @@ action :setup do
             connections[name] = Hash.new
             connections[name][:server] = conn[:server]
             connections[name][:port] = conn[:port]
-            connections[name][:user] = conn[:user]
             connections[name][:p12passwd] = ''
             connections[name][:path] = ''
             connections[name][:password] = ''
@@ -65,7 +66,7 @@ action :setup do
         
         template user_fctlsslvpnhistory do
           source "fctlsslvpnhistory.erb"
-          variables (
+          variables ({
             :proxyserver => res_proxyserver,
             :proxyport => res_proxyport,
             :proxyuser => res_proxyuser,
@@ -73,7 +74,7 @@ action :setup do
             :keepalive => res_keepalive,
             :autostart => res_autostart,
             :connections => connections
-          )
+           })
         end
       end
     else
