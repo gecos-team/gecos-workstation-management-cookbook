@@ -24,16 +24,19 @@ action :setup do
       require 'fileutils'
 
       Dir["/home/*"].each do |homedir|
-
+        puts "--------------"
+        puts homedir
         user_fctlsslvpnhistory = homedir + "/.fctsslvpnhistory"
         if Kernel::test('f', user_fctlsslvpnhistory)
-          current_profile_line = `grep "^current=" #{user_fctlsslvpnhistory}`
+          current_profile_line = `grep "^current=" #{user_fctlsslvpnhistory}`.strip
           current_profile = current_profile_line.split("=")[1]
           # parse current conf file for already existant (pass saved) connections
           current_conns = Hash.new
           # TODO: remove bashisms
           file_conns = `grep "^profile\\|^p12passwd\\|^path\\|^password\\|^user\\|^port\\|^server" #{user_fctlsslvpnhistory}`
-          file_conns.split("\n").each do |fc|
+          open(user_fctlsslvpnhistory).grep(/^profile|^p12passwd|^path|^password|^user|^port|^server/).each do |fc|
+#          file_conns.split("\n").each do |fc|
+            fc = fc.strip
             key, val = fc.split("=")
             if key.include? "profile"
               current_profile = val
@@ -51,22 +54,26 @@ action :setup do
         res_connections.each_pair do |name, conn|
           if connections[name].nil?
             connections[name] = Hash.new
-            connections[name][:server] = conn[:server]
-            connections[name][:port] = conn[:port]
-            connections[name][:p12passwd] = ''
-            connections[name][:path] = ''
-            connections[name][:password] = ''
-            connections[name][:user] = ''
+            connections[name]["server"] = conn[:server]
+            connections[name]["port"] = conn[:port]
+            connections[name]["p12passwd"] = ''
+            connections[name]["path"] = ''
+            connections[name]["password"] = ''
+            connections[name]["user"] = ''
           else
             # update host/port for connection if values were updated in node
-            connections[name][:server] = connections[name][:server] != conn[:server] ? conn[:server] : connections[name][:server]
-            connections[name][:port] = connections[name][:port] != conn[:port] ? conn[:port] : connections[name][:port]
+            if connections[name]["server"] != conn[:server]
+              connections[name]["server"] = conn[:server]
+            end
+            if connections[name]["port"] != conn[:port]
+              connections[name]["port"] = conn[:port]
+            end
           end
         end
-        
+
         template user_fctlsslvpnhistory do
           source "fctlsslvpnhistory.erb"
-          variables ({
+          variables(
             :proxyserver => res_proxyserver,
             :proxyport => res_proxyport,
             :proxyuser => res_proxyuser,
@@ -74,7 +81,7 @@ action :setup do
             :keepalive => res_keepalive,
             :autostart => res_autostart,
             :connections => connections
-           })
+          )
         end
       end
     else
