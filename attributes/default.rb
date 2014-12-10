@@ -93,6 +93,10 @@ default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
+default[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:users] = {}
+default[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:job_ids] = []
+default[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
+
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
