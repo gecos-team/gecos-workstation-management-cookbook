@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gecos-ws-mgmt
-# Resource:: web_browser
+# Resource:: email_client
 #
 # Copyright 2013, Junta de Andalucia
 # http://www.juntadeandalucia.es/
