@@ -581,6 +581,31 @@ web_browser_js = {
   }
 }
 
+remote_shutdown_js = {
+  title: "Remote shutdown",
+  title_es: "Apagado remoto",
+  type: "object",
+  required: ["shutdown_mode"],
+  properties: {
+    shutdown_type: {
+      title: "Shutdown mode",
+      title_es: "Tipo de apagado",
+      type: "string",
+      enum: ["halt", "reboot"],
+      default: "shutdown"
+    }, 
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }
+  }
+}
+
 user_shared_folders_js = {
   title: "Shared Folders",
   title_es: "Carpetas Compartidas",
