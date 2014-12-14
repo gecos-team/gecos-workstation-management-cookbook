@@ -16,7 +16,9 @@ action :setup do
 
   begin
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
+
+    # Checking OS and Thunderbird
+    if new_resource.support_os.include?(os) and ::File.exist?('/usr/bin/thunderbird')
 
       users = new_resource.users
       users.each_key do |user_key|
@@ -31,6 +33,11 @@ action :setup do
         thunderbird_profiles = "#{homedir}/.thunderbird/profiles.ini"
         new_profile_hash = SecureRandom.hex
 
+        execute "Create new Profile" do
+          command "thunderbird -CreateProfile #{new_profile_hash} #{homedir}/.thunderbird"
+          action :nothing
+        end.run_action(:run)
+
         ruby_block "Remove thunderbird default profile" do
           block do
             fe = Chef::Util::FileEdit.new(thunderbird_profiles)
@@ -40,14 +47,13 @@ action :setup do
           only_if { ::File.exist?(thunderbird_profiles) }
           action :nothing
         end.run_action(:run)
-
-        execute "Create new Profile" do
-          command "mkdir -p #{homedir}/.thunderbird/ && thunderbird -CreateProfile #{new_profile_hash} #{homedir}/.thunderbird"
-          action :nothing
-        end.run_action(:run)
-
-        template Dir.glob("#{homedir}/.thunderbird/**#{new_profile_hash}/prefs.js")[0] do
+        
+        dirprof =  Dir.glob("#{homedir}/.thunderbird/**#{new_profile_hash}")[0]
+      
+        template "#{dirprof}/user.js" do
           source "email_client_prefs.js.erb"
+          owner username
+          group gid
           variables(
             :identity_name => user.identity.name,
             :identity_email => user.identity.email,
@@ -70,11 +76,12 @@ action :setup do
           action :nothing
         end.run_action(:run)
 
-        directory thunderbird_dir do
-          owner username
-          group gid
-          recursive true
-        end
+        bash "chown #{username}" do
+          code <<-EOH 
+            chown -R #{username}:#{gid} #{thunderbird_dir}
+            EOH
+          action :nothing
+        end.run_action(:run)
 
       end
     else
@@ -99,7 +106,7 @@ action :setup do
   ensure
     gecos_ws_mgmt_jobids "email_client_res" do
       provider "gecos_ws_mgmt_jobids"
-      recipe "software_mgmt"
+      recipe "users_mgmt"
     end.run_action(:reset)
   end
 end
