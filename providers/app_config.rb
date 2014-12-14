@@ -23,12 +23,28 @@ action :setup do
 
         if app_update
           execute "enable libreoffice upgrades" do
-            command "apt-mark hold libreoffice libreoffice*"
+            command "apt-mark unhold libreoffice libreoffice*"
             action :nothing
           end.run_action(:run)
         else
           execute "disable libreoffice upgrades" do
-            command "apt-mark unhold libreoffice libreoffice*"
+            command "apt-mark hold libreoffice libreoffice*"
+            action :nothing
+          end.run_action(:run)
+        end
+      end
+
+      if not new_resource.thunderbird_config.empty?
+        app_update = new_resource.thunderbird_config['app_update']
+
+        if app_update
+          execute "enable thunderbird upgrades" do
+            command "apt-mark unhold thunderbird thunderbird*"
+            action :nothing
+          end.run_action(:run)
+        else
+          execute "disable thunderbird upgrades" do
+            command "apt-mark hold thunderbird thunderbird*"
             action :nothing
           end.run_action(:run)
         end

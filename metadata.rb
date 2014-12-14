@@ -714,7 +714,20 @@ app_config_js = {
         }
       }
     },
-    #thunderbird_config: {title: "Thuderbird Configuration", title_es: "Configuración de Thunderbird", type: "object"},
+    thunderbird_config: {
+      title: "Thunderbird Configuration",
+      title_es: "Configuración de Thunderbird",
+      type: "object",
+      properties: {
+        app_update: {
+          title: "Enable/Disable auto update",
+          title_es: "Activar/Desactivar actualizaciones automáticas",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        }
+      }
+    },
     loffice_config: {
       title: "Libre Office Configuration",
       title_es: "Configuración de Libre Office",
