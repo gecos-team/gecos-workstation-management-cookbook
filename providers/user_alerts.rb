@@ -37,7 +37,7 @@ action :setup do
 
         cron "user alert" do
           environment cron_vars
-          minute "#{now.minute + 1}" # In 5 mins from now
+          minute "#{now.minute + 5}" # In 5 mins from now
           hour "#{now.hour}"
           day "#{now.day}"
           month "#{now.month}"
