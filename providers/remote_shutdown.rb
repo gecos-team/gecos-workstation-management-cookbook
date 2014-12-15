@@ -17,24 +17,25 @@ action :setup do
   begin
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     if new_resource.support_os.include?(os)
+      if not new_resource.shutdown_mode.empty?
 
-      if new_resource.shutdown_mode == "halt"
-        shutdown_command = "/sbin/shutdown -r now"
-      else 
-        shutdown_command = "/sbin/reboot"
+        if new_resource.shutdown_mode == "halt"
+          shutdown_command = "/sbin/shutdown -r now"
+        else 
+          shutdown_command = "/sbin/reboot"
+        end
+  
+          now = DateTime.now
+  
+          cron "remote shutdown" do
+            minute "#{now.minute + 5}" # In 5 mins from now
+            hour "#{now.hour}"
+            day "#{now.day}"
+            month "#{now.month}"
+            command "#{shutdown_command}"
+            action :nothing
+        end.run_action(:create)
       end
-
-      now = DateTime.now
-
-      cron "remote shutdown" do
-        minute "#{now.minute + 5}" # In 5 mins from now
-        hour "#{now.hour}"
-        day "#{now.day}"
-        month "#{now.month}"
-        command "#{shutdown_command}"
-        action :nothing
-      end.run_action(:create)
-
     else
       Chef::Log.info("This resource is not support into your OS")
     end
