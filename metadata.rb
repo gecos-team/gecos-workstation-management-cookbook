@@ -737,7 +737,7 @@ remote_shutdown_js = {
   type: "object",
   required: ["shutdown_mode"],
   properties: {
-    shutdown_type: {
+    shutdown_mode: {
       title: "Shutdown mode",
       title_es: "Tipo de apagado",
       type: "string",
