@@ -1509,7 +1509,7 @@ folder_sharing_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite
 screensaver_js[:properties][:support_os][:default]=["GECOS V2"]
 folder_sync_js[:properties][:support_os][:default]=["GECOS V2"]
 user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2"]
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2"]
 
 
