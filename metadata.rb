@@ -741,7 +741,7 @@ remote_shutdown_js = {
       title: "Shutdown mode",
       title_es: "Tipo de apagado",
       type: "string",
-      enum: ["halt", "reboot"],
+      enum: ["halt", "reboot",""],
       default: "halt"
     }, 
     support_os: support_os_js.clone,
