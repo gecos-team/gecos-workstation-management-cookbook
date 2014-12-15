@@ -1714,8 +1714,8 @@ screensaver_js[:properties][:support_os][:default]=["GECOS V2"]
 folder_sync_js[:properties][:support_os][:default]=["GECOS V2"]
 user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2"]
-user_alerts_res[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-remote_shutdown_res[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_alerts_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+remote_shutdown_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2"]
 
 
