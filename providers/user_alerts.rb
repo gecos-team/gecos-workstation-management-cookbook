@@ -34,9 +34,10 @@ action :setup do
         # See: http://unix.stackexchange.com/questions/111188/using-notify-send-with-cron
         cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority"}
         now = DateTime.now
-
-        if not user.attribute?("icon")
-          user.icon = 'info'
+        
+        icon = ''
+        if user.attribute?("icon")
+          icon = user.icon
         end
 
         cron "user alert" do
@@ -46,7 +47,7 @@ action :setup do
           day "#{now.day}"
           month "#{now.month}"
           user "#{username}"
-          command "/usr/bin/notify-send -u #{user.urgency} -i #{user.icon} \"#{user.summary}\" \"#{user.body}\""
+          command "/usr/bin/notify-send -u #{user.urgency} -i #{icon} \"#{user.summary}\" \"#{user.body}\""
           action :nothing
         end.run_action(:create)
 
