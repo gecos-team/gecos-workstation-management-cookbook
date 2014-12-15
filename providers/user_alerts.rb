@@ -35,7 +35,7 @@ action :setup do
         cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority"}
         now = DateTime.now
 
-        if not user.has_attribute?("icon")
+        if not user.attribute?("icon")
           user.icon = 'info'
         end
 
