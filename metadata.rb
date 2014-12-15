@@ -584,7 +584,6 @@ email_client_js = {
   title: "Email Configuration",
   title_es: "Configuración de email",
   type: "object",
-  required: ["identity", "imap", "smtp"],
   properties: {
     users: {
       type: "object",
@@ -592,7 +591,7 @@ email_client_js = {
       title_es: "Usuarios",
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["identity"],
+          required: ["identity", "imap", "smtp"],
           properties: {  
             identity: {
               title: "Identity of the user",
