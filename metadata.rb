@@ -683,7 +683,6 @@ user_alerts_js = {
   title: "User alert",
   title_es: "Alertas de usuario",
   type: "object",
-  required: ["summary", "body"],
   properties: {
     users: {
       type: "object",
