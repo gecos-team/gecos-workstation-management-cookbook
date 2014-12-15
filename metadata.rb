@@ -635,6 +635,31 @@ user_alerts_js = {
   }
 }
 
+remote_shutdown_js = {
+  title: "Remote shutdown",
+  title_es: "Apagado remoto",
+  type: "object",
+  required: ["shutdown_mode"],
+  properties: {
+    shutdown_type: {
+      title: "Shutdown mode",
+      title_es: "Tipo de apagado",
+      type: "string",
+      enum: ["halt", "reboot"],
+      default: "halt"
+    }, 
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }
+  }
+}
+
 user_shared_folders_js = {
   title: "Shared Folders",
   title_es: "Carpetas Compartidas",
@@ -1565,6 +1590,7 @@ folder_sync_js[:properties][:support_os][:default]=["GECOS V2"]
 user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2"]
 user_alerts_res[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+remote_shutdown_res[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2"]
 
 
@@ -1599,7 +1625,8 @@ complete_js = {
             auto_updates_res: auto_updates_js,
             local_groups_res: local_groups_js,
             power_conf_res: power_conf_js,
-            local_admin_users_res: local_admin_users_js
+            local_admin_users_res: local_admin_users_js,
+            remote_shutdown_res: remote_shutdown_js
           }
         },
         software_mgmt: {
