@@ -711,7 +711,7 @@ app_config_js = {
   title_es: "Configuración de aplicaciones",
   type: "object",
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
-  required: ["java_config"],
+  required: ["java_config", "loffice_config"],
   properties: {
     #citrix_config: {title: "Citrix Configuration", title_es: "Configuración de Citrix", type: "object"},
     java_config: {
@@ -797,8 +797,34 @@ app_config_js = {
         }
       }
     },
-    #thunderbird_config: {title: "Thuderbird Configuration", title_es: "Configuración de Thunderbird", type: "object"},
-    #loffice_config: {title: "Libre Office Configuration", title_es: "Configuración de Libre Office", type: "object"},
+    thunderbird_config: {
+      title: "Thunderbird Configuration",
+      title_es: "Configuración de Thunderbird",
+      type: "object",
+      properties: {
+        app_update: {
+          title: "Enable/Disable auto update",
+          title_es: "Activar/Desactivar actualizaciones automáticas",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        }
+      }
+    },
+    loffice_config: {
+      title: "Libre Office Configuration",
+      title_es: "Configuración de Libre Office",
+      type: "object",
+      properties: {
+        app_update: {
+          title: "Enable/Disable auto update",
+          title_es: "Activar/Desactivar actualizaciones automáticas",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        }
+      }
+    },
     job_ids: {
         type: "array",
         minItems: 0,
@@ -1578,6 +1604,7 @@ app_config_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 printers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 user_shared_folders_js[:properties][:support_os][:default]=["GECOS V2"]
 web_browser_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+email_client_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 file_browser_js[:properties][:support_os][:default]=["GECOS V2"]
 user_launchers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 desktop_background_js[:properties][:support_os][:default]=["GECOS V2"]
@@ -1615,7 +1642,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res"],
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
@@ -1647,10 +1674,11 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res"],
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res"],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
+            email_client_res: email_client_js,
             file_browser_res: file_browser_js,
             user_alerts_res: user_alerts_js,
             user_launchers_res: user_launchers_js,
