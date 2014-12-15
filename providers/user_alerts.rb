@@ -35,6 +35,10 @@ action :setup do
         cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority"}
         now = DateTime.now
 
+        if not user.has_attribute?("icon")
+          user.icon = 'info'
+        end
+
         cron "user alert" do
           environment cron_vars
           minute "#{now.minute + 5}" # In 5 mins from now
