@@ -35,6 +35,7 @@ action :setup do
         oppolicy = 'default'
         if printer.attribute?("oppolicy")
           oppolicy = printer.oppolicy
+        end
         ppd = ""
         if printer.attribute?("ppd")
           ppd = printer.ppd
@@ -90,23 +91,29 @@ else:
 
       end
     end
-    # TODO:
-    # save current job ids (new_resource.job_ids) as "ok"
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 0
     end
-  rescue
-    # TODO:
+
+  rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
-      node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if not e.message.frozen?
+        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      else
+        node.set['job_status'][jid]['message'] = e.message
+      end
     end
-    
+  ensure
+    gecos_ws_mgmt_jobids "printers_res" do
+      provider "gecos_ws_mgmt_jobids"
+      recipe "printers_mgmt"
+    end.run_action(:reset)
   end
 end
-
