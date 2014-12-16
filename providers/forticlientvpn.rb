@@ -21,11 +21,14 @@ action :setup do
       res_autostart = new_resource.autostart || node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:autostart]
       res_connections = new_resource.connections || node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:connections]
 
+      autostart_num = 0
+      if res_autostart 
+        autostart_num = 1
+      end
+
       require 'fileutils'
 
       Dir["/home/*"].each do |homedir|
-        puts "--------------"
-        puts homedir
         user_fctlsslvpnhistory = homedir + "/.fctsslvpnhistory"
         if Kernel::test('f', user_fctlsslvpnhistory)
           current_profile_line = `grep "^current=" #{user_fctlsslvpnhistory}`.strip
@@ -50,8 +53,10 @@ action :setup do
           current_profile = "default"
         end
 
-        # add new connections if they do not already exist      
-        res_connections.each_pair do |name, conn|
+        # add new connections if they do not already exist  
+
+        res_connections.each do |conn|
+          name = conn[:name]
           if connections[name].nil?
             connections[name] = Hash.new
             connections[name]["server"] = conn[:server]
@@ -79,7 +84,7 @@ action :setup do
             :proxyuser => res_proxyuser,
             :current_profile => current_profile,
             :keepalive => res_keepalive,
-            :autostart => res_autostart,
+            :autostart => autostart_num,
             :connections => connections
           )
         end
@@ -98,13 +103,18 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    #raise e
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
       node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
     end
+  ensure
+    gecos_ws_mgmt_jobids "forticlientvpn_res" do
+      provider "gecos_ws_mgmt_jobids"
+      recipe "network_mgmt"
+    end.run_action(:reset)
   end
 end
+
 
 
