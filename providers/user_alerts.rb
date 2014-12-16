@@ -56,7 +56,7 @@ action :setup do
         if ::File.exist?("#{homedir}/.user-alert")
           file = ::File.read("#{homedir}/.user-alert")
           json_file = JSON.parse(file)
-          if json_file == msg_hash
+          if not json_file == msg_hash
             change = true
           end
         end
@@ -113,7 +113,11 @@ action :setup do
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
-      node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if not e.message.frozen?
+        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      else
+        node.set['job_status'][jid]['message'] = e.message
+      end
     end
   ensure
     gecos_ws_mgmt_jobids "user_alerts_res" do
