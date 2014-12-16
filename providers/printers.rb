@@ -84,7 +84,7 @@ if '#{name}' not in connection.getPrinters().keys():
 else:
     print "Printer #{name} already exists"
     print "Change operation policy"
-    printer = cupshelpers.Printer('#{name}',c)
+    printer = cupshelpers.Printer('#{name}',connection)
     printer.setOperationPolicy('#{oppolicy}')
     EOH
         end.run_action(:run)
