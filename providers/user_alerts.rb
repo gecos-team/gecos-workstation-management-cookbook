@@ -10,6 +10,7 @@
 #
 require 'chef/mixin/shell_out'
 require 'date'
+require 'json'
 include Chef::Mixin::ShellOut
 
 action :setup do
@@ -23,11 +24,14 @@ action :setup do
         action :nothing
       end.run_action(:install)
 
+      usernames = []
+
       users = new_resource.users
       users.each_key do |user_key|
 
         user = users[user_key]
         username = user_key
+        usernames << username
         homedir = `eval echo ~#{username}`.gsub("\n","")
 
         # Needed for notify-send to get the user display.
@@ -40,6 +44,23 @@ action :setup do
           icon = user.icon
         end
 
+        change = false
+
+        msg_hash = {}
+        msg_hash['urgency'] = user.urgency
+        msg_hash['icon'] = icon
+        msg_hash['summary'] = user.summary
+        msg_hash['body'] = user.body
+
+
+        if ::File.exist?("#{homedir}/.user-alert")
+          file = ::File.read("#{homedir}/.user-alert")
+          json_file = JSON.parse(file)
+          if json_file == msg_hash
+            change = true
+          end
+        end
+
         cron "user alert" do
           environment cron_vars
           minute "#{now.minute + 5}" # In 5 mins from now
@@ -48,10 +69,33 @@ action :setup do
           month "#{now.month}"
           user "#{username}"
           command "/usr/bin/notify-send -u #{user.urgency} -i #{icon} \"#{user.summary}\" \"#{user.body}\""
+          only_if do not ::File.exist?("#{homedir}/.user-alert") or change end
           action :nothing
         end.run_action(:create)
 
+        ::File.open("#{homedir}/.user-alert","w") do |f|
+          f.write(msg_hash.to_json)
+        end
+        
       end
+
+      node['ohai_gecos']['users'].each do | user |
+        if not usernames.include?(user[:username])
+          file "#{user.home}/.user-alert" do
+            owner user[:username]
+            group user[:username]
+            mode '0755'
+            action :nothing
+          end.run_action(:delete)
+
+          cron "user alert" do
+            user "#{user[:username]}"
+            action :nothing
+          end.run_action(:delete)
+
+        end
+      end
+
     else
       Chef::Log.info("This resource is not support into your OS")
     end

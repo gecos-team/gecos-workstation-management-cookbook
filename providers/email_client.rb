@@ -33,8 +33,10 @@ action :setup do
         thunderbird_profiles = "#{homedir}/.thunderbird/profiles.ini"
         new_profile_hash = SecureRandom.hex
 
+        ENV["DISPLAY"] = ":0.0"
+
         execute "Create new Profile" do
-          command "thunderbird -CreateProfile #{new_profile_hash} #{homedir}/.thunderbird"
+          command "sudo -iu #{username} thunderbird -CreateProfile #{new_profile_hash} #{homedir}/.thunderbird"
           action :nothing
         end.run_action(:run)
 

@@ -26,15 +26,51 @@ action :setup do
         end
   
           now = DateTime.now
+
+          change = false
   
+          sc_hash = {}
+          sc_hash['shutdown_command'] = shutdown_command
+
+          if ::File.exist?("/etc/cron.shutdown")
+            file = ::File.read("/etc/cron.shutdown")
+            json_file = JSON.parse(file)
+            if json_file == sc_hash
+              change = true
+            end
+          end
+    
           cron "remote shutdown" do
             minute "#{now.minute + 5}" # In 5 mins from now
             hour "#{now.hour}"
             day "#{now.day}"
             month "#{now.month}"
             command "#{shutdown_command}"
+            only_if do not ::File.exist?("/etc/cron.shutdown") or change end
             action :nothing
-        end.run_action(:create)
+          end.run_action(:create)
+    
+          ::File.open("/etc/cron.shutdown","w") do |f|
+            f.write(sc_hash.to_json)
+          end
+
+      else
+        cron "remote shutdown" do
+          minute "#{now.minute + 5}" # In 5 mins from now
+          hour "#{now.hour}"
+          day "#{now.day}"
+          month "#{now.month}"
+          command "#{shutdown_command}"
+          action :nothing
+        end.run_action(:delete)
+        
+        file "/etc/cron.shutdown" do
+          owner 'root'
+          group 'root'
+          mode '0755'
+          action :nothing
+        end.run_action(:delete)
+
       end
     else
       Chef::Log.info("This resource is not support into your OS")
