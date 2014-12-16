@@ -77,7 +77,7 @@ if '#{name}' not in connection.getPrinters().keys():
         ppd = drivers.keys()[0]
 
     connection.addPrinter('#{name}',ppdname=ppd, device='#{uri}')
-    printer = cupshelpers.Printer('#{name}',c)
+    printer = cupshelpers.Printer('#{name}',connection)
     printer.setOperationPolicy('#{oppolicy}')
     connection.enablePrinter('#{name}')
     connection.acceptJobs('#{name}')
