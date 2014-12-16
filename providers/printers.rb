@@ -32,6 +32,9 @@ action :setup do
         name = printer.name
         make = printer.manufacturer
         model = printer.model
+        oppolicy = 'default'
+        if printer.attribute?("oppolicy")
+          oppolicy = printer.oppolicy
         ppd = ""
         if printer.attribute?("ppd")
           ppd = printer.ppd
@@ -59,21 +62,29 @@ action :setup do
           user "root"
           code <<-EOH
 import cups
+import cupshelpers
 connection=cups.Connection()
-drivers = connection.getPPDs(ppd_make_and_model='#{make} #{model}')
-ppd = '#{ppd}'
-if ppd != '':
-    for key in drivers.keys():
-        if key.startswith('lsb/usr') and key.endswith('#{model}/'+ppd):
-            ppd = key
+if '#{name}' not in connection.getPrinters().keys():
+    drivers = connection.getPPDs(ppd_make_and_model='#{make} #{model}')
+    ppd = '#{ppd}'
+    if ppd != '':
+        for key in drivers.keys():
+            if key.startswith('lsb/usr') and key.endswith('#{model}/'+ppd):
+                ppd = key
 
-if ppd == '':
-    ppd = drivers.keys()[0]
+    if ppd == '':
+        ppd = drivers.keys()[0]
 
-connection.addPrinter('#{name}',ppdname=ppd, device='#{uri}')
-connection.enablePrinter('#{name}')
-connection.acceptJobs('#{name}')
-
+    connection.addPrinter('#{name}',ppdname=ppd, device='#{uri}')
+    printer = cupshelpers.Printer('#{name}',c)
+    printer.setOperationPolicy('#{oppolicy}')
+    connection.enablePrinter('#{name}')
+    connection.acceptJobs('#{name}')
+else:
+    print "Printer #{name} already exists"
+    print "Change operation policy"
+    printer = cupshelpers.Printer('#{name}',c)
+    printer.setOperationPolicy('#{oppolicy}')
     EOH
         end.run_action(:run)
 
