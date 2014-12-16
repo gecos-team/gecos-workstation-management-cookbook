@@ -35,20 +35,22 @@ action :setup do
           if ::File.exist?("/etc/cron.shutdown")
             file = ::File.read("/etc/cron.shutdown")
             json_file = JSON.parse(file)
-            if json_file == sc_hash
+            if not json_file == sc_hash
               change = true
             end
           end
     
+          
           cron "remote shutdown" do
             minute "#{now.minute + 5}" # In 5 mins from now
             hour "#{now.hour}"
             day "#{now.day}"
             month "#{now.month}"
             command "#{shutdown_command}"
-            only_if do not ::File.exist?("/etc/cron.shutdown") or change end
             action :nothing
+            only_if do not ::File.exist?("/etc/cron.shutdown") or change end
           end.run_action(:create)
+          
     
           ::File.open("/etc/cron.shutdown","w") do |f|
             f.write(sc_hash.to_json)
@@ -56,11 +58,6 @@ action :setup do
 
       else
         cron "remote shutdown" do
-          minute "#{now.minute + 5}" # In 5 mins from now
-          hour "#{now.hour}"
-          day "#{now.day}"
-          month "#{now.month}"
-          command "#{shutdown_command}"
           action :nothing
         end.run_action(:delete)
         
@@ -89,12 +86,16 @@ action :setup do
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
-      node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if not e.message.frozen?
+        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      else
+        node.set['job_status'][jid]['message'] = e.message
+      end
     end
   ensure
     gecos_ws_mgmt_jobids "remote_shutdown_res" do
       provider "gecos_ws_mgmt_jobids"
-      recipe "mism_mgmt"
+      recipe "misc_mgmt"
     end.run_action(:reset)
   end
 end
