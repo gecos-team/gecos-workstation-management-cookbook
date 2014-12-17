@@ -47,23 +47,33 @@ mobile_broadband_js = {
     connections: {
       title: "Connections",
       title_es: "Conexiones",
-      type: "object",
-      patternProperties: {
-        ".*" => { type: "object", title: "Provider", title_es: "Proveedor",
-          required: ["country"],
-          enum: ['Euskaltel','Másmovil','móbil R (Mundo-R)','moviData','ONO','Pepephone','Orange','Simyo/Blau','Telecable','Movistar (Telefónica)','Vodafone (Airtel)','Yoigo','Jazztel','Carrefour Móvil','Eroski Móvil'],
-          properties: {
-            country: {
-              type: "string",
-              title: "Country code",
-              title_es: "Código de país",
-              enum: ["es"]
-            },
-            updated_by: updated_js
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        title: "Provider",
+        title_es: "Proveedor",
+        required: ["provider", "country"],
+        order: ["provider","country"],
+        properties: { 
+          provider: {
+            type: "string",
+            title: "Provider",
+            title_es: "Proveedor",
+            enum: ['Euskaltel','Másmovil','móbil R (Mundo-R)','moviData','ONO','Pepephone','Orange','Simyo/Blau','Telecable','Movistar (Telefónica)','Vodafone (Airtel)','Yoigo','Jazztel','Carrefour Móvil','Eroski Móvil'], 
+          },
+          country: {
+            type: "string",
+            title: "Country code",
+            title_es: "Código de país",
+            enum: ["es"]
           }
+            
         }
       }
     },
+    updated_by: updated_js,
     support_os: support_os_js.clone,
     job_ids: {
         type: "array",
