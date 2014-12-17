@@ -786,6 +786,8 @@ user_alerts_js = {
             icon: {
               title: "Icon filename or stock icon to display",
               title_es: "Fichero de icono o icono del stock a mostrar",
+              description: "This policy will apply 5 minutes after synchronization",
+              description_es: "Esta politica se aplicará 5 minutos después de la sincronización",
               type: "string",
               default: "info"
             },
@@ -815,6 +817,8 @@ remote_shutdown_js = {
     shutdown_mode: {
       title: "Shutdown mode",
       title_es: "Tipo de apagado",
+      description: "This policy will apply 5 minutes after synchronization",
+      description_es: "Esta politica se aplicará 5 minutos después de la sincronización",
       type: "string",
       enum: ["halt", "reboot",""],
       default: "halt"
