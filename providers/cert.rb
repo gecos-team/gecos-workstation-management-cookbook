@@ -42,7 +42,7 @@ action :setup do
               action :nothing
               only_if do not ::File.exist?(dir_ca_imported + ::File.basename(cert)) end
             end.run_action(:run)
-            remote_file "Copy cert to imported folder" do
+            remote_file "Copy '#{cert}' to imported folder" do
               path dir_ca_imported + ::File.basename(cert)
               source "file://" + cert
               owner 'root'
