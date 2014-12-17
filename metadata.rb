@@ -667,6 +667,7 @@ email_client_js = {
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["identity", "imap", "smtp"],
+          order: ["identity", "imap", "smtp"],
           properties: {  
             identity: {
               title: "Identity of the user",
@@ -765,6 +766,7 @@ user_alerts_js = {
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["summary", "body"],
+          order: ["summary", "body", "urgency", "icon"],
           properties: {  
             summary: {
               title: "Summary for the alert message",
