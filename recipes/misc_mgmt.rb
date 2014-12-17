@@ -79,8 +79,8 @@ gecos_ws_mgmt_remote_shutdown 'remote shutdown' do
   action :setup
 end
 
-gecos_ws_mgmt_cert 'manage ca root certs' do
-  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:support_os]
+gecos_ws_mgmt_cert 'cert' do
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:support_os]
   action :setup
 end
