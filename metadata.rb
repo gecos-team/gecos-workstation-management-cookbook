@@ -408,7 +408,7 @@ desktop_menu_js = {
 
 user_launchers_js = {
   title: "User Launchers",
-  title_es: "Acceso directo al escritorio",
+  title_es: "Acceso directo en el escritorio",
   type: "object",
   required: ["users"],
   properties: {
@@ -513,6 +513,7 @@ file_browser_js = {
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["default_folder_viewer", "show_hidden_files", "show_search_icon_toolbar", "click_policy", "confirm_trash"],
+          order: ["click_policy", "show_hidden_files", "default_folder_viewer", "show_search_icon_toolbar", "confirm_trash"],
           properties: {
             default_folder_viewer: {type: "string", title: "files viewer", title_es: "Visualización de archivos", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
             show_hidden_files: {type: "string", title: "Show hidden files?", title_es: "Mostrar archivos ocultos", enum: ["true","false"], default: "false"},
@@ -563,6 +564,7 @@ web_browser_js = {
               items: {
                 type: "object",
                 required: ["name", "uri", "action"],
+                order: ["name", "uri", "action"],
                 properties: {
                   name: {title: "Name", title_es: "Nombre", type: "string"},
                   uri: {title: "Uri", title_es: "Uri", type: "string"},
@@ -579,6 +581,7 @@ web_browser_js = {
               items: {
                 type: "object",
                 required: ["name", "uri"],
+                order: ["name", "uri"],
                 properties: {
                   name: {title: "Name", title_es: "Nombre", type: "string"},
                   uri: {title: "Uri", title_es: "Uri", type: "string"}
@@ -673,6 +676,7 @@ email_client_js = {
               title: "Identity of the user",
               title_es: "Identidad del usuario",
               type: "object",
+              order: ["name", "email"],
               properties: {
                 name: {
                   title: "Name",
@@ -691,6 +695,7 @@ email_client_js = {
               title: "IMAP server",
               title_es: "Servidor IMAP",
               type: "object",
+              order: ["username", "hostname", "port"],
               properties: {
                 hostname: {
                   title: "Hostname",
@@ -716,6 +721,7 @@ email_client_js = {
               title: "SMTP server",
               title_es: "Servidor SMTP",
               type: "object",
+              order: ["username", "hostname", "port"],
               properties: {
                 hostname: {
                   title: "Hostname",
@@ -1024,8 +1030,9 @@ auto_updates_js = {
     auto_updates_rules: {
       type: "object",
       title: "Auto Updates Rules",
-      title_es: "Reglas de actualizaciones automaticas",
+      title_es: "Reglas de actualizaciones automáticas",
       required: ["onstop_update", "onstart_update", "days"],
+      order: ["onstart_update", "onstop_update", "days"],
       properties: {
         onstop_update: {title: "Update on shutdown?", title_es: "Actualizar al apagado",  type: "boolean"},
         onstart_update: {title: "Update on start", title_es: "Actualizar al inicio", type: "boolean"},
@@ -1199,6 +1206,7 @@ scripts_launch_js = {
   title_es: "Lanzador de scripts",
   type: "object",
   required: ["on_startup","on_shutdown"],
+  order: ["on_startup", "on_shutdown"],
   properties:
   {
     on_startup: {
@@ -1598,6 +1606,7 @@ local_file_js = {
   title_es: "Archivos locales",
   type: "object",
   required: ["delete_files", "copy_files"],
+  order: ["copy_files", "delete_files"],
   properties:
   {delete_files: {
       type:"array",
@@ -1606,6 +1615,7 @@ local_file_js = {
       items: {
         type:"object",
         required: ["file"],
+        order:["file", "backup"],
         properties:{
           file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path of the file to delete", description_es: "Introduzca la ruta absoluta del archivo a borrar"},
           backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" }
@@ -1706,6 +1716,7 @@ power_conf_js = {
   title_es: "Administración de energía",
   type: "object",
   required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
+  order: ["cpu_freq_gov", "usb_autosuspend", "auto_shutdown"],
   properties:
     {cpu_freq_gov: {
        title: "CPU frequency governor",
@@ -1722,6 +1733,7 @@ power_conf_js = {
        },
      auto_shutdown: {
        type: "object",
+       order: ["hour", "minute"],
        properties: {
          hour: {
            title: "Hour",
