@@ -538,7 +538,57 @@ file_browser_js = {
 }
 
 
+cert_js = {
+  title: "Certificate Management",
+  title_es: "Gestion de Certificados",
+  type: "object",
+  properties:{
+    java_keystores: {
+      title: "Java Keystores",
+      title_es: "Almacenes de claves de Java",
+      description: "Path of java keystore: e.g. /etc/java/cacerts-gcj",
+      description_es: "Ruta del almacen de claves: p.ej. /etc/java/cacerts-gcj",
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    ca_root_certs:{
+      title: "CA root certificates",
+      title_es: "Certificados raices de Autoridades de Certificación (CA)",
+      type:"array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        properties:{
+          name: {
+            title: "Name",
+            title_es: "Nombre",
+            type: "string"
+          },
+          uri: {
+            title: "Uri certificate",
+            title_es: "Uri del certificado",
+            type: "string"
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
 
+}
 
 
 
@@ -1833,11 +1883,12 @@ folder_sharing_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite
 screensaver_js[:properties][:support_os][:default]=["GECOS V2"]
 folder_sync_js[:properties][:support_os][:default]=["GECOS V2"]
 user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2"]
 user_alerts_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 remote_shutdown_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-shutdown_options_js[:properties][:support_os][:default]=["GECOS V2"]
 forticlientvpn_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+cert_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 
 
 complete_js = {
@@ -1873,7 +1924,8 @@ complete_js = {
             local_groups_res: local_groups_js,
             power_conf_res: power_conf_js,
             local_admin_users_res: local_admin_users_js,
-            remote_shutdown_res: remote_shutdown_js
+            remote_shutdown_res: remote_shutdown_js,
+            cert_res: cert_js
           }
         },
         software_mgmt: {

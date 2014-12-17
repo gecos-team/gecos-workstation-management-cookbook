@@ -102,6 +102,12 @@ default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:local_admin_users_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
+default[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:java_keystores] = [ '/etc/java/cacerts-gcj' ]
+default[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:ca_root_certs] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:job_ids] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:updated_by] = {}
+default[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
+
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
