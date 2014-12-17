@@ -37,49 +37,50 @@ action :setup do
       Chef::Log.info("Connections: #{connections}")
 
       nm_conn_path = '/etc/NetworkManager/system-connections'
-      node[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections].each_pair do |provider, conn|
+      id_con = 0
+      node[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections].each do |conn|
+        provider = conn[:provider]
         Chef::Log.info("Setting '#{provider}' broadband connection")
-        if conn[:uuid].nil?
-        then
-          conn_uuid = SecureRandom.uuid
-          node.normal[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][provider][:uuid] = conn_uuid
-          # start providers xml parsing
-          # some bash rationale (extracts spanish providers' names):
-          # cat /usr/share/mobile-broadband-provider-info/serviceproviders.xml | xml2json| jq .serviceproviders.country | sed -e 's|@code|code|g' -e 's|#tail|tail|g' -e 's|#text|text|g' /var/tmp/countries.json|jq '.[] | select(.code=="es")'|jq .provider[].name.text
-          providers_hash = Hash.from_xml(::File.read "/usr/share/mobile-broadband-provider-info/serviceproviders.xml")
-          conn_country = node[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections][provider]['country']
-          dig1 = providers_hash["serviceproviders"]["country"].select {|country| country["code"] == conn_country }
-          providers = dig1[0]["provider"]
-          provider_info = providers.select {|p| p["name"] == provider }
-          provider_info.sort!
-          case provider_info[0]
-            when Array
-              gsm_object = provider_info[0][1]["gsm"]
-            when Hash
-              gsm_object = provider_info[0]["gsm"]
-          end
-          case gsm_object["apn"]
-            when Array
-              apn_object = gsm_object["apn"][0]
-            when Hash
-              apn_object = gsm_object["apn"]
-          end
+        conn_uuid = SecureRandom.uuid
 
-          conn_apn = apn_object["value"]
-          conn_username = apn_object["username"]
-          node.normal[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][provider][:apn] = conn_apn
-          node.normal[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][provider][:username] = conn_username
+        # start providers xml parsing
+        # some bash rationale (extracts spanish providers' names):
+        # cat /usr/share/mobile-broadband-provider-info/serviceproviders.xml | xml2json| jq .serviceproviders.country 
+        # | sed -e 's|@code|code|g' -e 's|#tail|tail|g' -e 's|#text|text|g' /var/tmp/countries.json|jq '.[] | select(.code=="es")'|jq .provider[].name.text
+        providers_hash = Hash.from_xml(::File.read "/usr/share/mobile-broadband-provider-info/serviceproviders.xml")
+        conn_country = conn['country']
+        dig1 = providers_hash["serviceproviders"]["country"].select {|country| country["code"] == conn_country }
+        providers = dig1[0]["provider"]
+        provider_info = providers.select {|p| p["name"] == provider }
+        provider_info.sort!
+        case provider_info[0]
+          when Array
+            gsm_object = provider_info[0][1]["gsm"]
+          when Hash
+            gsm_object = provider_info[0]["gsm"]
         end
-        template "#{nm_conn_path}/gecos_mobile_broadband_#{conn_uuid}" do
+        case gsm_object["apn"]
+          when Array
+            apn_object = gsm_object["apn"][0]
+          when Hash
+            apn_object = gsm_object["apn"]
+        end
+
+        conn_apn = apn_object["value"]
+        conn_username = apn_object["username"]
+        
+        template "#{nm_conn_path}/Gecos_GSM_#{id_con}" do
           source "nm_mobile_broadband.erb"
-          action :create
+          action :nothing
+          mode '0600'
           variables(
-            :conn_name => provider,
+            :conn_name => "Gecos_GSM_#{id_con}",
             :conn_uuid => conn_uuid,
             :conn_username => conn_username,
             :conn_apn => conn_apn
           )
-        end
+        end.run_action(:create)
+        id_con += 1
       end
       # save current job ids (new_resource.job_ids) as "ok"
       job_ids = new_resource.job_ids
@@ -96,7 +97,16 @@ action :setup do
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1
-      node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if not e.message.frozen?
+        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      else
+        node.set['job_status'][jid]['message'] = e.message
+      end
     end
+  ensure
+    gecos_ws_mgmt_jobids "mobile_broadband_res" do
+      provider "gecos_ws_mgmt_jobids"
+      recipe "network_mgmt"
+    end.run_action(:reset)
   end
 end
