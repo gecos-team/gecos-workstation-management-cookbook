@@ -9,18 +9,18 @@
 # http://www.osor.eu/eupl
 #
 
+gecos_ws_mgmt_local_users 'manage local users' do
+  users_list node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:support_os]
+  action :setup
+end
+
 gecos_ws_mgmt_local_file 'manage local files' do
   delete_files node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files]
   copy_files node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files]
   job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:job_ids]
   support_os node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:support_os]
-  action :setup
-end
-
-gecos_ws_mgmt_local_users 'manage local users' do
-  users_list node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list]
-  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:support_os]
   action :setup
 end
 
