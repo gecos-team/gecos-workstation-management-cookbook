@@ -88,7 +88,7 @@ action :setup do
             action :nothing
           end.run_action(:delete)
 
-          cron "user alert" do
+          cron "user alert for '#{user[:username]}'" do
             user "#{user[:username]}"
             action :nothing
           end.run_action(:delete)
