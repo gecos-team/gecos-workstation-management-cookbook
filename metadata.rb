@@ -37,6 +37,54 @@ support_os_js = {
   }
 
 }
+
+mobile_broadband_js = {
+  title: "Mobile broadband connections",
+  title_es: "Conexiones de banda ancha móvil",
+  type: "object",
+  required: ["connections"],
+  properties: {
+    connections: {
+      title: "Connections",
+      title_es: "Conexiones",
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "object",
+        title: "Provider",
+        title_es: "Proveedor",
+        required: ["provider", "country"],
+        order: ["provider","country"],
+        properties: { 
+          provider: {
+            type: "string",
+            title: "Provider",
+            title_es: "Proveedor",
+            enum: ['Euskaltel','Másmovil','móbil R (Mundo-R)','moviData','ONO','Pepephone','Orange','Simyo/Blau','Telecable','Movistar (Telefónica)','Vodafone (Airtel)','Yoigo','Jazztel','Carrefour Móvil','Eroski Móvil'], 
+          },
+          country: {
+            type: "string",
+            title: "Country code",
+            title_es: "Código de país",
+            enum: ["es"]
+          }
+            
+        }
+      }
+    },
+    updated_by: updated_js,
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
+}
     
 forticlientvpn_js = {
   title: "FortiClient VPN connections",
@@ -1889,7 +1937,7 @@ forticlientvpn_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite
 user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 cert_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-
+mobile_broadband_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
@@ -1904,10 +1952,11 @@ complete_js = {
       properties: {
         network_mgmt: {
           type: "object",
-          required: ["network_res","forticlientvpn_res"],
+          required: ["network_res","forticlientvpn_res","mobile_broadband_res"],
           properties: {
             network_res: network_resource_js,
-            forticlientvpn_res: forticlientvpn_js
+            forticlientvpn_res: forticlientvpn_js,
+            mobile_broadband_res: mobile_broadband_js
             #sssd_res: sssd_js
           }
         },
