@@ -766,7 +766,7 @@ user_alerts_js = {
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
           required: ["summary", "body"],
-          order: ["summay", "body", "urgency", "icon"],
+          order: ["summary", "body", "urgency", "icon"],
           properties: {  
             summary: {
               title: "Summary for the alert message",
