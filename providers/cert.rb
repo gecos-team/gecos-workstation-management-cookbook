@@ -15,7 +15,9 @@ action :setup do
     if new_resource.support_os.include?(os)
       
       # install depends
-      package "libnss3-tools"
+      package "libnss3-tools" do
+        action :nothing
+      end.run_action(:install)
 
       require 'fileutils'
 
@@ -75,7 +77,7 @@ action :setup do
         end
         Dir["/home/*/.mozilla/firefox/*default"].each do |profile|
           begin
-            execute "install root cert #{cert}" do
+            execute "install root cert #{cert} for profile '#{profile}'" do
               command "/bin/bash -c \"certutil -A -n '#{cert[:name]}' -t 'TC,Cw,Tw' -i '#{cert_file}' -d '#{profile}' &>/dev/null; exit 0\""
               action :nothing
             end.run_action(:run)

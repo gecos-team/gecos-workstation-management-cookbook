@@ -61,7 +61,7 @@ action :setup do
           end
         end
 
-        cron "user alert" do
+        cron "user alert for '#{username}'" do
           environment cron_vars
           minute "#{now.minute + 5}" # In 5 mins from now
           hour "#{now.hour}"
