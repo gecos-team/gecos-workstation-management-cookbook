@@ -57,6 +57,12 @@ action :setup do
                 EOH
               action :nothing
             end.run_action(:run)
+ 
+            execute "create user dirs" do
+              command "sudo -iu #{username} xdg-user-dirs-update"
+              action :nothing
+            end.run_action(:run)
+
           end
 
           grps.each do |g|
