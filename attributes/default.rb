@@ -150,7 +150,7 @@ default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:support_os] = []
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
+default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:support_os] = ["GECOS V2"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:job_ids] = []

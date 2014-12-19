@@ -3,7 +3,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.8"
+version           "0.3.9"
 
 depends "apt"
 depends "chef-client"
@@ -1927,7 +1927,7 @@ desktop_background_js[:properties][:support_os][:default]=["GECOS V2"]
 desktop_menu_js[:properties][:support_os][:default]=[]
 desktop_control_js[:properties][:support_os][:default]=[]
 user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-folder_sharing_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+folder_sharing_js[:properties][:support_os][:default]=["GECOS V2"]
 screensaver_js[:properties][:support_os][:default]=["GECOS V2"]
 folder_sync_js[:properties][:support_os][:default]=["GECOS V2"]
 user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]

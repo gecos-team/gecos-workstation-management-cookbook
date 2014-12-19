@@ -18,6 +18,16 @@ action :setup do
       users_to_add = []
       users_to_remove = []
     
+      if os == "GECOS V2"
+        package 'nemo-share' do
+          action :nothing
+        end.run_action(:install)
+      end
+
+      package 'samba' do
+        action :nothing
+      end.run_action(:install)
+
     # Default Samba group
       GRP_SAMBA = 'sambashare'
       samba_members = Etc.getgrnam(GRP_SAMBA).mem
