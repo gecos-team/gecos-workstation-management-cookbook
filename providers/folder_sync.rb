@@ -16,7 +16,7 @@ action :setup do
     
       users = new_resource.users
 
-      if not users.nil? and notusers.empty?
+      if not users.nil? and not users.empty?
         package "owncloud-client" do
           action :install
           options "--force-yes"
