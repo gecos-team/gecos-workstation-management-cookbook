@@ -16,9 +16,11 @@ action :setup do
     
       users = new_resource.users
 
-      package "owncloud-client" do
-        action :install
-        options "--force-yes"
+      if not users.nil? and notusers.empty?
+        package "owncloud-client" do
+          action :install
+          options "--force-yes"
+        end
       end
       
       users.each_key do |user_key|
