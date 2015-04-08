@@ -21,11 +21,14 @@ action :setup do
         username = nameuser.gsub('###','.')
         user = users[user_key]
 
-        homedir = `eval echo ~#{username}`.gsub("\n","")
-        desktop_path = "#{homedir}/Escritorio/"
-
+        homedir = Etc.getpwnam(username).dir
+        desktop_path = homedir + "/" + `xdg-user-dir DESKTOP`
+  
         gid = Etc.getpwnam(username).gid
         user.launchers.each do |desktopfile|
+          if not desktopfile.end_with? ".desktop"
+             desktopfile << ".desktop"
+          end 
           if FileTest.exist? applications_path + desktopfile and not desktopfile.empty?
             FileUtils.cp "#{applications_path}#{desktopfile}",  desktop_path
             FileUtils.chown(username, gid, desktop_path + desktopfile)
@@ -35,7 +38,7 @@ action :setup do
 
       end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info("Policy is not compatible with this operative system")
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
