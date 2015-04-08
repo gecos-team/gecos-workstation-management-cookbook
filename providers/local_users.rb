@@ -41,31 +41,19 @@ action :setup do
             home user_home
             comment fullname
             shell "/bin/bash"
+            manage_home true
             action :nothing
           end.run_action(:create)
 
-          if !::File.directory?(user_home) 
-            directory user_home do
-              owner username
-              group username
-              action :nothing
-            end.run_action(:create)
-            bash "copy skel to #{username}" do
-              code <<-EOH 
-                rsync -av /etc/skel/ #{user_home}
-                chown -R #{username}: #{user_home}
-                EOH
-              action :nothing
-            end.run_action(:run)
- 
-            #TODO make compatibility with locales
-            #execute "create user dirs" do
-            #  command "sudo -iu #{username} xdg-user-dirs-update"
-            #  action :nothing
-            #end.run_action(:run)
-
-          end
-
+          bash "copy skel to #{username}" do
+	    user "#{username}"
+            code <<-EOH
+              export LC_ALL=$LANG
+              /usr/bin/xdg-user-dirs-update --force
+              EOH
+            action :nothing
+          end.run_action(:run)
+                                                                                                              
           grps.each do |g|
             begin
               info = Etc.getgrnam(g)
