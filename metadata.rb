@@ -1,9 +1,9 @@
 name              "gecos_ws_mgmt"
-maintainer        "Roberto C. Morano"
-maintainer_email  "rcmorano@emergya.com"
+maintainer        "Alfonso de Cala"
+maintainer_email  "alfonso.cala@juntadeandalucia.es"
 license           "Apache 2.0"
-description       "Cookbook for GECOS workstations administration"
-version           "0.3.9"
+description       "Cookbook for GECOS workstations"
+version           "0.3.10"
 
 depends "apt"
 depends "chef-client"
@@ -595,7 +595,7 @@ cert_js = {
       title: "Java Keystores",
       title_es: "Almacenes de claves de Java",
       description: "Path of java keystore: e.g. /etc/java/cacerts-gcj",
-      description_es: "Ruta del almacen de claves: p.ej. /etc/java/cacerts-gcj",
+      description_es: "Ruta del almacén de claves: p.ej. /etc/java/cacerts-gcj",
       type: "array",
       minItems: 0,
       uniqueItems: true,
