@@ -12,7 +12,7 @@ depends "chef-client"
   supports os
 end
 
-# more complete input definition via json-schemas:
+# better fields definition via json-schemas:
 
 updated_js = {
   title: "Updated by",
@@ -27,7 +27,7 @@ updated_js = {
 }
 
 support_os_js = {
-  title: "Support OS",
+  title: "Supported OS",
   title_es: "Sistemas operativos compatibles",
   type: "array",
   minItems: 0,
@@ -164,13 +164,13 @@ forticlientvpn_js = {
 
 sssd_js = {
   title: "Authenticate System",
-  title_es: "Autenticación del sistema",
+  title_es: "Sistema de Autenticación",
   type: "object",
   required: ["auth_type", "enabled"],
   properties: {
-    krb_url: { type: "string" , title: "Url Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
-    smb_url: { type: "string" , title: "Url Samba file configuration", title_es: "Archivo de configuración Url Samba"},
-    sssd_url: { type: "string" , title: "Url SSSD file configuration", title_es: "Archivo de configuración Url SSSD"},
+    krb_url: { type: "string" , title: "Url of Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
+    smb_url: { type: "string" , title: "Url of Samba file configuration", title_es: "Archivo de configuración Url Samba"},
+    sssd_url: { type: "string" , title: "Url of SSSD file configuration", title_es: "Archivo de configuración Url SSSD"},
     domain_list: {
       type:"array",
       items: {
@@ -193,7 +193,7 @@ sssd_js = {
     },
     auth_type:{
       title: "Authenticate type",
-      title_es: "Autenticación del tipo",
+      title_es: "Tipo de Autenticación",
       type: "string"
     },
     uri:{
