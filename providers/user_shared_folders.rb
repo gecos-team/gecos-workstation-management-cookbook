@@ -21,6 +21,7 @@ action :setup do
         user = users[user_key]
      
         homedir = `eval echo ~#{username}`.gsub("\n","")
+        usergroup = `id -g ~#{username}`
         gtkbookmark_files =  ["#{homedir}/.config/gtk-3.0/bookmarks", "#{homedir}/.gtk-bookmarks"]
         gtkbookmark_files.each do |gtkbook|
           if ::File.exists? gtkbook
@@ -30,7 +31,7 @@ action :setup do
           else
             file gtkbook do
               owner username
-              group username
+              group usergroup
               action :nothing
             end.run_action(:create)
           end
