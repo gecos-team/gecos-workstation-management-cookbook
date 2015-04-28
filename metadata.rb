@@ -1,9 +1,9 @@
 name              "gecos_ws_mgmt"
-maintainer        "Roberto C. Morano"
-maintainer_email  "rcmorano@emergya.com"
+maintainer        "GECOS Team"
+maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.9"
+version           "0.3.10"
 
 depends "apt"
 depends "chef-client"
