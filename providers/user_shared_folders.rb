@@ -39,7 +39,7 @@ action :setup do
 
           user.gtkbookmarks.each do |bookmark|
             if bookmark.uri.match(pattern)
-              line_to_add = "#{bookmark.uri} #{bookmark.uri}"
+              line_to_add = "#{bookmark.name} #{bookmark.uri}"
               
               Chef::Log.info("Adding shortcuts to shared folders")
               ::File.open(gtkbook, 'a') do |file|
