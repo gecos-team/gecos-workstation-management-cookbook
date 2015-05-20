@@ -472,8 +472,8 @@ user_launchers_js = {
               type: "array",
               title: "Shortcut",
               title_es: "Acceso directo",
-              description: "Enter the absolute path and add .desktop at the end of the application", 
-              description_es: "Introduzca la ruta absoluta y añada al final .desktop después de la aplicación",
+              description: "Enter the name of a .desktop file describing the application", 
+              description_es: "Introduzca el nombre del fichero .desktop que describe la aplicación",
               minItems: 0,
               uniqueItems: true,
               items: {
