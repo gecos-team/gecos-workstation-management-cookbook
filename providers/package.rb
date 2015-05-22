@@ -23,6 +23,8 @@ action :setup do
 	    parts = pkg.split("=")
 	    package parts[0].strip do
 	      version parts[1].strip
+# Added to support package downgrade
+	      options "--force-yes"
               action :nothing
             end.run_action(:install)
           else
