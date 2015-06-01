@@ -9,6 +9,9 @@
 # http://www.osor.eu/eupl
 #
 
+# Glogal variable $gecos_os created to reduce calls to external programs
+$gecos_os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+
 execute "gecos-chef-snitch" do
   command "gecosws-chef-snitch-client --set-active true"
   action :nothing

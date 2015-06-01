@@ -15,9 +15,10 @@ include Chef::Mixin::ShellOut
 action :setup do
   begin
     alternatives_cmd = 'update-alternatives'
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
-
+# OS identification moved to recipes/default.rb
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+     if new_resource.support_os.include?($gecos_os)
       if not new_resource.loffice_config.empty?
         app_update = new_resource.loffice_config['app_update']
 
