@@ -136,17 +136,17 @@ action :setup do
               if conf[:value_type] == "string"
                 value = conf[:value_str]
                 if conf[:value_str].nil?
-                  raise "The key #{conf[:key]} has no value, Please check it"
+                  raise "The key #{conf[:key]} (#{conf[:value_str]}) has no value, Please check it"
                 end
               elsif conf[:value_type] == "boolean"
                 value = conf[:value_bool]
                 if conf[:value_bool].nil?
-                  raise "The key #{conf[:key]} has no value, Please check it"
+                  raise "The key #{conf[:key]} (#{conf[:value_str]}) has no value, Please check it"
                 end
               elsif conf[:value_type] == "number"
                 value = conf[:value_num]
                 if conf[:value_num].nil?
-                  raise "The key #{conf[:key]} has no value, Please check it"
+                  raise "The key #{conf[:key]} (#{conf[:value_str]}) has no value, Please check it"
                 end
               end
               config = {}
