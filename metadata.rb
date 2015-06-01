@@ -1814,6 +1814,7 @@ power_conf_js = {
   title: "Power management",
   title_es: "Administración de energía",
   type: "object",
+#  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   order: ["cpu_freq_gov", "usb_autosuspend", "auto_shutdown"],
   properties:
