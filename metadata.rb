@@ -4,7 +4,7 @@ maintainer        "Roberto C. Morano"
 maintainer_email  "rcmorano@emergya.com"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.11"
+version           "0.3.12"
 
 depends "apt"
 depends "chef-client"
@@ -1757,13 +1757,22 @@ local_admin_users_js = {
   title_es: "Administradores locales",
   type: "object",
   required: ["local_admin_list"],
+  order: ["local_admin_list", "local_admin_remove_list"],
   properties:
   {local_admin_list: {
       type:"array",
       title: "users",
       title_es: "Usuarios", 
-      description: "Enter a local user to grant administrator",
+      description: "Enter a local user to grant administrator rights",
       description_es: "Escriba un usuario local para concederle permisos de administrador",
+      items: { type:"string"}
+  },
+local_admin_remove_list: {
+      type:"array",
+      title: "users_to_remove",
+      title_es: "Usuarios a eliminar", 
+      description: "Enter a local user to revoke administrator rights",
+      description_es: "Escriba un usuario local para eliminar sus permisos de administrador",
       items: { type:"string"}
   },
   job_ids: {
