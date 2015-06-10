@@ -135,20 +135,21 @@ action :setup do
             arr_conf = []
             user.config.each do |conf|
               value = nil
+	      Chef::Log.info("Setting #{conf[:key]} of type #{conf[:value_type]} = /#{conf[:value_str]}/#{conf[:value_bool]}/#{conf[:value_num]}/")
               if conf[:value_type] == "string"
                 value = conf[:value_str]
                 if conf[:value_str].nil?
-                  raise "The key #{conf[:key]} (#{conf[:value_type]}) has no value, Please check it"
+                  Chef::Log.warn("The key #{conf[:key]} (string) has no value, Please check it")
                 end
               elsif conf[:value_type] == "boolean"
                 value = conf[:value_bool]
-                if conf[:value_bool].nil?
-                  raise "The key #{conf[:key]} (#{conf[:value_type]}) has no value, Please check it"
+                if conf[:value_bool].nil? 
+                  Chef::Log.warn("The key #{conf[:key]} (boolean) has no value, Please check it")
                 end
               elsif conf[:value_type] == "number"
                 value = conf[:value_num]
-                if conf[:value_num].nil?
-                  raise "The key #{conf[:key]} (#{conf[:value_type]}) has no value, Please check it"
+                if conf[:value_num].nil? 
+                 Chef::Log.warn("The key #{conf[:key]} (number) has no value, Please check it")
                 end
               end
               config = {}
