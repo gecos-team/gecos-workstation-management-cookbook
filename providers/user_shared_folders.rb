@@ -15,7 +15,8 @@ action :setup do
 #    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
-      pattern = '(smb|nfs|ftp)(:\/\/)([\S]*\/.*)'
+
+      pattern = '(smb|nfs|ftp|sftp|dav)(:\/\/)([\S]*\/.*)'
       users = new_resource.users
       users.each_key do |user_key|
         nameuser = user_key 
@@ -23,6 +24,7 @@ action :setup do
         user = users[user_key]
      
         homedir = `eval echo ~#{username}`.gsub("\n","")
+        gid = Etc.getpwnam(username).gid
         gtkbookmark_files =  ["#{homedir}/.config/gtk-3.0/bookmarks", "#{homedir}/.gtk-bookmarks"]
         gtkbookmark_files.each do |gtkbook|
           if ::File.exists? gtkbook
@@ -32,7 +34,7 @@ action :setup do
           else
             file gtkbook do
               owner username
-              group username
+              group gid
               action :nothing
             end.run_action(:create)
           end
@@ -40,7 +42,7 @@ action :setup do
 
           user.gtkbookmarks.each do |bookmark|
             if bookmark.uri.match(pattern)
-              line_to_add = "#{bookmark.uri} #{bookmark.uri}"
+              line_to_add = "#{bookmark.uri} #{bookmark.name}"
               
               Chef::Log.info("Adding shortcuts to shared folders")
               ::File.open(gtkbook, 'a') do |file|

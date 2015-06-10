@@ -1,10 +1,11 @@
 #encoding:UTF-8
 name              "gecos_ws_mgmt"
-maintainer        "Roberto C. Morano"
-maintainer_email  "rcmorano@emergya.com"
+maintainer        "GECOS Team"
+maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.12"
+
+version           "0.3.10"
 
 depends "apt"
 depends "chef-client"
@@ -13,7 +14,7 @@ depends "chef-client"
   supports os
 end
 
-# more complete input definition via json-schemas:
+# better fields definition via json-schemas:
 
 updated_js = {
   title: "Updated by",
@@ -28,7 +29,7 @@ updated_js = {
 }
 
 support_os_js = {
-  title: "Support OS",
+  title: "Supported OS",
   title_es: "Sistemas operativos compatibles",
   type: "array",
   minItems: 0,
@@ -165,13 +166,13 @@ forticlientvpn_js = {
 
 sssd_js = {
   title: "Authenticate System",
-  title_es: "Autenticación del sistema",
+  title_es: "Sistema de Autenticación",
   type: "object",
   required: ["auth_type", "enabled"],
   properties: {
-    krb_url: { type: "string" , title: "Url Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
-    smb_url: { type: "string" , title: "Url Samba file configuration", title_es: "Archivo de configuración Url Samba"},
-    sssd_url: { type: "string" , title: "Url SSSD file configuration", title_es: "Archivo de configuración Url SSSD"},
+    krb_url: { type: "string" , title: "Url of Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
+    smb_url: { type: "string" , title: "Url of Samba file configuration", title_es: "Archivo de configuración Url Samba"},
+    sssd_url: { type: "string" , title: "Url of SSSD file configuration", title_es: "Archivo de configuración Url SSSD"},
     domain_list: {
       type:"array",
       items: {
@@ -194,7 +195,7 @@ sssd_js = {
     },
     auth_type:{
       title: "Authenticate type",
-      title_es: "Autenticación del tipo",
+      title_es: "Tipo de Autenticación",
       type: "string"
     },
     uri:{
@@ -473,8 +474,8 @@ user_launchers_js = {
               type: "array",
               title: "Shortcut",
               title_es: "Acceso directo",
-              description: "Enter the absolute path and add .desktop at the end of the application", 
-              description_es: "Introduzca la ruta absoluta y añada al final .desktop después de la aplicación",
+              description: "Enter the name of a .desktop file describing the application", 
+              description_es: "Introduzca el nombre del fichero .desktop que describe la aplicación",
               minItems: 0,
               uniqueItems: true,
               items: {
