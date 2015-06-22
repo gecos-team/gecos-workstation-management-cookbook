@@ -1,9 +1,10 @@
+# encoding: UTF-8
 name              "gecos_ws_mgmt"
 maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.10"
+version           "0.3.11"
 
 depends "apt"
 depends "chef-client"
