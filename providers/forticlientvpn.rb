@@ -11,8 +11,11 @@
 
 action :setup do
   begin
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
+# OS identification moved to recipes/default.rb
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+    if new_resource.support_os.include?($gecos_os)
+
 
       res_proxyserver = new_resource.proxyserver || node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyserver]
       res_proxyport = new_resource.proxyport || node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyport]
