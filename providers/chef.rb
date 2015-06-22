@@ -22,8 +22,11 @@ action :setup do
     package 'chef' do
       action :nothing
     end.run_action(:install)
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
+# OS identification moved to recipes/default.rb
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+    if new_resource.support_os.include?($gecos_os)
+
       if not new_resource.chef_link_existing
         if new_resource.chef_link
           if not new_resource.chef_server_url.nil?

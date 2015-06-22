@@ -11,9 +11,11 @@
 
 action :setup do
   begin
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
-#TODO some schemas may need packages installed to work 
+# OS identification moved to recipes/default.rb
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+    if new_resource.support_os.include?($gecos_os)
+
       pattern = '(smb|nfs|ftp|sftp|dav)(:\/\/)([\S]*\/.*)'
       users = new_resource.users
       users.each_key do |user_key|

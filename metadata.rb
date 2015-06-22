@@ -1,4 +1,4 @@
-# encoding: UTF-8
+#encoding:UTF-8
 name              "gecos_ws_mgmt"
 maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
@@ -989,8 +989,8 @@ user_shared_folders_js = {
 }
 
 app_config_js = {
-  title: "Applications Config",
-  title_es: "Configuración de aplicaciones",
+  title: "DEPRECATED: Applications Config",
+  title_es: "OBSOLETA: Configuración de aplicaciones",
   type: "object",
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config", "loffice_config"],
@@ -1104,6 +1104,196 @@ app_config_js = {
           type: "boolean",
           enum: [true,false],
           default: false
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }, 
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
+appconfig_libreoffice_js = {
+  title: "LibreOffice Config",
+  title_es: "Configuración de LibreOffice",
+  type: "object",
+  required: ["config_libreoffice"],
+  properties: {
+    config_libreoffice: {
+      title: "LibreOffice Configuration",
+      title_es: "Configuración de LibreOffice",
+      type: "object",
+      properties: {
+        app_update: {
+          title: "Enable/Disable auto update",
+          title_es: "Activar/Desactivar actualizaciones automáticas",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }, 
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
+appconfig_thunderbird_js = {
+  title: "Thunderbird Config",
+  title_es: "Configuración de Thunderbird",
+  type: "object",
+  required: ["config_thunderbird"],
+  properties: {
+    config_thunderbird: {
+      title: "Thunderbird Configuration",
+      title_es: "Configuración de Thunderbird",
+      type: "object",
+      properties: {
+        app_update: {
+          title: "Enable/Disable auto update",
+          title_es: "Activar/Desactivar actualizaciones automáticas",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }, 
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
+appconfig_firefox_js = {
+  title: "Firefox Config",
+  title_es: "Configuración de Firefox",
+  type: "object",
+  required: ["config_firefox"],
+  properties: {
+    config_firefox: {
+      title: "Firefox Configuration",
+      title_es: "Configuración de Firefox",
+      type: "object",
+      properties: {
+        app_update: {
+          title: "Enable/Disable auto update",
+          title_es: "Activar/Desactivar actualizaciones automáticas",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        }
+      }
+    },
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }, 
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
+appconfig_java_js = {
+  title: "Java Config",
+  title_es: "Configuración de Java",
+  type: "object",
+  required: ["config_java"],
+  properties: {
+   config_java: {
+      title: "Java Configuration",
+      title_es: "Configuración de Java",
+      type: "object",
+      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "array_attrs"],
+      properties: {
+        version: {
+          title: "Java Version",
+          title_es: "Versión de Java",
+	  description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
+	  description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
+          type: "string"
+        },
+        plug_version: {
+          title: "Plugins Java version",
+          title_es: "Plugins versión de Java",
+	  description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
+	  description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
+          type: "string"
+        },
+        sec: {
+          title: "Security Level",
+          title_es: "Nivel de Seguridad",
+          type: "string",
+          enum: ["MEDIUM", "HIGH", "VERY_HIGH"],
+          default: "MEDIUM"
+        },
+        crl: {
+          title: "Use Certificate Revocation List",
+          title_es: "Utilizar lista de revocación de certificados",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        ocsp: {
+          title: "Enable or disable Online Certificate Status Protocol",
+          title_es: "Activar o desactivar el protocolo de estado de certificados en linea",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        warn_cert: {
+          title: "Show host-mismatch warning for certificate?",
+          title_es: "¿Mostrar advertencia de incompatibilidad de host para el certificado?",
+          type: "boolean",
+          enum: [true,false],
+          default: false
+        },
+        mix_code: {
+          title: "Security verification of mix code",
+          title_es: "Verificación de la seguridad de la combinación de código",
+          type: "string",
+          enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
+          default: "ENABLE"
+        },
+        array_attrs: {
+          type: "array",
+          minItems: 0,
+          title: "Another configuration properties",
+          title_es: "Otras propiedades de configuración",
+          uniqueItems: true,
+          items:{
+            type: "object",
+            required: ["key", "value"],
+            properties: {
+              key: {type: "string", title: "Key", title_es: "Clave"},
+              value: {type: "string", title: "Value", title_es: "Valor"}
+            }
+          }
         }
       }
     },
@@ -1757,13 +1947,22 @@ local_admin_users_js = {
   title_es: "Administradores locales",
   type: "object",
   required: ["local_admin_list"],
+  order: ["local_admin_list", "local_admin_remove_list"],
   properties:
   {local_admin_list: {
       type:"array",
       title: "users",
       title_es: "Usuarios", 
-      description: "Enter a local user to grant administrator",
+      description: "Enter a local user to grant administrator rights",
       description_es: "Escriba un usuario local para concederle permisos de administrador",
+      items: { type:"string"}
+  },
+local_admin_remove_list: {
+      type:"array",
+      title: "users_to_remove",
+      title_es: "Usuarios a eliminar", 
+      description: "Enter a local user to revoke administrator rights",
+      description_es: "Escriba un usuario local para eliminar sus permisos de administrador",
       items: { type:"string"}
   },
   job_ids: {
@@ -1814,7 +2013,7 @@ power_conf_js = {
   title: "Power management",
   title_es: "Administración de energía",
   type: "object",
-  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
+#  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   order: ["cpu_freq_gov", "usb_autosuspend", "auto_shutdown"],
   properties:
     {cpu_freq_gov: {
@@ -1918,6 +2117,10 @@ software_sources_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Li
 package_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 package_profile_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 app_config_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+appconfig_libreoffice_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+appconfig_thunderbird_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+appconfig_firefox_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+appconfig_java_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 printers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 user_shared_folders_js[:properties][:support_os][:default]=["GECOS V2"]
 web_browser_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
@@ -1980,12 +2183,16 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","package_profile_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
             package_profile_res: package_profile_js,
-            app_config_res: app_config_js
+            app_config_res: app_config_js,
+	    appconfig_libreoffice_res: appconfig_libreoffice_js,
+            appconfig_thunderbird_res: appconfig_thunderbird_js,
+	    appconfig_firefox_res: appconfig_firefox_js,
+	    appconfig_java_res: appconfig_java_js
           }
         },
         printers_mgmt: {

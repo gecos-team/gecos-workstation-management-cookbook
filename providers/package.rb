@@ -11,14 +11,30 @@
 
 action :setup do
   begin
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
+# OS identification moved to recipes/default.rb
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+    if new_resource.support_os.include?($gecos_os)
       if new_resource.package_list.any? 
         Chef::Log.info("Installing package list")
         new_resource.package_list.each do |pkg|
-          package pkg do
-            action :nothing
-          end.run_action(:install)
+# Support for package version blocking
+# Only ONE <package>=<version> per line accepted
+	  pkg.strip!
+	  if pkg =~ /\S+\s*=\s*\d+\S+\Z/
+	    parts = pkg.split("=")
+	    package parts[0].strip do
+	      version parts[1].strip
+# Added to support package downgrade
+	      options "--force-yes"
+              action :nothing
+            end.run_action(:install)
+          else
+# Normal invocation of package resource: accepts one or more packages per line
+            package pkg do
+              action :nothing
+            end.run_action(:install)
+	  end
         end
       end
 
