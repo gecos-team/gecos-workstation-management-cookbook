@@ -46,7 +46,7 @@ action :setup do
             FileUtils.chown(username, gid, desktop_path + desktopfile)
             FileUtils.chmod 0755, desktop_path + desktopfile
 	  else
-	    Chef::Log.info("Desktop file #{desktopfile} not found")
+	    Chef::Log.warn("Desktop file #{desktopfile} not found")
            end
         end
 
