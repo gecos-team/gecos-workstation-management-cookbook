@@ -26,12 +26,25 @@ action :setup do
         homedir = `eval echo ~#{username}`.gsub("\n","")
         gid = Etc.getpwnam(username).gid
         gtkbookmark_files =  ["#{homedir}/.config/gtk-3.0/bookmarks", "#{homedir}/.gtk-bookmarks"]
+# If user has been created but hasn't log in to his/her desktop, .config/gtk-3.0 directory will be missing
+# The following block creates thos directories if missing        
+        container_dirs = ["#{homedir}/.config","#{homedir}/.config/gtk-3.0" ]
+        container_dirs.each do |dir|
+          if !::File.directory? dir
+            directory dir do
+              owner username
+              group gid
+              mode '700'
+              action :nothing
+            end.run_action(:create)
+          end
+        end 
         gtkbookmark_files.each do |gtkbook|
           if ::File.exists? gtkbook
             clean_file = Chef::Util::FileEdit.new gtkbook
             clean_file.search_file_delete_line(pattern)
             clean_file.write_file
-          else
+          else       
             file gtkbook do
               owner username
               group gid
