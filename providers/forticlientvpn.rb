@@ -16,7 +16,7 @@ action :setup do
 #    if new_resource.support_os.include?(os)
 #Added check to avoid execution if no connections defined
 #    if new_resource.support_os.include?($gecos_os)
-    if new_resource.support_os.include?($gecos_os) and !new_resource.connections.empty?
+    if new_resource.support_os.include?($gecos_os) and !new_resource.connections.nil?
 
 
       res_proxyserver = new_resource.proxyserver || node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyserver]
@@ -94,7 +94,7 @@ action :setup do
           )
         end
       end
-    else
+    elsif !new_resource.support_os.include?($gecos_os)
       Chef::Log.info("This resource is not support into your OS")
     end
 
