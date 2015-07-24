@@ -1880,11 +1880,13 @@ local_groups_js = {
       title_es: "Grupos para gestionar",
       items: {
         type:"object",
-        required: ["group"],
-        order:["users", "group"],
+        required: ["group","users","remove_users","create"],
+        order:["users", "group", "remove_users", "create"],
         properties:{
           group: { type: "string", title: "Group", title_es: "Grupo" },
-          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } }
+          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } },
+          remove_users: { type: "boolean", title: "Remove users", title_es: "Eliminar usuarios", description: "Remove users in list", description_es: "Eliminar los usuarios de la lista", default: false },
+          create: { type: "boolean", title: "Create group", title_es: "Crear grupo", description: "Create group if it doesn't exist in node", description_es: "Crear grupo si no existe", default: false } 
         }
      }
   },
