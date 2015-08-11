@@ -1783,6 +1783,34 @@ package_js = {
   }
 }
 
+package_version_lock_js = {
+  title: "Package version lock management",
+  title_es: "Administración del bloqueo de versiones de paquetes",
+  type: "object",
+  order:["package_list"],
+  properties:
+  {
+    package_list: {
+      type:"array",
+      title: "Package versions list to lock",
+      title_es: "Lista de versiones de paquetes para bloquear",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
 printers_js = {
   title: "Printers",
   title_es: "Impresoras",
@@ -2115,6 +2143,7 @@ power_conf_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 local_admin_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 software_sources_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 package_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+package_version_lock_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 package_profile_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 app_config_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 appconfig_libreoffice_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
@@ -2183,16 +2212,17 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res","package_version_lock_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
             package_profile_res: package_profile_js,
             app_config_res: app_config_js,
-	    appconfig_libreoffice_res: appconfig_libreoffice_js,
+            appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
-	    appconfig_firefox_res: appconfig_firefox_js,
-	    appconfig_java_res: appconfig_java_js
+            appconfig_firefox_res: appconfig_firefox_js,
+            appconfig_java_res: appconfig_java_js,
+            package_version_lock_res: package_version_lock_js
           }
         },
         printers_mgmt: {
