@@ -93,6 +93,14 @@ default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
+default[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:lock_boot] = false
+default[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:unlock_user] = ""
+default[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:unlock_pass] = ""
+default[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:job_ids] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:updated_by] = {}
+default[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:support_os] = ["GECOS V2", "Gecos V2 Lite", "Ubuntu 14.04.1 LTS"]
+
+
 default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:server] = ""
 default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:updated_by] = {}
