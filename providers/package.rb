@@ -20,23 +20,33 @@ action :setup do
         new_resource.package_list.each do |pkg|
 # Support for package version blocking
 # Only ONE <package>=<version> per line accepted
-	  pkg.strip!
-	  if pkg =~ /\S+\s*=\s*\d+\S+\Z/
-	    parts = pkg.split("=")
-	    package parts[0].strip do
-	      version parts[1].strip
+	pkg.strip!
+	if pkg =~ /\S+\s*=\s*\d+\S+\Z/
+	  parts = pkg.split("=")
+	  package parts[0].strip do
+	    version parts[1].strip
 # Added to support package downgrade
-	      options "--force-yes"
-              action :nothing
-            end.run_action(:install)
-          else
+	    options "--force-yes"
+            action :nothing
+          end.run_action(:install)
+          file '/etc/apt/preferences.d/'+parts[0].strip+'.ref' do
+            content "Package: #{parts[0].strip}\nPin: version #{parts[1].strip}\nPin-Priority: 1000\n"
+            mode '0644'
+            owner 'root'
+            group 'root'
+            action :create
+          end
+        else
 # Normal invocation of package resource: accepts one or more packages per line
-            package pkg do
-              action :nothing
-            end.run_action(:install)
-	  end
-        end
+          package pkg do
+            action :nothing
+          end.run_action(:install)
+          file '/etc/apt/preferences.d/'+pkg.strip+'.ref' do
+            action(:delete)
+          end
+	end
       end
+    end
 
       if new_resource.pkgs_to_remove.any?
         Chef::Log.info("Uninstalling packages not assigned to node")
@@ -44,6 +54,9 @@ action :setup do
           package pkg do
             action :nothing
           end.run_action(:purge)
+          file '/etc/apt/preferences.d/'+pkg.strip+'.ref' do
+            action(:delete)
+          end
         end
       end
     else
