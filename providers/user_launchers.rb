@@ -25,8 +25,16 @@ action :setup do
 
         homedir = `eval echo ~#{username}`.gsub("\n","")
         desktop_path = "#{homedir}/Escritorio/"
-
         gid = Etc.getpwnam(username).gid
+#Create desktop directory if missing (user never logged in to desktop)        
+        if !::File.directory? desktop_path
+          directory desktop_path do
+            owner username
+            group gid
+            mode '755'
+            action :nothing
+          end.run_action(:create)
+        end  
         user.launchers.each do |desktopfile|
 # Add ".desktop" if not present in launcher's name
           if ! desktopfile.include? "\.desktop"
@@ -38,7 +46,7 @@ action :setup do
             FileUtils.chown(username, gid, desktop_path + desktopfile)
             FileUtils.chmod 0755, desktop_path + desktopfile
 	  else
-	    Chef::Log.info("Desktop file #{desktopfile} not found")
+	    Chef::Log.warn("Desktop file #{desktopfile} not found")
            end
         end
 

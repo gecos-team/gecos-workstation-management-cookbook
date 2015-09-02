@@ -1435,13 +1435,23 @@ user_apps_autostart_js = {
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["desktops"],
+        order: ["desktops", "desktops_to_remove"],        
           properties: {
-            desktops: {
-              title: "Desktop files",
+              desktops: {
+              title: "Applications",
               title_es: "Aplicaciones",
-              description: "It is necessary to add .desktop at the end of the application",
-              description_es: "Es necesario añadir .desktop al final de la aplicación",
+              description: ".desktop file must exist in /usr/share/applications",
+              description_es: "Es necesario que exista el .desktop en /usr/share/applications",
+              type: "array",
+              minItems: 0,
+              uniqueItems: true,
+              items: {type: "string"}
+              },
+              desktops_to_remove: {
+              title: "Applications to remove from autostart",
+              title_es: "Aplicaciones a eliminar del inicio",
+              description: "Applications will not be run at session start anymore",
+              description_es: "Las aplicaciones ya no se ejecutarán al inicio de sesión",
               type: "array",
               minItems: 0,
               uniqueItems: true,
@@ -1869,11 +1879,13 @@ local_groups_js = {
       title_es: "Grupos para gestionar",
       items: {
         type:"object",
-        required: ["group"],
-        order:["users", "group"],
+        required: ["group","users","remove_users","create"],
+        order:["users", "group", "remove_users", "create"],
         properties:{
           group: { type: "string", title: "Group", title_es: "Grupo" },
-          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } }
+          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } },
+          remove_users: { type: "boolean", title: "Remove users", title_es: "Eliminar usuarios", description: "Remove users in list", description_es: "Eliminar los usuarios de la lista", default: false },
+          create: { type: "boolean", title: "Create group", title_es: "Crear grupo", description: "Create group if it doesn't exist in node", description_es: "Crear grupo si no existe", default: false } 
         }
      }
   },
