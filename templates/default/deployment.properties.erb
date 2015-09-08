@@ -3,6 +3,7 @@ deployment.security.mixcode=<%= @mix_code %>
 deployment.security.validation.crl=<%= @crl %>
 deployment.security.validation.ocsp=<%= @ocsp %>
 deployment.security.jsse.hostmismatch.warning=<%= @warn_cert %>
+deployment.security.tls.revocation.check=<%= @tls %>
 <% @array_attrs.each do |attr| %>
 <%= attr[:key] %>=<%= attr[:value] %>
 <% end %>
