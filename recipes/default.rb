@@ -28,7 +28,7 @@ end.run_action(:create_if_missing)
 
 Chef::Log.info("Enabling GECOS Agent in cron")
   
-cron "GECOS Agent"
+cron "GECOS Agent" do
     minute '30'
     command '/usr/bin/chef-client-wrapper'
     action :create
