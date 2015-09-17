@@ -14,7 +14,7 @@ $gecos_os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 
 # Snitch, the chef notifier has been renamed
 # TODO: move this to chef-client-wrapper
-if File.exists("/usr/bin/gecosws-chef-snitch-client")
+if ::File.exists?("/usr/bin/gecosws-chef-snitch-client")
   snitch_binary="/usr/bin/gecos-snitch-client"
 else
   snitch_binary="/usr/bin/gecosws-chef-snitch-client"
