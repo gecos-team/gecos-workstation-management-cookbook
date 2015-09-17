@@ -63,6 +63,7 @@ action :setup do
               supports :status => true, :restart => true, :reload => true
               action [:enable, :start]
             end
+#TODO: delete this unnecesary file, and use just /etc/chef/client.rb
             Chef::Log.info("Chef: Creating control file")
             template "/etc/chef.control" do
               source 'chef.control.erb'
