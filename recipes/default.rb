@@ -17,11 +17,12 @@ execute "gecos-chef-snitch" do
   action :nothing
 end.run_action(:run)
 
+# This should not be necessary, as wrapper is in new GECOS-Agent package. It is a transitional solution.
 Chef::Log.info("Installing wrapper")
 cookbook_file "chef-client-wrapper" do
-  path "/usr/bin/chef-client-wrapper"
+  path "/usr/bin/gecos-chef-client-wrapper"
   owner 'root'
-  mode '0755'
+  mode '0700'
   group 'root'
   action :nothing
 end.run_action(:create_if_missing)
@@ -30,7 +31,7 @@ Chef::Log.info("Enabling GECOS Agent in cron")
   
 cron "GECOS Agent" do
     minute '30'
-    command '/usr/bin/chef-client-wrapper'
+    command '/usr/bin/gecos-chef-client-wrapper'
     action :create
 end
 
