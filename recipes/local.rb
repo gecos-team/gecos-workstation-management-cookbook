@@ -26,10 +26,10 @@ if not node[:gecos_ws_mgmt][:misc_mgmt][:chef_conf_res][:chef_server_url].nil?
     
   Chef::Log.info("Installing GECOS Agent")
 
-  cookbook_file "chef-client-wrapper" do
-    path "/usr/bin/chef-client-wrapper"
+  cookbook_file "gecos-chef-client-wrapper" do
+    path "/usr/bin/gecos-chef-client-wrapper"
     owner 'root'
-    mode '0755'
+    mode '0700'
     group 'root'
     action :nothing
   end.run_action(:create_if_missing)
@@ -38,7 +38,7 @@ if not node[:gecos_ws_mgmt][:misc_mgmt][:chef_conf_res][:chef_server_url].nil?
   
   cron "GECOS Agent" do
     minute '30'
-    command '/usr/bin/chef-client-wrapper'
+    command '/usr/bin/gecos-chef-client-wrapper'
     action :create
   end
 

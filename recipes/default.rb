@@ -9,17 +9,26 @@
 # http://www.osor.eu/eupl
 #
 
-# Glogal variable $gecos_os created to reduce calls to external programs
+# Global variable $gecos_os created to reduce calls to external programs
 $gecos_os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 
-execute "gecos-chef-snitch" do
-  command "gecosws-chef-snitch-client --set-active true"
+# Snitch, the chef notifier has been renamed
+# TODO: move this to chef-client-wrapper
+if File.exists("/usr/bin/gecosws-chef-snitch-client")
+  snitch_binary="/usr/bin/gecos-snitch-client"
+else
+  snitch_binary="/usr/bin/gecosws-chef-snitch-client"
+end  
+
+execute "gecos-snitch-client" do
+  command "#{snitch_binary} --set-active true"
   action :nothing
 end.run_action(:run)
 
+
 # This should not be necessary, as wrapper is in new GECOS-Agent package. It is a transitional solution.
 Chef::Log.info("Installing wrapper")
-cookbook_file "chef-client-wrapper" do
+cookbook_file "gecos-chef-client-wrapper" do
   path "/usr/bin/gecos-chef-client-wrapper"
   owner 'root'
   mode '0700'
