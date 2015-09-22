@@ -22,8 +22,11 @@ action :setup do
     package 'chef' do
       action :nothing
     end.run_action(:install)
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
+# OS identification moved to recipes/default.rb
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+    if new_resource.support_os.include?($gecos_os)
+
       if not new_resource.chef_link_existing
         if new_resource.chef_link
           if not new_resource.chef_server_url.nil?
@@ -50,6 +53,7 @@ action :setup do
             end.run_action(:create)
             Chef::Log.info("Chef: Linking the chef server")
             execute 'chef-client' do
+#TODO: do not use specific locale            
               environment 'LANG' => 'es_ES.UTF-8', 'LC_ALL' => 'es_ES.UTF-8', 'HOME' => ENV['HOME']
               command 'chef-client -j /usr/share/gecosws-config-assistant/base.json'
               action :nothing
@@ -60,6 +64,7 @@ action :setup do
               supports :status => true, :restart => true, :reload => true
               action [:enable, :start]
             end
+#TODO: delete this unnecesary file, and use just /etc/chef/client.rb
             Chef::Log.info("Chef: Creating control file")
             template "/etc/chef.control" do
               source 'chef.control.erb'
@@ -121,7 +126,7 @@ action :setup do
           end.run_action(:run)
 
           Chef::Log.info("Chef: Removing wrapper")
-          file "/usr/bin/chef-client-wrapper" do
+          file "/usr/bin/gecos-chef-client-wrapper" do
             action :nothing
           end.run_action(:delete)
 

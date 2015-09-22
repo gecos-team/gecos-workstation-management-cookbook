@@ -10,15 +10,18 @@
 #
 action :setup do
   begin
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
+# OS identification moved to recipes/default.rb
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+    if new_resource.support_os.include?($gecos_os)
+
       require 'etc'
     
       users = new_resource.users
       users_to_add = []
       users_to_remove = []
     
-      if os == "GECOS V2"
+      if $gecos_os == "GECOS V2"
         package 'nemo-share' do
           action :nothing
         end.run_action(:install)
