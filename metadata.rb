@@ -4,8 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-
-version           "0.3.10"
+version           "0.3.12"
 
 depends "apt"
 depends "chef-client"
@@ -597,7 +596,7 @@ cert_js = {
       title: "Java Keystores",
       title_es: "Almacenes de claves de Java",
       description: "Path of java keystore: e.g. /etc/java/cacerts-gcj",
-      description_es: "Ruta del almacen de claves: p.ej. /etc/java/cacerts-gcj",
+      description_es: "Ruta del almacén de claves: p.ej. /etc/java/cacerts-gcj",
       type: "array",
       minItems: 0,
       uniqueItems: true,

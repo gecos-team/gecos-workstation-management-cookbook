@@ -61,9 +61,10 @@ action :setup do
       def plugin_id(username,ext_path,plugin_name,plugin_file,action_to_run)
 
         plugin_dir_temp = "#{plugin_file}_temp"
+	gid = Etc.getpwnam(username).gid
         directory plugin_dir_temp do
           owner username
-          group username
+          group gid
           action :nothing
         end.run_action(:create)
 
