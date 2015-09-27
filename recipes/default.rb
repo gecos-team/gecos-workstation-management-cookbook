@@ -44,13 +44,14 @@ cron "GECOS Agent" do
     action :create
 end
 
-Chef::Log.info("Disabling old chef-client service")
+# This chef-client upstart service is not created anymore
+#Chef::Log.info("Disabling old chef-client service")
 
-service 'chef-client' do
-    provider Chef::Provider::Service::Upstart
-    supports :status => true, :restart => true, :reload => true
-    action [:disable, :stop]
-end
+#service 'chef-client' do
+#    provider Chef::Provider::Service::Upstart
+#    supports :status => true, :restart => true, :reload => true
+#    action [:disable, :stop]
+#end
 
 include_recipe "gecos_ws_mgmt::software_mgmt"
 include_recipe "gecos_ws_mgmt::misc_mgmt"

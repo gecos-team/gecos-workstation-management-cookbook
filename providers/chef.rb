@@ -125,22 +125,25 @@ action :setup do
             action :nothing
           end.run_action(:run)
 
-          Chef::Log.info("Chef: Removing wrapper")
-          file "/usr/bin/gecos-chef-client-wrapper" do
-            action :nothing
-          end.run_action(:delete)
+# Wrapper is managed with gecos-agent package install/uninstall
+#          Chef::Log.info("Chef: Removing wrapper")
+#          file "/usr/bin/gecos-chef-client-wrapper" do
+#            action :nothing
+#          end.run_action(:delete)
 
           Chef::Log.info("Deleting client " + new_resource.chef_node_name)
           execute 'Knife Delete' do
             command 'knife client delete \'' + new_resource.chef_node_name + '\' -c /etc/chef/knife.rb -y'
             action :nothing
           end.run_action(:run)
-          Chef::Log.info("Disabling service chef-client")
-          service 'chef-client' do
-            provider Chef::Provider::Service::Upstart
-            supports :status => true, :restart => true, :reload => true
-            action [:disable, :stop]
-          end
+
+# We are using a wrapper, not the plain chef-client service
+#          Chef::Log.info("Disabling service chef-client")
+#          service 'chef-client' do
+#            provider Chef::Provider::Service::Upstart
+#            supports :status => true, :restart => true, :reload => true
+#            action [:disable, :stop]
+#          end
           Chef::Log.info("Chef: Removing validation.pem")
           file "/etc/chef/validation.pem" do
             action :nothing
@@ -151,7 +154,7 @@ action :setup do
           end.run_action(:delete)
         end
       else
-        Chef::Log.info("Chef: Configurndo Knife")
+        Chef::Log.info("Chef: Configuring Knife")
         template '/etc/chef/knife.rb' do
           source 'knife.rb.erb'
           owner 'root'
@@ -199,13 +202,14 @@ action :setup do
 
         Chef::Log.info("Chef: Linking the chef server")
         execute 'chef-client' do
+#TODO: do not use specific locale                    
           environment 'LANG' => 'es_ES.UTF-8', 'LC_ALL' => 'es_ES.UTF-8', 'HOME' => ENV['HOME']
           command 'chef-client -j /usr/share/gecosws-config-assistant/base.json'
           action :nothing
         end.run_action(:run)
       end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info("This system does not support this resource")
     end
   rescue Exception => e
     Chef::Log.error(e.message)
