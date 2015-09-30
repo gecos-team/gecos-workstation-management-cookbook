@@ -23,8 +23,8 @@ action :setup do
         crl = new_resource.config_java['crl']
         ocsp = new_resource.config_java['ocsp']
         warn_cert = new_resource.config_java['warn_cert']
-        mix_code = new_resource.config_java['tls']
-        tls = new_resource.config_java['mix_code']
+        tls = new_resource.config_java['tls']
+        mix_code = new_resource.config_java['mix_code']
         array_attrs = new_resource.config_java['array_attrs']
 
         unless Kernel::test('d', '/etc/.java/deployment/')
