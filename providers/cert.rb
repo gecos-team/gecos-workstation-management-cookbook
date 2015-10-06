@@ -25,49 +25,50 @@ action :setup do
       require 'fileutils'
 
       res_ca_root_certs = new_resource.ca_root_certs || node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:ca_root_certs]
-      res_java_keystores = new_resource.java_keystores || node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:java_keystores]
-
+#      res_java_keystores = new_resource.java_keystores || node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:java_keystores]
+# When java is only used for runnig apps from the web, there's no need for loading CA root certificates directly in Java;
+# browser keystores are used instead.
       # TODO: improve poor performance of idempotenly execute this
       #   * maybe do it once?
       # import system certs into java keystores
 
-      dir_ca_imported = "/usr/share/ca-certificates-imported/"
-      directory dir_ca_imported do
-        owner 'root'
-        group 'root'
-        mode '0755'
-        action :nothing
-      end.run_action(:create)
+#      dir_ca_imported = "/usr/share/ca-certificates-imported/"
+#      directory dir_ca_imported do
+#        owner 'root'
+#        group 'root'
+#        mode '0755'
+#        action :nothing
+#      end.run_action(:create)
 
-      res_java_keystores.each do |keystore|
-        Dir["/usr/share/ca-certificates/*/*"].each do |cert|
-          begin
-            execute "importing '#{cert}' into java keystore" do
-              command "/bin/bash -c \"echo '' | sudo keytool -cacert -keystore '#{keystore}' -file '#{cert}' &>/dev/null; exit 0\""
-              action :nothing
-              only_if do not ::File.exist?(dir_ca_imported + keystore + ::File.basename(cert)) end
-            end.run_action(:run)
-            directory dir_ca_imported + keystore do
-              owner 'root'
-              group 'root'
-              mode '0755'
-              action :nothing
-            end.run_action(:create)
-            remote_file "Copy '#{cert}' to imported folder" do
-              path dir_ca_imported + keystore + ::File.basename(cert)
-              source "file://" + cert
-              owner 'root'
-              group 'root'
-              action :nothing
-            end.run_action(:create_if_missing)
-          rescue
-            next
-          end
-        end
+#      res_java_keystores.each do |keystore|
+#        Dir["/usr/share/ca-certificates/*/*"].each do |cert|
+#          begin
+#            execute "importing '#{cert}' into java keystore" do
+#              command "/bin/bash -c \"echo '' | sudo keytool -cacert -keystore '#{keystore}' -file '#{cert}' &>/dev/null; exit 0\""
+#              action :nothing
+#              only_if do not ::File.exist?(dir_ca_imported + keystore + ::File.basename(cert)) end
+#            end.run_action(:run)
+#            directory dir_ca_imported + keystore do
+#              owner 'root'
+#              group 'root'
+#              mode '0755'
+#              action :nothing
+#            end.run_action(:create)
+#            remote_file "Copy '#{cert}' to imported folder" do
+#              path dir_ca_imported + keystore + ::File.basename(cert)
+#              source "file://" + cert
+#              owner 'root'
+#              group 'root'
+#              action :nothing
+#            end.run_action(:create_if_missing)
+#          rescue
+#            next
+#          end
+#        end
 
 
 
-      end
+#      end
 
       # import gecos custom certs into every mozilla profile 
       certs_path = '/usr/share/ca-certificates/gecos/'
@@ -79,6 +80,9 @@ action :setup do
       end.run_action(:create)
 
       # TODO: improve poor performance of idempotenly execute this
+      # A bit better: ohai-certs stores installed certs and permisions in node, and it is looked up 
+      # before installing, avoiding useless reinstalls
+      # TODO: Allow permisions to be set by a GECOS administrator
       res_ca_root_certs.each do |cert|
         cert_file = certs_path + cert[:name].gsub(" ", "_")
         remote_file cert_file do
@@ -86,10 +90,13 @@ action :setup do
         end
         Dir["/home/*/.mozilla/firefox/*default"].each do |profile|
           begin
-            execute "install root cert #{cert} for profile '#{profile}'" do
-              command "/bin/bash -c \"certutil -A -n '#{cert[:name]}' -t 'TC,Cw,Tw' -i '#{cert_file}' -d '#{profile}' &>/dev/null; exit 0\""
-              action :nothing
-            end.run_action(:run)
+            if node.ohai_gecos.ffox_certs.key?("#{profile}") and node.ohai_gecos.ffox_certs["#{profile}"].key?("#{cert[:name]}") and  node.ohai_gecos.ffox_certs["#{profile}"]["#{cert[:name]}"] == "CT,C,C"
+            else
+              execute "install root cert #{cert[:name]} for profile '#{profile}'" do
+                command "certutil -A -n '#{cert[:name]}' -t 'CT,C,C' -i '#{cert_file}' -d '#{profile}' &>/dev/null"
+                action :nothing
+              end.run_action(:run)
+            end
           rescue
             next
           end
@@ -108,7 +115,7 @@ action :setup do
   rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
-    Chef::Log.error(e.message)
+    Chef::Log.error("Error instalando certificados: "+e.message)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 1

@@ -23,6 +23,7 @@ action :setup do
         crl = new_resource.config_java['crl']
         ocsp = new_resource.config_java['ocsp']
         warn_cert = new_resource.config_java['warn_cert']
+        tls = new_resource.config_java['tls']
         mix_code = new_resource.config_java['mix_code']
         array_attrs = new_resource.config_java['array_attrs']
 
@@ -65,6 +66,7 @@ action :setup do
             :ocsp => ocsp,
             :warn_cert => warn_cert,
             :mix_code => mix_code,
+            :tls => tls,
             :array_attrs => array_attrs
             )
         end.run_action(:create)

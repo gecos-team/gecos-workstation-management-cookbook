@@ -1229,7 +1229,7 @@ appconfig_java_js = {
       title: "Java Configuration",
       title_es: "Configuración de Java",
       type: "object",
-      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "array_attrs"],
+      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "tls", "array_attrs"],
       properties: {
         version: {
           title: "Java Version",
@@ -1279,6 +1279,13 @@ appconfig_java_js = {
           type: "string",
           enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
           default: "ENABLE"
+        },
+        tls: {
+          title: "Check validity of TLS certificate",
+          title_es: "Realizar comprobaciones derevocación de certificado TLS",
+          type: "string",
+          enum: ["SERVER_CERTIFICATE_ONLY", "NO_CHECK", ""],
+          default: "" 
         },
         array_attrs: {
           type: "array",
