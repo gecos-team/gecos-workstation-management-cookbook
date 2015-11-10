@@ -37,17 +37,13 @@ action :setup do
           end.run_action(:create)
         end  
         user.launchers.each do |desktopfile|
-<<<<<<< HEAD
-          if not desktopfile.end_with? ".desktop"
-             desktopfile << ".desktop"
-          end 
-=======
+
 # Add ".desktop" if not present in launcher's name
           if ! desktopfile.include? "\.desktop"
-	    desktopfile.concat(".desktop")
-	  end
+	          desktopfile.concat(".desktop")
+	        end
 
->>>>>>> development
+
           if FileTest.exist? applications_path + desktopfile and not desktopfile.empty?
             FileUtils.cp "#{applications_path}#{desktopfile}",  desktop_path
             FileUtils.chown(username, gid, desktop_path + desktopfile)
