@@ -40,11 +40,8 @@ action :setup do
           end
         end 
         gtkbookmark_files.each do |gtkbook|
-          if ::File.exists? gtkbook
-            clean_file = Chef::Util::FileEdit.new gtkbook
-            clean_file.search_file_delete_line(pattern)
-            clean_file.write_file
-          else       
+
+           if !::File.exists? gtkbook      
             file gtkbook do
               owner username
               group gid
@@ -52,18 +49,16 @@ action :setup do
             end.run_action(:create)
           end
         
-
+          tmp_file = Chef::Util::FileEdit.new gtkbook
           user.gtkbookmarks.each do |bookmark|
             if bookmark.uri.match(pattern)
               line_to_add = "#{bookmark.uri} #{bookmark.name}"
-              
+ # If there's no line containing the bookmark URI (removing lading spaces and trailing slash), insert the bookmark. We only search for URI, so renamed bookmarks are nor duplicated
+              tmp_file.insert_line_if_no_match(bookmark.uri.chop().lstrip(), line_to_add)
               Chef::Log.info("Adding shortcuts to shared folders")
-              ::File.open(gtkbook, 'a') do |file|
-                file.puts line_to_add
-              end
             end
-
           end
+          tmp_file.write_file
         end
      end
     else
