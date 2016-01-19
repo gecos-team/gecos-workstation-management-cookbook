@@ -1410,6 +1410,28 @@ auto_updates_js = {
   }
 }
 
+boot_lock_js = {
+  title: "Lock boot menu",
+  title_es: "Bloqueo del menú de arranque",
+  type: "object",
+  order:["lock_boot","unlock_user","unlock_pass"],
+  properties: {
+    lock_boot: {title: "Lock boot menu?", title_es: "¿Bloquear el menú de inicio?",  type: "boolean"},
+    unlock_user: {title: "Unlock user", title_es: "Usuario de desbloqueo", type: "string"},
+    unlock_pass: {title: "Unlock pass", title_es: "Clave de desbloqueo", type: "string"},
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }, 
+    updated_by: updated_js
+  }
+}
+
 user_modify_nm_js = {
   title: "Give network privileges to user",
   title_es: "Conceder permisos de red al usuario",
@@ -1826,6 +1848,34 @@ package_js = {
   }
 }
 
+package_version_lock_js = {
+  title: "Package version lock management",
+  title_es: "Administración del bloqueo de versiones de paquetes",
+  type: "object",
+  order:["package_list"],
+  properties:
+  {
+    package_list: {
+      type:"array",
+      title: "Package versions list to lock",
+      title_es: "Lista de versiones de paquetes para bloquear",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
 printers_js = {
   title: "Printers",
   title_es: "Impresoras",
@@ -2163,11 +2213,13 @@ scripts_launch_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite
 local_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 local_file_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 auto_updates_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+boot_lock_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 local_groups_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 power_conf_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 local_admin_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 software_sources_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 package_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+package_version_lock_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 package_profile_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
 app_config_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 appconfig_libreoffice_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
@@ -2219,7 +2271,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res"],
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
@@ -2227,6 +2279,7 @@ complete_js = {
             local_file_res: local_file_js,
            # desktop_background_res: desktop_background_js,
             auto_updates_res: auto_updates_js,
+            boot_lock_res: boot_lock_js,
             local_groups_res: local_groups_js,
             power_conf_res: power_conf_js,
             local_admin_users_res: local_admin_users_js,
@@ -2236,16 +2289,17 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res","package_version_lock_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
             package_profile_res: package_profile_js,
             app_config_res: app_config_js,
-	    appconfig_libreoffice_res: appconfig_libreoffice_js,
+            appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
-	    appconfig_firefox_res: appconfig_firefox_js,
-	    appconfig_java_res: appconfig_java_js
+            appconfig_firefox_res: appconfig_firefox_js,
+            appconfig_java_res: appconfig_java_js,
+            package_version_lock_res: package_version_lock_js
           }
         },
         printers_mgmt: {
