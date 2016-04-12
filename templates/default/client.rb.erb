@@ -15,7 +15,7 @@ file_backup_path   "/var/lib/chef/backup"
 
 pid_file           "/var/run/chef/client.pid"
 
-validation_client_name "<%= @chef_admin_name %>"
+validation_client_name "chef-validator"
 
 require "/usr/share/gecosws-config-assistant/report-handlers/gecoshandlers"
 reporthandler = GECOSReports::StatusHandler.new
