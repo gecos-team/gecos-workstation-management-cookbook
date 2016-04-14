@@ -26,6 +26,7 @@ action :setup do
 # But this recipe launches alone, and default.rb is not executed
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     if new_resource.support_os.include?(os)
+     package "curl"
 #    if new_resource.support_os.include?($gecos_os)
 
       if not new_resource.chef_link_existing
@@ -124,8 +125,8 @@ action :setup do
           end.run_action(:delete)
 
           Chef::Log.info("Deleting node " + new_resource.chef_node_name)
-          execute 'Knife Delete' do
-            command 'knife node delete \'' + new_resource.chef_node_name + '\' -c /etc/chef/knife.rb -y'
+          execute 'curl to gcc node delete' do
+            command "curl -v  -X DELETE -u #{new_resource.gcc_username}:#{new_resource.gcc_password} #{new_resource.gcc_endpoint}/api/register/node/?node_id=#{new_resource.chef_node_name}"
             action :nothing
           end.run_action(:run)
 
@@ -134,12 +135,6 @@ action :setup do
 #          file "/usr/bin/gecos-chef-client-wrapper" do
 #            action :nothing
 #          end.run_action(:delete)
-
-          Chef::Log.info("Deleting client " + new_resource.chef_node_name)
-          execute 'Knife Delete' do
-            command 'knife client delete \'' + new_resource.chef_node_name + '\' -c /etc/chef/knife.rb -y'
-            action :nothing
-          end.run_action(:run)
 
 # We are using a wrapper, not the plain chef-client service
 #          Chef::Log.info("Disabling service chef-client")
@@ -199,10 +194,14 @@ action :setup do
         end.run_action(:create)
 
         Chef::Log.info("Reregistering the client" + new_resource.chef_node_name)
-        execute 'Knife Reregrister' do
-          command 'knife client reregister \'' + new_resource.chef_node_name + '\' -c /etc/chef/knife.rb > /etc/chef/client.pem'
+        command = "curl -X PUT -d 'node_id=#{new_resource.chef_node_name}' -u #{new_resource.gcc_username}:#{new_resource.gcc_password} #{new_resource.gcc_endpoint}/api/register/node/ |\
+                   sed -e 's|\\(.*\\), \"\\(client_private_key.*\\), \"ok\\(.*\\)|\\2|g' | awk -F: '{print $2}' | sed -e 's|\"||g' -e 's|\\\\n|\\n|g' |grep -v ^$ \
+                   > /etc/chef/client.pem"
+        execute "curl to gcc to reregister" do
+          command "#{command}"
           action :nothing
         end.run_action(:run)
+
 
         Chef::Log.info("Chef: Linking the chef server")
         execute 'chef-client' do
