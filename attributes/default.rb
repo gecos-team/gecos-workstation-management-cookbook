@@ -202,7 +202,7 @@ default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemset] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemlock] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:users] = {}
