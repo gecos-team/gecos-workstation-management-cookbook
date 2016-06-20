@@ -51,6 +51,15 @@ gecos_ws_mgmt_auto_updates 'manage auto updates' do
   action :setup
 end
 
+gecos_ws_mgmt_boot_lock 'lock boot menu' do
+  lock_boot node[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:lock_boot]
+  unlock_user node[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:unlock_user]
+  unlock_pass node[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:unlock_pass]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:misc_mgmt][:boot_lock_res][:support_os]
+  action :setup
+end
+
 gecos_ws_mgmt_tz_date 'localtime' do
   server node[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:server]
   job_ids node[:gecos_ws_mgmt][:misc_mgmt][:tz_date_res][:job_ids]

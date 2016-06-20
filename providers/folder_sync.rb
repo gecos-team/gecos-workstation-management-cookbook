@@ -38,25 +38,25 @@ action :setup do
         autostart_dir = "/home/#{username}/.config/autostart"
         home = "/home/#{username}"
         owncloud_dir = "#{home}/.local/share/data/ownCloud"
-  
+        gid = Etc.getpwnam(username).gid
         directory  autostart_dir do
           recursive true
           owner username
-          group username
+          group gid
           action :create
         end
   
         cookbook_file "owncloud.desktop" do
           path "#{autostart_dir}/ownCloud.desktop" 
           owner username
-          group username
+          group gid
           action :create
         end
   
         directory owncloud_dir do
           recursive true
           owner username
-          group username
+          group gid
           action :create
         end
     
@@ -75,7 +75,7 @@ action :setup do
         directory "#{owncloud_dir}/folders" do
           recursive true
           owner username
-          group username
+          group gid
           action :create
         end
    

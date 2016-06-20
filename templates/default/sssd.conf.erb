@@ -1,7 +1,7 @@
 [sssd]
 config_file_version = 2
 <%if @enabled %>
-domains = <%= @domain.name %>
+domains = <%= @domain.name.upcase %>
 <% else %>
 domains = DEFAULT
 <% end %>
@@ -13,7 +13,7 @@ debug_level = 0
 [pam] 
 <% if @enabled %>
 <% if @domain.type == "ad" %>
-[domain/<%= @domain.name %>]
+[domain/<%= @domain.name.upcase %>]
 # La enumeracion no esta recomendada en entornos con muchos usuarios
 cache_credentials=true
 enumerate = false
