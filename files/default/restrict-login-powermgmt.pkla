@@ -1,0 +1,27 @@
+[Disable poweroff]
+Identity=unix-group:power
+Action=org.freedesktop.login1.power-off;org.freedesktop.login1.power-off-multiple-sessions;
+ResultAny=no
+ResultInactive=no
+ResultActive=no
+
+[Disable reboot]
+Identity=unix-group:power
+Action=org.freedesktop.login1.reboot;org.freedesktop.login1.reboot-multiple-sessions
+ResultAny=no
+ResultInactive=no
+ResultActive=no
+
+[Disable suspend]
+Identity=unix-group:power
+Action=org.freedesktop.upower.suspend;org.freedesktop.login1.suspend;org.freedesktop.login1.suspend-multiple-sessions;org.freedesktop.login1.inhibit-handle-suspend-key;org.freedesktop.login1.suspend-ignore-inhibit
+ResultAny=no
+ResultInactive=no
+ResultActive=no
+
+[Disable hibernate]
+Identity=unix-group:power
+Action=org.freedesktop.upower.hibernate;org.freedesktop.login1.hibernate;org.freedesktop.login1.hibernate-multiple-sessions
+ResultAny=no
+ResultInactive=no
+ResultActive=no
