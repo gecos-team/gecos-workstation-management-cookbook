@@ -22,6 +22,16 @@ action :setup do
       systemlock = new_resource.systemlock
       systemset = new_resource.systemset
       users = new_resource.users
+	  
+      powermgmt_pkla = "/var/lib/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla"
+      cookbook_file powermgmt_pkla do
+        source "restrict-login-powermgmt.pkla"
+        owner "root"
+        group "root"
+        mode "0644"
+        action :nothing
+      end.run_action(:create_if_missing)
+
 
       # System-level lock settings
       #system = gecos_ws_mgmt_system_settings "disable-log-out" do
@@ -40,6 +50,13 @@ action :setup do
         username = nameuser.gsub('###','.')
         user = users[user_key]
 
+		# Create the power group and add user to it.
+        group 'power' do
+          action  :create
+          members [ username ]
+          append  true
+        end
+			
         disable_log_out = user.disable_log_out
 
         gecos_ws_mgmt_desktop_settings "disable-log-out" do

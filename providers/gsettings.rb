@@ -22,7 +22,8 @@ def initialize(*args)
   unless Kernel::test('d', dconf_cache_dir)
     FileUtils.mkdir_p dconf_cache_dir
     gid = Etc.getpwnam(new_resource.username).gid
-    FileUtils.chown_R(new_resource.username, gid, dconf_cache_dir)
+	FileUtils.chown(new_resource.username, gid, "/home/#{new_resource.username}/.cache")
+	FileUtils.chown(new_resource.username, gid, dconf_cache_dir)
   end
   begin
     dbus_file = Dir["/home/#{new_resource.username}/.dbus/session-bus/*0"].last
