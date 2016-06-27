@@ -62,8 +62,7 @@ action :setup do
 
         disable_log_out = user.disable_log_out
 	
-	if gecosV2
-      	  Chef::Log.debug("gecosV2 dentro del if: #{gecosV2}")
+	if gecosV2      	  
           gecos_ws_mgmt_desktop_settings "disable-log-out" do
             provider "gecos_ws_mgmt_gsettings"
             schema "org.cinnamon.desktop.lockdown"
