@@ -24,7 +24,7 @@ action :setup do
       systemset = new_resource.systemset
       users = new_resource.users
 
-      gecosV2 = $gecos_os == "GECOS V2"
+      lite = $gecos_os == "Gecos V2 Lite"
       # System-level lock settings
       #system = gecos_ws_mgmt_system_settings "disable-log-out" do
       #    provider "gecos_ws_mgmt_system_settings"
@@ -36,7 +36,7 @@ action :setup do
       #system.run_action(:lock) if systemlock
       #system.run_action(:unlock) if !systemlock
       
-      if not gecosV2 
+      if lite 
         powermgmt_pkla = "/var/lib/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla"
         cookbook_file powermgmt_pkla do
           source "restrict-login-powermgmt.pkla"
@@ -58,11 +58,9 @@ action :setup do
         username = nameuser.gsub('###','.')
         user = users[user_key]
 
-	# Crear el grupo powwer si no existe y añadir al usuario
-
         disable_log_out = user.disable_log_out
 	
-	if gecosV2      	  
+	if not lite
           gecos_ws_mgmt_desktop_settings "disable-log-out" do
             provider "gecos_ws_mgmt_gsettings"
             schema "org.cinnamon.desktop.lockdown"
@@ -73,23 +71,15 @@ action :setup do
 	else
 	  if disable_log_out
 	    group GRP_POWER do
-	      action  :modify
-	      members [ username ]
+	      action  :manage
+	      members [username]
 	      append  true
 	    end
 	  else
-	    require 'etc'
-            power_members = Etc.getgrnam(GRP_POWER).mem
-	    Chef::Log.debug("Power Group Members: #{power_members}")
-
-	    if power_members.include?(username)
-	      power_members.delete(username)
-	      group GRP_POWER do
-                action  :modify
-                members power_members 
-	        excluded_members username 
-                append  true
-	      end
+	    group GRP_POWER do
+              action  :manage
+	      excluded_members [username]
+              append  true
 	    end
 	  end
         end
