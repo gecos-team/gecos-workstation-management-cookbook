@@ -150,6 +150,7 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:support_os] = ["GECOS V2"]
 
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold] = 4
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
