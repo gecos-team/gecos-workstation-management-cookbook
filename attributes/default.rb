@@ -74,7 +74,6 @@ default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:updated_by] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
-
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:updated_by] = {}
@@ -209,6 +208,10 @@ default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os] = ["GEC
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
+
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:users] = {}
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:job_ids] = []
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:shutdown_mode] = ''
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:job_ids] = []
