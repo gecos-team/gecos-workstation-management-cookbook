@@ -9,6 +9,8 @@
 # http://www.osor.eu/eupl
 #
 
+GRP_POWER = 'power'
+
 action :setup do
   begin
 # OS identification moved to recipes/default.rb
@@ -46,9 +48,9 @@ action :setup do
           action :nothing
         end.run_action(:create_if_missing)
 
-        GRP_POWER = 'power'
+
         group GRP_POWER do
-	  action :create
+          action :create
         end
       end
 
@@ -78,14 +80,14 @@ action :setup do
 	  else
 	    group GRP_POWER do
               action  :manage
-	      excluded_members [username]
+	          excluded_members [username]
               append  true
 	    end
 	  end
         end
       end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info("Your operative system does not support this resource")
     end
     
     # save current job ids (new_resource.job_ids) as "ok"
