@@ -1,0 +1,4 @@
+<% if !@proxy_settings['disable_proxy'] and @proxy_settings['proxy_autoconfig_url'] == nil %>
+Acquire::http::Proxy "<%= @proxy_settings['http_proxy'] %>:<%= @proxy_settings['http_proxy_port'] %>";
+Acquire::https::Proxy "<%= @proxy_settings['https_proxy'] %>:<%= @proxy_settings['https_proxy_port'] %>";
+<% end %>
