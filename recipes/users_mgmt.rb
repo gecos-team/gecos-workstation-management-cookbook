@@ -114,3 +114,10 @@ gecos_ws_mgmt_user_alerts 'user alerts' do
   support_os node[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:support_os]
   action :setup
 end
+
+gecos_ws_mgmt_mimetypes 'mimetypes' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:support_os]
+  action :setup
+end
