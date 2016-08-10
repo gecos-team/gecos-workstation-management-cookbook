@@ -2186,6 +2186,60 @@ shutdown_options_js = {
  }
 }
 
+mimetypes_js = {
+  title: "Default programs",
+  title_es: "Asociar un programa con un tipo de fichero",
+  type: "object",
+  properties: {
+    users: {
+      type: "object",
+      title: "Users",
+      title_es: "Usuarios",
+      patternProperties: {
+        ".*" => {
+          type: "object",
+          title: "Username",
+          title_es: "Nombre de usuario",
+          properties: {
+            mimetyperelationship: {
+              type: "array",
+              items: {
+                type: "object",
+                required: ["desktop_entry","mimetypes"],
+                order: ["desktop_entry","mimetypes"],
+                properties: {
+                  desktop_entry: {
+                    title: "Default Program",
+                    title_es: "Programa por defecto",
+                    type:"string"
+                  },
+                  mimetypes: {
+                    title: "Mimetypes",
+                    title_es: "Mimetypes",
+                    type: "array",
+                    items: {
+                      type: "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }
+  }
+}
+
 proxy_js = {
   title: "Proxy Configuration",
   title_es: "Configuración Proxy Sistema, Firefox, Thunderbird, APT",
@@ -2290,6 +2344,7 @@ user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 cert_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+mimetypes_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 proxy_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 
 complete_js = {
@@ -2356,6 +2411,7 @@ complete_js = {
           type: "object",
           required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","proxy_res"],
           properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res"],          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             email_client_res: email_client_js,
@@ -2372,6 +2428,7 @@ complete_js = {
             user_mount_res: user_mount_js,
             user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js,
+            mimetypes_res: mimetypes_js,
             proxy_res: proxy_js
           }
         }

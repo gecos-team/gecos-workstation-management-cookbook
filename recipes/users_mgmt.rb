@@ -115,9 +115,15 @@ gecos_ws_mgmt_user_alerts 'user alerts' do
   action :setup
 end
 
+gecos_ws_mgmt_mimetypes 'mimetypes' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:support_os]
+  action :setup
+end
+
 gecos_ws_mgmt_proxy 'proxy' do
   users node[:gecos_ws_mgmt][:users_mgmt][:proxy_res][:users]
   job_ids node[:gecos_ws_mgmt][:users_mgmt][:proxy_res][:job_ids]
   support_os node[:gecos_ws_mgmt][:users_mgmt][:proxy_res][:support_os]
-  action :setup
 end

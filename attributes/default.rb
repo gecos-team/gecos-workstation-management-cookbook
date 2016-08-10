@@ -209,6 +209,14 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
 
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:users] = {}
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:job_ids] = []
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
+
+default[:gecos_ws_mgmt][:users_mgmt][:proxy_res][:users] = {}
+default[:gecos_ws_mgmt][:users_mgmt][:proxy_res][:job_ids] = []
+default[:gecos_ws_mgmt][:users_mgmt][:proxy_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
+
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:shutdown_mode] = ''
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
