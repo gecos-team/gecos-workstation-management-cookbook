@@ -47,6 +47,10 @@ action :setup do
       package 'unzip' do
         action :nothing
       end.run_action(:install)
+      
+      package 'xmlstarlet' do
+        action :nothing
+      end.run_action(:install)
 
       gem_depends = [ 'sqlite3' ]
       gem_depends.each do |gem|
@@ -59,12 +63,13 @@ action :setup do
       Gem.clear_paths
 
       require "sqlite3"
+      require 'pathname'  
 
       #
       # Plugin Manager: install/uninstall plugin
       #
       def plugin_manager(username, exdir, plugin)
-        require 'pathname'        
+      
         Chef::Log.debug("web_browser.rb - Starting plugin installation: #{plugin.name}, #{username}")
         
         # vars
@@ -89,11 +94,7 @@ action :setup do
           action :nothing
         end.run_action(:create_if_missing)
         
-        # Determine ID extension        
-        package 'xmlstarlet' do
-          action :nothing
-        end.run_action(:install)
-            
+        # Determine ID extension                    
         xid = shell_out("unzip -qc #{plugin_file} install.rdf |  xmlstarlet sel \
                         -N rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns# \
                         -N em=http://www.mozilla.org/2004/em-rdf# \
@@ -185,6 +186,17 @@ action :setup do
         end        
 
       end
+      
+      # Getting Firefox version
+      firefox = shell_out("firefox -v")
+      Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
+
+      /(?<version>\d+)\.(?<release>\d+)(\.(?<minor>\d+))?/ =~ firefox.stdout
+      Chef::Log.debug("web_browser.rb - FF version: #{version}")
+      Chef::Log.debug("web_browser.rb - FF release: #{release}")
+      Chef::Log.debug("web_browser.rb - FF minor: #{minor}")
+      
+      $ffver = version
 
       users = new_resource.users
 
@@ -261,17 +273,6 @@ action :setup do
               action :nothing
             end.run_action(:create)
             
-            # Getting Firefox version
-            firefox = shell_out("firefox -v")
-            Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
-
-            /(?<version>\d+)\.(?<release>\d+)(\.(?<minor>\d+))?/ =~ firefox.stdout
-            Chef::Log.debug("web_browser.rb - FF version: #{version}")
-            Chef::Log.debug("web_browser.rb - FF release: #{release}")
-            Chef::Log.debug("web_browser.rb - FF minor: #{minor}")
-            
-            $ffver = version
-
             extensions_dirs.each do |xdir|
               directory xdir do
                 owner username
