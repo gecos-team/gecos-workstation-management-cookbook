@@ -17,7 +17,9 @@ action :setup do
     # OS identification moved to recipes/default.rb
     #    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     #    if new_resource.support_os.include?(os)
-    if new_resource.support_os.include?($gecos_os)
+    
+    ffx = shell_out("apt-cache policy firefox").exitstatus
+    if new_resource.support_os.include?($gecos_os) and ffx
 
       trusty = false
       pkg = shell_out("apt-cache policy libsqlite3-ruby").exitstatus
@@ -61,8 +63,9 @@ action :setup do
       #
       # Plugin Manager: install/uninstall plugin
       #
-      def plugin_manager(username, exdir, profiledirs, plugin)
-        Chef::Log.debug("web_browser.rb - Starting plugin installation: #{plugin.name}, #{username}, #{profiledirs}")
+      def plugin_manager(username, exdir, plugin)
+        require 'pathname'        
+        Chef::Log.debug("web_browser.rb - Starting plugin installation: #{plugin.name}, #{username}")
         
         # vars
         plugin_name = "#{plugin.name.gsub(" ","_")}.xpi"
@@ -72,6 +75,7 @@ action :setup do
         installed = false
         source = ''
         destination = ''
+        expath = Pathname.new(exdir)
         
         Chef::Log.debug("web_browser.rb - plugin file: #{plugin_file}")
         Chef::Log.debug("web_browser.rb - plugin dir temp: #{plugin_dir_temp}")
@@ -97,11 +101,11 @@ action :setup do
                         \"//rdf:Description[@about='urn:mozilla:install-manifest']/em:id\"").stdout
 
         Chef::Log.debug("web_browser.rb - Extension ID = #{xid}")
-                                                            
-        # Checking if extension is already installed
+                                                                   
+        # Checking if extension is already installed for this profile
         # Querying firefox extensions databases
         xfiles.each do |xfile|        
-          xf = "#{profiledirs[0]}/#{xfile}"
+          xf = "#{expath.parent}/#{xfile}"
           Chef::Log.debug("web_browser.rb - Extension file = #{xf}")
           if ::File.exist?(xf)
             installed = case xfile
@@ -114,46 +118,35 @@ action :setup do
               when /\.sqlite$/
                 db = SQLite3::Database.open(xf)
                 addons = db.get_first_value("SELECT locale.name, locale.description, addon.version, addon.active, addon.id FROM addon 
-                      INNER JOIN locale on locale.id = addon.defaultLocale WHERE addon.type = 'extension' AND addon.id = '#{xid}'
-                      ORDER BY addon.active DESC, UPPER(locale.name)")
+                    INNER JOIN locale on locale.id = addon.defaultLocale WHERE addon.type = 'extension' AND addon.id = '#{xid}'
+                    ORDER BY addon.active DESC, UPPER(locale.name)")
                 Chef::Log.debug("SELECT locale.name, locale.description, addon.version, addon.active, addon.id FROM addon 
-                      INNER JOIN locale on locale.id = addon.defaultLocale WHERE addon.type = 'extension' AND addon.id = '#{xid}'
-                      ORDER BY addon.active DESC, UPPER(locale.name)")
+                    INNER JOIN locale on locale.id = addon.defaultLocale WHERE addon.type = 'extension' AND addon.id = '#{xid}'
+                    ORDER BY addon.active DESC, UPPER(locale.name)")
                 Chef::Log.debug("web_browser.rb - SQLite addons: #{addons}")
                 !addons.nil?
               else   
                 !!::File.open(xf).read().match(xid) # operator !! forces true/false returned
-              end
+            end
           end
           break if installed
         end
         Chef::Log.debug("web_browser.rb - Installed plugin? #{installed}")
                       
         if not installed and plugin.action == "add"                                 
-          # Getting Firefox version
-          firefox = shell_out("firefox -v")
-          if firefox.exitstatus != 0
-            firefox = shell_out("apt-cache policy firefox")
-          end
-          Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
-
-          /(?<version>\d+)\.(?<release>\d+)(\.(?<minor>\d+))?/ =~ firefox.stdout
-          Chef::Log.debug("web_browser.rb - FF version: #{version}")
-          Chef::Log.debug("web_browser.rb - FF release: #{release}")
-          Chef::Log.debug("web_browser.rb - FF minor: #{minor}")
-                
+                          
           # NEW installation procedure
           # https://developer.mozilla.org/en-US/Add-ons/Installing_extensions
           # In Firefox 4 you may also just copy the extension's XPI to the directory 
           # and name it <ID>.xpi as long as the extension does not require extraction to work correctly        
-          if version.to_i >= node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]
-            Chef::Log.debug("web_browser.rb - FF ver = #{version}. New installation procedure FF >= #{node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]}")   
+          if $ffver.to_i >= node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]
+            Chef::Log.debug("web_browser.rb - FF ver = #{$ffver}. New installation procedure FF >= #{node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]}")   
             source = plugin_file
             destination = "#{exdir}/#{xid}.xpi"
 
           # OLD installation procedure
           else  
-            Chef::Log.debug("web_browser.rb - FF version = #{version}. New installation procedure for FF < #{node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]}")
+            Chef::Log.debug("web_browser.rb - FF version = #{$ffver}. New installation procedure for FF < #{node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]}")
             plugin_dir_temp = "#{plugin_file}_temp"
             gid = Etc.getpwnam(username).gid
             directory plugin_dir_temp do
@@ -174,11 +167,10 @@ action :setup do
             destination = "#{exdir}/#{xid}"
           end
           
-         ::FileUtils.mv(source, destination)
-         ::FileUtils.rm(plugin_dir_temp)
+          ::FileUtils.mv(source, destination)
 
         elsif installed and plugin.action == "remove"
-        
+      
           destination = "#{exdir}/#{xid}"         
           # Escape special characters for glob directive
           destination = destination.gsub(/[\{\}]/) { |x| '\\'+x}
@@ -187,10 +179,11 @@ action :setup do
           ::FileUtils.rm_rf(Dir.glob("#{destination}*"))
           # Delete extensions files (extensions.json/extensions.sqlite, extensions.rdf, extensions.ini, extensions.cache) 
           # to reset these files
-          ::FileUtils.rm(Dir.glob("#{profiledirs[0]}/extensions.*"))
+          ::FileUtils.rm(Dir.glob("#{expath.parent}/extensions.*"))
+          ::FileUtils.rm(plugin_file)
           
         end        
-        ::FileUtils.rm(plugin_file)
+
       end
 
       users = new_resource.users
@@ -267,6 +260,17 @@ action :setup do
               source "web_browser_scope.js.erb"
               action :nothing
             end.run_action(:create)
+            
+            # Getting Firefox version
+            firefox = shell_out("firefox -v")
+            Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
+
+            /(?<version>\d+)\.(?<release>\d+)(\.(?<minor>\d+))?/ =~ firefox.stdout
+            Chef::Log.debug("web_browser.rb - FF version: #{version}")
+            Chef::Log.debug("web_browser.rb - FF release: #{release}")
+            Chef::Log.debug("web_browser.rb - FF minor: #{minor}")
+            
+            $ffver = version
 
             extensions_dirs.each do |xdir|
               directory xdir do
@@ -276,7 +280,7 @@ action :setup do
               end.run_action(:create)
               
               plugins.each do |plugin|
-                plugin_manager(username, xdir, profile_dirs, plugin)                
+                plugin_manager(username, xdir, plugin)                
               end
             end
           end 
