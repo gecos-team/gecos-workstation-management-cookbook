@@ -2187,8 +2187,8 @@ shutdown_options_js = {
 }
 
 mimetypes_js = {
-  title: "Default programs",
-  title_es: "Asociar un programa con un tipo de fichero",
+  title: "Default aplications per (MIME) type",
+  title_es: "Aplicaciones preferidas por tipo (MIME)",
   type: "object",
   properties: {
     users: {
@@ -2215,7 +2215,7 @@ mimetypes_js = {
                   },
                   mimetypes: {
                     title: "Mimetypes",
-                    title_es: "Mimetypes",
+                    title_es: "Tipos MIME",
                     type: "array",
                     items: {
                       type: "string"
