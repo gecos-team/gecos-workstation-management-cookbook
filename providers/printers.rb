@@ -86,6 +86,30 @@ else:
     print "Change operation policy"
     printer = cupshelpers.Printer('#{name}',connection)
     printer.setOperationPolicy('#{oppolicy}')
+
+import re
+from subprocess import call
+f = open('/etc/cups/printers.conf','r')
+filedata = f.readlines()
+f.close()
+printerName = "#{name}".replace(" ","+")
+newfile = ''
+rightBlock = None
+fileModified = None
+for thisLine in filedata:
+    printerIni = re.match(r'<Printer ' + re.escape(printerName) + r'>', thisLine)
+    printerEnd = re.match(r'</Printer>', thisLine)
+    authMatch  = re.match('AuthInfoRequired\s', thisLine)
+    authNone   = re.search('\s[Nn]one', thisLine)
+    if printerIni:
+        rightBlock = True
+    if rightBlock and authMatch and not authNone:
+        fileModified = True
+        continue
+    if printerEnd and rightBlock:
+        rightBlock = None
+if fileModified:
+    call(["/usr/sbin/lpadmin", "-p", printerName, "-o", "auth-info-required=none"])
     EOH
         end.run_action(:run)
 
