@@ -1877,7 +1877,7 @@ printers_js = {
           uri: { type: "string", title: "Uri", title_es: "Uri"},
           ppd_uri: { type: "string", title: "Uri PPD", title_es: "Uri PPD", default: "", pattern: "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
           ppd: { type: "string", title: "PPD Name", title_es: "Nombre PPD"},
-          oppolicy: {enum: ["default","authenticated"], default:"default", type: "string", title: "Operation Policy", title_es: "Politica de Autenticación"}
+          oppolicy: {enum: ["default","authenticated","negotiate"], default:"default", type: "string", title: "Operation Policy", title_es: "Politica de Autenticación"}
         }
       }
     },
