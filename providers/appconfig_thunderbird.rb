@@ -17,20 +17,15 @@ action :setup do
     alternatives_cmd = 'update-alternatives'
     if new_resource.support_os.include?($gecos_os)
 #      if not new_resource.loffice_config.empty?
-    	if not new_resource.config_thunderbird.empty?
-			 	#Detecting installation directory
-				installdir = shell_out("dpkg -L thunderbird | grep -E 'defaults/pref$'").stdout.chomp
-				
+      if not new_resource.config_thunderbird.empty?
+
+        Chef::Log.debug("appconfig_thunderbird.rb - config_thunderbird: #{new_resource.config_thunderbird}")
+        #Detecting installation directory
+        installdir = shell_out("dpkg -L thunderbird | grep -E 'defaults/pref$'").stdout.chomp
+        Chef::Log.debug("appconfig_thunderbird - installdir: #{installdir}")
+        
         #app_update = new_resource.loffice_config['app_update']
         app_update = new_resource.config_thunderbird['app_update']
-
-        # Proxy configuration
-        http_proxy = new_resource.config_thunderbird['http_proxy']
-        http_proxy_port = new_resource.config_thunderbird['http_proxy_port']
-        https_proxy = new_resource.config_thunderbird['https_proxy']
-        https_proxy_port = new_resource.config_thunderbird['https_proxy_port']
-        proxy_autoconfig_url = new_resource.config_thunderbird['proxy_autoconfig_url']
-				disable_proxy = new_resource.config_thunderbird['disable_proxy']
 
         unless Kernel::test('d', '/etc/thunderbird')
           FileUtils.mkdir_p '/etc/thunderbird'
@@ -49,21 +44,16 @@ action :setup do
         end
 
         template "/etc/thunderbird/proxy-prefs.js" do
-          source "mozilla_proxy.js.erb"
+          source "mozilla_proxy.erb"
           action :nothing
           variables(
-            :http_proxy => http_proxy,
-            :http_proxy_port => http_proxy_port,
-            :https_proxy => http_proxy,
-            :https_proxy_port => https_proxy_port,
-            :proxy_autoconfig_url => proxy_autoconfig_url,
-						:disable_proxy => disable_proxy
+            :settings => new_resource.config_thunderbird
           )
         end.run_action(:create)
 
         link "#{installdir}/proxy-prefs.js" do
           to "/etc/thunderbird/proxy-prefs.js"
-					only_if 'test -f /etc/thunderbird/proxy-prefs.js'
+          only_if 'test -f /etc/thunderbird/proxy-prefs.js'
         end
       end
     else

@@ -14,7 +14,12 @@ action :set do
   dconfdb = 'gecos'
   schema = new_resource.schema
   key = new_resource.name
-  value = new_resource.value
+  value = if new_resource.value.is_a? String
+    then %{'#{new_resource.value}'}
+    else new_resource.value
+  end
+
+  Chef::Log.debug("system_settings.rb - value:#{value}")
 
   if !key.nil? and !key.empty?
     ["/etc/dconf/profile", "/etc/dconf/db/#{dconfdb}.d/locks"].each do |dir|
@@ -32,11 +37,11 @@ system-db:#{dconfdb}
     eof
   end.run_action(:create)
 
-  file "/etc/dconf/db/#{dconfdb}.d/#{key}.key" do
+  file "/etc/dconf/db/#{dconfdb}.d/#{schema.gsub('/','-')}-#{key}.key" do
     backup false
     content <<-eof
 [#{schema}]
-#{key}='#{value}'
+#{key}=#{value}
     eof
   end.run_action(:create)
 
@@ -53,7 +58,7 @@ action :unset do
   key = new_resource.name
   value = new_resource.value
 
-  file "/etc/dconf/db/#{dconfdb}.d/#{key}.key" do
+  file "/etc/dconf/db/#{dconfdb}.d/#{schema.gsub('/','-')}-#{key}.key" do
     action :nothing
   end.run_action(:delete)
 
