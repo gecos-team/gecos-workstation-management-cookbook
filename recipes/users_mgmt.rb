@@ -121,3 +121,4 @@ gecos_ws_mgmt_mimetypes 'mimetypes' do
   support_os node[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:support_os]
   action :setup
 end
+
