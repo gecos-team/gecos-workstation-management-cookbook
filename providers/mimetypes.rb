@@ -14,9 +14,9 @@ require 'chef/mixin/shell_out'
 include Chef::Mixin::ShellOut
 
 action :setup do
-	begin
-	  if new_resource.support_os.include?($gecos_os)
-    	package "xdg-utils" do
+  begin
+    if new_resource.support_os.include?($gecos_os)
+      package "xdg-utils" do
        action :nothing
       end.run_action(:install)
 
@@ -27,15 +27,15 @@ action :setup do
         nameuser = user_key
         username = nameuser.gsub('###','.')
         user = users[user_key]
-				gid = Etc.getpwnam(username).gid
+        gid = Etc.getpwnam(username).gid
 
-				directory "/home/#{username}/.local/share/applications" do
-					owner username
-					group gid
-					recursive true
-				end
+        directory "/home/#{username}/.local/share/applications" do
+          owner username
+          group gid
+          recursive true
+        end
 
-				Chef::Log.debug("mimetypes.rb - Users: #{user}")
+        Chef::Log.debug("mimetypes.rb - Users: #{user}")
         
         # File associations stored
         localshareapp = "/home/#{username}/.local/share/applications"
@@ -47,26 +47,28 @@ action :setup do
 
         # Parse file associations stored
         mimeapps = {}
-        ::File.open("#{localshareapp}/mimeapps.list") do |fp|
-          fp.each do |line|
-            key, value = line.chomp.split(/=/)
-            unless key.nil? || value.nil?
-              mimeapps[key] = value
+        if ::File.exists?("#{localshareapp}/mimeapps.list")
+          ::File.open("#{localshareapp}/mimeapps.list") do |fp|
+            fp.each do |line|
+              key, value = line.chomp.split(/=/)
+              unless key.nil? || value.nil?
+                mimeapps[key] = value
+              end
             end
           end
         end
 
         Chef::Log.debug("mimetypes.rb - mimeapps: #{mimeapps}")
 
-				user.mimetyperelationship.each do |assoc|
-					Chef::Log.debug("mimetypes.rb - assoc: #{assoc}")
+        user.mimetyperelationship.each do |assoc|
+          Chef::Log.debug("mimetypes.rb - assoc: #{assoc}")
 
-					desktopfile = assoc.desktop_entry
-					if ! desktopfile.include? "\.desktop"
-   				  desktopfile.concat(".desktop")
-					end
+          desktopfile = assoc.desktop_entry
+          if ! desktopfile.include? "\.desktop"
+             desktopfile.concat(".desktop")
+          end
 
-					Chef::Log.debug("mimetypes.rb - desktop: #{desktopfile}")
+          Chef::Log.debug("mimetypes.rb - desktop: #{desktopfile}")
           
           # Only new changes
           mimes = assoc.mimetypes.reject { |x| mimeapps.key?(x) && mimeapps[x] == desktopfile }
@@ -89,9 +91,9 @@ action :setup do
             end
           end
                       
-				end
-			end
-  	else
+        end
+      end
+    else
       Chef::Log.info("This resource is not support into your OS")
     end
     
