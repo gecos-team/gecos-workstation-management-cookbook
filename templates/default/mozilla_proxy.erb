@@ -1,0 +1,20 @@
+<% 
+  case @settings['mode']  
+    when 0
+%>
+pref("network.proxy.type",0);
+<%  when 1 %>
+pref("network.proxy.type",1);
+pref("network.proxy.http","<%= @settings['http_proxy'] %>");
+pref("network.proxy.http_port", <%= @settings['http_proxy_port'] %>);
+pref("network.proxy.ssl","<%= @settings['https_proxy'] %>");
+pref("network.proxy.ssl_port", <%= @settings['https_proxy_port'] %>);
+<%  when 2 %>
+pref("network.proxy.type", 2);
+pref("network.proxy.autoconfig_url", "<%= @settings['proxy_autoconfig_url'] %>");
+<%  when 4 %>
+pref("network.proxy.type", 4);
+<%  when 5 %>
+pref("network.proxy.type", 5);
+<% end %>
+pref("network.proxy.no_proxies_on", <%= @settings['no_proxies_on'] %>);
