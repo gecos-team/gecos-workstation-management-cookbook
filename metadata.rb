@@ -2242,13 +2242,13 @@ mimetypes_js = {
 
 system_proxy_js = {
   title: "Proxy Configuration",
-  title_es: "Configuración Proxy Sistema, Firefox, Thunderbird, APT",
+  title_es: "Configuración de Proxy",
   type: "object",
   required: ["global_config","mozilla_config"],
   properties: {
     global_config: {
       title: "Global Proxy Configuration",
-      title_es: "Configuración global del proxy",
+      title_es: "Configuración General del Proxy",
       type: "object",
       order: ["http_proxy","http_proxy_port","https_proxy","https_proxy_port","proxy_autoconfig_url","disable_proxy"],
       properties: {  
@@ -2260,7 +2260,7 @@ system_proxy_js = {
         },
         http_proxy_port: {
           title: "HTTP Proxy Port",
-          title_es: "Puerto Proxy HTTP",
+          title_es: "Puerto del Proxy HTTP",
            type: "number",
           default: 80
         },
@@ -2272,13 +2272,13 @@ system_proxy_js = {
         },
         https_proxy_port: {
           title: "HTTPS Proxy Port",
-          title_es: "Puerto Proxy HTTPS",
+          title_es: "Puerto del Proxy HTTPS",
            type: "number",
           default: 443
         },
         proxy_autoconfig_url: {
           title: "Proxy Autoconfiguration URL",
-          title_es: "Url autoconfiguración Proxy (.pac)",
+          title_es: "Url de Autoconfiguración del Proxy",
            type: "string",
           allowEmpty: true
         },
@@ -2292,16 +2292,16 @@ system_proxy_js = {
       }
     },
     mozilla_config: {
-      title:"Mozilla Proxy Configuration",
-      title_es:"Configuración Mozilla del proxy",
+      title:"Mozilla Proxy Configuration (Firefox/Thunderbird)",
+      title_es:"Configuración del Proxy en Mozilla (Firefox/Thunderbird)",
       type: "object",
       order: ["mode","http_proxy","http_proxy_port","https_proxy","https_proxy_port","proxy_autoconfig_url","no_proxies_on"],
       properties: {
         mode: {
           type: "string",
-          title: "Mode",  
-          title_es:"Configuración de la conexión",
-          enum: [ "SIN PROXY", "AUTODETECTAR", "SISTEMA", "MANUAL","AUTOMATICA" ]
+          title: "Configuration Mode",  
+          title_es:"Forma de Configurarlo",
+          enum: [ "NO PROXY", "AUTODETECT", "SYSTEM", "MANUAL","AUTOMATIC" ]
         },
         http_proxy: {
           title: "HTTP Proxy",
@@ -2310,7 +2310,7 @@ system_proxy_js = {
         },
         http_proxy_port: {
           title: "HTTP Proxy Port",
-          title_es: "Puerto Proxy HTTP",
+          title_es: "Puerto del Proxy HTTP",
           type:"number",
           default: 80
         },
@@ -2321,13 +2321,13 @@ system_proxy_js = {
         },
         https_proxy_port: {
           title: "HTTPS Proxy Port",
-          title_es: "Puerto Proxy HTTPS",
+          title_es: "Puerto del Proxy HTTPS",
           type:"number",
           default: 443
         },
         proxy_autoconfig_url: {
           title: "Proxy Autoconfiguration URL",
-          title_es: "URL autoconfiguración Proxy (.pac)",
+          title_es: "URL de Autoconfiguración Proxy",
           type:"string",
           allowEmpty: true
         },
@@ -2486,3 +2486,4 @@ attribute 'json_schema',
   :description  => "Special attribute to include json-schema for defining cookbook's input",
   :type         => "hash",
   :object       => complete_js
+

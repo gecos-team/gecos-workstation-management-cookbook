@@ -57,28 +57,28 @@ action :setup do
               value    "manual"
             end.run_action(:set)
 
-            gecos_ws_mgmt_system_settings "System-Wide Proxy HTTP" do
+            gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy" do
               provider "gecos_ws_mgmt_system_settings"
               schema   "system/proxy/http"
               name     "host"
               value     global_settings['http_proxy']
             end.run_action(:set)
 
-            gecos_ws_mgmt_system_settings "System-Wide Proxy HTTP PORT" do
+            gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy PORT" do
               provider "gecos_ws_mgmt_system_settings"
               schema   "system/proxy/http"
               name     "port"
               value     global_settings['http_proxy_port']
             end.run_action(:set)
 
-            gecos_ws_mgmt_system_settings "System-Wide Proxy HTTPS" do
+            gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy" do
               provider "gecos_ws_mgmt_system_settings"
               schema  "system/proxy/https"
               name    "host"
               value    global_settings['https_proxy']
             end.run_action(:set)
 
-            gecos_ws_mgmt_system_settings "System-Wide Proxy HTTPS PORT" do
+            gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy PORT" do
               provider "gecos_ws_mgmt_system_settings"
               schema  "system/proxy/https"
               name    "port"
@@ -137,28 +137,28 @@ action :setup do
           value    "none"
          end.run_action(:unset)
 
-        gecos_ws_mgmt_system_settings "System-Wide Proxy HTTP [:unset]" do
+        gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy [:unset]" do
           provider "gecos_ws_mgmt_system_settings"
           schema   "system/proxy/http"
           name     "host"
           value   global_settings['http_proxy']
          end.run_action(:unset)
                                                        
-        gecos_ws_mgmt_system_settings "System-Wide Proxy HTTP PORT [:unset]" do
+        gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy PORT [:unset]" do
           provider "gecos_ws_mgmt_system_settings"
           schema   "system/proxy/http"
           name     "port"
           value     global_settings['http_proxy_port']
         end.run_action(:unset)
 
-        gecos_ws_mgmt_system_settings "System-Wide Proxy HTTPS [:unset]" do
+        gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy [:unset]" do
           provider "gecos_ws_mgmt_system_settings"
           schema   "system/proxy/https"
           name     "host"
           value     global_settings['https_proxy']
         end.run_action(:unset)
 
-        gecos_ws_mgmt_system_settings "System-Wide Proxy HTTPS PORT [:unset]" do
+        gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy PORT [:unset]" do
           provider "gecos_ws_mgmt_system_settings"
           schema  "system/proxy/https"
           name    "port"
@@ -190,17 +190,17 @@ action :setup do
       
     end
       
-    # MOZILLA CONFIG
+    # MOZILLA APPS CONFIG
       if not new_resource.mozilla_config.empty?
 
         mozilla_settings = {}
         case new_resource.mozilla_config['mode']
 
-          when "SIN PROXY"            
+          when "NO PROXY"            
             mozilla_settings['mode'] = 0                     
-          when "AUTODETECTAR"
+          when "AUTODETECT"
             mozilla_settings['mode'] = 4          
-          when "SISTEMA"
+          when "SYSTEM"
             mozilla_settings['mode'] = 5
           when "MANUAL"
             mozilla_settings = {
@@ -210,7 +210,7 @@ action :setup do
               'https_proxy' => new_resource.mozilla_config['https_proxy'],
               'https_proxy_port' => new_resource.mozilla_config['https_proxy_port'],
             }
-          when "AUTOMATICA" 
+          when "AUTOMATIC" 
             mozilla_settings = {
               'mode' => 2,
               'proxy_autoconfig_url' => new_resource.mozilla_config['proxy_autoconfig_url']
@@ -229,7 +229,7 @@ action :setup do
           else mozilla_settings['https_proxy']
         end
 
-        Chef::Log.debug("system_proxy.rb - mozilla_settings: #{mozilla_settings}")
+        Chef::Log.debug("system_proxy.rb - Mozilla_settings: #{mozilla_settings}")
 
         # FIREFOX
         gecos_ws_mgmt_appconfig_firefox "Firefox proxy configuration" do
@@ -250,7 +250,7 @@ action :setup do
       end
 
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info("Your operative system does not support this resource")
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
