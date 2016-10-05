@@ -2260,7 +2260,7 @@ system_proxy_js = {
         http_proxy_port: {
           title: "HTTP Proxy Port",
           title_es: "Puerto del Proxy HTTP",
-          type: "number",
+           type: "number",
           default: 80
         },
         https_proxy: {
@@ -2271,13 +2271,13 @@ system_proxy_js = {
         https_proxy_port: {
           title: "HTTPS Proxy Port",
           title_es: "Puerto del Proxy HTTPS",
-          type: "number",
+           type: "number",
           default: 443
         },
         proxy_autoconfig_url: {
           title: "Proxy Autoconfiguration URL",
           title_es: "Url de Autoconfiguración del Proxy",
-          type: "string",
+           type: "string",
           allowEmpty: true
         },
         disable_proxy: {
