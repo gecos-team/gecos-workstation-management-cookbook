@@ -18,6 +18,9 @@ attribute :chef_link_existing, :kind_of => [ TrueClass, FalseClass ], :default =
 attribute :chef_node_name, :kind_of => String
 attribute :chef_admin_name, :kind_of => String
 attribute :chef_validation_pem, :kind_of => String
+attribute :gcc_endpoint, :kind_of => String
+attribute :gcc_username, :kind_of => String
+attribute :gcc_password, :kind_of => String
 attribute :job_ids, :kind_of => Array
 attribute :support_os, :kind_of => Array
 
