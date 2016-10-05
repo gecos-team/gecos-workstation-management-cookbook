@@ -89,6 +89,7 @@ action :setup do
             # ENVIRONMENT
             ruby_block "Add proxy environment variables" do
               block do
+                fe = Chef::Util::FileEdit.new("/etc/environment")
                 fe.search_file_replace_line(/HTTP_PROXY/i,"HTTP_PROXY=\"#{global_settings['http_proxy']}:#{global_settings['http_proxy_port']}\"")
                 fe.search_file_replace_line(/HTTPS_PROXY/i,"HTTPS_PROXY=\"#{global_settings['https_proxy']}:#{global_settings['https_proxy_port']}\"")
                 fe.write_file
