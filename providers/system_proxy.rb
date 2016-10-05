@@ -32,16 +32,17 @@ action :setup do
         }
 
         # Checking params
-        global_settings['http_proxy'] = if not global_settings['http_proxy'].include?('http://')
-          then global_settings['http_proxy'] = 'http://' + global_settings['http_proxy']
-          else global_settings['http_proxy']
+        if !(global_settings['http_proxy'].nil? || global_settings['http_proxy'].include?('http://'))
+           global_settings['http_proxy'] = 'http://'.concat(global_settings['http_proxy'])
         end
 
-        global_settings['https_proxy'] = if not global_settings['https_proxy'].include?('https://')
-          then global_settings['https_proxy'] = 'https://' + global_settings['https_proxy']
-          else global_settings['https_proxy']
+        if !(global_settings['https_proxy'].nil? || global_settings['https_proxy'].include?('https://'))
+           global_settings['https_proxy'] = 'https://'.concat(global_settings['https_proxy'])
         end
-
+        global_settings['http_proxy'] ||= ''
+        global_settings['http_proxy_port'] ||= 0
+        global_settings['https_proxy'] ||= ''
+        global_settings['https_proxy_port'] ||= 0
         Chef::Log.debug("system_proxy.rb - global_settings:#{global_settings}")
 
         if not global_settings['disable_proxy'] 
@@ -88,12 +89,15 @@ action :setup do
             # ENVIRONMENT
             ruby_block "Add proxy environment variables" do
               block do
-                fe = Chef::Util::FileEdit.new("/etc/environment")
                 fe.search_file_replace_line(/HTTP_PROXY/i,"HTTP_PROXY=\"#{global_settings['http_proxy']}:#{global_settings['http_proxy_port']}\"")
                 fe.search_file_replace_line(/HTTPS_PROXY/i,"HTTPS_PROXY=\"#{global_settings['https_proxy']}:#{global_settings['https_proxy_port']}\"")
+                fe.write_file
                 fe.insert_line_if_no_match(/HTTP_PROXY/i,"HTTP_PROXY=\"#{global_settings['http_proxy']}:#{global_settings['http_proxy_port']}\"")
                 fe.write_file
                 fe.insert_line_if_no_match(/HTTPS_PROXY/i,"HTTPS_PROXY=\"#{global_settings['https_proxy']}:#{global_settings['https_proxy_port']}\"")
+                fe.write_file
+                fe.search_file_delete_line(/HTTP_PROXY/i) if global_settings['http_proxy'].empty?
+                fe.search_file_delete_line(/HTTPS_PROXY/i) if global_settings['https_proxy'].empty?
                 fe.write_file
               end
               action :nothing
@@ -219,14 +223,12 @@ action :setup do
         mozilla_settings['no_proxies_on'] = new_resource.mozilla_config['no_proxies_on']
 
         # Checking params
-        mozilla_settings['http_proxy'] = if not mozilla_settings['http_proxy'].include?('http://')
-          then mozilla_settings['http_proxy'] = 'http://' + mozilla_settings['http_proxy']
-          else mozilla_settings['http_proxy']
+        if !(mozilla_settings['http_proxy'].nil? || mozilla_settings['http_proxy'].include?('http://'))
+          mozilla_settings['http_proxy'] = 'http://'.concat(mozilla_settings['http_proxy'])
         end
 
-        mozilla_settings['https_proxy'] = if not mozilla_settings['https_proxy'].include?('https://')
-          then mozilla_settings['https_proxy'] = 'https://' + mozilla_settings['https_proxy']
-          else mozilla_settings['https_proxy']
+        if !(mozilla_settings['https_proxy'].nil? || mozilla_settings['https_proxy'].include?('https://'))
+          mozilla_settings['https_proxy'] = 'https://'.concat(mozilla_settings['https_proxy'])
         end
 
         Chef::Log.debug("system_proxy.rb - Mozilla_settings: #{mozilla_settings}")
