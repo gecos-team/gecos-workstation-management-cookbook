@@ -2255,8 +2255,7 @@ system_proxy_js = {
         http_proxy: {
           title: "HTTP Proxy",
           title_es: "Proxy HTTP",
-           type: "string",
-          allowEmpty: true
+          type: "string"
         },
         http_proxy_port: {
           title: "HTTP Proxy Port",
@@ -2266,9 +2265,8 @@ system_proxy_js = {
         },
         https_proxy: {
           title: "HTTPS Proxy",
-            title_es: "Proxy HTTPS",
-           type: "string",
-          allowEmpty: false
+          title_es: "Proxy HTTPS",
+          type: "string"
         },
         https_proxy_port: {
           title: "HTTPS Proxy Port",
@@ -2306,7 +2304,7 @@ system_proxy_js = {
         http_proxy: {
           title: "HTTP Proxy",
           title_es: "Proxy HTTP",
-          type:"string",
+          type:"string"
         },
         http_proxy_port: {
           title: "HTTP Proxy Port",
