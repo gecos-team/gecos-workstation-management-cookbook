@@ -9,6 +9,55 @@
 # http://www.osor.eu/eupl
 #
 
+def install_printer(prt_name, prt_id, prt_model, prt_uri, prt_policy)
+	print "installing printer #{prt_name}... "
+	printer_drv = `foomatic-ppdfile -P #{prt_model}|grep "'#{prt_id}'"`.scan(/CompatibleDrivers='(\S+)\s.*'/)
+	if printer_drv.length >= 0
+		ppd_file=`foomatic-ppdfile -p #{prt_id} -d #{printer_drv[0][0]}`
+		ppd_f = open("/usr/share/cups/model/#{prt_name}.ppd", "w")
+  		ppd_f.write(ppd_file)
+		ppd_f.close
+	else
+		puts "\nthere's no PPD for #{prt_id} in foomatic"
+	end
+	lpadm_comm = Mixlib::ShellOut.new("lpadmin   -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri}")
+	lpopt_comm = Mixlib::ShellOut.new("lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
+	lpadm_comm.run_command
+	if lpadm_comm.exitstatus == 0
+		lpopt_comm.run_command
+		if lpopt_comm.exitstatus == 0
+			puts "done."
+		else
+			puts "\nerror getting policies to #{prt_name}."
+		end
+	else
+		puts "\nerror creating printer #{prt_name}."
+	end
+end
+
+def update_printer(prt_name, prt_policy)
+	puts "UPDATING printer #{prt_name}... "
+	lpopt_comm = Mixlib::ShellOut.new("lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
+	if lpopt_comm.exitstatus == 0
+		puts "done."
+	else
+		puts "error getting policies to #{prt_name}."
+	end
+end
+
+def delete_printer(prt_name)
+	puts "DELETING printer #{prt_name}... "
+	lpadm_dele = Mixlib::ShellOut.new("lpadmin -x #{prt_name}")
+	lpadm_dele.run_command
+	if lpadm_dele.exitstatus == 0
+		puts "#{prt_name} has been deleted successfully..."
+	else
+		puts "ERROR: deleting #{prt_name}"
+	end
+end
+
+require 'chef/shell_out'
+
 action :setup do
   begin
     printers_list = new_resource.printers_list
@@ -18,17 +67,22 @@ action :setup do
       service "cups" do
         action :nothing
       end.run_action(:restart)
+
       pkgs = ['python-cups', 'cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
       pkgs.each do |pkg|
         package pkg do
           action :nothing
         end.run_action(:install)
       end
-      
- 
+
+      cups_ptr_list    = []
+      cups_ptr_list    = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
+      cups_ptr_list.run_command
+      cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+
       printers_list.each do |printer|
-        Chef::Log.info("Installing printer #{printer.name}")
-  
+        Chef::Log.info("Processing printer: #{printer.name}")
+
         name = printer.name
         make = printer.manufacturer
         model = printer.model
@@ -47,9 +101,8 @@ action :setup do
           ppd_uri = printer.ppd_uri
         end
 
-
         if ppd_uri != '' and ppd != ''
-          FileUtils.mkdir_p("/usr/share/ppd/#{make}/#{model}")    
+          FileUtils.mkdir_p("/usr/share/ppd/#{make}/#{model}")
           remote_file "/usr/share/ppd/#{make}/#{model}/#{ppd}" do
             source ppd_uri
             mode "0644"
@@ -57,64 +110,36 @@ action :setup do
           end.run_action(:create)
         end
 
-        script "install_printer" do
-          interpreter "python"
-          action :nothing
-          user "root"
-          code <<-EOH
-import cups
-import cupshelpers
-connection=cups.Connection()
-if '#{name}' not in connection.getPrinters().keys():
-    drivers = connection.getPPDs(ppd_make_and_model='#{make} #{model}')
-    ppd = '#{ppd}'
-    if ppd != '':
-        for key in drivers.keys():
-            if key.startswith('lsb/usr') and key.endswith('#{model}/'+ppd):
-                ppd = key
+        curr_ptr_name   = printer.manufacturer.gsub(" ","+") + "+" + printer.model.gsub(" ","+")
+        curr_ptr_id     = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
+        gecos_ptr_name  = printer.name.gsub(" ","+")
 
-    if ppd == '':
-        ppd = drivers.keys()[0]
-
-    connection.addPrinter('#{name}',ppdname=ppd, device='#{uri}')
-    printer = cupshelpers.Printer('#{name}',connection)
-    printer.setOperationPolicy('#{oppolicy}')
-    connection.enablePrinter('#{name}')
-    connection.acceptJobs('#{name}')
-else:
-    print "Printer #{name} already exists"
-    print "Change operation policy"
-    printer = cupshelpers.Printer('#{name}',connection)
-    printer.setOperationPolicy('#{oppolicy}')
-
-import re
-from subprocess import call
-f = open('/etc/cups/printers.conf','r')
-filedata = f.readlines()
-f.close()
-printerName = "#{name}".replace(" ","+")
-newfile = ''
-rightBlock = None
-fileModified = None
-for thisLine in filedata:
-    printerIni = re.match(r'<Printer ' + re.escape(printerName) + r'>', thisLine)
-    printerEnd = re.match(r'</Printer>', thisLine)
-    authMatch  = re.match('AuthInfoRequired\s', thisLine)
-    authNone   = re.search('\s[Nn]one', thisLine)
-    if printerIni:
-        rightBlock = True
-    if rightBlock and authMatch and not authNone:
-        fileModified = True
-        continue
-    if printerEnd and rightBlock:
-        rightBlock = None
-if fileModified:
-    call(["/usr/sbin/lpadmin", "-p", printerName, "-o", "auth-info-required=none"])
-    EOH
-        end.run_action(:run)
-
+		if `lpoptions -p #{gecos_ptr_name}`.length <= 1
+            install_printer(curr_ptr_name, curr_ptr_id, printer.model, printer.uri, oppolicy)
+        else
+            cups_list.each do |cups_printer|
+                if cups_printer.eql? gecos_ptr_name
+                    update_printer(curr_ptr_name, oppolicy)
+                    break
+                end
+            end
+        end
       end
+      cups_list.each do |cups_printer|
+      ptr_found = false
+      printers_list.each do |printer|
+        if cups_printer.eql? printer.name.gsub(" ","+")
+            ptr_found = true
+            break
+        end
     end
+    if not ptr_found
+        if `lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
+            delete_printer(cups_printer)
+        end
+    end
+  end
+end
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
@@ -140,4 +165,8 @@ if fileModified:
       recipe "printers_mgmt"
     end.run_action(:reset)
   end
+end
+
+action :delete do
+    
 end
