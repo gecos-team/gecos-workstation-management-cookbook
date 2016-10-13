@@ -46,6 +46,7 @@ action :setup do
           variables(
             :settings => new_resource.config_firefox
           )
+          not_if {installdir.empty?}
         end.run_action(:create)
 
         link "#{installdir}/update.js" do
