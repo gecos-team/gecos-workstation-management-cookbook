@@ -46,6 +46,7 @@ action :setup do
           variables(
             :settings => new_resource.config_firefox
           )
+          not_if {installdir.empty?}
         end.run_action(:create)
 
         link "#{installdir}/update.js" do
@@ -53,7 +54,7 @@ action :setup do
           only_if 'test -f /etc/firefox/update.js'
         end
 
-        link "#{installdir.stdout.chomp}/proxy-prefs.js" do
+        link "#{installdir}/proxy-prefs.js" do
           to "/etc/firefox/proxy-prefs.js"
           only_if 'test -f /etc/firefox/proxy-prefs.js'
         end
