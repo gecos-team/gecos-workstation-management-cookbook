@@ -18,17 +18,19 @@ def install_printer(prt_name, prt_id, prt_model, prt_uri, prt_policy)
   		ppd_f.write(ppd_file)
 		ppd_f.close
 	else
+		## TODO: contemplar error
 		puts "\nthere's no PPD for #{prt_id} in foomatic"
 	end
-	lpadm_comm = Mixlib::ShellOut.new("lpadmin   -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri}")
-	lpopt_comm = Mixlib::ShellOut.new("lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
+	lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri}")
+	lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
 	lpadm_comm.run_command
 	if lpadm_comm.exitstatus == 0
+	    lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
 		lpopt_comm.run_command
 		if lpopt_comm.exitstatus == 0
 			puts "done."
 		else
-			puts "\nerror getting policies to #{prt_name}."
+			puts "\nerror setting policies to #{prt_name}."
 		end
 	else
 		puts "\nerror creating printer #{prt_name}."
@@ -36,18 +38,19 @@ def install_printer(prt_name, prt_id, prt_model, prt_uri, prt_policy)
 end
 
 def update_printer(prt_name, prt_policy)
-	puts "UPDATING printer #{prt_name}... "
-	lpopt_comm = Mixlib::ShellOut.new("lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
-	if lpopt_comm.exitstatus == 0
+	puts "updating printer #{prt_name}... "
+	lpopt_updt = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
+	lpopt_updt.run_command
+	if lpopt_updt.exitstatus == 0
 		puts "done."
 	else
-		puts "error getting policies to #{prt_name}."
+		puts "error updating policies to #{prt_name}."
 	end
 end
 
 def delete_printer(prt_name)
-	puts "DELETING printer #{prt_name}... "
-	lpadm_dele = Mixlib::ShellOut.new("lpadmin -x #{prt_name}")
+	puts "deleting printer #{prt_name}... "
+	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
 	if lpadm_dele.exitstatus == 0
 		puts "#{prt_name} has been deleted successfully..."
@@ -114,7 +117,7 @@ action :setup do
         curr_ptr_id     = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
         gecos_ptr_name  = printer.name.gsub(" ","+")
 
-		if `lpoptions -p #{gecos_ptr_name}`.length <= 1
+		if `/usr/bin/lpoptions -p #{gecos_ptr_name}`.length <= 1
             install_printer(curr_ptr_name, curr_ptr_id, printer.model, printer.uri, oppolicy)
         else
             cups_list.each do |cups_printer|
@@ -134,7 +137,7 @@ action :setup do
         end
     end
     if not ptr_found
-        if `lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
+        if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
             delete_printer(cups_printer)
         end
     end
@@ -165,8 +168,4 @@ end
       recipe "printers_mgmt"
     end.run_action(:reset)
   end
-end
-
-action :delete do
-    
 end
