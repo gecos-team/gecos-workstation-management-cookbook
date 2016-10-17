@@ -57,10 +57,13 @@ action :setup do
       end
     end
   ensure
-    gecos_ws_mgmt_jobids "package_version_lock_res" do
-      provider "gecos_ws_mgmt_jobids"
-      recipe "software_mgmt"
-    end.run_action(:reset)
+  
+    resource = gecos_ws_mgmt_jobids "package_version_lock_res" do
+       recipe "software_mgmt"
+    end
+    resource.provider = Chef::ProviderResolver.new(node, resource , :reset).resolve
+    resource.run_action(:reset)        
+    
   end
 end
 

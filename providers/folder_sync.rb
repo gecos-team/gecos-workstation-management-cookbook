@@ -108,9 +108,12 @@ action :setup do
       end
     end
   ensure
-    gecos_ws_mgmt_jobids "folder_sync_res" do
-      provider "gecos_ws_mgmt_jobids"
-      recipe "users_mgmt"
-    end.run_action(:reset)
+
+    resource = gecos_ws_mgmt_jobids "folder_sync_res" do
+       recipe "users_mgmt"
+    end
+    resource.provider = Chef::ProviderResolver.new(node, resource , :reset).resolve
+    resource.run_action(:reset)    
+    
   end
 end

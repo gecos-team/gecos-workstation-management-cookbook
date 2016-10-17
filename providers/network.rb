@@ -250,9 +250,12 @@ action :setup do
       end
     end
   ensure
-    gecos_ws_mgmt_jobids "network_res" do
-      provider "gecos_ws_mgmt_jobids"
-      recipe "network_mgmt"
-    end.run_action(:reset)
+    
+    resource = gecos_ws_mgmt_jobids "network_res" do
+       recipe "network_mgmt"
+    end
+    resource.provider = Chef::ProviderResolver.new(node, resource , :reset).resolve
+    resource.run_action(:reset)       
+    
   end
 end
