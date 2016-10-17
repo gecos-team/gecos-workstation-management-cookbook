@@ -15,11 +15,21 @@ include Chef::Mixin::ShellOut
 action :setup do
   begin
     alternatives_cmd = 'update-alternatives'
-     if new_resource.support_os.include?($gecos_os)
+    if new_resource.support_os.include?($gecos_os)
 #      if not new_resource.loffice_config.empty?
-       if not new_resource.config_thunderbird.empty?
-#        app_update = new_resource.loffice_config['app_update']
-         app_update = new_resource.config_thunderbird['app_update']
+      if not new_resource.config_thunderbird.empty?
+
+        Chef::Log.debug("appconfig_thunderbird.rb - config_thunderbird: #{new_resource.config_thunderbird}")
+        #Detecting installation directory
+        installdir = shell_out("dpkg -L thunderbird | grep -E 'defaults/pref$'").stdout.chomp
+        Chef::Log.debug("appconfig_thunderbird - installdir: #{installdir}")
+        
+        #app_update = new_resource.loffice_config['app_update']
+        app_update = new_resource.config_thunderbird['app_update']
+
+        unless Kernel::test('d', '/etc/thunderbird')
+          FileUtils.mkdir_p '/etc/thunderbird'
+        end
 
         if app_update
           execute "enable thunderbird upgrades" do
@@ -31,6 +41,20 @@ action :setup do
             command "apt-mark hold thunderbird thunderbird*"
             action :nothing
           end.run_action(:run)
+        end
+
+        template "/etc/thunderbird/proxy-prefs.js" do
+          source "mozilla_proxy.erb"
+          action :nothing
+          variables(
+            :settings => new_resource.config_thunderbird
+          )
+          not_if {installdir.empty?}
+        end.run_action(:create)
+
+        link "#{installdir}/proxy-prefs.js" do
+          to "/etc/thunderbird/proxy-prefs.js"
+          only_if 'test -f /etc/thunderbird/proxy-prefs.js'
         end
       end
     else

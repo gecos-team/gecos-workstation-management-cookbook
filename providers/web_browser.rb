@@ -14,10 +14,12 @@ include Chef::Mixin::ShellOut
 action :setup do
 
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
-    if new_resource.support_os.include?($gecos_os)
+    # OS identification moved to recipes/default.rb
+    #    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+    #    if new_resource.support_os.include?(os)
+    
+    ffx = shell_out("apt-cache policy firefox").exitstatus
+    if new_resource.support_os.include?($gecos_os) and ffx
 
       trusty = false
       pkg = shell_out("apt-cache policy libsqlite3-ruby").exitstatus
@@ -45,6 +47,10 @@ action :setup do
       package 'unzip' do
         action :nothing
       end.run_action(:install)
+      
+      package 'xmlstarlet' do
+        action :nothing
+      end.run_action(:install)
 
       gem_depends = [ 'sqlite3' ]
       gem_depends.each do |gem|
@@ -57,48 +63,140 @@ action :setup do
       Gem.clear_paths
 
       require "sqlite3"
+      require 'pathname'  
 
-      def plugin_id(username,ext_path,plugin_name,plugin_file,action_to_run)
-
+      #
+      # Plugin Manager: install/uninstall plugin
+      #
+      def plugin_manager(username, exdir, plugin)
+      
+        Chef::Log.debug("web_browser.rb - Starting plugin installation: #{plugin.name}, #{username}")
+        
+        # vars
+        plugin_name = "#{plugin.name.gsub(" ","_")}.xpi"
+        plugin_file = "#{exdir}/#{plugin_name}"
         plugin_dir_temp = "#{plugin_file}_temp"
-	gid = Etc.getpwnam(username).gid
-        directory plugin_dir_temp do
-          owner username
-          group gid
-          action :nothing
-        end.run_action(:create)
-
-        bash "extract plugin #{plugin_file}" do
-          action :nothing
+        xfiles = [ "extensions.json", "extensions.sqlite", "extensions.rdf" ]        
+        installed = false
+        source = ''
+        destination = ''
+        expath = Pathname.new(exdir)
+        
+        Chef::Log.debug("web_browser.rb - plugin file: #{plugin_file}")
+        Chef::Log.debug("web_browser.rb - plugin dir temp: #{plugin_dir_temp}")
+        Chef::Log.debug("web_browser.rb - Extensions files: #{xfiles}")
+        
+        # Download extension if not exists
+        remote_file plugin_file do
+          source plugin.uri
           user username
-          code <<-EOH
+          group username
+          action :nothing
+        end.run_action(:create_if_missing)
+        
+        # Determine ID extension                    
+        xid = shell_out("unzip -qc #{plugin_file} install.rdf |  xmlstarlet sel \
+                        -N rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns# \
+                        -N em=http://www.mozilla.org/2004/em-rdf# \
+                        -t -v \
+                        \"//rdf:Description[@about='urn:mozilla:install-manifest']/em:id\"").stdout
 
-            unzip #{plugin_file} -d #{plugin_dir_temp}
-          EOH
-        end.run_action(:run)
-
-        ruby_block "get plugin id" do
-          block do
-            file_w_id = ::IO.read("#{plugin_dir_temp}/install.rdf")
-            idmatch = file_w_id.match(/<em:id>([^<\/]+)<\/em:id>/)
-            str_idmatch = idmatch[0]
-            clean_id = str_idmatch.gsub("<em:id>","").gsub("</em:id>","")
-            
-            if action_to_run == "remove" 
-              
-              if ::File.directory?("#{ext_path}/#{clean_id}") 
-                ::FileUtils.rm_rf("#{ext_path}/#{clean_id}")
-              end          
-              ::FileUtils.rm_rf(plugin_file)
-              ::FileUtils.rm_rf(plugin_dir_temp)
-            else
-              if !::File.directory?("#{ext_path}/#{clean_id}") 
-              ::FileUtils.mv(plugin_dir_temp , "#{ext_path}/#{clean_id}")
-              end
+        Chef::Log.debug("web_browser.rb - Extension ID = #{xid}")
+                                                                   
+        # Checking if extension is already installed for this profile
+        # Querying firefox extensions databases
+        xfiles.each do |xfile|        
+          xf = "#{expath.parent}/#{xfile}"
+          Chef::Log.debug("web_browser.rb - Extension file = #{xf}")
+          if ::File.exist?(xf)
+            installed = case xfile
+              when /\.json$/i
+                require 'json'
+                jfile = ::File.read(xf)
+                addons = JSON.parse(jfile)["addons"]                
+                Chef::Log.debug("web_browser.rb - JSON addons: #{addons}")
+                addons.any?{|h| h["id"] == xid}
+              when /\.sqlite$/
+                db = SQLite3::Database.open(xf)
+                addons = db.get_first_value("SELECT locale.name, locale.description, addon.version, addon.active, addon.id FROM addon 
+                    INNER JOIN locale on locale.id = addon.defaultLocale WHERE addon.type = 'extension' AND addon.id = '#{xid}'
+                    ORDER BY addon.active DESC, UPPER(locale.name)")
+                Chef::Log.debug("SELECT locale.name, locale.description, addon.version, addon.active, addon.id FROM addon 
+                    INNER JOIN locale on locale.id = addon.defaultLocale WHERE addon.type = 'extension' AND addon.id = '#{xid}'
+                    ORDER BY addon.active DESC, UPPER(locale.name)")
+                Chef::Log.debug("web_browser.rb - SQLite addons: #{addons}")
+                !addons.nil?
+              else   
+                !!::File.open(xf).read().match(xid) # operator !! forces true/false returned
             end
           end
+          break if installed
         end
-      end 
+        Chef::Log.debug("web_browser.rb - Installed plugin? #{installed}")
+                      
+        if not installed and plugin.action == "add"                                 
+                          
+          # NEW installation procedure
+          # https://developer.mozilla.org/en-US/Add-ons/Installing_extensions
+          # In Firefox 4 you may also just copy the extension's XPI to the directory 
+          # and name it <ID>.xpi as long as the extension does not require extraction to work correctly        
+          if $ffver.to_i >= node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]
+            Chef::Log.debug("web_browser.rb - FF ver = #{$ffver}. New installation procedure FF >= #{node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]}")   
+            source = plugin_file
+            destination = "#{exdir}/#{xid}.xpi"
+
+          # OLD installation procedure
+          else  
+            Chef::Log.debug("web_browser.rb - FF version = #{$ffver}. New installation procedure for FF < #{node[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold]}")
+            plugin_dir_temp = "#{plugin_file}_temp"
+            gid = Etc.getpwnam(username).gid
+            directory plugin_dir_temp do
+              owner username
+              group gid
+              action :nothing
+            end.run_action(:create)
+
+            bash "extract plugin #{plugin_file}" do
+              action :nothing
+              user username
+              code <<-EOH
+                unzip -o #{plugin_file} -d #{plugin_dir_temp}
+              EOH
+            end.run_action(:run)
+
+            source = plugin_dir_temp
+            destination = "#{exdir}/#{xid}"
+          end
+          
+          ::FileUtils.mv(source, destination)
+
+        elsif installed and plugin.action == "remove"
+      
+          destination = "#{exdir}/#{xid}"         
+          # Escape special characters for glob directive
+          destination = destination.gsub(/[\{\}]/) { |x| '\\'+x}
+          Chef::Log.debug("web_browser.rb - Removing extension #{destination}")
+          # Delete plugin file
+          ::FileUtils.rm_rf(Dir.glob("#{destination}*"))
+          # Delete extensions files (extensions.json/extensions.sqlite, extensions.rdf, extensions.ini, extensions.cache) 
+          # to reset these files
+          ::FileUtils.rm(Dir.glob("#{expath.parent}/extensions.*"))
+          ::FileUtils.rm(plugin_file)
+          
+        end        
+
+      end
+      
+      # Getting Firefox version
+      firefox = shell_out("firefox -v")
+      Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
+
+      /(?<version>\d+)\.(?<release>\d+)(\.(?<minor>\d+))?/ =~ firefox.stdout
+      Chef::Log.debug("web_browser.rb - FF version: #{version}")
+      Chef::Log.debug("web_browser.rb - FF release: #{release}")
+      Chef::Log.debug("web_browser.rb - FF minor: #{minor}")
+      
+      $ffver = version
 
       users = new_resource.users
 
@@ -110,9 +208,7 @@ action :setup do
         homedir = `eval echo ~#{username}`.gsub("\n","")
         plugins = user.plugins
         bookmarks =  user.bookmarks
-      
         profiles = "#{homedir}/.mozilla/firefox/profiles.ini"
-      
         profile_dirs = []
         extensions_dirs = []
         sqlitefiles = []
@@ -136,7 +232,7 @@ action :setup do
             arr_conf = []
             user.config.each do |conf|
               value = nil
-	      Chef::Log.info("Setting #{conf[:key]} of type #{conf[:value_type]} = /#{conf[:value_str]}/#{conf[:value_bool]}/#{conf[:value_num]}/")
+              Chef::Log.info("Setting #{conf[:key]} of type #{conf[:value_type]} = /#{conf[:value_str]}/#{conf[:value_bool]}/#{conf[:value_num]}/")
               if conf[:value_type] == "string"
                 value = conf[:value_str]
                 if conf[:value_str].nil?
@@ -150,7 +246,7 @@ action :setup do
               elsif conf[:value_type] == "number"
                 value = conf[:value_num]
                 if conf[:value_num].nil? 
-                 Chef::Log.warn("The key #{conf[:key]} (number) has no value, Please check it")
+                  Chef::Log.warn("The key #{conf[:key]} (number) has no value, Please check it")
                 end
               end
               config = {}
@@ -158,7 +254,7 @@ action :setup do
               config['value'] = value
               arr_conf << config
             end
-     
+
             profile_dirs.each do |prof|
               template "#{prof}/user.js" do
                 owner username
@@ -168,7 +264,7 @@ action :setup do
               end.run_action(:create)
             end
           end
-        
+
           ## Plugins STUFF
           unless plugins.empty?
             Chef::Log.info("Setting user #{username} web plugins")  
@@ -183,26 +279,9 @@ action :setup do
                 group username
                 action :nothing
               end.run_action(:create)
-          
+              
               plugins.each do |plugin|
-                plugin_name = "#{plugin.name.gsub(" ","_")}.xpi"
-                plugin_file = "#{xdir}/#{plugin_name}"
-                plugin_dir_temp = "#{plugin_file}_temp"
-        
-                if !::File.exists?(plugin_file) and plugin.action == "add"
-      
-                  remote_file plugin_file do
-                    source plugin.uri
-                    user username
-                    group username
-                    action :nothing
-                  end.run_action(:create)
-
-                  plugin_id(username,xdir,plugin_name,plugin_file,plugin.action)
-
-                elsif ::File.exists?(plugin_file) and plugin.action == "remove"
-                  plugin_id(username,xdir,plugin_name,plugin_file,plugin.action)             
-                end
+                plugin_manager(username, xdir, plugin)                
               end
             end
           end 
@@ -211,13 +290,13 @@ action :setup do
           Chef::Log.info("Setting user #{username} web bookmarks")     
           sqlitefiles.each do |sqlitedb|
             if ::FileTest.exist? sqlitedb
-             db = SQLite3::Database.open(sqlitedb)
+              db = SQLite3::Database.open(sqlitedb)
 
               id_folder_bookmarks = db.get_first_value("SELECT id FROM moz_bookmarks WHERE title=\'Marcadores corporativos\'")
               if !id_folder_bookmarks.nil?
                 db.execute("delete from moz_bookmarks where parent=#{id_folder_bookmarks} ")
               end
-     
+              
               bookmarks.each  do |bkm|
                 unless bkm.name.empty? 
                   date_now = Time.now.to_i*1000000
@@ -238,17 +317,14 @@ action :setup do
                   end
 
                   db.execute("INSERT INTO moz_places (url,title,rev_host,visit_count,hidden,typed,last_visit_date) VALUES  (\'#{bkm.uri}\',\'#{bkm.name}\',\'#{bkm.uri.reverse}.\',1,0,1,#{date_now})")
-                   foreign_key = db.get_first_value("SELECT last_insert_rowid()")
+                  foreign_key = db.get_first_value("SELECT last_insert_rowid()")
 
                   db.execute("INSERT INTO moz_bookmarks (type,fk,parent,position,title,dateAdded,lastModified) VALUES (1,#{foreign_key},#{id_folder_bookmarks},#{last_pos_folder+1},\'#{bkm.name}\',#{date_now},#{date_now})") 
                 end
               end
             end
           end  
-
-               
-
-          ## CERTS STUFF
+                    ## CERTS STUFF
           #profile_dirs.each do |prof|
           #  user.certs.each do |cert|
           #
@@ -273,8 +349,7 @@ action :setup do
     else
       Chef::Log.info("This resource is not support into your OS")
     end
-   
-    # save current job ids (new_resource.job_ids) as "ok"
+        # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.set['job_status'][jid]['status'] = 0
@@ -293,10 +368,11 @@ action :setup do
         node.set['job_status'][jid]['message'] = e.message
       end
     end
-  ensure
+    ensure
     gecos_ws_mgmt_jobids "web_browser_res" do
       provider "gecos_ws_mgmt_jobids"
       recipe "users_mgmt"
     end.run_action(:reset)
   end
 end
+

@@ -19,7 +19,7 @@ action :setup do
             Chef::Log.info("Empty unlock username or password!")
             lock_boot = false
         end
-        
+
         template "/etc/grub.d/05_unrestricted" do
           source "grubconf_unrestricted.erb"
           owner 'root'
@@ -31,43 +31,25 @@ action :setup do
           end
         end.run_action(:create)        
         
-        execute "gecos_grub_update" do
+        if lock_boot and (unlock_user.empty? or unlock_pass.empty?)
+            Chef::Log.info("Empty unlock username or password!")
+            lock_boot = false
+        end
+          
+        
+        template "/etc/grub.d/40_custom" do
+          source "grubconf_custom.erb"
+          owner 'root'
+          group 'root'
+          mode 00700
+          variables({ :unlock_user => unlock_user, :unlock_pass => unlock_pass, :lock_boot => lock_boot })
+          action :nothing
+        end.run_action(:create)
+            
+        execute "grup-update" do
             command "update-grub"
             action :nothing
-        end
-        
-        
-        if lock_boot
-            Chef::Log.info("Locking boot menu")
-          
-            template "/etc/grub.d/40_custom" do
-              source "grubconf_custom.erb"
-              owner 'root'
-              group 'root'
-              mode 00700
-              variables({ :unlock_user => unlock_user, :unlock_pass => unlock_pass, :lock_boot => lock_boot })
-              not_if 'grep password #{unlock_user} #{unlock_pass}'
-              notifies :run, 'execute[gecos_grub_update]', :immediately
-            end
-          
-        else
-          Chef::Log.info("Unlocking lock boot menu!")
-          
-            template "/etc/grub.d/40_custom" do
-              source "grubconf_custom.erb"
-              owner 'root'
-              group 'root'
-              mode 00700
-              variables({ :unlock_user => unlock_user, :unlock_pass => unlock_pass, :lock_boot => lock_boot })
-              only_if 'grep password #{unlock_user} #{unlock_pass}'
-              notifies :run, 'execute[gecos_grub_update]', :immediately
-            end
-          
-          
-        end
-
-          
-        
+        end.run_action(:run)
      
     else
       Chef::Log.info("This resource is not support into your OS")

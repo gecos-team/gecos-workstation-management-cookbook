@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.3.11"
+version           "0.4.0"
 
 depends "apt"
 depends "chef-client"
@@ -44,6 +44,7 @@ mobile_broadband_js = {
   title_es: "Conexiones de banda ancha móvil",
   type: "object",
   required: ["connections"],
+  is_mergeable: true,
   properties: {
     connections: {
       title: "Connections",
@@ -92,6 +93,7 @@ forticlientvpn_js = {
   title_es: "Conexiones VPN de FortiClient",
   type: "object",
   required: ["connections"],
+  is_mergeable: false,
   order: ["connections", "proxyserver", "proxyport", "proxyuser", "autostart", "keepalive"],
   properties: {
     connections: {
@@ -168,6 +170,7 @@ sssd_js = {
   title_es: "Sistema de Autenticación",
   type: "object",
   required: ["auth_type", "enabled"],
+  is_mergeable: false,
   properties: {
     krb_url: { type: "string" , title: "Url of Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
     smb_url: { type: "string" , title: "Url of Samba file configuration", title_es: "Archivo de configuración Url Samba"},
@@ -245,6 +248,7 @@ user_mount_js = {
   title_es: "Montaje de unidades externas",
   type: "object",
   required: ["users"],
+  is_mergeable: false,
   properties: {
     users: {
       title: "Users",
@@ -277,6 +281,7 @@ screensaver_js = {
   title_es: "Salvapantallas",
   type: "object",
   required: ["users"],
+  is_mergeable: false,
   properties: {
     users: {
       title: "Users",
@@ -290,7 +295,7 @@ screensaver_js = {
             idle_enabled: {
               type: "boolean",
               title: "Dim screen",
-	          title_es: "Oscurecer pantalla"
+              title_es: "Oscurecer pantalla"
             },
             idle_delay: {
               type: "string",
@@ -333,6 +338,7 @@ folder_sharing_js = {
   title_es: "Permisos para compartir",
   type: "object",
   required: ["users"],
+  is_mergeable: true,
   properties: {
     users: {
       title: "Users",
@@ -365,6 +371,7 @@ desktop_control_js = {
   title_es: "Panel de control",
   type: "object",
   required: ["users"],
+  is_mergeable: true,
   properties: {
     users: {
       title: "Users",
@@ -409,6 +416,7 @@ desktop_menu_js = {
   title_es: "Menú de aplicaciones",
   type: "object",
   required: ["users"],
+  is_mergeable: true,
   properties: {
     users: {
       title: "Users",
@@ -460,6 +468,7 @@ user_launchers_js = {
   title_es: "Acceso directo en el escritorio",
   type: "object",
   required: ["users"],
+  is_mergeable: true,
   properties: {
     users: {
       title: "Users",
@@ -521,6 +530,7 @@ desktop_background_js = {
   title: "Desktop Background",
   title_es: "Fondo de escritorio",
   required: ["users"],
+  is_mergeable: false,
   properties: {
     users: {
       title: "Users",
@@ -554,6 +564,7 @@ file_browser_js = {
   title_es: "Explorador de archivos",
   type: "object",
   required: ["users"],
+  is_mergeable: false,
   properties:{
     users: {
       title: "Users",
@@ -591,12 +602,13 @@ cert_js = {
   title: "Certificate Management",
   title_es: "Gestion de Certificados",
   type: "object",
+  is_mergeable: true,
   properties:{
     java_keystores: {
       title: "Java Keystores",
       title_es: "Almacenes de claves de Java",
       description: "Path of java keystore: e.g. /etc/java/cacerts-gcj",
-      description_es: "Ruta del almacen de claves: p.ej. /etc/java/cacerts-gcj",
+      description_es: "Ruta del almacén de claves: p.ej. /etc/java/cacerts-gcj",
       type: "array",
       minItems: 0,
       uniqueItems: true,
@@ -627,6 +639,7 @@ cert_js = {
       }
     },
     support_os: support_os_js.clone,
+    updated_by: updated_js,
     job_ids: {
         type: "array",
         minItems: 0,
@@ -646,6 +659,7 @@ web_browser_js = {
   title_es: "Navegador Web",
   type: "object",
   required: ["users"],
+  is_mergeable: true,
   properties: {
     users: {
       type: "object",
@@ -757,10 +771,12 @@ web_browser_js = {
     }
   }
 }
+
 email_client_js = {
   title: "Email Configuration",
   title_es: "Configuración de email",
   type: "object",
+  is_mergeable: false,
   properties: {
     users: {
       type: "object",
@@ -863,6 +879,7 @@ user_alerts_js = {
   title: "User alert",
   title_es: "Alertas de usuario",
   type: "object",
+  is_mergeable: false,
   properties: {
     users: {
       type: "object",
@@ -920,6 +937,7 @@ remote_shutdown_js = {
   title_es: "Apagado remoto",
   type: "object",
   required: ["shutdown_mode"],
+  is_mergeable: false,
   properties: {
     shutdown_mode: {
       title: "Shutdown mode",
@@ -947,6 +965,7 @@ user_shared_folders_js = {
   title_es: "Carpetas Compartidas",
   type: "object",
   required: ["users"],
+  is_mergeable: false,
   properties: {
     users: {
       title: "Users",
@@ -994,6 +1013,7 @@ app_config_js = {
   type: "object",
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config", "loffice_config"],
+  is_mergeable: false,
   properties: {
     #citrix_config: {title: "Citrix Configuration", title_es: "Configuración de Citrix", type: "object"},
     java_config: {
@@ -1125,6 +1145,7 @@ appconfig_libreoffice_js = {
   title_es: "Configuración de LibreOffice",
   type: "object",
   required: ["config_libreoffice"],
+  is_mergeable: false,
   properties: {
     config_libreoffice: {
       title: "LibreOffice Configuration",
@@ -1158,6 +1179,7 @@ appconfig_thunderbird_js = {
   title_es: "Configuración de Thunderbird",
   type: "object",
   required: ["config_thunderbird"],
+  is_mergeable: false,
   properties: {
     config_thunderbird: {
       title: "Thunderbird Configuration",
@@ -1191,6 +1213,7 @@ appconfig_firefox_js = {
   title_es: "Configuración de Firefox",
   type: "object",
   required: ["config_firefox"],
+  is_mergeable: false,
   properties: {
     config_firefox: {
       title: "Firefox Configuration",
@@ -1224,25 +1247,26 @@ appconfig_java_js = {
   title_es: "Configuración de Java",
   type: "object",
   required: ["config_java"],
+  is_mergeable: false,
   properties: {
    config_java: {
       title: "Java Configuration",
       title_es: "Configuración de Java",
       type: "object",
-      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "array_attrs"],
+      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "tls", "array_attrs"],
       properties: {
         version: {
           title: "Java Version",
           title_es: "Versión de Java",
-	  description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
-	  description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
+          description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
+          description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
           type: "string"
         },
         plug_version: {
           title: "Plugins Java version",
           title_es: "Plugins versión de Java",
-	  description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
-	  description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
+          description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
+          description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
           type: "string"
         },
         sec: {
@@ -1280,6 +1304,13 @@ appconfig_java_js = {
           enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
           default: "ENABLE"
         },
+        tls: {
+          title: "Check validity of TLS certificate",
+          title_es: "Realizar comprobaciones derevocación de certificado TLS",
+          type: "string",
+          enum: ["SERVER_CERTIFICATE_ONLY", "NO_CHECK", ""],
+          default: "" 
+        },
         array_attrs: {
           type: "array",
           minItems: 0,
@@ -1315,6 +1346,7 @@ auto_updates_js = {
   title_es: "Actualizaciones automáticas de repositorios",
   type: "object",
   required: ["auto_updates_rules"],
+  is_mergeable: false,
   properties: {
     auto_updates_rules: {
       type: "object",
@@ -1412,6 +1444,7 @@ user_modify_nm_js = {
   title_es: "Conceder permisos de red al usuario",
   type: "object",
   required: ["users"],
+  is_mergeable: false,
   properties: {
     users: {
       title: "Users",
@@ -1450,6 +1483,7 @@ user_apps_autostart_js = {
   title_es: "Aplicaciones que se ejecutarán al inicio",
   type: "object",
   required: ["users"],
+  is_mergeable: true,
   properties: {
     users: {
       title: "Users",
@@ -1457,17 +1491,27 @@ user_apps_autostart_js = {
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["desktops"],
+        order: ["desktops", "desktops_to_remove"],        
           properties: {
-            desktops: {
-              title: "Desktop files",
-              title_es: "Aplicaciones",
-              description: "It is necessary to add .desktop at the end of the application",
-              description_es: "Es necesario añadir .desktop al final de la aplicación",
-              type: "array",
-              minItems: 0,
-              uniqueItems: true,
-              items: {type: "string"}
+              desktops: {
+                title: "Applications",
+                title_es: "Aplicaciones",
+                description: ".desktop file must exist in /usr/share/applications",
+                description_es: "Es necesario que exista el .desktop en /usr/share/applications",
+                type: "array",
+                minItems: 0,
+                uniqueItems: true,
+                items: {type: "string"}
+              },
+              desktops_to_remove: {
+                title: "Applications to remove from autostart",
+                title_es: "Aplicaciones a eliminar del inicio",
+                description: "Applications will not be run at session start anymore",
+                description_es: "Las aplicaciones ya no se ejecutarán al inicio de sesión",
+                type: "array",
+                minItems: 0,
+                uniqueItems: true,
+                items: {type: "string"}
             }, 
             updated_by: updated_js
           }
@@ -1491,6 +1535,7 @@ tz_date_js = {
   title_es: "Administración fecha/hora",
   type: "object",
   required: ["server"],
+  is_mergeable: false,
   properties: {
     server: {
       type: "string",
@@ -1517,6 +1562,7 @@ scripts_launch_js = {
   title_es: "Lanzador de scripts",
   type: "object",
   required: ["on_startup","on_shutdown"],
+  is_mergeable: true,
   order: ["on_startup", "on_shutdown"],
   properties:
   {
@@ -1562,6 +1608,7 @@ network_resource_js = {
   title: "Network Manager",
   title_es: "Administrador de red",
   required: ["connections"],
+  is_mergeable: false,
   properties:
   {
     connections: {
@@ -1700,7 +1747,7 @@ network_resource_js = {
       items: {
         type: "string"
       }
-    }, 
+    },
     support_os: support_os_js.clone,
     updated_by: updated_js
   }
@@ -1711,6 +1758,7 @@ software_sources_js = {
   title_es: "Fuentes de software",
   type: "object",
   required: ["repo_list"],
+  is_mergeable: true,
   properties:{
     repo_list: {
       type:"array",
@@ -1746,6 +1794,7 @@ package_profile_js = {
   title_es: "Administración de perfiles de software",
   type: "object",
   order:["package_list"],
+  is_mergeable: true,
   properties:
   {
     package_list: {
@@ -1774,6 +1823,7 @@ package_js = {
   title_es: "Administración de paquetes",
   type: "object",
   order:["package_list", "pkgs_to_remove"],
+  is_mergeable: true,
   properties:
   {
     package_list: {
@@ -1838,6 +1888,7 @@ printers_js = {
   title_es: "Impresoras",
   type: "object",
   required: ["printers_list"],
+  is_mergeable: true,
   properties:
   {
     printers_list: {
@@ -1854,7 +1905,7 @@ printers_js = {
           uri: { type: "string", title: "Uri", title_es: "Uri"},
           ppd_uri: { type: "string", title: "Uri PPD", title_es: "Uri PPD", default: "", pattern: "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
           ppd: { type: "string", title: "PPD Name", title_es: "Nombre PPD"},
-          oppolicy: {enum: ["default","authenticated"], default:"default", type: "string", title: "Operation Policy", title_es: "Politica de Autenticación"}
+          oppolicy: {enum: ["default","authenticated","negotiate"], default:"default", type: "string", title: "Operation Policy", title_es: "Politica de Autenticación"}
         }
       }
     },
@@ -1876,6 +1927,7 @@ local_users_js = {
   title_es: "Usuarios",
   type: "object",
   required: ["users_list"],
+  is_mergeable: true,
   properties:
   {users_list: {
       type:"array",
@@ -1912,6 +1964,7 @@ local_groups_js = {
   title_es: "Grupos locales",
   type: "object",
   required: ["groups_list"],
+  is_mergeable: true,
   properties:
   {groups_list: {
       type:"array",
@@ -1919,11 +1972,13 @@ local_groups_js = {
       title_es: "Grupos para gestionar",
       items: {
         type:"object",
-        required: ["group"],
-        order:["users", "group"],
+        required: ["group","users","remove_users","create"],
+        order:["users", "group", "remove_users", "create"],
         properties:{
           group: { type: "string", title: "Group", title_es: "Grupo" },
-          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } }
+          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } },
+          remove_users: { type: "boolean", title: "Remove users", title_es: "Eliminar usuarios", description: "Remove users in list", description_es: "Eliminar los usuarios de la lista", default: false },
+          create: { type: "boolean", title: "Create group", title_es: "Crear grupo", description: "Create group if it doesn't exist in node", description_es: "Crear grupo si no existe", default: false } 
         }
      }
   },
@@ -1946,6 +2001,7 @@ local_file_js = {
   type: "object",
   required: ["delete_files", "copy_files"],
   order: ["copy_files", "delete_files"],
+  is_mergeable: true,
   properties:
   {delete_files: {
       type:"array",
@@ -1998,6 +2054,7 @@ local_admin_users_js = {
   type: "object",
   required: ["local_admin_list"],
   order: ["local_admin_list", "local_admin_remove_list"],
+  is_mergeable: true,
   properties:
   {local_admin_list: {
       type:"array",
@@ -2033,6 +2090,7 @@ folder_sync_js = {
   title_es: "Carpeta para sincronizar",
   type: "object",
   required: ["users"],
+  is_mergeable: false,
   properties:
   {users: {
     title: "Users", 
@@ -2065,6 +2123,7 @@ power_conf_js = {
   type: "object",
 #  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   order: ["cpu_freq_gov", "usb_autosuspend", "auto_shutdown"],
+  is_mergeable: false,
   properties:
     {cpu_freq_gov: {
        title: "CPU frequency governor",
@@ -2119,6 +2178,7 @@ shutdown_options_js = {
   title_es: "Opciones de apagado",
   type: "object",
   required: ["users"],
+  is_mergeable: false,
   properties: { 
     systemlock: { type: "boolean", title: "System-wide lockdown of the key", title_es: "Bloqueo para todo el sistema de la llave"},
     users: {
@@ -2152,6 +2212,169 @@ shutdown_options_js = {
       }
     }
  }
+}
+
+mimetypes_js = {
+  title: "Default aplications per (MIME) type",
+  title_es: "Aplicaciones preferidas por tipo (MIME)",
+  type: "object",
+  properties: {
+    users: {
+      type: "object",
+      title: "Users",
+      title_es: "Usuarios",
+      patternProperties: {
+        ".*" => {
+          type: "object",
+          title: "Username",
+          title_es: "Nombre de usuario",
+          properties: {
+            mimetyperelationship: {
+              type: "array",
+              items: {
+                type: "object",
+                required: ["desktop_entry","mimetypes"],
+                order: ["desktop_entry","mimetypes"],
+                properties: {
+                  desktop_entry: {
+                    title: "Default Program",
+                    title_es: "Programa por defecto",
+                    type:"string"
+                  },
+                  mimetypes: {
+                    title: "Mimetypes",
+                    title_es: "Tipos MIME",
+                    type: "array",
+                    items: {
+                      type: "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }
+  }
+}
+
+system_proxy_js = {
+  title: "Proxy Configuration",
+  title_es: "Configuración de Proxy",
+  type: "object",
+  required: ["global_config","mozilla_config"],
+  properties: {
+    global_config: {
+      title: "Global Proxy Configuration",
+      title_es: "Configuración General del Proxy",
+      type: "object",
+      order: ["http_proxy","http_proxy_port","https_proxy","https_proxy_port","proxy_autoconfig_url","disable_proxy"],
+      properties: {  
+        http_proxy: {
+          title: "HTTP Proxy",
+          title_es: "Proxy HTTP",
+          type: "string"
+        },
+        http_proxy_port: {
+          title: "HTTP Proxy Port",
+          title_es: "Puerto del Proxy HTTP",
+           type: "number",
+          default: 80
+        },
+        https_proxy: {
+          title: "HTTPS Proxy",
+          title_es: "Proxy HTTPS",
+          type: "string"
+        },
+        https_proxy_port: {
+          title: "HTTPS Proxy Port",
+          title_es: "Puerto del Proxy HTTPS",
+           type: "number",
+          default: 443
+        },
+        proxy_autoconfig_url: {
+          title: "Proxy Autoconfiguration URL",
+          title_es: "Url de Autoconfiguración del Proxy",
+           type: "string",
+          allowEmpty: true
+        },
+        disable_proxy: {
+          title: "Disable proxy configuration?",
+          title_es: "¿Desactivar proxy?",
+          description_es: "Si activa la casilla, desactiva la configuración del proxy",
+          type: "boolean",
+          default: false
+        }
+      }
+    },
+    mozilla_config: {
+      title:"Mozilla Proxy Configuration (Firefox/Thunderbird)",
+      title_es:"Configuración del Proxy en Mozilla (Firefox/Thunderbird)",
+      type: "object",
+      order: ["mode","http_proxy","http_proxy_port","https_proxy","https_proxy_port","proxy_autoconfig_url","no_proxies_on"],
+      properties: {
+        mode: {
+          type: "string",
+          title: "Configuration Mode",  
+          title_es:"Forma de Configurarlo",
+          enum: [ "NO PROXY", "AUTODETECT", "SYSTEM", "MANUAL","AUTOMATIC" ]
+        },
+        http_proxy: {
+          title: "HTTP Proxy",
+          title_es: "Proxy HTTP",
+          type:"string"
+        },
+        http_proxy_port: {
+          title: "HTTP Proxy Port",
+          title_es: "Puerto del Proxy HTTP",
+          type:"number",
+          default: 80
+        },
+        https_proxy: {
+          title: "HTTPS Proxy",
+          title_es: "Proxy HTTPS",
+          type:"string"
+        },
+        https_proxy_port: {
+          title: "HTTPS Proxy Port",
+          title_es: "Puerto del Proxy HTTPS",
+          type:"number",
+          default: 443
+        },
+        proxy_autoconfig_url: {
+          title: "Proxy Autoconfiguration URL",
+          title_es: "URL de Autoconfiguración Proxy",
+          type:"string",
+          allowEmpty: true
+        },
+        no_proxies_on: {
+          title: "Ignore proxy for",
+          title_es: "No usar proxy para",
+          type:"string"
+        }
+      }
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
 }
 
 network_resource_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
@@ -2194,6 +2417,8 @@ user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite
 shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 cert_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+mimetypes_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+system_proxy_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
@@ -2236,7 +2461,7 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res","package_version_lock_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res","package_version_lock_res","system_proxy_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
@@ -2246,7 +2471,8 @@ complete_js = {
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
             appconfig_java_res: appconfig_java_js,
-            package_version_lock_res: package_version_lock_js
+            package_version_lock_res: package_version_lock_js,
+            system_proxy_res: system_proxy_js
           }
         },
         printers_mgmt: {
@@ -2258,8 +2484,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res"],
-          properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res"],          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             email_client_res: email_client_js,
@@ -2275,7 +2500,8 @@ complete_js = {
             folder_sync_res: folder_sync_js,
             user_mount_res: user_mount_js,
             user_modify_nm_res: user_modify_nm_js,
-            shutdown_options_res: shutdown_options_js
+            shutdown_options_res: shutdown_options_js,
+            mimetypes_res: mimetypes_js
           }
         }
       }
@@ -2288,3 +2514,4 @@ attribute 'json_schema',
   :description  => "Special attribute to include json-schema for defining cookbook's input",
   :type         => "hash",
   :object       => complete_js
+

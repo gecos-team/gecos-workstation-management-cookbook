@@ -79,6 +79,11 @@ default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:updated_by] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
+default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:global_config] = {}
+default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:mozilla_config] = {}
+default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:job_ids] = []
+default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:updated_by] = {}
+default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
@@ -155,9 +160,11 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:support_os] = ["GECOS V2"]
 
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold] = 4
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
+default[:gecos_ws_mgmt][:users_mgmt][:web_browser_res][:ver_threshold] = 4
 
 default[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:job_ids] = []
@@ -207,12 +214,16 @@ default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemset] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemlock] = false
 default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os] = ["GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_alerts_res][:support_os] = ["GECOS V2","Gecos V2 Lite"]
+
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:users] = {}
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:job_ids] = []
+default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:support_os] = ["GECOS V2", "Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:shutdown_mode] = ''
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:job_ids] = []
