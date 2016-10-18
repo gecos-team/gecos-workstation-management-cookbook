@@ -11,14 +11,17 @@
 
 def install_printer(prt_name, prt_id, prt_model, prt_uri, prt_policy)
 	print "installing printer #{prt_name}... "
-	printer_drv = `foomatic-ppdfile -P #{prt_model}|grep "'#{prt_id}'"`.scan(/CompatibleDrivers='(\S+)\s.*'/)
+    # foomatic needs all compatible drivers for one printer in order to create the PPD file.
+    # But sometimes, there's only one driver available
+	printer_drv = `foomatic-ppdfile -P '#{prt_model}'|grep "'#{prt_id}'"`.scan(/CompatibleDrivers='(\S+)\s.*'/)
+    printer_drv.empty?
+	    printer_drv = `foomatic-ppdfile -P '#{prt_model}'|grep "'#{prt_id}'"`.scan(/Driver='(\S+)*'/)
 	if printer_drv.length >= 0
 		ppd_file=`foomatic-ppdfile -p #{prt_id} -d #{printer_drv[0][0]}`
 		ppd_f = open("/usr/share/cups/model/#{prt_name}.ppd", "w")
   		ppd_f.write(ppd_file)
 		ppd_f.close
 	else
-		## TODO: contemplar error
 		puts "\nthere's no PPD for #{prt_id} in foomatic"
 	end
 	lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri}")
@@ -113,7 +116,7 @@ action :setup do
           end.run_action(:create)
         end
 
-        curr_ptr_name   = printer.manufacturer.gsub(" ","+") + "+" + printer.model.gsub(" ","+")
+        curr_ptr_name   = printer.name.gsub(" ","+")
         curr_ptr_id     = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
         gecos_ptr_name  = printer.name.gsub(" ","+")
 
