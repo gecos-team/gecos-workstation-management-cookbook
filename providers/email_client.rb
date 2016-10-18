@@ -113,11 +113,9 @@ action :setup do
     end
   ensure
     
-    resource = gecos_ws_mgmt_jobids "email_client_res" do
+    gecos_ws_mgmt_jobids "email_client_res" do
        recipe "users_mgmt"
-    end
-    resource.provider = Chef::ProviderResolver.new(node, resource , :reset).resolve
-    resource.run_action(:reset)
+    end.run_action(:reset)
     
   end
 end
