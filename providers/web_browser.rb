@@ -40,9 +40,10 @@ action :setup do
         action :nothing
       end.run_action(:install)
 
-      package 'libnss3-tools' do
-        action :nothing
-      end.run_action(:install)
+      # Neccessary for "certutil" command (used in "CERTS STUFF" code)
+      # package 'libnss3-tools' do
+        # action :nothing
+      # end.run_action(:install)
 
       package 'unzip' do
         action :nothing

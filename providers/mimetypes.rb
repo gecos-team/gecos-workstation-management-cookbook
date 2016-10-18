@@ -117,7 +117,7 @@ action :setup do
     end
     ensure
     
-    resource = gecos_ws_mgmt_jobids "file_browser_res" do
+    resource = gecos_ws_mgmt_jobids "mimetypes_res" do
        recipe "users_mgmt"
     end
     resource.provider = Chef::ProviderResolver.new(node, resource , :reset).resolve
