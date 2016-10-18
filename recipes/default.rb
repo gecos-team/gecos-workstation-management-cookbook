@@ -60,4 +60,4 @@ include_recipe "gecos_ws_mgmt::users_mgmt"
 include_recipe "gecos_ws_mgmt::printers_mgmt"
 
 
-node.set['use_node']= {}
+node.normal['use_node']= {}

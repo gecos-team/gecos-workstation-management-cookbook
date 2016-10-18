@@ -118,4 +118,4 @@ if not node[:gecos_ws_mgmt][:misc_mgmt][:local_users_res].nil?
   end
 end  
 
-node.set['use_node']= {}
+node.normal['use_node']= {}

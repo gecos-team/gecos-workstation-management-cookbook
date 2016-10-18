@@ -101,7 +101,7 @@ action :setup do
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 0
+      node.normal['job_status'][jid]['status'] = 0
     end
 
   rescue Exception => e
@@ -110,8 +110,8 @@ action :setup do
     Chef::Log.error(e.message)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 1
-      node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      node.normal['job_status'][jid]['status'] = 1
+      node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
     end
   ensure
     
