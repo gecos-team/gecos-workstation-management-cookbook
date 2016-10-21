@@ -21,7 +21,7 @@ action :setup do
       users_to_add = []
       users_to_remove = []
     
-      if $gecos_os == "GECOS V2"
+      if $gecos_os == "GECOS V2" or $gecos_os == "GECOS V3"
         package 'nemo-share' do
           action :nothing
         end.run_action(:install)
