@@ -10,10 +10,10 @@
 #
 
 def create_ppd(prt_name, prt_model, prt_id)
-    # foomatic needs all compatible drivers for one printer in order to create the PPD file.
-    # But sometimes, there's only one driver available
     Chef::Log.info("Creating PPD file for #{prt_name}... ")
 
+    # foomatic needs all compatible drivers (CompatibleDrivers) for one printer in
+    # order to create the PPD file. But sometimes, there's only one driver available (Driver).
 	temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
 
     begin
@@ -31,7 +31,7 @@ def create_ppd(prt_name, prt_model, prt_id)
 end
 
 def install_or_update_printer(prt_name, prt_uri, prt_policy)
-    Chef::Log.info("installing or updating printer #{prt_name}... ")
+    Chef::Log.info("Installing or updating printer #{prt_name}... ")
 	lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri} -o printer-op-policy=#{prt_policy} -o auth-info-required=none")
 	lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o managed-by-GCC=true")
 	lpadm_comm.run_command
@@ -48,7 +48,7 @@ def install_or_update_printer(prt_name, prt_uri, prt_policy)
 end
 
 def delete_printer(prt_name)
-    Chef::Log.info("deleting printer #{prt_name}... ")
+    Chef::Log.info("Deleting printer #{prt_name}... ")
 	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
 	if lpadm_dele.exitstatus == 0
