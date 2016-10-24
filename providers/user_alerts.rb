@@ -43,7 +43,6 @@ action :setup do
         begin
           dbus_file = Dir["/home/#{username}/.dbus/session-bus/*0"].last
           dbus_address = open(dbus_file).grep(/^DBUS_SESSION_BUS_ADDRESS=(.*)/){$1}[0]
-          puts "DBUS_SESSION_BUS_ADDRESS=#{dbus_address}"
         rescue Exception => e
            dbus_address = nil
         end        
@@ -77,7 +76,6 @@ action :setup do
           end
         end
 
-        puts "summary=#{user.summary}"
         cron "user alert for '#{username}'" do
           environment cron_vars
           minute "#{now.minute + 5}" # In 5 mins from now
