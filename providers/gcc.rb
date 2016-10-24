@@ -26,11 +26,15 @@ action :setup do
     if new_resource.support_os.include?(os)
 #    if new_resource.support_os.include?($gecos_os)
 
-      gem_depends = [ 'rest_client' ]
+      gem_depends = [ 'rest-client' ]
+      gem_path = "/opt/chef/embedded/bin/gem"
+      if not ::File.exist?(gem_path)
+        gem_path = "/usr/bin/gem"
+      end      
 
       gem_depends.each do |gem|
         gem_package gem do
-          gem_binary("/opt/chef/embedded/bin/gem")
+          gem_binary(gem_path)
           action :nothing
         end.run_action(:install)
       end

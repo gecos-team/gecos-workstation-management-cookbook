@@ -39,7 +39,20 @@ action :setup do
 
         # Needed for notify-send to get the user display.
         # See: http://unix.stackexchange.com/questions/111188/using-notify-send-with-cron
+        dbus_address = nil
+        begin
+          dbus_file = Dir["/home/#{username}/.dbus/session-bus/*0"].last
+          dbus_address = open(dbus_file).grep(/^DBUS_SESSION_BUS_ADDRESS=(.*)/){$1}[0]
+          puts "DBUS_SESSION_BUS_ADDRESS=#{dbus_address}"
+        rescue Exception => e
+           dbus_address = nil
+        end        
+        
         cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority"}
+        unless dbus_address.nil?
+            cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority", "DBUS_SESSION_BUS_ADDRESS" => dbus_address}
+        end
+        
         now = DateTime.now
         
         icon = ''
@@ -64,6 +77,7 @@ action :setup do
           end
         end
 
+        puts "summary=#{user.summary}"
         cron "user alert for '#{username}'" do
           environment cron_vars
           minute "#{now.minute + 5}" # In 5 mins from now
@@ -113,6 +127,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1

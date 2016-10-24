@@ -18,7 +18,15 @@ action :setup do
       
       current_lists = []
       remote_lists = []    
-      remote_lists.push("gecosv2.list")
+      
+      case $gecos_os
+      when "GECOS V3"
+        remote_lists.push("official-package-repositories.list")
+        remote_lists.push("gecosv3.list")
+      else
+        # GECOS V2 or Gecos V2 Lite
+        remote_lists.push("gecosv2.list")
+      end
 
       Dir.foreach('/etc/apt/sources.list.d') do |item|
         next if item == '.' or item == '..'
