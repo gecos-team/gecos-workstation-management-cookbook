@@ -20,11 +20,15 @@ action :setup do
     if new_resource.support_os.include?($gecos_os)
 
       gem_depends = [ 'netaddr' ]
+      gem_path = "/opt/chef/embedded/bin/gem"
+      if not ::File.exist?(gem_path)
+        gem_path = "/usr/bin/gem"
+      end        
 
       gem_depends.each do |gem|
 
         r = gem_package gem do
-          gem_binary("/opt/chef/embedded/bin/gem")
+          gem_binary(gem_path)
           action :nothing
         end
         r.run_action(:install)

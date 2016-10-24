@@ -21,9 +21,19 @@ def initialize(*args)
   dconf_cache_dir = "/home/#{new_resource.username}/.cache/dconf"
   unless Kernel::test('d', dconf_cache_dir)
     FileUtils.mkdir_p dconf_cache_dir
-    gid = Etc.getpwnam(new_resource.username).gid
-	FileUtils.chown(new_resource.username, gid, "/home/#{new_resource.username}/.cache")
-	FileUtils.chown(new_resource.username, gid, dconf_cache_dir)
+    
+    gid = 0
+    begin
+        gid = Etc.getpwnam(new_resource.username).gid
+    rescue Exception => e
+        gid = 0
+        Chef::Log.warn("Error getting GID for user: #{new_resource.username}")
+    end
+    
+    if gid > 0
+        FileUtils.chown(new_resource.username, gid, "/home/#{new_resource.username}/.cache")
+        FileUtils.chown(new_resource.username, gid, dconf_cache_dir)
+    end
   end
   begin
     dbus_file = Dir["/home/#{new_resource.username}/.dbus/session-bus/*0"].last
