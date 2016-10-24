@@ -9,26 +9,33 @@
 # http://www.osor.eu/eupl
 #
 
-def install_printer(prt_name, prt_id, prt_model, prt_uri, prt_policy)
-	print "installing printer #{prt_name}... "
+def create_ppd(prt_name, prt_model, prt_id)
     # foomatic needs all compatible drivers for one printer in order to create the PPD file.
     # But sometimes, there's only one driver available
-	printer_drv = `foomatic-ppdfile -P '#{prt_model}'|grep "'#{prt_id}'"`.scan(/CompatibleDrivers='(\S+)\s.*'/)
-    printer_drv.empty?
-	    printer_drv = `foomatic-ppdfile -P '#{prt_model}'|grep "'#{prt_id}'"`.scan(/Driver='(\S+)*'/)
-	if printer_drv.length >= 0
-		ppd_file=`foomatic-ppdfile -p #{prt_id} -d #{printer_drv[0][0]}`
-		ppd_f = open("/usr/share/cups/model/#{prt_name}.ppd", "w")
-  		ppd_f.write(ppd_file)
-		ppd_f.close
-	else
-		puts "\nthere's no PPD for #{prt_id} in foomatic"
-	end
-	lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri}")
-	lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
+    Chef::Log.info("Creating PPD file for #{prt_name}... ")
+
+	temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
+
+    begin
+        printer_drv = temp[0][0]
+    rescue
+	    temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
+        printer_drv = temp[0][0]
+    end
+
+    ppd_file=`foomatic-ppdfile -p #{prt_id} -d #{printer_drv}`
+	ppd_f = open("/usr/share/cups/model/#{prt_name}.ppd", "w")
+  	ppd_f.write(ppd_file)
+	ppd_f.close
+	puts "done."
+end
+
+def install_or_update_printer(prt_name, prt_uri, prt_policy)
+    Chef::Log.info("installing or updating printer #{prt_name}... ")
+	lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri} -o printer-op-policy=#{prt_policy} -o auth-info-required=none")
+	lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o managed-by-GCC=true")
 	lpadm_comm.run_command
 	if lpadm_comm.exitstatus == 0
-	    lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
 		lpopt_comm.run_command
 		if lpopt_comm.exitstatus == 0
 			puts "done."
@@ -40,25 +47,14 @@ def install_printer(prt_name, prt_id, prt_model, prt_uri, prt_policy)
 	end
 end
 
-def update_printer(prt_name, prt_policy)
-	puts "updating printer #{prt_name}... "
-	lpopt_updt = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o printer-op-policy=#{prt_policy} -o auth-info-required=none -o managed-by-GCC=true")
-	lpopt_updt.run_command
-	if lpopt_updt.exitstatus == 0
-		puts "done."
-	else
-		puts "error updating policies to #{prt_name}."
-	end
-end
-
 def delete_printer(prt_name)
-	puts "deleting printer #{prt_name}... "
+    Chef::Log.info("deleting printer #{prt_name}... ")
 	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
 	if lpadm_dele.exitstatus == 0
-		puts "#{prt_name} has been deleted successfully..."
+		puts "done successfully."
 	else
-		puts "ERROR: deleting #{prt_name}"
+		puts "\nERROR: deleting #{prt_name}"
 	end
 end
 
@@ -118,18 +114,9 @@ action :setup do
 
         curr_ptr_name   = printer.name.gsub(" ","+")
         curr_ptr_id     = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
-        gecos_ptr_name  = printer.name.gsub(" ","+")
+        create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
+        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy)
 
-		if `/usr/bin/lpoptions -p #{gecos_ptr_name}`.length <= 1
-            install_printer(curr_ptr_name, curr_ptr_id, printer.model, printer.uri, oppolicy)
-        else
-            cups_list.each do |cups_printer|
-                if cups_printer.eql? gecos_ptr_name
-                    update_printer(curr_ptr_name, oppolicy)
-                    break
-                end
-            end
-        end
       end
       cups_list.each do |cups_printer|
       ptr_found = false
