@@ -41,11 +41,21 @@ action :setup do
         # See: http://unix.stackexchange.com/questions/111188/using-notify-send-with-cron
         dbus_address = nil
         begin
-          dbus_file = Dir["/home/#{username}/.dbus/session-bus/*0"].last
-          dbus_address = open(dbus_file).grep(/^DBUS_SESSION_BUS_ADDRESS=(.*)/){$1}[0]
+            output = %x[ps -ef | grep #{username} | grep dbus-daemon | grep session | grep -v "ps -ef"]
+            values = output.split()
+            pid = values[1]
+            
+            dbus_file = nil
+            Dir["/home/#{username}/.dbus/session-bus/*0"].each do |file|
+                file_pid = open(file).grep(/^DBUS_SESSION_BUS_PID=(.*)/){$1}[0]
+                if pid == file_pid
+                    dbus_file = file
+                end
+            end
+            dbus_address = open(dbus_file).grep(/^DBUS_SESSION_BUS_ADDRESS=(.*)/){$1}[0]      
         rescue Exception => e
-           dbus_address = nil
-        end        
+            dbus_address = nil
+        end
         
         cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority"}
         unless dbus_address.nil?
