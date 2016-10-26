@@ -311,7 +311,7 @@ action :setup do
                     db.execute("delete from moz_places where url LIKE \'#{bkm.uri}\'")
                   end
 
-                  id_toolbar_bookmarks = db.get_first_value("SELECT id FROM moz_bookmarks WHERE title=\'Barra de herramientas de marcadores\'")
+                  id_toolbar_bookmarks = db.get_first_value("SELECT id FROM moz_bookmarks WHERE title=\'Barra de herramientas de marcadores\' or title=\'Bookmarks Toolbar\'")
                   last_pos_toolbar = db.get_first_value("SELECT MAX(position) FROM moz_bookmarks WHERE parent=#{id_toolbar_bookmarks}")
                   last_pos_folder = 0
 
@@ -365,6 +365,8 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace)
+    
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
