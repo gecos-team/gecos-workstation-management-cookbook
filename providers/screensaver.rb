@@ -22,50 +22,67 @@ action :setup do
         username = nameuser.gsub('###','.')
         user = users[user_key]
 
-        idle_enabled = user.idle_enabled
-        idle_delay = user.idle_delay
-        lock_enabled = user.lock_enabled
-        lock_delay = user.lock_delay
   ### TO-DO:
   ## Sacar el tipo de sesion con el plugin de ohai x-session-manager.rb (amunoz)
   ## Distinguir entre sesion Cinnamon y LXDE
+        
+        if user.key?('idle_enabled')
+            idle_enabled = user.idle_enabled
+            Chef::Log.info("Setting idle_enabled to #{idle_enabled}")
+            
+            gecos_ws_mgmt_desktop_setting "idle-activation-enabled" do
+              type "string"
+              value idle_enabled.to_s
+              schema "org.cinnamon.desktop.screensaver"
+              username username
+              provider "gecos_ws_mgmt_gsettings"
+              action :nothing
+            end.run_action(:set)
+        end
+        
+        if user.key?('idle_delay')
+            idle_delay = user.idle_delay
+            Chef::Log.info("Setting idle_delay to #{idle_delay}")
+            
+            gecos_ws_mgmt_desktop_setting "idle-delay" do
+              type "string"
+              value idle_delay
+              schema "org.cinnamon.desktop.session"
+              username username
+              provider "gecos_ws_mgmt_gsettings"
+              action :nothing
+            end.run_action(:set)
+        end
+        
+        if user.key?('lock_enabled')
+            lock_enabled = user.lock_enabled
+            Chef::Log.info("Setting lock_enabled to #{lock_enabled}")
+            
+            gecos_ws_mgmt_desktop_setting "lock-enabled" do
+              type "string"
+              value lock_enabled.to_s
+              schema "org.cinnamon.desktop.screensaver"
+              username username
+              provider "gecos_ws_mgmt_gsettings"
+              action :nothing
+            end.run_action(:set)
+        end
+        
+        if user.key?('lock_delay')
+            lock_delay = user.lock_delay
+            Chef::Log.info("Setting lock_delay to #{lock_delay}")
+            
+            gecos_ws_mgmt_desktop_setting "lock-delay" do
+              type "string"
+              value lock_delay
+              schema "org.cinnamon.desktop.screensaver"
+              username username
+              provider "gecos_ws_mgmt_gsettings"
+              action :nothing
+            end.run_action(:set)        
+        end
+    
 
-  #     session = node["desktop_session"] 
-        gecos_ws_mgmt_desktop_setting "idle-activation-enabled" do
-          type "string"
-          value idle_enabled.to_s
-          schema "org.cinnamon.desktop.screensaver"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
-          action :nothing
-        end.run_action(:set)
-    
-        gecos_ws_mgmt_desktop_setting "lock-enabled" do
-          type "string"
-          value lock_enabled.to_s
-          schema "org.cinnamon.desktop.screensaver"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
-          action :nothing
-        end.run_action(:set)
-    
-        gecos_ws_mgmt_desktop_setting "idle-delay" do
-          type "string"
-          value idle_delay
-          schema "org.cinnamon.desktop.session"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
-          action :nothing
-        end.run_action(:set)
-    
-        gecos_ws_mgmt_desktop_setting "lock-delay" do
-          type "string"
-          value lock_delay
-          schema "org.cinnamon.desktop.screensaver"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
-          action :nothing
-        end.run_action(:set)
       end
     else
       Chef::Log.info("This resource is not support into your OS")
@@ -81,6 +98,8 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace)
+    
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
