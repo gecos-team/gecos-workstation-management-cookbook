@@ -40,9 +40,10 @@ action :setup do
         action :nothing
       end.run_action(:install)
 
-      package 'libnss3-tools' do
-        action :nothing
-      end.run_action(:install)
+      # Neccessary for "certutil" command (used in "CERTS STUFF" code)
+      # package 'libnss3-tools' do
+        # action :nothing
+      # end.run_action(:install)
 
       package 'unzip' do
         action :nothing
@@ -53,9 +54,14 @@ action :setup do
       end.run_action(:install)
 
       gem_depends = [ 'sqlite3' ]
+      gem_path = "/opt/chef/embedded/bin/gem"
+      if not ::File.exist?(gem_path)
+        gem_path = "/usr/bin/gem"
+      end       
+      
       gem_depends.each do |gem|
         gem_package gem do
-          gem_binary("/opt/chef/embedded/bin/gem")
+          gem_binary(gem_path)
           action :nothing
         end.run_action(:install)
       end
@@ -305,7 +311,7 @@ action :setup do
                     db.execute("delete from moz_places where url LIKE \'#{bkm.uri}\'")
                   end
 
-                  id_toolbar_bookmarks = db.get_first_value("SELECT id FROM moz_bookmarks WHERE title=\'Barra de herramientas de marcadores\'")
+                  id_toolbar_bookmarks = db.get_first_value("SELECT id FROM moz_bookmarks WHERE title=\'Barra de herramientas de marcadores\' or title=\'Bookmarks Toolbar\'")
                   last_pos_toolbar = db.get_first_value("SELECT MAX(position) FROM moz_bookmarks WHERE parent=#{id_toolbar_bookmarks}")
                   last_pos_folder = 0
 
@@ -352,27 +358,30 @@ action :setup do
         # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 0
+      node.normal['job_status'][jid]['status'] = 0
     end
 
   rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace)
+    
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 1
+      node.normal['job_status'][jid]['status'] = 1
       if not e.message.frozen?
-        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
       else
-        node.set['job_status'][jid]['message'] = e.message
+        node.normal['job_status'][jid]['message'] = e.message
       end
     end
     ensure
+    
     gecos_ws_mgmt_jobids "web_browser_res" do
-      provider "gecos_ws_mgmt_jobids"
-      recipe "users_mgmt"
+       recipe "users_mgmt"
     end.run_action(:reset)
+    
   end
 end
 

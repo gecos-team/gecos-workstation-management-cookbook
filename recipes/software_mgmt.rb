@@ -32,6 +32,13 @@ gecos_ws_mgmt_package_profile 'install packages prfile' do
   action :setup
 end
 
+gecos_ws_mgmt_package_version_lock 'lock packages versions' do
+  package_list node[:gecos_ws_mgmt][:software_mgmt][:package_version_lock_res][:package_list]
+  job_ids node[:gecos_ws_mgmt][:software_mgmt][:package_version_lock_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:software_mgmt][:package_version_lock_res][:support_os]
+  action :setup
+end
+
 gecos_ws_mgmt_app_config 'applications config' do
   java_config node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:java_config]
   firefox_config node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:firefox_config]

@@ -15,10 +15,9 @@ action :setup do
     unlock_user = new_resource.unlock_user
     unlock_pass = new_resource.unlock_pass
     if new_resource.support_os.include?($gecos_os)
-        if lock_boot
-          Chef::Log.info("Locking boot menu")
-        else
-        Chef::Log.info("Unlocking lock boot menu!")
+        if lock_boot and (unlock_user.empty? or unlock_pass.empty?)
+            Chef::Log.info("Empty unlock username or password!")
+            lock_boot = false
         end
 
         template "/etc/grub.d/05_unrestricted" do
@@ -27,6 +26,9 @@ action :setup do
           group 'root'
           mode 00700
           action :nothing
+          not_if do
+            Object::File.exist?('/etc/grub.d/05_unrestricted')
+          end
         end.run_action(:create)        
         
         if lock_boot and (unlock_user.empty? or unlock_pass.empty?)
@@ -55,7 +57,7 @@ action :setup do
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 0
+      node.normal['job_status'][jid]['status'] = 0
     end
 
   rescue Exception => e
@@ -64,11 +66,11 @@ action :setup do
     Chef::Log.error(e.message)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 1
+      node.normal['job_status'][jid]['status'] = 1
       if not e.message.frozen?
-        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
       else
-        node.set['job_status'][jid]['message'] = e.message
+        node.normal['job_status'][jid]['message'] = e.message
       end
     end
   end

@@ -26,11 +26,15 @@ action :setup do
     if new_resource.support_os.include?(os)
 #    if new_resource.support_os.include?($gecos_os)
 
-      gem_depends = [ 'rest_client' ]
+      gem_depends = [ 'rest-client' ]
+      gem_path = "/opt/chef/embedded/bin/gem"
+      if not ::File.exist?(gem_path)
+        gem_path = "/usr/bin/gem"
+      end      
 
       gem_depends.each do |gem|
         gem_package gem do
-          gem_binary("/opt/chef/embedded/bin/gem")
+          gem_binary(gem_path)
           action :nothing
         end.run_action(:install)
       end
@@ -133,7 +137,7 @@ action :setup do
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 0
+      node.normal['job_status'][jid]['status'] = 0
     end
 
   rescue Exception => e
@@ -143,11 +147,11 @@ action :setup do
     #raise e
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 1
+      node.normal['job_status'][jid]['status'] = 1
       if not e.message.frozen?
-        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
       else
-        node.set['job_status'][jid]['message'] = e.message
+        node.normal['job_status'][jid]['message'] = e.message
       end
     end
   end

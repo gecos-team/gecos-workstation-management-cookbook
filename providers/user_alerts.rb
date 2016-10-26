@@ -39,7 +39,29 @@ action :setup do
 
         # Needed for notify-send to get the user display.
         # See: http://unix.stackexchange.com/questions/111188/using-notify-send-with-cron
+        dbus_address = nil
+        begin
+            output = %x[ps -ef | grep #{username} | grep dbus-daemon | grep session | grep -v "ps -ef"]
+            values = output.split()
+            pid = values[1]
+            
+            dbus_file = nil
+            Dir["/home/#{username}/.dbus/session-bus/*0"].each do |file|
+                file_pid = open(file).grep(/^DBUS_SESSION_BUS_PID=(.*)/){$1}[0]
+                if pid == file_pid
+                    dbus_file = file
+                end
+            end
+            dbus_address = open(dbus_file).grep(/^DBUS_SESSION_BUS_ADDRESS=(.*)/){$1}[0]      
+        rescue Exception => e
+            dbus_address = nil
+        end
+        
         cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority"}
+        unless dbus_address.nil?
+            cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority", "DBUS_SESSION_BUS_ADDRESS" => dbus_address}
+        end
+        
         now = DateTime.now
         
         icon = ''
@@ -106,26 +128,28 @@ action :setup do
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 0
+      node.normal['job_status'][jid]['status'] = 0
     end
 
   rescue Exception => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 1
+      node.normal['job_status'][jid]['status'] = 1
       if not e.message.frozen?
-        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
       else
-        node.set['job_status'][jid]['message'] = e.message
+        node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
+  
     gecos_ws_mgmt_jobids "user_alerts_res" do
-      provider "gecos_ws_mgmt_jobids"
-      recipe "users_mgmt"
-    end.run_action(:reset)
+       recipe "users_mgmt"
+    end.run_action(:reset) 
+    
   end
 end

@@ -1855,6 +1855,34 @@ package_js = {
   }
 }
 
+package_version_lock_js = {
+  title: "Package version lock management",
+  title_es: "Administración del bloqueo de versiones de paquetes",
+  type: "object",
+  order:["package_list"],
+  properties:
+  {
+    package_list: {
+      type:"array",
+      title: "Package versions list to lock",
+      title_es: "Lista de versiones de paquetes para bloquear",
+      minItems: 0,
+      uniqueItems: true,
+      items: {type: "string"}
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
 printers_js = {
   title: "Printers",
   title_es: "Impresoras",
@@ -2349,47 +2377,48 @@ system_proxy_js = {
   }
 }
 
-network_resource_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-tz_date_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-scripts_launch_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-local_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-local_file_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-auto_updates_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-boot_lock_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
-local_groups_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-power_conf_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-local_admin_users_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-software_sources_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-package_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
-package_profile_js[:properties][:support_os][:default]=["GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
-app_config_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-appconfig_libreoffice_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-appconfig_thunderbird_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-appconfig_firefox_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-appconfig_java_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-printers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-user_shared_folders_js[:properties][:support_os][:default]=["GECOS V2"]
-web_browser_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-email_client_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-file_browser_js[:properties][:support_os][:default]=["GECOS V2"]
-user_launchers_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-desktop_background_js[:properties][:support_os][:default]=["GECOS V2"]
+network_resource_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+tz_date_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+scripts_launch_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+local_users_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+local_file_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+auto_updates_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+boot_lock_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+local_groups_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+power_conf_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+local_admin_users_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+software_sources_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+package_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+package_version_lock_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+package_profile_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS","Gecos V2 Lite"]
+app_config_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+appconfig_libreoffice_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+appconfig_thunderbird_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+appconfig_firefox_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+appconfig_java_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+printers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+user_shared_folders_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
+web_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+email_client_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+file_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
+user_launchers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+desktop_background_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
 desktop_menu_js[:properties][:support_os][:default]=[]
 desktop_control_js[:properties][:support_os][:default]=[]
-user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-folder_sharing_js[:properties][:support_os][:default]=["GECOS V2"]
-screensaver_js[:properties][:support_os][:default]=["GECOS V2"]
-folder_sync_js[:properties][:support_os][:default]=["GECOS V2"]
-user_mount_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-user_alerts_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-remote_shutdown_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-forticlientvpn_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-user_modify_nm_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-shutdown_options_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-cert_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-mobile_broadband_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-mimetypes_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
-system_proxy_js[:properties][:support_os][:default]=["GECOS V2","Gecos V2 Lite"]
+user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+folder_sharing_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
+screensaver_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
+folder_sync_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
+user_mount_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+user_alerts_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+remote_shutdown_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+forticlientvpn_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+user_modify_nm_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+shutdown_options_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
+system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Gecos V2 Lite"]
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
@@ -2432,7 +2461,7 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res","system_proxy_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res","package_version_lock_res","system_proxy_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
@@ -2442,6 +2471,7 @@ complete_js = {
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
             appconfig_java_res: appconfig_java_js,
+            package_version_lock_res: package_version_lock_js,
             system_proxy_res: system_proxy_js
           }
         },

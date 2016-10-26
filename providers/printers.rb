@@ -118,7 +118,7 @@ if fileModified:
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 0
+      node.normal['job_status'][jid]['status'] = 0
     end
 
   rescue Exception => e
@@ -127,17 +127,18 @@ if fileModified:
     Chef::Log.error(e.message)
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
-      node.set['job_status'][jid]['status'] = 1
+      node.normal['job_status'][jid]['status'] = 1
       if not e.message.frozen?
-        node.set['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
       else
-        node.set['job_status'][jid]['message'] = e.message
+        node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
+  
     gecos_ws_mgmt_jobids "printers_res" do
-      provider "gecos_ws_mgmt_jobids"
-      recipe "printers_mgmt"
+       recipe "printers_mgmt"
     end.run_action(:reset)
+  
   end
 end

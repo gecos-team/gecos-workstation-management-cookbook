@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gecos-ws-mgmt
-# Provider:: local_admin_users
+# Provider:: package
 #
 # Copyright 2013, Junta de Andalucia
 # http://www.juntadeandalucia.es/
@@ -11,30 +11,32 @@
 
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
+      if new_resource.package_list.any? 
+        Chef::Log.info("lock packages versions")
+        new_resource.package_list.each do |pkg|
+            # Only ONE <package>=<version> per line accepted
+            pkg.strip!
+            if pkg =~ /\S+\s*=\s*\d+\S+\Z/
+                parts = pkg.split("=")
+                file '/etc/apt/preferences.d/'+parts[0].strip+'.ref' do
+                  content "Package: #{parts[0].strip}\nPin: version #{parts[1].strip}\nPin-Priority: 1000\n"
+                  mode '0644'
+                  owner 'root'
+                  group 'root'
+                  action :create
+                end
+                
+            else
+                Chef::Log.info("Bad line in package version lock: "+pkg)
+            end
+        end
+      end
 
-      local_admin_list = new_resource.local_admin_list
-      local_admin_remove_list = new_resource.local_admin_remove_list
-      if !local_admin_list.empty?
-  	group "sudo" do
-          members local_admin_list
-  	  append true
-          action :nothing
-  	end.run_action(:modify)
-      end
-      if !local_admin_remove_list.empty?
-  	group "sudo" do
-          excluded_members local_admin_remove_list
-  	  append true
-          action :nothing
-  	end.run_action(:modify)
-      end
     else
       Chef::Log.info("This resource is not support into your OS")
     end
+
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
@@ -55,10 +57,11 @@ action :setup do
       end
     end
   ensure
-    
-    gecos_ws_mgmt_jobids "local_admin_users_res" do
-       recipe "misc_mgmt"
-    end.run_action(:reset) 
+  
+    gecos_ws_mgmt_jobids "package_version_lock_res" do
+       recipe "software_mgmt"
+    end.run_action(:reset)
     
   end
 end
+
