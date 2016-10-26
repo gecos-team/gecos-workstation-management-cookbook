@@ -27,13 +27,12 @@ def create_ppd(prt_name, prt_model, prt_id)
 	ppd_f = open("/usr/share/cups/model/#{prt_name}.ppd", "w")
   	ppd_f.write(ppd_file)
 	ppd_f.close
-	puts "done."
 end
 
-def install_or_update_printer(prt_name, prt_uri, prt_policy)
+def install_or_update_printer(prt_name, prt_uri, prt_policy, prt_ppd_uri)
     Chef::Log.info("Installing or updating printer #{prt_name}... ")
 	lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri} -o printer-op-policy=#{prt_policy} -o auth-info-required=none")
-	lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o managed-by-GCC=true")
+	lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o managed-by-GCC=true -o external-ppd-uri=#{prt_ppd_uri}")
 	lpadm_comm.run_command
 	if lpadm_comm.exitstatus == 0
 		lpopt_comm.run_command
@@ -115,7 +114,7 @@ action :setup do
         curr_ptr_name   = printer.name.gsub(" ","+")
         curr_ptr_id     = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
         create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
-        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy)
+        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, printer.ppd_uri)
 
       end
       cups_list.each do |cups_printer|
