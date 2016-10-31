@@ -113,8 +113,12 @@ action :setup do
 
         curr_ptr_name   = printer.name.gsub(" ","+")
         curr_ptr_id     = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
-        create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
-        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, printer.ppd_uri)
+        inst_prt_uri = `lpoptions -p #{curr_ptr_name}`.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
+
+        if not inst_prt_uri[0][0].empty? and not inst_prt_uri[0][0].eql? printer.uri
+            create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
+        end
+        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
 
       end
       cups_list.each do |cups_printer|
