@@ -69,16 +69,16 @@ action :setup do
         action :nothing
       end.run_action(:restart)
 
-      pkgs = ['cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
+      pkgs = ['python-cups', 'cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
       pkgs.each do |pkg|
         package pkg do
           action :nothing
         end.run_action(:install)
       end
-
+ 
       printers_list.each do |printer|
-        Chef::Log.info("Processing printer: #{printer.name}")
-
+        Chef::Log.info("Installing printer #{printer.name}")
+  
         name = printer.name
         make = printer.manufacturer
         model = printer.model
@@ -97,8 +97,9 @@ action :setup do
           ppd_uri = printer.ppd_uri
         end
 
+
         if ppd_uri != '' and ppd != ''
-          FileUtils.mkdir_p("/usr/share/ppd/#{make}/#{model}")
+          FileUtils.mkdir_p("/usr/share/ppd/#{make}/#{model}")    
           remote_file "/usr/share/ppd/#{make}/#{model}/#{ppd}" do
             source ppd_uri
             mode "0644"
