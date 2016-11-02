@@ -69,17 +69,12 @@ action :setup do
         action :nothing
       end.run_action(:restart)
 
-      pkgs = ['python-cups', 'cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
+      pkgs = ['cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
       pkgs.each do |pkg|
         package pkg do
           action :nothing
         end.run_action(:install)
       end
-
-      cups_ptr_list    = []
-      cups_ptr_list    = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
-      cups_ptr_list.run_command
-      cups_list = cups_ptr_list.stdout.split(/\r?\n/)
 
       printers_list.each do |printer|
         Chef::Log.info("Processing printer: #{printer.name}")
@@ -111,12 +106,31 @@ action :setup do
           end.run_action(:create)
         end
 
-        curr_ptr_name   = printer.name.gsub(" ","+")
-        curr_ptr_id     = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
-        create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
-        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, printer.ppd_uri)
+        curr_ptr_name  = printer.name.gsub(" ","+")
+        curr_ptr_id    = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
+        inst_prt_uri   = `lpoptions -p #{curr_ptr_name}`.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
+        if inst_prt_uri.empty?
+            inst_prt_uri = [[]]
+        end
 
+        is_prt_installed = false
+        is_prt_in_cups = Mixlib::ShellOut.new("lpstat -p #{curr_ptr_name}")
+        is_prt_in_cups.run_command
+        if is_prt_in_cups.exitstatus == 0
+            is_prt_installed = true
+        end
+
+        if not is_prt_installed or not inst_prt_uri[0][0].eql? printer.uri
+            create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
+        end
+        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
       end
+
+      cups_ptr_list = []
+      cups_ptr_list = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
+      cups_ptr_list.run_command
+      cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+
       cups_list.each do |cups_printer|
       ptr_found = false
       printers_list.each do |printer|
@@ -124,12 +138,12 @@ action :setup do
             ptr_found = true
             break
         end
-    end
-    if not ptr_found
+      end
+      if not ptr_found
         if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
             delete_printer(cups_printer)
         end
-    end
+      end
   end
 end
 
