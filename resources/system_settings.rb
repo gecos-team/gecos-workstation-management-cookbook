@@ -14,7 +14,7 @@ actions :set, :unset, :lock, :unlock
 
 attribute :schema, :kind_of => String, :required => true
 attribute :name, :kind_of => String, :name_attribute => true
-attribute :value, :kind_of => String
+attribute :value, :kind_of => [Integer,String] 
 attribute :type, :kind_of => String, :required => true
 attribute :username, :kind_of => String, :name_attribute => true
 
