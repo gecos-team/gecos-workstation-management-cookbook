@@ -40,15 +40,15 @@ action :setup do
            global_settings['https_proxy'] = 'https://'.concat(global_settings['https_proxy'])
         end
 
-        # Remove trailing slash
-        global_settings['http_proxy'] = global_settings['http_proxy'].chomp('/')
-        global_settings['https_proxy'] = global_settings['https_proxy'].chomp('/')
-
         # Defaults
         global_settings['http_proxy'] ||= ''
         global_settings['http_proxy_port'] ||= 80
         global_settings['https_proxy'] ||= ''
         global_settings['https_proxy_port'] ||= 443
+
+        # Remove trailing slash
+        global_settings['http_proxy']  = global_settings['http_proxy'].chomp('/')  unless global_settings['http_proxy'].empty?
+        global_settings['https_proxy'] = global_settings['https_proxy'].chomp('/') unless global_settings['https_proxy'].empty?
         Chef::Log.debug("system_proxy.rb - global_settings:#{global_settings}")
 
         if not global_settings['disable_proxy'] 
@@ -238,15 +238,15 @@ action :setup do
           mozilla_settings['https_proxy'] = 'https://'.concat(mozilla_settings['https_proxy'])
         end
 
-        # Remove trailing slash
-        mozilla_settings['http_proxy'] = mozilla_settings['http_proxy'].chomp('/')
-        mozilla_settings['https_proxy'] = mozilla_settings['https_proxy'].chomp('/')
-
         # Defaults
         mozilla_settings['http_proxy'] ||= ''
         mozilla_settings['http_proxy_port'] ||= 80
         mozilla_settings['https_proxy'] ||= ''
         mozilla_settings['https_proxy_port'] ||= 443
+
+        # Remove trailing slash
+        mozilla_settings['http_proxy']  = mozilla_settings['http_proxy'].chomp('/')   unless mozilla_settings['http_proxy'].empty?
+        mozilla_settings['https_proxy'] = mozilla_settings['https_proxy'].chomp('/')  unless mozilla_settings['http_proxy'].empty?
         Chef::Log.debug("system_proxy.rb - Mozilla_settings: #{mozilla_settings}")
 
         # FIREFOX
