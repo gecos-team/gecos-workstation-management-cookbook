@@ -37,12 +37,12 @@ def install_or_update_printer(prt_name, prt_uri, prt_policy, prt_ppd_uri)
 	if lpadm_comm.exitstatus == 0
 		lpopt_comm.run_command
 		if lpopt_comm.exitstatus == 0
-			puts "done."
+            Chef::Log.info(" - installed successfully")
 		else
-			puts "\nerror setting policies to #{prt_name}."
+            Chef::Log.info(" - error setting policies to #{prt_name}")
 		end
 	else
-		puts "\nerror creating printer #{prt_name}."
+        Chef::Log.info(" - error creating printer #{prt_name}")
 	end
 end
 
@@ -51,9 +51,9 @@ def delete_printer(prt_name)
 	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
 	if lpadm_dele.exitstatus == 0
-		puts "done successfully."
+        Chef::Log.info(" - deleted successfully")
 	else
-		puts "\nERROR: deleting #{prt_name}"
+        Chef::Log.info(" - error deleting #{prt_name}")
 	end
 end
 
@@ -69,46 +69,51 @@ action :setup do
         action :nothing
       end.run_action(:restart)
 
-      pkgs = ['python-cups', 'cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
+      pkgs = ['cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
       pkgs.each do |pkg|
         package pkg do
           action :nothing
         end.run_action(:install)
       end
- 
+
       printers_list.each do |printer|
-        Chef::Log.info("Installing printer #{printer.name}")
-  
-        name = printer.name
-        make = printer.manufacturer
-        model = printer.model
-        oppolicy = 'default'
-        if printer.attribute?("oppolicy")
-          oppolicy = printer.oppolicy
-        end
-        ppd = ""
-        if printer.attribute?("ppd")
-          ppd = printer.ppd
-        end
-
-        uri = printer.uri
-        ppd_uri = ""
-        if printer.attribute?("ppd_uri")
-          ppd_uri = printer.ppd_uri
-        end
-
-
-        if ppd_uri != '' and ppd != ''
-          FileUtils.mkdir_p("/usr/share/ppd/#{make}/#{model}")    
-          remote_file "/usr/share/ppd/#{make}/#{model}/#{ppd}" do
-            source ppd_uri
-            mode "0644"
-            action :nothing
-          end.run_action(:create)
-        end
+        Chef::Log.info("Processing printer: #{printer.name}")
 
         curr_ptr_name  = printer.name.gsub(" ","+")
         curr_ptr_id    = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
+
+        oppolicy = 'default'
+        if printer.attribute?('oppolicy')
+          oppolicy = printer.oppolicy
+        end
+
+        ppd = ''
+        if printer.attribute?('ppd')
+          ppd = printer.ppd
+        end
+
+        create_ppd_with_ppd_uri = false
+        if printer.attribute?('ppd_uri')
+            Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
+            FileUtils.mkdir_p('/usr/share/cups/model')
+            begin
+                remote_file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
+                    action :create
+                    source printer.ppd_uri
+                    mode  '0644'
+                    owner 'root'
+                    group 'root'
+                    ignore_failure true
+                    backup false
+                end
+            rescue Net::HTTPServerException
+                Chef::Log.info(" - #{printer.ppd_uri} is not a valid PPD file")
+            end
+            create_ppd_with_ppd_uri = true
+        else
+            ppd_uri = ''
+        end
+
         inst_prt_uri   = `lpoptions -p #{curr_ptr_name}`.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
         if inst_prt_uri.empty?
             inst_prt_uri = [[]]
@@ -121,8 +126,10 @@ action :setup do
             is_prt_installed = true
         end
 
-        if not is_prt_installed or not inst_prt_uri[0][0].eql? printer.uri
-            create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
+        if not create_ppd_with_ppd_uri
+            if not is_prt_installed or not inst_prt_uri[0][0].eql? printer.uri
+                create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
+            end
         end
         install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
       end
