@@ -165,6 +165,20 @@ action :setup do
               name     "autoconfig-url"
               value   global_settings['proxy_autoconfig_url']
             end.run_action(:set)
+                        
+            # ENVIRONMENT
+            ruby_block "Delete proxy environment variables" do
+               block do
+                 fe = Chef::Util::FileEdit.new("/etc/environment")
+                 fe.search_file_delete_line(/HTTPS?_PROXY/i)
+                fe.write_file
+               end
+               action :nothing
+            end.run_action(:run)
+
+            file "/etc/apt/apt.conf.d/80proxy" do
+              action :nothing
+            end.run_action(:delete)
 
           end
 
