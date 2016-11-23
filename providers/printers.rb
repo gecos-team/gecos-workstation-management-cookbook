@@ -92,28 +92,6 @@ action :setup do
           ppd = printer.ppd
         end
 
-        create_ppd_with_ppd_uri = false
-        if printer.attribute?('ppd_uri')
-            Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
-            FileUtils.mkdir_p('/usr/share/cups/model')
-            begin
-                remote_file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
-                    action :create
-                    source printer.ppd_uri
-                    mode  '0644'
-                    owner 'root'
-                    group 'root'
-                    ignore_failure true
-                    backup false
-                end
-            rescue Net::HTTPServerException
-                Chef::Log.info(" - #{printer.ppd_uri} is not a valid PPD file")
-            end
-            create_ppd_with_ppd_uri = true
-        else
-            ppd_uri = ''
-        end
-
         inst_prt_uri   = `lpoptions -p #{curr_ptr_name}`.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
         if inst_prt_uri.empty?
             inst_prt_uri = [[]]
@@ -126,12 +104,39 @@ action :setup do
             is_prt_installed = true
         end
 
+        create_ppd_with_ppd_uri = false
+        if printer.attribute?('ppd_uri')
+            Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
+            FileUtils.mkdir_p('/usr/share/cups/model')
+            begin
+                remote_file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
+			action :create
+			source printer.ppd_uri
+			mode  '0644'
+			owner 'root'
+			group 'root'
+       			ignore_failure true
+			backup false
+			notifies :run, "ruby_block[Install printer]", :immediately
+		end
+            rescue Net::HTTPServerException
+                Chef::Log.info(" - #{printer.ppd_uri} is not a valid PPD file")
+            end
+            create_ppd_with_ppd_uri = true
+        else
+            ppd_uri = ''
+        end
+
         if not create_ppd_with_ppd_uri
             if not is_prt_installed or not inst_prt_uri[0][0].eql? printer.uri
                 create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
             end
         end
-        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
+
+	ruby_block "Install printer" do
+        	install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
+		action :nothing
+	end
       end
 
       cups_ptr_list = []
