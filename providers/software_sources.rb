@@ -21,7 +21,6 @@ action :setup do
       
       case $gecos_os
       when "GECOS V3"
-        remote_lists.push("official-package-repositories.list")
         remote_lists.push("gecosv3.list")
       else
         # GECOS V2 or Gecos V2 Lite
