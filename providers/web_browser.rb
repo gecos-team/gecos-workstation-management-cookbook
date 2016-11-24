@@ -54,14 +54,10 @@ action :setup do
       end.run_action(:install)
 
       gem_depends = [ 'sqlite3' ]
-      gem_path = "/opt/chef/embedded/bin/gem"
-      if not ::File.exist?(gem_path)
-        gem_path = "/usr/bin/gem"
-      end       
       
       gem_depends.each do |gem|
         gem_package gem do
-          gem_binary(gem_path)
+          gem_binary($gem_path)
           action :nothing
         end.run_action(:install)
       end

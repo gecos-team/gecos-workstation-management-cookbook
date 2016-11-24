@@ -12,6 +12,12 @@
 # Global variable $gecos_os created to reduce calls to external programs
 $gecos_os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 
+$gem_path = "/opt/chef/embedded/bin/gem"
+if not ::File.exist?($gem_path)
+    $gem_path = "/usr/bin/gem"
+end
+
+
 # Snitch, the chef notifier has been renamed
 # TODO: move this to chef-client-wrapper
 if ::File.exists?("/usr/bin/gecos-snitch-client")
