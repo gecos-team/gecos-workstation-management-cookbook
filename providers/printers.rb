@@ -10,50 +10,50 @@
 #
 
 def create_ppd(prt_name, prt_model, prt_id)
-    Chef::Log.info("Creating PPD file for #{prt_name}... ")
+	Chef::Log.info("Creating PPD file for #{prt_name}... ")
 
-    # foomatic needs all compatible drivers (CompatibleDrivers) for one printer in
-    # order to create the PPD file. But sometimes, there's only one driver available (Driver).
+	# foomatic needs all compatible drivers (CompatibleDrivers) for one printer in
+	# order to create the PPD file. But sometimes, there's only one driver available (Driver).
 	temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
 
-    begin
-        printer_drv = temp[0][0]
-    rescue
-	    temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
-        printer_drv = temp[0][0]
-    end
+	begin
+		printer_drv = temp[0][0]
+	rescue
+		temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
+		printer_drv = temp[0][0]
+	end
 
-    ppd_file=`foomatic-ppdfile -p #{prt_id} -d #{printer_drv}`
+	ppd_file=`foomatic-ppdfile -p #{prt_id} -d #{printer_drv}`
 	ppd_f = open("/usr/share/cups/model/#{prt_name}.ppd", "w")
-  	ppd_f.write(ppd_file)
+	ppd_f.write(ppd_file)
 	ppd_f.close
 end
 
 def install_or_update_printer(prt_name, prt_uri, prt_policy, prt_ppd_uri)
-    Chef::Log.info("Installing or updating printer #{prt_name}... ")
+	Chef::Log.info("Installing or updating printer #{prt_name}... ")
 	lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E -m #{prt_name}.ppd -v #{prt_uri} -o printer-op-policy=#{prt_policy} -o auth-info-required=none")
 	lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o managed-by-GCC=true -o external-ppd-uri=#{prt_ppd_uri}")
 	lpadm_comm.run_command
 	if lpadm_comm.exitstatus == 0
 		lpopt_comm.run_command
 		if lpopt_comm.exitstatus == 0
-            Chef::Log.info(" - installed successfully")
+			Chef::Log.info(" - installed successfully")
 		else
-            Chef::Log.info(" - error setting policies to #{prt_name}")
+            		Chef::Log.info(" - error setting policies to #{prt_name}")
 		end
 	else
-        Chef::Log.info(" - error creating printer #{prt_name}")
+        	Chef::Log.info(" - error creating printer #{prt_name}")
 	end
 end
 
 def delete_printer(prt_name)
-    Chef::Log.info("Deleting printer #{prt_name}... ")
+	Chef::Log.info("Deleting printer #{prt_name}... ")
 	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
 	if lpadm_dele.exitstatus == 0
-        Chef::Log.info(" - deleted successfully")
+        	Chef::Log.info(" - deleted successfully")
 	else
-        Chef::Log.info(" - error deleting #{prt_name}")
+        	Chef::Log.info(" - error deleting #{prt_name}")
 	end
 end
 
@@ -92,28 +92,6 @@ action :setup do
           ppd = printer.ppd
         end
 
-        create_ppd_with_ppd_uri = false
-        if printer.attribute?('ppd_uri')
-            Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
-            FileUtils.mkdir_p('/usr/share/cups/model')
-            begin
-                remote_file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
-                    action :create
-                    source printer.ppd_uri
-                    mode  '0644'
-                    owner 'root'
-                    group 'root'
-                    ignore_failure true
-                    backup false
-                end
-            rescue Net::HTTPServerException
-                Chef::Log.info(" - #{printer.ppd_uri} is not a valid PPD file")
-            end
-            create_ppd_with_ppd_uri = true
-        else
-            ppd_uri = ''
-        end
-
         inst_prt_uri   = `lpoptions -p #{curr_ptr_name}`.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
         if inst_prt_uri.empty?
             inst_prt_uri = [[]]
@@ -126,32 +104,55 @@ action :setup do
             is_prt_installed = true
         end
 
+        create_ppd_with_ppd_uri = false
+	if printer.attribute?('ppd_uri')
+		if not ::File.exists?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
+			Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
+			FileUtils.mkdir_p('/usr/share/cups/model')
+			ppd_uri_dw = Mixlib::ShellOut.new("/usr/bin/wget -c --no-check-certificate -O /usr/share/cups/model/#{curr_ptr_name}.ppd #{printer.ppd_uri}")
+			ppd_uri_dw.run_command
+			if ppd_uri_dw.exitstatus == 0
+				file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
+					mode '0644'
+					owner 'root'
+					group 'root'
+				end
+				create_ppd_with_ppd_uri = true
+			else
+				Chef::Log.info(" - failed to obtain PPD using #{printer.ppd_uri}")
+			end
+		end
+        else
+		ppd_uri = ''
+        end
+
         if not create_ppd_with_ppd_uri
             if not is_prt_installed or not inst_prt_uri[0][0].eql? printer.uri
                 create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
             end
         end
-        install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
-      end
 
-      cups_ptr_list = []
-      cups_ptr_list = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
-      cups_ptr_list.run_command
-      cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+	install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
 
-      cups_list.each do |cups_printer|
-      ptr_found = false
-      printers_list.each do |printer|
-        if cups_printer.eql? printer.name.gsub(" ","+")
-            ptr_found = true
-            break
-        end
-      end
-      if not ptr_found
-        if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
-            delete_printer(cups_printer)
-        end
-      end
+	cups_ptr_list = []
+	cups_ptr_list = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
+	cups_ptr_list.run_command
+	cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+
+	cups_list.each do |cups_printer|
+		ptr_found = false
+		printers_list.each do |printer|
+			if cups_printer.eql? printer.name.gsub(" ","+")
+				ptr_found = true
+				break
+			end
+		end
+		if not ptr_found
+			if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
+            			delete_printer(cups_printer)
+			end
+		end
+	end
   end
 end
 
