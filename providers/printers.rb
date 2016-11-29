@@ -109,7 +109,7 @@ action :setup do
 		if not ::File.exists?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
 			Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
 			FileUtils.mkdir_p('/usr/share/cups/model')
-			ppd_uri_dw = Mixlib::ShellOut.new("/usr/bin/wget -c --no-check-certificate -O /usr/share/cups/model/#{curr_ptr_name}.ppd #{printer.ppd_uri}")
+			ppd_uri_dw = Mixlib::ShellOut.new("/usr/bin/wget --no-check-certificate -O /usr/share/cups/model/#{curr_ptr_name}.ppd #{printer.ppd_uri}")
 			ppd_uri_dw.run_command
 			if ppd_uri_dw.exitstatus == 0
 				file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
