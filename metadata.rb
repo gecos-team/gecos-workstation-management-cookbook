@@ -215,11 +215,6 @@ sssd_js = {
       title_es: "Grupo de búsqueda",
       type: "string"
     },
-    basegroup:{
-      title: "Base Group",
-      title_es: "Grupo de base",
-      type: "string"
-    },
     binddn:{
       title: "BindDN",
       title_es: "BindDN",
