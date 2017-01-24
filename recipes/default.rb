@@ -67,3 +67,4 @@ include_recipe "gecos_ws_mgmt::printers_mgmt"
 
 
 node.normal['use_node']= {}
+node.override['gcc_link'] = true

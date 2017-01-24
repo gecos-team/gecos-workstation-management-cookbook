@@ -6,6 +6,12 @@ default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:connections] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite"]
 
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:force] = false
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:global_config] = {}
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:mozilla_config] = {}
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:job_ids] = []
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:updated_by] = {}
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyserver] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyport] = ''
@@ -16,7 +22,6 @@ default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:autostart] = false
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:connections] = []
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:support_os] = ["GECOS V3", "GECOS V2","Gecos V2 Lite"]
-
 
 default[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections] = []
@@ -73,12 +78,6 @@ default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:config_java] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:job_ids] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:updated_by] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite"]
-
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:global_config] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:mozilla_config] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:job_ids] = []
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []

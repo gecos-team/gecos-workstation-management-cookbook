@@ -2239,8 +2239,16 @@ system_proxy_js = {
   title: "Proxy Configuration",
   title_es: "Configuración de Proxy",
   type: "object",
-  required: ["global_config","mozilla_config"],
+  required: ["force","global_config","mozilla_config"],
+  order: ["force","global_config","mozilla_config"],
+  is_mergeable: false,
   properties: {
+    force: {
+      title: "Force configuration",
+      title_es: "Forzar configuración",
+      type: "boolean",
+      default: false
+    },
     global_config: {
       title: "Global Proxy Configuration",
       title_es: "Configuración General del Proxy",
@@ -2272,8 +2280,7 @@ system_proxy_js = {
         proxy_autoconfig_url: {
           title: "Proxy Autoconfiguration URL",
           title_es: "Url de Autoconfiguración del Proxy",
-           type: "string",
-          allowEmpty: true
+           type: "string"
         },
         disable_proxy: {
           title: "Disable proxy configuration?",
@@ -2321,8 +2328,7 @@ system_proxy_js = {
         proxy_autoconfig_url: {
           title: "Proxy Autoconfiguration URL",
           title_es: "URL de Autoconfiguración Proxy",
-          type:"string",
-          allowEmpty: true
+          type:"string"
         },
         no_proxies_on: {
           title: "Ignore proxy for",
@@ -2399,11 +2405,12 @@ complete_js = {
       properties: {
         network_mgmt: {
           type: "object",
-          required: ["network_res","forticlientvpn_res","mobile_broadband_res"],
+          required: ["network_res","forticlientvpn_res","mobile_broadband_res","system_proxy_res"],
           properties: {
             network_res: network_resource_js,
             forticlientvpn_res: forticlientvpn_js,
-            mobile_broadband_res: mobile_broadband_js
+            mobile_broadband_res: mobile_broadband_js,
+            system_proxy_res: system_proxy_js
             #sssd_res: sssd_js
           }
         },
@@ -2427,7 +2434,7 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res","system_proxy_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
@@ -2436,8 +2443,7 @@ complete_js = {
             appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
-            appconfig_java_res: appconfig_java_js,
-            system_proxy_res: system_proxy_js
+            appconfig_java_res: appconfig_java_js
           }
         },
         printers_mgmt: {

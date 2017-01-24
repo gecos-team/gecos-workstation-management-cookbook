@@ -70,11 +70,3 @@ gecos_ws_mgmt_appconfig_java 'java config' do
   support_os node[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:support_os]
   action :setup
 end
-
-gecos_ws_mgmt_system_proxy 'proxy config' do
-  global_config node[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:global_config]
-  mozilla_config node[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:mozilla_config]
-  job_ids node[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:support_os]
-  action :setup
-end
