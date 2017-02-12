@@ -11,7 +11,6 @@
 
 actions :presetup, :setup, :warn
 
-attribute :force, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :global_config, :kind_of => Object
 attribute :mozilla_config, :kind_of => Object
 attribute :job_ids, :kind_of => Array

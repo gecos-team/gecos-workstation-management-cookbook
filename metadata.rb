@@ -2239,16 +2239,10 @@ system_proxy_js = {
   title: "Proxy Configuration",
   title_es: "Configuración de Proxy",
   type: "object",
-  required: ["force","global_config","mozilla_config"],
-  order: ["force","global_config","mozilla_config"],
+  required: ["global_config","mozilla_config"],
+  order: ["global_config","mozilla_config"],
   is_mergeable: false,
   properties: {
-    force: {
-      title: "Force configuration",
-      title_es: "Forzar configuración",
-      type: "boolean",
-      default: false
-    },
     global_config: {
       title: "Global Proxy Configuration",
       title_es: "Configuración General del Proxy",

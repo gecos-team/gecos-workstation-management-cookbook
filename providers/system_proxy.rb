@@ -397,10 +397,8 @@ action :setup do
         end
 
         # NOTIFICATIONS
-        # Do not notify the connectivity resource to test the connection if the proxy settings are forced or do not change the parameters                               
-        force = new_resource.force || false
-        Chef::Log.debug("system_proxy.rb ::: setup - force = #{force}")
-        new_resource.updated_by_last_action(!force)
+        # Do notify the connectivity resource to test the connection                               
+        new_resource.updated_by_last_action(true)
         
     rescue Exception => e
         # just save current job ids as "failed"

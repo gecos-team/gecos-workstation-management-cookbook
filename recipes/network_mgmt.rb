@@ -18,7 +18,6 @@ end
 gecos_ws_mgmt_system_proxy 'proxyconf' do
   global_config node[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:global_config]
   mozilla_config node[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:mozilla_config]
-  force node[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:force]
   job_ids node[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:job_ids]
   support_os node[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:support_os]
   action :presetup  
