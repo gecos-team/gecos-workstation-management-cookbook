@@ -69,7 +69,7 @@ action :setup do
         action :nothing
       end.run_action(:restart)
 
-      pkgs = ['cups-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
+      pkgs = ['printer-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
       pkgs.each do |pkg|
         package pkg do
           action :nothing
