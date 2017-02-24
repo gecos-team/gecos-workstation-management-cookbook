@@ -21,13 +21,13 @@ end
 # Snitch, the chef notifier has been renamed
 # TODO: move this to chef-client-wrapper
 if ::File.exists?("/usr/bin/gecos-snitch-client")
-  snitch_binary="/usr/bin/gecos-snitch-client"
+  $snitch_binary="/usr/bin/gecos-snitch-client"
 else
-  snitch_binary="/usr/bin/gecosws-chef-snitch-client"
+  $snitch_binary="/usr/bin/gecosws-chef-snitch-client"
 end  
 
 execute "gecos-snitch-client" do
-  command "#{snitch_binary} --set-active true"
+  command "#{$snitch_binary} --set-active true"
   action :nothing
 end.run_action(:run)
 
