@@ -270,6 +270,15 @@ action :setup do
           ## Plugins STUFF
           unless plugins.empty?
             Chef::Log.info("Setting user #{username} web plugins")  
+
+            directory "/etc/firefox/pref" do
+              owner    'root'
+              group    'root'
+              mode     '0755'
+              recursive true
+              action :nothing
+            end.run_action(:create)
+
             template "/etc/firefox/pref/web_browser_res.js" do
               source "web_browser_scope.js.erb"
               action :nothing
