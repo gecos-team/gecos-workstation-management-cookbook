@@ -20,7 +20,7 @@ action :setup do
       remote_lists = []    
       
       case $gecos_os
-      when "GECOS V3"
+      when "GECOS V3", "GECOS V3 Lite"
         remote_lists.push("gecosv3.list")
       else
         # GECOS V2 or Gecos V2 Lite
