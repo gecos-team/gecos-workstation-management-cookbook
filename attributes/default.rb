@@ -199,7 +199,7 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_mount_res][:support_os] = ["GECOS V3"
 
 default[:gecos_ws_mgmt][:users_mgmt][:user_modify_nm_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_modify_nm_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:user_modify_nm_res][:support_os] = ["GECOS V3", "GECOS V2"]
+default[:gecos_ws_mgmt][:users_mgmt][:user_modify_nm_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sync_res][:job_ids] = []
