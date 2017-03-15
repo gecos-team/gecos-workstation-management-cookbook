@@ -83,16 +83,17 @@ action :setup do
         source = ''
         destination = ''
         expath = Pathname.new(exdir)
+        groupname = Etc.getpwnam(username).gid
         
         Chef::Log.debug("web_browser.rb - plugin file: #{plugin_file}")
         Chef::Log.debug("web_browser.rb - plugin dir temp: #{plugin_dir_temp}")
-        Chef::Log.debug("web_browser.rb - Extensions files: #{xfiles}")
-        
+        Chef::Log.debug("web_browser.rb - Extensions files: #{xfiles}") 
+
         # Download extension if not exists
         remote_file plugin_file do
           source plugin.uri
           user username
-          group username
+          group groupname
           action :nothing
         end.run_action(:create_if_missing)
         
