@@ -189,7 +189,7 @@ action :setup do
         end        
 
       end
-      
+
       # Getting Firefox version
       firefox = shell_out("firefox -v")
       Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
