@@ -79,14 +79,8 @@ action :setup do
       printers_list.each do |printer|
         Chef::Log.info("Processing printer: #{printer.name}")
 
-        # HP printers are bad labeled in database
-        curr_ptr_manuf=printer.manufacturer
-        if curr_ptr_manuf== 'Hp'
-          curr_ptr_manuf='HP'
-        end
-
         curr_ptr_name  = printer.name.gsub(" ","+")
-        curr_ptr_id    = curr_ptr_manuf.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
+        curr_ptr_id    = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
 
         oppolicy = 'default'
         if printer.attribute?('oppolicy')
