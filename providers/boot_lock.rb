@@ -53,7 +53,7 @@ action :setup do
           action :nothing
         end.run_action(:create)
             
-        execute "grup-update" do
+        execute "grub-update" do
           command "update-grub"
           action :nothing
         end.run_action(:run)
