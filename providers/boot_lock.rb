@@ -18,12 +18,12 @@ action :setup do
     if new_resource.support_os.include?($gecos_os)
       if ::File.file?(grub_conf)
         is_boot_locked = open(grub_conf).read.include?  "superusers"
-        execute_upgrade = !(lock_boot == is_boot_locked)
+        execute_update = !(lock_boot == is_boot_locked)
       else
         Chef::Log.warn("File not found: /boot/grub/grub.conf")
-        execute_upgrade = true
+        execute_update = true
       end
-      if execute_upgrade
+      if execute_update
         if lock_boot
           Chef::Log.info("Locking boot menu")
         else
