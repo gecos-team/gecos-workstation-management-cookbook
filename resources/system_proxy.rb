@@ -1,15 +1,15 @@
 #
-### Cookbook Name:: gecos-ws-mgmt
-### Resource:: proxy
-###
-### Copyright 2015, Junta de Andalucia
-### http://www.juntadeandalucia.es/
-###
-### All rights reserved - EUPL License V 1.1
-### http://www.osor.eu/eupl
+# Cookbook Name:: gecos-ws-mgmt
+# Resource:: sytem_proxy
+#
+# Copyright 2015, Junta de Andalucia
+# http://www.juntadeandalucia.es/
+#
+# All rights reserved - EUPL License V 1.1
+# http://www.osor.eu/eupl
 
 
-actions :setup
+actions :presetup, :setup, :warn
 
 attribute :global_config, :kind_of => Object
 attribute :mozilla_config, :kind_of => Object

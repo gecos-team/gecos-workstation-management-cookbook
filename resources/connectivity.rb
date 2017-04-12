@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gecos-ws-mgmt
-# Resource:: network
+# Resource:: connectivity
 #
 # Copyright 2013, Junta de Andalucia
 # http://www.juntadeandalucia.es/
@@ -9,8 +9,7 @@
 # http://www.osor.eu/eupl
 #
 
-actions :presetup, :setup, :warn
+actions :test, :backup, :recovery
 
-attribute :connections, :kind_of => Array
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
+attribute :target, :kind_of => String
+attribute :port, :kind_of => Integer

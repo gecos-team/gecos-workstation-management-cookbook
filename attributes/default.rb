@@ -6,6 +6,11 @@ default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:connections] = []
 default[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:global_config] = {}
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:mozilla_config] = {}
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:job_ids] = []
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:updated_by] = {}
+default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite"]
 
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyserver] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyport] = ''
@@ -16,7 +21,6 @@ default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:autostart] = false
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:connections] = []
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:support_os] = ["GECOS V3", "GECOS V2","Gecos V2 Lite", "GECOS V3 Lite"]
-
 
 default[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections] = []

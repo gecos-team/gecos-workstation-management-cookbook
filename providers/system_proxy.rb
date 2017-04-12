@@ -1,83 +1,214 @@
 #
-### Cookbook Name:: gecos-ws-mgmt
-### Provider:: system_proxy
-###
-### Copyright 2013, Junta de Andalucia
-### http://www.juntadeandalucia.es/
-###
-### All rights reserved - EUPL License V 1.1
-### http://www.osor.eu/eupl
-###
+# Cookbook Name:: gecos-ws-mgmt
+# Provider:: system_proxy
+#
+# Copyright 2013, Junta de Andalucia
+# http://www.juntadeandalucia.es/
+#
+# All rights reserved - EUPL License V 1.1
+# http://www.osor.eu/eupl
+#
 
 require 'chef/mixin/shell_out'
 require 'uri'
+require 'fileutils'
 include Chef::Mixin::ShellOut
+
+# Constants
+#DATE = DateTime.now.strftime("%Y-%m-%d")
+DATE = DateTime.now.to_time.to_i.to_s
+ROOT = '/var/lib/gecos-agent/network/proxy/'
+CHANGED_FILES_OR_DIRECTORIES = [
+    '/etc/environment', 
+    '/etc/apt/apt.conf.d/',
+    '/etc/dconf/',
+    '/etc/firefox/',
+    '/etc/thunderbird/'
+]
+
+# Regex pattern
+BLOCK     = /\d{,2}|1\d{2}|2[0-4]\d|25[0-5]/
+IP_REGX   = /\A#{BLOCK}\.#{BLOCK}\.#{BLOCK}\.#{BLOCK}\z/
+HOST_REGX = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/
+
+global_settings  = {}
+mozilla_settings = {}
+nochanges = true
+
+# Checking if resource changed
+action :presetup do
+
+    Chef::Log.info("system_proxy.rb ::: Starting PRESETUP ...")
+    
+    begin
+
+        if new_resource.support_os.include?($gecos_os)
+        
+            # SYSTEM GLOBAL CONFIG
+            if not new_resource.global_config.empty?
+            
+                # Parameters and defaults
+                global_settings = {
+                  'http_proxy' => (new_resource.global_config['http_proxy'] || ''),
+                  'http_proxy_port' => (new_resource.global_config['http_proxy_port'] || 80),
+                  'https_proxy' => (new_resource.global_config['https_proxy'] || ''),
+                  'https_proxy_port' => (new_resource.global_config['https_proxy_port'] || 443),
+                  'proxy_autoconfig_url' => new_resource.global_config['proxy_autoconfig_url'],
+                  'disable_proxy' => new_resource.global_config['disable_proxy']
+                }
+            
+                # Checking params       
+                http_uri = URI.parse(global_settings['http_proxy'])
+                if http_uri.host.nil? # Bad url
+                    # is ip? is hostname?
+                    if global_settings['http_proxy'] =~ IP_REGX or global_settings['http_proxy'] =~ HOST_REGX
+                        global_settings['http_proxy'] = "http://".concat(global_settings['http_proxy'])
+                    # Bad param
+                    elsif not global_settings['http_proxy'].empty?
+                        raise "System Wide: http_proxy URL or Hostname not valid"
+                    end
+                # Bad scheme
+                elsif http_uri.scheme =~ /https/
+                    global_settings['http_proxy'] = "http://".concat(http_uri.host)
+                end
+
+                https_uri = URI.parse(global_settings['https_proxy'])
+                if https_uri.host.nil?  
+                    if global_settings['https_proxy'] =~ IP_REGX or  global_settings['https_proxy'] =~ HOST_REGX
+                        global_settings['https_proxy'] = "https://".concat(global_settings['https_proxy'])
+                    elsif not global_settings['https_proxy'].empty?
+                        raise "System Wide: https_proxy URL or Hostname not valid"
+                    end
+                elsif https_uri.scheme =~ /http/
+                    global_settings['https_proxy'] = "https://".concat(https_uri.host)
+                end        
+
+                # Remove trailing slash
+                global_settings['http_proxy']  = global_settings['http_proxy'].chomp('/')  unless global_settings['http_proxy'].empty?
+                global_settings['https_proxy'] = global_settings['https_proxy'].chomp('/') unless global_settings['https_proxy'].empty?       
+                Chef::Log.info("system_proxy.rb ::: global_settings:#{global_settings}")
+                Chef::Log.info("system_proxy.rb ::: node['ohai_gecos']['proxy']:#{node['ohai_gecos']['proxy']}")
+                
+                nochanges = !(global_settings['http_proxy'].empty? || global_settings['https_proxy'].empty? || node['ohai_gecos']['proxy'].nil?) &&
+                            URI.parse(global_settings['http_proxy']).host == node['ohai_gecos']['proxy']['http_proxy_host'] &&
+                            global_settings['http_proxy_port'] == node['ohai_gecos']['proxy']['http_proxy_port'] &&
+                            URI.parse(global_settings['https_proxy']).host == node['ohai_gecos']['proxy']['https_proxy_host'] &&
+                            global_settings['https_proxy_port'] == node['ohai_gecos']['proxy']['https_proxy_port']
+                            
+                Chef::Log.debug("system_proxy.rb ::: nochanges: #{nochanges}")                   
+            end
+            
+            # MOZILLA APPS CONFIG
+            if not new_resource.mozilla_config.empty?
+
+                case new_resource.mozilla_config['mode']
+
+                    when "NO PROXY"            
+                      mozilla_settings['mode'] = 0                     
+                    when "AUTODETECT"
+                      mozilla_settings['mode'] = 4          
+                    when "SYSTEM"
+                      mozilla_settings['mode'] = 5
+                    when "MANUAL"
+                      mozilla_settings = {
+                        'mode' => 1,
+                        'http_proxy' => (new_resource.mozilla_config['http_proxy'] || ''),
+                        'http_proxy_port' => (new_resource.mozilla_config['http_proxy_port'] || 80),
+                        'https_proxy' => (new_resource.mozilla_config['https_proxy'] || ''),
+                        'https_proxy_port' => (new_resource.mozilla_config['https_proxy_port'] || 443),
+                      }
+
+                      # Checking params
+                      moz_http_uri = URI.parse(mozilla_settings['http_proxy'])           
+                      if moz_http_uri.host.nil?      
+                          if mozilla_settings['http_proxy'] =~ IP_REGX or  mozilla_settings['http_proxy'] =~ HOST_REGX
+                              mozilla_settings['http_proxy'] = "http://".concat(mozilla_settings['http_proxy'])
+                          elsif not mozilla_settings['http_proxy'].empty?
+                              raise "Mozilla: http_proxy URL or Hostname not valid"
+                          end
+                      elsif moz_http_uri.scheme =~ /https/
+                          mozilla_settings['http_proxy'] = "http://".concat(moz_http_uri.host)          
+                      end
+                
+                      moz_https_uri = URI.parse(mozilla_settings['https_proxy'])
+                      if moz_https_uri.host.nil?      
+                          if mozilla_settings['https_proxy'] =~ IP_REGX or mozilla_settings['https_proxy'] =~ HOST_REGX
+                              mozilla_settings['https_proxy'] = "https://".concat(mozilla_settings['https_proxy'])
+                          elsif not mozilla_settings['https_proxy'].empty?
+                              raise "Mozilla: https_proxy URL or Hostname not valid"
+                          end
+                      elsif moz_https_uri.scheme =~ /http/
+                          mozilla_settings['https_proxy'] = "https://".concat(moz_https_uri.host)
+                      end
+                
+                      # Remove trailing slash
+                      mozilla_settings['http_proxy']  = mozilla_settings['http_proxy'].chomp('/')   unless mozilla_settings['http_proxy'].empty?
+                      mozilla_settings['https_proxy'] = mozilla_settings['https_proxy'].chomp('/')  unless mozilla_settings['http_proxy'].empty?
+                            
+                    when "AUTOMATIC" 
+                      mozilla_settings = {
+                        'mode' => 2,
+                        'proxy_autoconfig_url' => new_resource.mozilla_config['proxy_autoconfig_url']
+                      }
+                end
+                
+                mozilla_settings['no_proxies_on'] = new_resource.mozilla_config['no_proxies_on']
+                Chef::Log.debug("system_proxy.rb - mozilla_settings: #{mozilla_settings}")
+            end
+                
+            if (nochanges && node.normal['gcc_link']) || (!nochanges && !node.override['gcc_link'])
+                job_ids = new_resource.job_ids
+                job_ids.each do |jid|
+                    node.normal['job_status'][jid]['status'] = 0
+                end
+
+                gecos_ws_mgmt_jobids "network_res" do
+                    recipe "network_mgmt"
+                end.run_action(:reset)
+
+                new_resource.updated_by_last_action(false)
+            else
+                gecos_ws_mgmt_connectivity 'proxy_backup' do
+                    action :nothing
+                    #only_if {not nochanges}
+                end.run_action(:backup)
+                            
+                action_setup
+            end
+
+        else
+            Chef::Log.info("This resource is not support into your OS")
+        end
+    rescue Exception => e
+        # just save current job ids as "failed"
+        # save_failed_job_ids
+        Chef::Log.error(e.message)
+        job_ids = new_resource.job_ids
+        job_ids.each do |jid|
+            node.normal['job_status'][jid]['status'] = 1
+            if not e.message.frozen?
+                node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+            else
+                node.normal['job_status'][jid]['message'] = e.message
+            end
+    end
+    ensure
+        gecos_ws_mgmt_jobids "system_proxy_res" do
+            recipe "network_mgmt"
+        end.run_action(:reset)
+    end
+end
 
 action :setup do
 
-  begin
-  
-    if new_resource.support_os.include?($gecos_os)
+    Chef::Log.info("system_proxy.rb ::: Starting SETUP ... Applying new settings")
 
-      # GLOBAL CONFIG
-      if not new_resource.global_config.empty?
-
-        # Parameters
-        global_settings = {
-          'http_proxy' => new_resource.global_config['http_proxy'],
-          'http_proxy_port' => new_resource.global_config['http_proxy_port'],
-          'https_proxy' => new_resource.global_config['https_proxy'],
-          'https_proxy_port' => new_resource.global_config['https_proxy_port'],
-          'proxy_autoconfig_url' => new_resource.global_config['proxy_autoconfig_url'],
-          'disable_proxy' => new_resource.global_config['disable_proxy']
-        }
-        
-        # Defaults
-        global_settings['http_proxy'] ||= ''
-        global_settings['http_proxy_port'] ||= 80
-        global_settings['https_proxy'] ||= ''
-        global_settings['https_proxy_port'] ||= 443
-
-        # Regex pattern
-        block = /\d{,2}|1\d{2}|2[0-4]\d|25[0-5]/
-        ValidIpAddressRegex = /\A#{block}\.#{block}\.#{block}\.#{block}\z/
-        ValidHostnameRegex  = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/
-        
-        # Checking params:        
-        http_uri = URI.parse(global_settings['http_proxy'])
-        if http_uri.host.nil? # Bad url
-            # is ipaddress? is hostname?
-            if global_settings['http_proxy'] =~ ValidIpAddressRegex or global_settings['http_proxy'] =~ ValidHostnameRegex
-              global_settings['http_proxy'] = "http://".concat(global_settings['http_proxy'])
-            # Bad param
-            elsif not global_settings['http_proxy'].empty?
-              raise "System Wide: http_proxy URL or Hostname not valid"
-            end
-        # Bad scheme
-        elsif http_uri.scheme =~ /https/
-          global_settings['http_proxy'] = "http://".concat(http_uri.host)
-        end
-        
-        https_uri = URI.parse(global_settings['https_proxy'])
-        if https_uri.host.nil?  
-            if global_settings['https_proxy'] =~ ValidIpAddressRegex or  global_settings['https_proxy'] =~ ValidHostnameRegex
-              global_settings['https_proxy'] = "https://".concat(global_settings['https_proxy'])
-            elsif not global_settings['https_proxy'].empty?
-              raise "System Wide: https_proxy URL or Hostname not valid"
-            end
-        elsif https_uri.scheme =~ /http/
-          global_settings['https_proxy'] = "https://".concat(https_uri.host)
-        end        
-                
-        # Remove trailing slash
-        global_settings['http_proxy']  = global_settings['http_proxy'].chomp('/')  unless global_settings['http_proxy'].empty?
-        global_settings['https_proxy'] = global_settings['https_proxy'].chomp('/') unless global_settings['https_proxy'].empty?       
-        Chef::Log.debug("system_proxy.rb - global_settings:#{global_settings}")
+    begin
 
         if not global_settings['disable_proxy'] 
 
-          # DESKTOP APPLICATIONS
-          if global_settings['proxy_autoconfig_url'].nil? || global_settings['proxy_autoconfig_url'].empty?
+            # DESKTOP APPLICATIONS
+            if global_settings['proxy_autoconfig_url'].nil? || global_settings['proxy_autoconfig_url'].empty?
           
             Chef::Log.debug("system_proxy.rb - System-Wide Proxy Mode Manual")
             gecos_ws_mgmt_system_settings "System-Wide Proxy Mode" do
@@ -139,7 +270,7 @@ action :setup do
               end
               action :nothing
             end.run_action(:run)
-            
+
             # APT     
             template "/etc/apt/apt.conf.d/80proxy" do
               source "apt_proxy.erb"
@@ -182,135 +313,71 @@ action :setup do
 
           end
 
-      elsif global_settings['disable_proxy']
+        elsif global_settings['disable_proxy']
 
-        # DESKTOP APPLICATIONS
-        gecos_ws_mgmt_system_settings "System-Wide Proxy Mode [:unset]" do
-          provider "gecos_ws_mgmt_system_settings"
-          schema   "system/proxy"
-          name     "mode"
-          value    "none"
-         end.run_action(:unset)
+            # DESKTOP APPLICATIONS
+            gecos_ws_mgmt_system_settings "System-Wide Proxy Mode [:unset]" do
+              provider "gecos_ws_mgmt_system_settings"
+              schema   "system/proxy"
+              name     "mode"
+              value    "none"
+             end.run_action(:unset)
 
-        gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy [:unset]" do
-          provider "gecos_ws_mgmt_system_settings"
-          schema   "system/proxy/http"
-          name     "host"
-          value   global_settings['http_proxy']
-         end.run_action(:unset)
-                                                       
-        gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy PORT [:unset]" do
-          provider "gecos_ws_mgmt_system_settings"
-          schema   "system/proxy/http"
-          name     "port"
-          value     global_settings['http_proxy_port']
-        end.run_action(:unset)
+            gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy [:unset]" do
+              provider "gecos_ws_mgmt_system_settings"
+              schema   "system/proxy/http"
+              name     "host"
+              value   global_settings['http_proxy']
+             end.run_action(:unset)
+                                                           
+            gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy PORT [:unset]" do
+              provider "gecos_ws_mgmt_system_settings"
+              schema   "system/proxy/http"
+              name     "port"
+              value     global_settings['http_proxy_port']
+            end.run_action(:unset)
 
-        gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy [:unset]" do
-          provider "gecos_ws_mgmt_system_settings"
-          schema   "system/proxy/https"
-          name     "host"
-          value     global_settings['https_proxy']
-        end.run_action(:unset)
+            gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy [:unset]" do
+              provider "gecos_ws_mgmt_system_settings"
+              schema   "system/proxy/https"
+              name     "host"
+              value     global_settings['https_proxy']
+            end.run_action(:unset)
 
-        gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy PORT [:unset]" do
-          provider "gecos_ws_mgmt_system_settings"
-          schema  "system/proxy/https"
-          name    "port"
-          value    global_settings['https_proxy_port']
-        end.run_action(:unset)
+            gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy PORT [:unset]" do
+              provider "gecos_ws_mgmt_system_settings"
+              schema  "system/proxy/https"
+              name    "port"
+              value    global_settings['https_proxy_port']
+            end.run_action(:unset)
 
-        gecos_ws_mgmt_system_settings "System-Wide Proxy Autoconfig URL [:unset]" do
-          provider "gecos_ws_mgmt_system_settings"
-          schema  "system/proxy"
-          name    "autoconfig-url"
-          value    global_settings['proxy_autoconfig_url']
-        end.run_action(:unset)
+            gecos_ws_mgmt_system_settings "System-Wide Proxy Autoconfig URL [:unset]" do
+              provider "gecos_ws_mgmt_system_settings"
+              schema  "system/proxy"
+              name    "autoconfig-url"
+              value    global_settings['proxy_autoconfig_url']
+            end.run_action(:unset)
 
-        # ENVIRONMENT
-         ruby_block "Delete proxy environment variables" do
-           block do
-             fe = Chef::Util::FileEdit.new("/etc/environment")
-             fe.search_file_delete_line(/HTTPS?_PROXY/i)
-            fe.write_file
-           end
-           action :nothing
-        end.run_action(:run)
+            # ENVIRONMENT
+             ruby_block "Delete proxy environment variables" do
+               block do
+                 fe = Chef::Util::FileEdit.new("/etc/environment")
+                 fe.search_file_delete_line(/HTTPS?_PROXY/i)
+                fe.write_file
+               end
+               action :nothing
+            end.run_action(:run)
 
-        file "/etc/apt/apt.conf.d/80proxy" do
-          action :nothing
-        end.run_action(:delete)
+            file "/etc/apt/apt.conf.d/80proxy" do
+              action :nothing
+            end.run_action(:delete)
         
-      end
-      
-    end
-      
-    # MOZILLA APPS CONFIG
-      if not new_resource.mozilla_config.empty?
-
-        mozilla_settings = {}
-        case new_resource.mozilla_config['mode']
-
-          when "NO PROXY"            
-            mozilla_settings['mode'] = 0                     
-          when "AUTODETECT"
-            mozilla_settings['mode'] = 4          
-          when "SYSTEM"
-            mozilla_settings['mode'] = 5
-          when "MANUAL"
-            mozilla_settings = {
-              'mode' => 1,
-              'http_proxy' => new_resource.mozilla_config['http_proxy'],
-              'http_proxy_port' => new_resource.mozilla_config['http_proxy_port'],
-              'https_proxy' => new_resource.mozilla_config['https_proxy'],
-              'https_proxy_port' => new_resource.mozilla_config['https_proxy_port'],
-            }
-          when "AUTOMATIC" 
-            mozilla_settings = {
-              'mode' => 2,
-              'proxy_autoconfig_url' => new_resource.mozilla_config['proxy_autoconfig_url']
-            }
-        end
-        mozilla_settings['no_proxies_on'] = new_resource.mozilla_config['no_proxies_on']
-        
-        # Defaults
-        mozilla_settings['http_proxy'] ||= ''
-        mozilla_settings['http_proxy_port'] ||= 80
-        mozilla_settings['https_proxy'] ||= ''
-        mozilla_settings['https_proxy_port'] ||= 443
-
-        # Checking params
-        moz_http_uri = URI.parse(mozilla_settings['http_proxy'])
-        if moz_http_uri.host.nil?      
-            if mozilla_settings['http_proxy'] =~ ValidIpAddressRegex or  mozilla_settings['http_proxy'] =~ ValidHostnameRegex
-              mozilla_settings['http_proxy'] = "http://".concat(mozilla_settings['http_proxy'])
-            elsif not mozilla_settings['http_proxy'].empty?
-              raise "Mozilla: http_proxy URL or Hostname not valid"
-            end
-        elsif moz_http_uri.scheme =~ /https/
-          mozilla_settings['http_proxy'] = "http://".concat(moz_http_uri.host)          
-        end
-        
-        moz_https_uri = URI.parse(mozilla_settings['https_proxy'])
-        if moz_https_uri.host.nil?      
-            if mozilla_settings['https_proxy'] =~ ValidIpAddressRegex or mozilla_settings['https_proxy'] =~ ValidHostnameRegex
-              mozilla_settings['https_proxy'] = "https://".concat(mozilla_settings['https_proxy'])
-            elsif not mozilla_settings['https_proxy'].empty?
-              raise "Mozilla: https_proxy URL or Hostname not valid"
-            end
-        elsif moz_https_uri.scheme =~ /http/
-          mozilla_settings['https_proxy'] = "https://".concat(moz_https_uri.host)
-        end
-        
-        # Remove trailing slash
-        mozilla_settings['http_proxy']  = mozilla_settings['http_proxy'].chomp('/')   unless mozilla_settings['http_proxy'].empty?
-        mozilla_settings['https_proxy'] = mozilla_settings['https_proxy'].chomp('/')  unless mozilla_settings['http_proxy'].empty?
-        Chef::Log.debug("system_proxy.rb - mozilla_settings: #{mozilla_settings}")
-
+        end      
+             
         # FIREFOX
         gecos_ws_mgmt_appconfig_firefox "Firefox proxy configuration" do
-           provider "gecos_ws_mgmt_appconfig_firefox"
-           config_firefox mozilla_settings
+          provider "gecos_ws_mgmt_appconfig_firefox"
+          config_firefox mozilla_settings
           job_ids new_resource.job_ids
           support_os new_resource.support_os
         end.run_action(:setup)
@@ -323,36 +390,41 @@ action :setup do
           support_os new_resource.support_os
         end.run_action(:setup)
 
-      end
+        # save current job ids (new_resource.job_ids) as "ok"
+        job_ids = new_resource.job_ids
+        job_ids.each do |jid|
+            node.normal['job_status'][jid]['status'] = 0
+        end
 
-    else
-      Chef::Log.info("Your operative system does not support this resource")
-    end
-
-    # save current job ids (new_resource.job_ids) as "ok"
-    job_ids = new_resource.job_ids
-    job_ids.each do |jid|
-      node.normal['job_status'][jid]['status'] = 0
-    end
-
-  rescue Exception => e
-    # just save current job ids as "failed"
+        # NOTIFICATIONS
+        # Do notify the connectivity resource to test the connection                               
+        new_resource.updated_by_last_action(true)
+        
+    rescue Exception => e
+        # just save current job ids as "failed"
     # save_failed_job_ids
-    Chef::Log.error(e.message)
-    job_ids = new_resource.job_ids
-    job_ids.each do |jid|
-      node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
-      else
-        node.normal['job_status'][jid]['message'] = e.message
-      end
+        Chef::Log.error(e.message)
+        job_ids = new_resource.job_ids
+        job_ids.each do |jid|
+            node.normal['job_status'][jid]['status'] = 1
+        if not e.message.frozen?
+            node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+        else
+            node.normal['job_status'][jid]['message'] = e.message
+        end
     end
-  ensure
-    
-    gecos_ws_mgmt_jobids "system_proxy_res" do
-       recipe "software_mgmt"
-    end.run_action(:reset)
-    
+    ensure
+        gecos_ws_mgmt_jobids "system_proxy_res" do
+            recipe "network_mgmt"
+        end.run_action(:reset)
+    end
+end
+
+action :warn do
+   job_ids = new_resource.job_ids
+   job_ids.each do |jid|
+       node.normal['job_status'][jid]['status'] = 2
+       node.normal['job_status'][jid]['message'] = "Network problems connecting to Control Center."
+       Chef::Log.debug("network.rb ::: recovery action - jid = #{jid}")
    end
 end
