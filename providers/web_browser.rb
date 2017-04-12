@@ -83,16 +83,17 @@ action :setup do
         source = ''
         destination = ''
         expath = Pathname.new(exdir)
+        groupname = Etc.getpwnam(username).gid
         
         Chef::Log.debug("web_browser.rb - plugin file: #{plugin_file}")
         Chef::Log.debug("web_browser.rb - plugin dir temp: #{plugin_dir_temp}")
-        Chef::Log.debug("web_browser.rb - Extensions files: #{xfiles}")
-        
+        Chef::Log.debug("web_browser.rb - Extensions files: #{xfiles}") 
+
         # Download extension if not exists
         remote_file plugin_file do
           source plugin.uri
           user username
-          group username
+          group groupname
           action :nothing
         end.run_action(:create_if_missing)
         
@@ -188,7 +189,7 @@ action :setup do
         end        
 
       end
-      
+
       # Getting Firefox version
       firefox = shell_out("firefox -v")
       Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
@@ -270,6 +271,15 @@ action :setup do
           ## Plugins STUFF
           unless plugins.empty?
             Chef::Log.info("Setting user #{username} web plugins")  
+
+            directory "/etc/firefox/pref" do
+              owner    'root'
+              group    'root'
+              mode     '0755'
+              recursive true
+              action :nothing
+            end.run_action(:create)
+
             template "/etc/firefox/pref/web_browser_res.js" do
               source "web_browser_scope.js.erb"
               action :nothing

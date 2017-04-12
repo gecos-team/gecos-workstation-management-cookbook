@@ -26,7 +26,7 @@ action :setup do
       systemset = new_resource.systemset
       users = new_resource.users
 
-      lite = $gecos_os == "Gecos V2 Lite"
+      lite = ($gecos_os == "Gecos V2 Lite" or $gecos_os == "GECOS V3 Lite")
       # System-level lock settings
       #system = gecos_ws_mgmt_system_settings "disable-log-out" do
       #    provider "gecos_ws_mgmt_system_settings"

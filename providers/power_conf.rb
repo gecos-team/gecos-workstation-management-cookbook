@@ -64,7 +64,8 @@ action :setup do
           mode "0755"
           owner "root"
           variables({ :hour => auto_shutdown.hour, :minute => auto_shutdown.minute, :first_warn_hour => first_warn_hour,
-           :first_warn_minute => first_warn_minute, :last_warn_hour => last_warn_hour, :last_warn_minute => last_warn_minute })
+           :first_warn_minute => first_warn_minute, :last_warn_hour => last_warn_hour, :last_warn_minute => last_warn_minute,
+           :snitch_binary => $snitch_binary })
           notifies :restart, "service[cron]", :delayed
           action :nothing
         end.run_action(:create)

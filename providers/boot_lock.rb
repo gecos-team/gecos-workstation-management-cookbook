@@ -14,11 +14,20 @@ action :setup do
     lock_boot = new_resource.lock_boot
     unlock_user = new_resource.unlock_user
     unlock_pass = new_resource.unlock_pass
+    grub_conf ="/boot/grub/grub.cfg"
     if new_resource.support_os.include?($gecos_os)
+      if ::File.file?(grub_conf)
+        is_boot_locked = open(grub_conf).read.include?  "superusers"
+        execute_update = !(lock_boot == is_boot_locked)
+      else
+        Chef::Log.warn("File not found: /boot/grub/grub.conf")
+        execute_update = true
+      end
+      if execute_update
         if lock_boot
           Chef::Log.info("Locking boot menu")
         else
-        Chef::Log.info("Unlocking lock boot menu!")
+          Chef::Log.info("Unlocking boot menu!")
         end
 
         template "/etc/grub.d/05_unrestricted" do
@@ -30,8 +39,8 @@ action :setup do
         end.run_action(:create)        
         
         if lock_boot and (unlock_user.empty? or unlock_pass.empty?)
-            Chef::Log.info("Empty unlock username or password!")
-            lock_boot = false
+          Chef::Log.info("Empty unlock username or password!")
+          lock_boot = false
         end
           
         
@@ -44,11 +53,13 @@ action :setup do
           action :nothing
         end.run_action(:create)
             
-        execute "grup-update" do
-            command "update-grub"
-            action :nothing
+        execute "grub-update" do
+          command "update-grub"
+          action :nothing
         end.run_action(:run)
-     
+      else
+        Chef::Log.info("Boot lock status: change not needed")
+      end
     else
       Chef::Log.info("This resource is not support into your OS")
     end
@@ -73,4 +84,5 @@ action :setup do
     end
   end
 end
+
 
