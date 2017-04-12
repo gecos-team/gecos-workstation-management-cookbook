@@ -78,12 +78,6 @@ default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:updated_by] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:global_config] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:mozilla_config] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:job_ids] = []
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:system_proxy_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
-
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:printers_list] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:job_ids] = []
 default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:updated_by] = {}
