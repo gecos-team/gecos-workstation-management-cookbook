@@ -43,7 +43,8 @@ action :presetup do
     begin
 
         if new_resource.support_os.include?($gecos_os)
-        
+            Chef::Log.info("system_proxy.rb ::: new_resource.global_config :#{new_resource.global_config}")
+            Chef::Log.info("system_proxy.rb ::: new_resource.mozilla_config:#{new_resource.mozilla_config}")
             # SYSTEM GLOBAL CONFIG
             if not new_resource.global_config.empty?
             
@@ -85,16 +86,35 @@ action :presetup do
 
                 # Remove trailing slash
                 global_settings['http_proxy']  = global_settings['http_proxy'].chomp('/')  unless global_settings['http_proxy'].empty?
-                global_settings['https_proxy'] = global_settings['https_proxy'].chomp('/') unless global_settings['https_proxy'].empty?       
-                Chef::Log.info("system_proxy.rb ::: global_settings:#{global_settings}")
-                Chef::Log.info("system_proxy.rb ::: node['ohai_gecos']['proxy']:#{node['ohai_gecos']['proxy']}")
+                global_settings['https_proxy'] = global_settings['https_proxy'].chomp('/') unless global_settings['https_proxy'].empty?
                 
-                nochanges = !(global_settings['http_proxy'].empty? || global_settings['https_proxy'].empty? || node['ohai_gecos']['proxy'].nil?) &&
-                            URI.parse(global_settings['http_proxy']).host == node['ohai_gecos']['proxy']['http_proxy_host'] &&
-                            global_settings['http_proxy_port'] == node['ohai_gecos']['proxy']['http_proxy_port'] &&
-                            URI.parse(global_settings['https_proxy']).host == node['ohai_gecos']['proxy']['https_proxy_host'] &&
-                            global_settings['https_proxy_port'] == node['ohai_gecos']['proxy']['https_proxy_port']
-                            
+                # Checking if there are changes between system and policy configuration
+                system_http_proxy  = node['ohai_gecos']['envs']['HTTP_PROXY']  || ENV['HTTP_PROXY']  || ENV['http_proxy']  || ''
+                system_https_proxy = node['ohai_gecos']['envs']['HTTPS_PROXY'] || ENV['HTTPS_PROXY'] || ENV['https_proxy'] || ''
+
+                system_http_proxy_host  = URI.parse(system_http_proxy).host
+                system_http_proxy_port  = URI.parse(system_http_proxy).port || 80
+                system_https_proxy_host = URI.parse(system_https_proxy).host
+                system_https_proxy_port = URI.parse(system_https_proxy).port || 443
+                policy_http_proxy_host  = URI.parse(global_settings['http_proxy']).host
+                policy_http_proxy_port  = global_settings['http_proxy_port']
+                policy_https_proxy_host = URI.parse(global_settings['https_proxy']).host
+                policy_https_proxy_port = global_settings['https_proxy_port']
+
+                Chef::Log.debug("system_proxy.rb ::: system_http_proxy_host:  #{system_http_proxy_host}")                   
+                Chef::Log.debug("system_proxy.rb ::: system_http_proxy_port:  #{system_http_proxy_port}")                   
+                Chef::Log.debug("system_proxy.rb ::: system_https_proxy_host: #{system_https_proxy_host}")                   
+                Chef::Log.debug("system_proxy.rb ::: system_https_proxy_port: #{system_https_proxy_port}")                   
+                Chef::Log.debug("system_proxy.rb ::: policy_http_proxy_host:  #{policy_http_proxy_host}")                   
+                Chef::Log.debug("system_proxy.rb ::: policy_http_proxy_port:  #{policy_http_proxy_port}")                   
+                Chef::Log.debug("system_proxy.rb ::: policy_https_proxy_host: #{policy_https_proxy_host}")                   
+                Chef::Log.debug("system_proxy.rb ::: policy_https_proxy_port: #{policy_https_proxy_port}")                   
+
+                nochanges = system_http_proxy_host  == policy_http_proxy_host  &&
+                            system_http_proxy_port  == policy_http_proxy_port  &&
+                            system_https_proxy_host == policy_https_proxy_host &&
+                            system_https_proxy_port == policy_https_proxy_port 
+
                 Chef::Log.debug("system_proxy.rb ::: nochanges: #{nochanges}")                   
             end
             
