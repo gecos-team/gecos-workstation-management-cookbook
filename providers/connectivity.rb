@@ -193,7 +193,12 @@ action :recovery do
           end  
 
           service 'network-manager' do
-              provider Chef::Provider::Service::Upstart
+              case $gecos_os
+              when "GECOS V3"
+                provider Chef::Provider::Service::Systemd
+              else
+                provider Chef::Provider::Service::Upstart
+              end
               action :nothing
           end.run_action(:restart)
 
