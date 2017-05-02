@@ -25,6 +25,7 @@ action :set do
     ["/etc/dconf/profile", "/etc/dconf/db/#{dconfdb}.d/locks"].each do |dir|
       directory dir do
         recursive true
+        action :nothing
       end.run_action(:create)
     end
   end
@@ -35,6 +36,7 @@ action :set do
 user-db:user
 system-db:#{dconfdb}
     eof
+    action :nothing
   end.run_action(:create)
 
   file "/etc/dconf/db/#{dconfdb}.d/#{schema.gsub('/','-')}-#{key}.key" do
@@ -43,6 +45,7 @@ system-db:#{dconfdb}
 [#{schema}]
 #{key}=#{value}
     eof
+    action :nothing
   end.run_action(:create)
 
   execute "update-dconf" do
