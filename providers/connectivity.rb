@@ -170,7 +170,7 @@ action :backup do
        dst = "#{NETBACKUP_DIR}#{DATE}" + ::File.dirname(bak)
        Chef::Log.debug("connectivity.rb ::: BACKUP action - dst:#{dst}")
        FileUtils.mkdir_p(dst)
-       FileUtils.cp_r bak, dst
+       FileUtils.cp_r bak, dst if ::File.exists?(bak)
    end
 end
 
@@ -185,12 +185,12 @@ action :recovery do
           BACKUPS.each do |bak|
               if ::File.file?(bak)
                   FileUtils.rm bak
-                  FileUtils.cp "#{src}#{bak}", bak if ::File.exist?("#{src}#{bak}")
+                  FileUtils.cp "#{src}#{bak}", bak if ::File.exists?("#{src}#{bak}")
               elsif ::File.directory?(bak)
                   FileUtils.rm_rf bak
-                  FileUtils.cp_r "#{src}#{bak}", bak
+                  FileUtils.cp_r "#{src}#{bak}", bak if ::File.exists?("#{src}#{bak}")
               end
-          end  
+          end
 
           service 'network-manager' do
               case $gecos_os

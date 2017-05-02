@@ -38,9 +38,8 @@ nochanges = true
 # Checking if resource changed
 action :presetup do
 
-    Chef::Log.info("system_proxy.rb ::: Starting PRESETUP ...")
-    
     begin
+        Chef::Log.info("system_proxy.rb ::: Starting PRESETUP ...")
 
         if new_resource.support_os.include?($gecos_os)
             Chef::Log.info("system_proxy.rb ::: new_resource.global_config :#{new_resource.global_config}")
@@ -236,6 +235,7 @@ action :setup do
               schema   "system/proxy"
               name     "mode"
               value    "manual"
+              action	:nothing
             end.run_action(:set)
 
             gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy" do
@@ -244,6 +244,7 @@ action :setup do
               name     "host"
               value     URI.parse(global_settings['http_proxy']).host
               only_if   {!global_settings['http_proxy'].empty?}
+              action	:nothing
             end.run_action(:set)
 
             gecos_ws_mgmt_system_settings "System-Wide HTTP Proxy PORT" do
@@ -252,6 +253,7 @@ action :setup do
               name     "port"
               value     global_settings['http_proxy_port']
               only_if   {!global_settings['http_proxy'].empty?}
+              action	:nothing
             end.run_action(:set)
 
             gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy" do
@@ -260,6 +262,7 @@ action :setup do
               name    "host"
               value    URI.parse(global_settings['https_proxy']).host
               only_if {!global_settings['https_proxy'].empty?}
+              action	:nothing
             end.run_action(:set)
 
             gecos_ws_mgmt_system_settings "System-Wide HTTPS Proxy PORT" do
@@ -268,6 +271,7 @@ action :setup do
               name    "port"
               value    global_settings['https_proxy_port']
               only_if {!global_settings['https_proxy'].empty?}
+              action	:nothing
             end.run_action(:set)
             
             # ENVIRONMENT
