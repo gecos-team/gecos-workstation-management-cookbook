@@ -22,25 +22,30 @@ action :test do
    # GCC uri
    file = ::File.read('/etc/gcc.control')
    gcc_control = JSON.parse(file)
+   Chef::Log.debug("connectivity.rb ::: gcc_control => #{gcc_control}")
 
    # Defaults: target = GCC 
    target = new_resource.target || gcc_control['uri_gcc']
-   target = URI.parse(target).host || target
-   port = new_resource.port || 80
    Chef::Log.debug("connectivity.rb ::: target => #{target}")
-   Chef::Log.debug("connectivity.rb ::: port => #{port}")
-   Chef::Log.debug("connectivity.rb ::: gcc_control => #{gcc_control}")
-    
-   # Environ proxy variables if exist
-   #node['ohai_gecos']['users'].each do |user|
-   #    Chef::Log.debug("connectivity.rb ::: user =>> #{user}")
-   #    if user.uid.to_i >= 1000
-   #        ENV['HTTP_PROXY']  = shell_out("su - #{user.username} -c \"printenv HTTP_PROXY\"").stdout
-   #        ENV['HTTPS_PROXY'] = shell_out("su - #{user.username} -c \"printenv HTTPS_PROXY\"").stdout
-   #        break
-   #    end
-   #end
 
+   scheme = URI.parse(target).scheme.downcase
+   Chef::Log.debug("connectivity.rb ::: scheme => #{scheme}")
+
+   host = URI.parse(target).host || target
+   Chef::Log.debug("connectivity.rb ::: host => #{host}")
+
+   port = case new_resource.port.nil?
+       when false; new_resource.port
+       when true;  URI.parse(target).port
+   end
+
+   # Defaults
+   port ||= case scheme
+     when 'http';  80
+     when 'https'; 443
+   end
+   Chef::Log.debug("connectivity.rb ::: port  => #{port}")
+    
    # Load new root environment because of proxy environ vars
    proxyenv = '/tmp/proxyenv'  
    file proxyenv do
@@ -65,6 +70,7 @@ action :test do
                ENV['HTTP_PROXY']  = file.scan(/http_proxy=(.*)/).flatten.pop
                ENV['HTTPS_PROXY'] = file.scan(/https_proxy=(.*)/).flatten.pop
        end
+       action :nothing
    end.run_action(:run)
 
    Chef::Log.debug("connectivity.rb ::: ENV['HTTP_PROXY']  => #{ENV['HTTP_PROXY']}")
@@ -89,64 +95,25 @@ action :test do
    Chef::Log.debug("connectivity.rb ::: https_proxy_host => #{https_proxy_host}")
    Chef::Log.debug("connectivity.rb ::: https_proxy_port => #{https_proxy_port}")
 
-   if !(http_proxy_host.empty? && https_proxy_host.empty?)
-       # Pinging Proxy
-       proxy_ping = "ping -q -w 1 -c 1 #{http_proxy_host} > /dev/null"
-       ssl_proxy_ping = "ping -q -w 1 -c 1 #{https_proxy_host} > /dev/null"
+   # Gecos Control Center (GCC)
+   wget_opts = case scheme 
+       when 'http';  "-q"
+       when 'https'; "-q --no-check-certificate"
+   end
+   wget_cmd = "wget #{wget_opts} #{scheme}://#{host}:#{port} -O /dev/null"
+   Chef::Log.debug("connectivity.rb ::: wget command => #{wget_cmd}")
 
-       proxy_cmd = shell_out("#{proxy_ping}").exitstatus == 0
-       ssl_proxy_cmd = shell_out("#{ssl_proxy_ping}").exitstatus == 0
-       Chef::Log.debug("connectivity.rb ::: proxy_cmd => #{proxy_cmd}") 
-       Chef::Log.debug("connectivity.rb ::: ssl_proxy_cmd => #{ssl_proxy_cmd}") 
-  
-       test_ok = (proxy_cmd or ssl_proxy_cmd)
-       Chef::Log.debug("connectivity.rb ::: proxy test_ok => #{test_ok}") 
+   wget_exe = shell_out("#{wget_cmd}", :env => {'http_proxy' => ENV['HTTP_PROXY'],'https_proxy' => ENV['HTTPS_PROXY']})
+   test_ok = wget_exe.exitstatus == 0
+   Chef::Log.debug("connectivity.rb ::: GCC test_ok => #{test_ok}") 
+   Chef::Log.debug("connectivity.rb ::: wget.exitstatus => #{wget_exe.exitstatus}") 
+
+   node.normal['gcc_link'] = if test_ok
+      true
+   else
+      false
    end
 
-   # Pinging Gecos Control Center (GCC)
-   if (test_ok)
-       ping = "ping -q -w 1 -c 1 #{target} > /dev/null"
-       wget = "wget -q --no-check-certificate #{target}:#{port} -O /dev/null"
-   
-       ping_cmd = shell_out("#{ping}").exitstatus == 0
-       wget_cmd = shell_out("#{wget}", :env => {'http_proxy' => ENV['HTTP_PROXY'],'https_proxy' => ENV['HTTPS_PROXY']}).exitstatus == 0
-
-       test_ok = (ping_cmd && wget_cmd)
-	
-       node.normal['gcc_link'] = if test_ok
-           true
-       else
-          false
-       end
-       Chef::Log.debug("connectivity.rb ::: GCC test_ok => #{test_ok}") 
-   end
-
-   # Commands
-   #ping   = "ping -q -w 1 -c 1 #{target} > /dev/null"
-   #wget   = "wget -q --no-check-certificate #{target}:#{port} -O /dev/null"
-   #netcat = "netcat -z #{target} #{port} &>/dev/null"
-
-   # HTTP
-   #netcat = "netcat -z -X connect -x #{http_proxy_host}:#{http_proxy_port} #{target} #{port} &>/dev/null" if not http_proxy_host.empty?
-
-   # HTTPS
-   #netcat_ssl = "netcat -z -X connect -x #{https_proxy_host}:#{https_proxy_port} #{target} #{port} &>/dev/null" if not https_proxy_host.empty?
-
-   #Chef::Log.debug("connectivity.rb ::: ping command => #{ping}") 
-   #Chef::Log.debug("connectivity.rb ::: netcat command => #{netcat}") 
-   #Chef::Log.debug("connectivity.rb ::: wget command => #{wget}") 
-
-   # Testing
-   #ping_cmd  = shell_out("#{ping}").exitstatus == 0
-   #http_cmd  = shell_out("#{netcat} && #{wget}", :env => {'http_proxy' => ENV['HTTP_PROXY']}).exitstatus == 0
-   #https_cmd = shell_out("#{netcat_ssl} && #{wget}", :env => {'https_proxy' => ENV['HTTPS_PROXY']}).exitstatus == 0
-   
-   #test_ok = if not https_proxy_host.empty?
-   # ping_cmd && http_cmd && https_cmd
-   #    else
-   # ping_cmd && http_cmd
-   #end
-   
    # ATTENTION: This resource does not change if there is connectivity
    new_resource.updated_by_last_action(!test_ok)
 end
@@ -183,21 +150,23 @@ action :recovery do
           src = NETBACKUP_DIR + bakdir
           Chef::Log.debug("connectivity.rb ::: RECOVERY action - src=#{src}")
           BACKUPS.each do |bak|
+              Chef::Log.debug("connectivity.rb ::: RECOVERY action - bak=#{bak}")
               if ::File.file?(bak)
+                  Chef::Log.debug("connectivity.rb ::: RECOVERY action - is File")
                   FileUtils.rm bak
                   FileUtils.cp "#{src}#{bak}", bak if ::File.exists?("#{src}#{bak}")
               elsif ::File.directory?(bak)
+                  Chef::Log.debug("connectivity.rb ::: RECOVERY action - is Directory")
                   FileUtils.rm_rf bak
                   FileUtils.cp_r "#{src}#{bak}", bak if ::File.exists?("#{src}#{bak}")
+                  Chef::Log.debug("connectivity.rb ::: RECOVERY action - directory deleted? #{::File.directory?(bak)}")
               end
           end
 
           service 'network-manager' do
               case $gecos_os
-              when "GECOS V3"
-                provider Chef::Provider::Service::Systemd
-              else
-                provider Chef::Provider::Service::Upstart
+                  when "GECOS V2","Gecos V2 Lite"; provider Chef::Provider::Service::Upstart
+                  else provider Chef::Provider::Service::Systemd
               end
               action :nothing
           end.run_action(:restart)
