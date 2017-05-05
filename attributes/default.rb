@@ -15,7 +15,6 @@ default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:support_os] = ["GECOS
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyserver] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyport] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyuser] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxypasswd] = ''
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:keepalive] = 0
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:autostart] = false
 default[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:connections] = []
