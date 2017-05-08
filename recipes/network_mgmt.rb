@@ -28,6 +28,12 @@ gecos_ws_mgmt_system_proxy 'proxyconf' do
 end
 
 gecos_ws_mgmt_forticlientvpn 'configure vpn connections for all users' do
+  proxyserver node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyserver]
+  proxyport node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyport]
+  proxyuser node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyuser]
+  keepalive node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:keepalive]
+  autostart node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:autostart]
+  connections node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:connections]
   job_ids node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:job_ids]
   support_os node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:support_os]
   action  :setup
