@@ -19,6 +19,7 @@ include Chef::Mixin::ShellOut
 action :test do
    Chef::Log.debug("connectivity.rb ::: TEST action")
 
+   # Initialize vars
    test_ok = true
 
    # GCC uri
@@ -31,23 +32,26 @@ action :test do
    Chef::Log.debug("connectivity.rb ::: target => #{target}")
 
    scheme = URI.parse(target).scheme.downcase
-   Chef::Log.debug("connectivity.rb ::: scheme => #{scheme}")
+   # Targets
+   targets = case new_resource.target.nil?
+       when true then
+           # GCC url
+           fgcc = ::File.read('/etc/gcc.control')
+           gcc_json = JSON.parse(fgcc)
+           Chef::Log.debug("connectivity.rb ::: gcc_control => #{gcc_json}")
+ 
+           # CHEF-SERVER url
+           fchef = ::File.read('/etc/chef.control')
+           chef_json = JSON.parse(fchef)
+           Chef::Log.debug("connectivity.rb ::: chef_server => #{chef_json}")
 
-   host = URI.parse(target).host || target
-   Chef::Log.debug("connectivity.rb ::: host => #{host}")
-
-   port = case new_resource.port.nil?
-       when false; new_resource.port
-       when true;  URI.parse(target).port
+           [gcc_json['uri_gcc'], chef_json['chef_server_url']]
+       else 
+           [new_resource.target]
    end
+   Chef::Log.debug("connectivity.rb ::: targets => #{targets}")
 
-   # Defaults
-   port ||= case scheme
-     when 'http';  80
-     when 'https'; 443
-   end
-   Chef::Log.debug("connectivity.rb ::: port  => #{port}")
-    
+   # Proxy
    proxy_from_etc = proxy_ssl_from_etc = nil
    ruby_block "HTTP(S)_PROXY etc_environment" do
        block do
@@ -66,60 +70,80 @@ action :test do
    
    Chef::Log.debug("connectivity.rb ::: proxy_from_etc => #{proxy_from_etc}")
    Chef::Log.debug("connectivity.rb ::: proxy_ssl_from_etc => #{proxy_ssl_from_etc}")
+   # Testing connection
+   targets.each do |target|
+       Chef::Log.debug("connectivity.rb ::: target => #{target}")
 
-   # GCC or target url
-   url = URI.parse("#{scheme}://#{host}:#{port}")
+       scheme = URI.parse(target).scheme.downcase
+       Chef::Log.debug("connectivity.rb ::: scheme => #{scheme}")
 
-   begin
-      # Using proxy if exists
-      proxy = case scheme
-          when 'http' then  
-              URI.parse(proxy_from_etc)
-          when 'https'then
-              URI.parse(proxy_ssl_from_etc)
-      end
- 
-      if proxy
-         http = Net::HTTP.new(url.host, url.port, proxy.host, proxy.port)
-      else
-         http = Net::HTTP.new(url.host, url.port)
-      end
+       host = URI.parse(target).host || target
+       Chef::Log.debug("connectivity.rb ::: host => #{host}")
 
-      if scheme == 'https'
-          http.use_ssl = true
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
+       port = case new_resource.port.nil?
+           when false; new_resource.port
+           when true;  URI.parse(target).port
+       end
 
-      # Following redirects
-      max_follow = 5
-      response = nil
-      max_follow.times{
-          response = http.request_get(url.request_uri)
-          break unless response.kind_of?(Net::HTTPRedirection)
-          url = URI.parse(response['location'])
-      }
+       # Defaults
+       port ||= case scheme
+         when 'http';  80
+         when 'https'; 443
+       end
+       Chef::Log.debug("connectivity.rb ::: port  => #{port}")
+    
+       # Target url
+       url = URI.parse("#{scheme}://#{host}:#{port}")
+
+       begin
+          # Using proxy if exists
+          proxy = case scheme
+              when 'http';  URI.parse(proxy_from_etc)
+              when 'https'; URI.parse(proxy_ssl_from_etc)
+          end
+
+          if proxy
+             http = Net::HTTP.new(url.host, url.port, proxy.host, proxy.port)
+          else
+             http = Net::HTTP.new(url.host, url.port)
+          end
+
+          if scheme == 'https'
+              http.use_ssl = true
+              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          end
+
+          # Following redirects
+          max_follow = 5
+          response = nil
+          max_follow.times{
+              response = http.request_get(url.request_uri)
+              break unless response.kind_of?(Net::HTTPRedirection)
+              url = URI.parse(response['location'])
+          }
       
-      Chef::Log.debug("connectivity.rb ::: response.code #{response.code}") 
-      Chef::Log.debug("connectivity.rb ::: response.code #{response.code}") 
-      test_ok = case response  
-          when Net::HTTPOK; true
-          else false
-      end
+          Chef::Log.debug("connectivity.rb ::: response.code #{response.code}") 
+          test_ok &&= case response  
+              when Net::HTTPOK; true
+              else false
+          end
 
-   rescue Timeout::Error, EOFError,
-      Errno::EINVAL, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ECONNREFUSED,
-      Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+       rescue Timeout::Error, EOFError,
+          Errno::EINVAL, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ENETUNREACH,
+          Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
 
-      Chef::Log.debug("connectivity.rb ::: There was an error connection. #{e}") 
-      test_ok = false
-
-   ensure
-      Chef::Log.debug("connectivity.rb ::: GCC test_ok => #{test_ok}") 
-      node.normal['gcc_link'] = test_ok
-
-      # ATTENTION: This resource does not change if there is connectivity
-      new_resource.updated_by_last_action(!test_ok)
+          Chef::Log.debug("connectivity.rb ::: There was an error connection. #{e}") 
+          test_ok = false
+       ensure
+          break unless test_ok
+       end
    end
+
+   Chef::Log.debug("connectivity.rb ::: GCC test_ok => #{test_ok}") 
+   node.normal['gcc_link'] = test_ok
+
+   # ATTENTION: This resource does not change if there is connectivity
+   new_resource.updated_by_last_action(!test_ok)
 end
 
 DATE = DateTime.now.to_time.to_i.to_s

@@ -38,6 +38,8 @@ action :setup do
           variables(
             :app_update => app_update
           )
+          not_if {app_update.nil?}
+          action :nothing
         end.run_action(:create)
 
         template "/etc/firefox/proxy-prefs.js" do
@@ -47,6 +49,8 @@ action :setup do
             :settings => new_resource.config_firefox
           )
           not_if {installdir.empty?}
+          not_if {new_resource.config_firefox['mode'].nil?} 
+          action :nothing
         end.run_action(:create)
 
         link "#{installdir}/update.js" do

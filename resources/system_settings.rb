@@ -10,7 +10,7 @@
 #
 
 
-actions :set, :unset, :lock, :unlock
+actions :set, :unset, :lock, :unlock, :clear
 
 attribute :schema, :kind_of => String, :required => true
 attribute :name, :kind_of => String, :name_attribute => true

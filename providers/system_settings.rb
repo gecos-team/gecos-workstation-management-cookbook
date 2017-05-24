@@ -124,3 +124,23 @@ action :unlock do
     command "dconf update"
   end.run_action(:run)
 end
+
+action :clear do
+  dconfdb = 'gecos'
+  schema = new_resource.schema
+  regex = "#{schema.gsub('/','-')}*"
+
+  # Delete all files of schema
+  Dir["/etc/dconf/db/#{dconfdb}.d/#{regex}"].each do |fe|
+    Chef::Log.debug("system_settings.rb - fe:#{fe}")
+    file "#{fe}" do
+      backup false
+      action :nothing
+    end.run_action(:delete)
+  end
+
+  execute "update-dconf" do
+    action :nothing
+    command "dconf update"
+  end.run_action(:run)
+end
