@@ -81,8 +81,13 @@ action :setup do
           end
         end
 
+        user = homedir.scan(/\/home\/(.*)/i).flatten.pop
+        Chef::Log.info("forticlientvpn.rb ::: user = #{user}")
         template user_fctlsslvpnhistory do
           source "fctlsslvpnhistory.erb"
+          owner "#{user}"
+          group "#{user}"
+          mode  '644'
           variables(
             :proxyserver => res_proxyserver,
             :proxyport => res_proxyport,
