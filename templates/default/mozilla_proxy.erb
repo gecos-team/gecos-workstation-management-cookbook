@@ -5,11 +5,11 @@
 pref("network.proxy.type",0);
 <%  when 1 %>
 pref("network.proxy.type",1);
-<% if not @settings['http_proxy'].nil? %>
+<% if @settings['http_proxy'] and !@settings['http_proxy'].empty?  %>
 pref("network.proxy.http","<%= @settings['http_proxy'] %>");
 pref("network.proxy.http_port", <%= @settings['http_proxy_port'] %>);
 <% end %>
-<% if not @settings['https_proxy'].nil? %>
+<% if @settings['https_proxy'] and !@settings['https_proxy'].empty? %>
 pref("network.proxy.ssl","<%= @settings['https_proxy'] %>");
 pref("network.proxy.ssl_port", <%= @settings['https_proxy_port'] %>);
 <% end %>
