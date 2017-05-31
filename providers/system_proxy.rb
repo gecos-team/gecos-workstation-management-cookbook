@@ -86,6 +86,7 @@ action :presetup do
                 # Remove trailing slash
                 global_settings['http_proxy']  = global_settings['http_proxy'].chomp('/')  unless global_settings['http_proxy'].empty?
                 global_settings['https_proxy'] = global_settings['https_proxy'].chomp('/') unless global_settings['https_proxy'].empty?
+                Chef::Log.debug("system_proxy.rb ::: global_settings:  #{global_settings}")
                 
                 # Checking if there are changes between system and policy configuration
                 system_http_proxy  = node['ohai_gecos']['envs']['HTTP_PROXY']  || ENV['HTTP_PROXY']  || ENV['http_proxy']  || ''
@@ -114,7 +115,13 @@ action :presetup do
                             system_https_proxy_host == policy_https_proxy_host &&
                             system_https_proxy_port == policy_https_proxy_port 
 
-                Chef::Log.debug("system_proxy.rb ::: nochanges: #{nochanges}")                   
+                Chef::Log.debug("system_proxy.rb ::: nochanges: #{nochanges}")                
+                # Disable proxy
+                nochanges &&= global_settings['disable_proxy'] == false
+                Chef::Log.debug("system_proxy.rb ::: nochanges[disable_proxy]: #{nochanges}")                   
+                # PAC
+                nochanges &&= global_settings['proxy_autoconfig_url'].nil?
+                Chef::Log.debug("system_proxy.rb ::: nochanges[autoconfig_url]: #{nochanges}")                   
             end
             
             # MOZILLA APPS CONFIG
@@ -163,6 +170,9 @@ action :presetup do
                       # Remove trailing slash
                       mozilla_settings['http_proxy']  = mozilla_settings['http_proxy'].chomp('/')   unless mozilla_settings['http_proxy'].empty?
                       mozilla_settings['https_proxy'] = mozilla_settings['https_proxy'].chomp('/')  unless mozilla_settings['http_proxy'].empty?
+                      # Bugfix: Only host, not url
+                      mozilla_settings['http_proxy'] = URI.parse(mozilla_settings['http_proxy']).host
+                      mozilla_settings['https_proxy'] = URI.parse(mozilla_settings['https_proxy']).host
                             
                     when "AUTOMATIC" 
                       mozilla_settings = {
@@ -173,9 +183,25 @@ action :presetup do
                 
                 mozilla_settings['no_proxies_on'] = new_resource.mozilla_config['no_proxies_on']
                 Chef::Log.debug("system_proxy.rb - mozilla_settings: #{mozilla_settings}")
+                gecos_ws_mgmt_appconfig_firefox "Firefox proxy configuration" do
+                  provider "gecos_ws_mgmt_appconfig_firefox"
+                  config_firefox mozilla_settings
+                  job_ids new_resource.job_ids
+                  support_os new_resource.support_os
+                  action :nothing
+                end.run_action(:setup)
+
+                gecos_ws_mgmt_appconfig_thunderbird "Thunderbird proxy configuration" do
+                  provider "gecos_ws_mgmt_appconfig_thunderbird"
+                  config_thunderbird mozilla_settings
+                  job_ids new_resource.job_ids
+                  support_os new_resource.support_os
+                  action :nothing
+                end.run_action(:setup)
             end
                 
             if (nochanges && node.normal['gcc_link']) || (!nochanges && !node.override['gcc_link'])
+                Chef::Log.info("system_proxy.rb ::: Nothing to do!")
                 job_ids = new_resource.job_ids
                 job_ids.each do |jid|
                     node.normal['job_status'][jid]['status'] = 0
@@ -187,12 +213,14 @@ action :presetup do
 
                 new_resource.updated_by_last_action(false)
             else
+                Chef::Log.info("system_proxy.rb ::: Applying changes!")
                 gecos_ws_mgmt_connectivity 'proxy_backup' do
                     action :nothing
                     #only_if {not nochanges}
                 end.run_action(:backup)
                             
                 action_setup
+                Chef::Log.info("system_proxy.rb ::: Changes applied!")
             end
 
         else
@@ -226,9 +254,18 @@ action :setup do
 
         if not global_settings['disable_proxy'] 
 
-            # DESKTOP APPLICATIONS
-            if global_settings['proxy_autoconfig_url'].nil? || global_settings['proxy_autoconfig_url'].empty?
+          # Clearing old configuration
+          Chef::Log.debug("system_proxy.rb - System-Wide Proxy clearing")
+          gecos_ws_mgmt_system_settings "System-Wide Proxy Clear" do
+            provider "gecos_ws_mgmt_system_settings"
+            schema   "system/proxy"
+            action   :nothing
+          end.run_action(:clear)
+            
+          # DESKTOP APPLICATIONS
+          if global_settings['proxy_autoconfig_url'].nil? || global_settings['proxy_autoconfig_url'].empty?
           
+            # Appliying new configuration
             Chef::Log.debug("system_proxy.rb - System-Wide Proxy Mode Manual")
             gecos_ws_mgmt_system_settings "System-Wide Proxy Mode" do
               provider "gecos_ws_mgmt_system_settings"
@@ -301,7 +338,7 @@ action :setup do
               variables(
                  :proxy_settings => global_settings
               )
-               action :nothing
+              action :nothing
             end.run_action(:create)
 
           else # PROXY AUTOCONFIG URL (PAC)
@@ -337,6 +374,10 @@ action :setup do
 
           end
 
+          # NOTIFICATIONS
+          # Do notify the connectivity resource to test the connection                               
+          new_resource.updated_by_last_action(true)
+          
         elsif global_settings['disable_proxy']
 
             # DESKTOP APPLICATIONS
@@ -396,37 +437,17 @@ action :setup do
               action :nothing
             end.run_action(:delete)
         
-        end      
-             
-        # FIREFOX
-        gecos_ws_mgmt_appconfig_firefox "Firefox proxy configuration" do
-          provider "gecos_ws_mgmt_appconfig_firefox"
-          config_firefox mozilla_settings
-          job_ids new_resource.job_ids
-          support_os new_resource.support_os
-        end.run_action(:setup)
-
-        # THUNDERBIRD
-        gecos_ws_mgmt_appconfig_thunderbird "Thunderbird proxy configuration" do
-          provider "gecos_ws_mgmt_appconfig_thunderbird"
-          config_thunderbird mozilla_settings
-          job_ids new_resource.job_ids
-          support_os new_resource.support_os
-        end.run_action(:setup)
+        end
 
         # save current job ids (new_resource.job_ids) as "ok"
         job_ids = new_resource.job_ids
         job_ids.each do |jid|
             node.normal['job_status'][jid]['status'] = 0
         end
-
-        # NOTIFICATIONS
-        # Do notify the connectivity resource to test the connection                               
-        new_resource.updated_by_last_action(true)
         
     rescue Exception => e
         # just save current job ids as "failed"
-    # save_failed_job_ids
+        # save_failed_job_ids
         Chef::Log.error(e.message)
         job_ids = new_resource.job_ids
         job_ids.each do |jid|
