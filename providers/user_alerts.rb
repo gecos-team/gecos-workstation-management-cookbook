@@ -16,9 +16,6 @@ include Chef::Mixin::ShellOut
 action :setup do
 
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
 
       # Installs the notify-send command
@@ -36,24 +33,8 @@ action :setup do
         username = nameuser.gsub('###','.')
         usernames << username
         homedir = `eval echo ~#{username}`.gsub("\n","")
-
-        # Needed for notify-send to get the user display.
-        # See: http://unix.stackexchange.com/questions/111188/using-notify-send-with-cron
-        dbus_address = nil
-        begin
-          dbus_file = Dir["/home/#{username}/.dbus/session-bus/*0"].last
-          dbus_address = open(dbus_file).grep(/^DBUS_SESSION_BUS_ADDRESS=(.*)/){$1}[0]
-        rescue Exception => e
-           dbus_address = nil
-        end        
-        
-        cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority"}
-        unless dbus_address.nil?
-            cron_vars = {"DISPLAY" => ":0.0", "XAUTHORITY" => "#{homedir}/.Xauthority", "DBUS_SESSION_BUS_ADDRESS" => dbus_address}
-        end
-        
-        now = DateTime.now
-        
+        dbus_address = `grep -z DBUS_SESSION_BUS_ADDRESS /proc/\` ps -u #{username} h -o pid| tail -n1\`/environ|cut -d= -f2-`.chop
+      
         icon = ''
         if user.attribute?("icon")
           icon = user.icon
@@ -75,39 +56,25 @@ action :setup do
             change = true
           end
         end
-
-        cron "user alert for '#{username}'" do
-          environment cron_vars
-          minute "#{now.minute + 5}" # In 5 mins from now
-          hour "#{now.hour}"
-          day "#{now.day}"
-          month "#{now.month}"
-          user "#{username}"
-          command "/usr/bin/notify-send -u #{user.urgency} -i #{icon} \"#{user.summary}\" \"#{user.body}\""
-          only_if do not ::File.exist?("#{homedir}/.user-alert") or change end
-          action :nothing
-        end.run_action(:create)
-
+# Messages are sent only if 
+# a) they are different from the previous message
+# b) there's no recorded previous message
+        if not ::File.exist?("#{homedir}/.user-alert") or change         
+          send_command = "sudo -u #{username} DBUS_SESSION_BUS_ADDRESS=#{dbus_address} /usr/bin/notify-send -u #{user.urgency} -i #{icon} \"#{user.summary}\" \"#{user.body}\""
+          sent = system (send_command)
+        end
+# We copy sent message to a local, per user, file in order not to repeat it
         ::File.open("#{homedir}/.user-alert","w") do |f|
           f.write(msg_hash.to_json)
         end
         
       end
-
+# Delete message file for user in this computer no longer included in an alert policy 
       node['ohai_gecos']['users'].each do | user |
         if not usernames.include?(user[:username])
           file "#{user.home}/.user-alert" do
-            owner user[:username]
-            group user[:username]
-            mode '0755'
             action :nothing
           end.run_action(:delete)
-
-          cron "user alert for '#{user[:username]}'" do
-            user "#{user[:username]}"
-            action :nothing
-          end.run_action(:delete)
-
         end
       end
 
