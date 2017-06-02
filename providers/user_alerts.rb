@@ -45,8 +45,8 @@ action :setup do
         msg_hash = {}
         msg_hash['urgency'] = user.urgency
         msg_hash['icon'] = icon
-        msg_hash['summary'] = user.summary.gsub("\u0000", '')
-        msg_hash['body'] = user.body.gsub("\u0000", '')
+        msg_hash['summary'] = user.summary
+        msg_hash['body'] = user.body
 
 
         if ::File.exist?("#{homedir}/.user-alert")
@@ -60,7 +60,7 @@ action :setup do
 # a) they are different from the previous message
 # b) there's no recorded previous message
         if not ::File.exist?("#{homedir}/.user-alert") or change         
-          send_command = "sudo -u #{username} DBUS_SESSION_BUS_ADDRESS=#{dbus_address} /usr/bin/notify-send -u #{user.urgency} -i #{icon} \"#{msg_hash.summary}\" \"#{msg_hash.body}\""
+          send_command = "sudo -u #{username} DBUS_SESSION_BUS_ADDRESS=#{dbus_address} /usr/bin/notify-send -u #{user.urgency} -i #{icon} \"#{user.summary}.gsub("\u0000", '')\" \"#{user.body}.gsub("\u0000", '')\""
           sent = system (send_command)
         end
 # We copy sent message to a local, per user, file in order not to repeat it
