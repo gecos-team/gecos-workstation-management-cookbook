@@ -45,8 +45,8 @@ action :setup do
         msg_hash = {}
         msg_hash['urgency'] = user.urgency
         msg_hash['icon'] = icon
-        msg_hash['summary'] = user.summary
-        msg_hash['body'] = user.body
+        msg_hash['summary'] = user.summary.gsub("\u0000", '')
+        msg_hash['body'] = user.body.gsub("\u0000", '')
 
 
         if ::File.exist?("#{homedir}/.user-alert")
