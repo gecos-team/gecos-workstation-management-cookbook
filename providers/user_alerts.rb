@@ -41,8 +41,8 @@ action :setup do
         end
 
         change = false
-        user.summary.gsub("\u0000", '')
-        user.body.gsub("\u0000", '')
+        user.summary.gsub!("\u0000", '')
+        user.body.gsub!("\u0000", '')
         msg_hash = {}
         msg_hash['urgency'] = user.urgency
         msg_hash['icon'] = icon
