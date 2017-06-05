@@ -33,7 +33,8 @@ action :setup do
         username = nameuser.gsub('###','.')
         usernames << username
         homedir = `eval echo ~#{username}`.gsub("\n","")
-        dbus_address = `grep -z DBUS_SESSION_BUS_ADDRESS /proc/\` ps -u #{username} h -o pid| tail -n1\`/environ|cut -d= -f2-`.chop
+        last_pid=`ps -u #{username} h -o pid| tail -n1`.strip
+        dbus_address = `grep -z DBUS_SESSION_BUS_ADDRESS /proc/#{last_pid}/environ | cut -d= -f2-`.chop
       
         icon = ''
         if user.attribute?("icon")
