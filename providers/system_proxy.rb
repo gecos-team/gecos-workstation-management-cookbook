@@ -349,6 +349,7 @@ action :setup do
               schema   "system/proxy"
               name     "mode"
               value    "auto"
+              action   :nothing
             end.run_action(:set)
 
             gecos_ws_mgmt_system_settings "System-Wide Proxy Autoconfig URL" do
@@ -356,6 +357,7 @@ action :setup do
               schema   "system/proxy"
               name     "autoconfig-url"
               value   global_settings['proxy_autoconfig_url']
+              action   :nothing
             end.run_action(:set)
                         
             # ENVIRONMENT
