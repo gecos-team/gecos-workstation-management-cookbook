@@ -26,51 +26,76 @@ nochanges = true
 # Checking if resource changed
 action :presetup do
 
-    Chef::Log.info("network.rb ::: Starting PRESETUP ... Checking if something changed")
+    begin 
 
-    if new_resource.support_os.include?($gecos_os)
+        Chef::Log.info("network.rb ::: Starting PRESETUP ...")
+        if new_resource.support_os.include?($gecos_os)
 
-        connections = new_resource.connections
-        interfaces = node[:network][:interfaces]
+          connections = new_resource.connections
+          interfaces = node[:network][:interfaces]
+      
+          connections.each do |conn|
+              if not conn[:use_dhcp]
+                  mac_addr = conn[:mac_address]
+                  if conn[:fixed_con][:addresses].empty?
+                      raise "There are not static IP addresses configured"
+                  end
+                  ip_addr  = conn[:fixed_con][:addresses][0][:ip_addr]
+                  netmask  = conn[:fixed_con][:addresses][0][:netmask]
+                  Chef::Log.debug("network.rb ::: presetup action - mac_addr = #{mac_addr}")
+                  Chef::Log.debug("network.rb ::: presetup action - ip_addr  = #{ip_addr}")
+                  Chef::Log.debug("network.rb ::: presetup action - netmask  = #{netmask}")
 
-        connections.each do |conn|
-            mac_addr = conn[:mac_address]
-            ip_addr  = conn[:fixed_con][:addresses][0][:ip_addr]
-            netmask  = conn[:fixed_con][:addresses][0][:netmask]
-            Chef::Log.debug("network.rb ::: presetup action - mac_addr = #{mac_addr}")
-            Chef::Log.debug("network.rb ::: presetup action - ip_addr  = #{ip_addr}")
-            Chef::Log.debug("network.rb ::: presetup action - netmask  = #{netmask}")
-
-            addr_data = interfaces.select{|iface,props| props[:addresses].has_key?(mac_addr.upcase)}.values.shift
-            Chef::Log.debug("network.rb ::: presetup action - addr_data = #{addr_data}")
-            nochanges &&= ((addr_data[:addresses].has_key?(ip_addr)) and (netmask == addr_data[:addresses][ip_addr][:netmask]))
-            Chef::Log.info("network.rb ::: presetup action - No changes in policy = #{nochanges}")
-        end
+                  addr_data = interfaces.select{|iface,props| props[:addresses].has_key?(mac_addr.upcase)}.values.shift
+                  Chef::Log.debug("network.rb ::: presetup action - addr_data = #{addr_data}")
+                  nochanges &&= ((addr_data[:addresses].has_key?(ip_addr)) and (netmask == addr_data[:addresses][ip_addr][:netmask]))
+                  Chef::Log.info("network.rb ::: presetup action - No changes in policy = #{nochanges}")
+              elsif conn[:use_dhcp]
+                nochanges = false
+              end
+          end
     
-        if (nochanges && node.normal['gcc_link']) || (!nochanges && !node.override['gcc_link'])
+          if (nochanges && node.normal['gcc_link']) || (!nochanges && !node.override['gcc_link'])
 
-            job_ids = new_resource.job_ids
-            job_ids.each do |jid|
-                node.normal['job_status'][jid]['status'] = 0
+              job_ids = new_resource.job_ids
+              job_ids.each do |jid|
+                  node.normal['job_status'][jid]['status'] = 0
+              end
+
+              gecos_ws_mgmt_jobids "network_res" do
+                    recipe "network_mgmt"
+              end.run_action(:reset)
+
+              new_resource.updated_by_last_action(false)
+
+          else
+              #action_backup if not nochanges
+              gecos_ws_mgmt_connectivity 'network_backup' do
+                  action :nothing
+                  #only_if {not nochanges}
+              end.run_action(:backup)
+              action_setup
+          end
+      else
+          Chef::Log.info("This resource is not support into your OS")
+      end
+    rescue Exception => e
+        Chef::Log.error(e)
+        job_ids = new_resource.job_ids
+        job_ids.each do |jid|
+            node.normal['job_status'][jid]['status'] = 1
+            if not e.message.frozen?
+                node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+            else
+                node.normal['job_status'][jid]['message'] = e.message
             end
-
-            gecos_ws_mgmt_jobids "network_res" do
-                recipe "network_mgmt"
-            end.run_action(:reset)
-
-            new_resource.updated_by_last_action(false)
-
-        else
-            #action_backup if not nochanges
-            gecos_ws_mgmt_connectivity 'network_backup' do
-                action :nothing
-                #only_if {not nochanges}
-            end.run_action(:backup)
-            action_setup
-        end
-    else
-      Chef::Log.info("This resource is not support into your OS")
     end
+    ensure
+        gecos_ws_mgmt_jobids "network_res" do
+          recipe "network_mgmt"
+        end.run_action(:reset)
+    end
+
 end
 
 action :setup do
@@ -268,8 +293,11 @@ action :setup do
 
       # network-manager
       service 'network-manager' do
-          provider Chef::Provider::Service::Upstart
-          action :nothing
+        case $gecos_os
+          when "GECOS V2","Gecos V2 Lite"; provider Chef::Provider::Service::Upstart
+          else provider Chef::Provider::Service::Systemd
+        end
+        action :nothing
       end.run_action(:restart)
 
       new_resource.updated_by_last_action(true)
