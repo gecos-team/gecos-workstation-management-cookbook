@@ -12,9 +12,9 @@ action :setup do
   begin
 # We moved OS identification to recipes/default.rb
 # But this recipe launches alone, and default.rb is not executed
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
-#    if new_resource.support_os.include?($gecos_os)
+#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
+#    if new_resource.support_os.include?(os)
+    if new_resource.support_os.include?($gecos_os)
 
       require 'etc'
 
@@ -28,15 +28,14 @@ action :setup do
         fullname = usrdata.name
         passwd = usrdata.password
         actiontorun = usrdata.actiontorun
-        grps = usrdata.groups
         user_home = "/home/#{username}"
 
         
-        if actiontorun == "delete"
+        if actiontorun == "remove"
           Chef::Log.info("Removing local user #{username}")
-  #TODO1 : check if user is not logged before removing process
           user username do
             action :nothing
+            not_if "who | grep -q #{username}"
           end.run_action(:remove)
         else
           Chef::Log.info("Managing local user #{username}")
@@ -57,19 +56,6 @@ action :setup do
               EOH
             action :nothing
           end.run_action(:run)
-                                                                                                              
-          grps.each do |g|
-            begin
-              info = Etc.getgrnam(g)
-              group "#{g}" do
-                append true
-                members username
-                action :nothing
-              end.run_action(:modify)
-            rescue ArgumentError => e
-              Chef::Log.info("Group #{g} does not exist, ignoring..")
-            end
-          end
         end
       end
     else
