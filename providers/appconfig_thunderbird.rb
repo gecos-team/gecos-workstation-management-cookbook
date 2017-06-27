@@ -50,6 +50,7 @@ action :setup do
             :settings => new_resource.config_thunderbird
           )
           not_if {installdir.empty?}
+          not_if {new_resource.config_thunderbird['mode'].nil?}
         end.run_action(:create)
 
         link "#{installdir}/proxy-prefs.js" do
