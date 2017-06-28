@@ -1829,7 +1829,7 @@ package_js = {
       uniqueItems: true,
       items: {
         type: "object",
-        required: ["name", "action"],
+        required: ["name", "version", "action"],
         order: ["name", "version", "action"],
         mergeIdField: ["name"],
         mergeActionField: "action",
