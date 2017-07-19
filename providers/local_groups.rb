@@ -18,44 +18,33 @@ action :setup do
 
       groups_list = new_resource.groups_list
 
-    	groups_list.each do |item|
-    	  gid = item.group
-    	  uids = item.users
-    	  if item.attribute?(:remove_users)
-    	    remove = item.remove_users
-    	  else
-    	    remove = false
-    	  end
-    	  if item.attribute?(:create)
-    	    create = item.create
-    	  else
-    	    create = false
-    	  end
-    	  if create
-    	    group "#{gid}" do
-    	      members uids
-    	      append true
-    	      action :nothing
-    	    end.run_action(:create)
-    	  else
-    	    if remove
-    	      group "#{gid}" do
-    	        excluded_members uids
-    	        append true
-    	        action :nothing
-              end.run_action(:modify)
-            else
-  	      group "#{gid}" do
-    	        members uids
-    	        append true
-    	        action :nothing
-              end.run_action(:modify)
-            end
-          end
+      groups_list.each do |item|
+      
+
+        if item.action == 'add'
+
+          group "#{item.group}" do
+            append true
+            members item.user
+            action :nothing
+            not_if "grep %#{item.group} /etc/sudoers"
+          end.run_action(:create)
+
+        elsif item.action == 'remove'
+
+          group "#{item.group}" do
+            append true
+            excluded_members item.user
+            action :nothing
+            not_if "grep %#{item.group} /etc/sudoers"
+          end.run_action(:modify)
+
         end
-      else
-        Chef::Log.info("This resource is not support into your OS")
+
       end
+    else
+      Chef::Log.info("This resource is not support into your OS")
+    end
 
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
