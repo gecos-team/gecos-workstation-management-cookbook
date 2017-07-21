@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.3"
+version           "0.5.4"
 
 depends "apt"
 depends "chef-client"
@@ -1906,10 +1906,12 @@ local_users_js = {
       items: {
         type:"object",
         required: ["user","actiontorun"],
-        order:["actiontorun", "user", "password", "name", "groups"],
+        order:["actiontorun", "user", "password", "name"],
+        mergeIdField: ['user'],
+        mergeActionField: 'actiontorun',
+        additionalProperties: false,
         properties:{
-          actiontorun: {enum: ["create","modify","delete"],type: "string", title: "Action", title_es: "Acción"},
-          groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
+          actiontorun: {enum: ["add","remove"],type: "string", title: "Action", title_es: "Acción"},
           user: { title: "User", title_es: "Usuario", type: "string" },
           name: { title: "Full Name", title_es: "Nombre Completo", type: "string" },
           password: { title: "Password", title_es: "Contraseña", type: "string"}
