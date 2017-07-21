@@ -78,7 +78,7 @@ action :setup do
                 
             when 'remove'
                 # Remove a package
-                package pkg do
+                package pkg.name do
                     action :purge
                 end
                 
