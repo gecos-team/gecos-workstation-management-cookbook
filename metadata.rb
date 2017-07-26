@@ -1817,25 +1817,28 @@ package_js = {
   title: "Packages management",
   title_es: "Administración de paquetes",
   type: "object",
-  order:["package_list", "pkgs_to_remove"],
+  order:["package_list"],
   is_mergeable: true,
   properties:
   {
     package_list: {
       type:"array",
-      title: "Package list to install",
-      title_es: "Lista de paquetes para instalar",
+      title: "Package list",
+      title_es: "Lista de paquetes",
       minItems: 0,
       uniqueItems: true,
-      items: {type: "string"}
-    },
-    pkgs_to_remove: {
-      type:"array",
-      title: "Package list to remove",
-      title_es: "Lista de paquetes para eliminar",
-      minItems: 0,
-      uniqueItems: true,
-      items: {type: "string"}
+      items: {
+        type: "object",
+        required: ["name", "version", "action"],
+        order: ["name", "version", "action"],
+        mergeIdField: ["name"],
+        mergeActionField: "action",
+        properties: {
+          name: {title: "Name", title_es: "Nombre", type: "string"},
+          version: {title: "Version", title_es: "Versión", type: "string"},
+          action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+        }
+     }
     },
     job_ids: {
       type: "array",
@@ -1903,10 +1906,12 @@ local_users_js = {
       items: {
         type:"object",
         required: ["user","actiontorun"],
-        order:["actiontorun", "user", "password", "name", "groups"],
+        order:["actiontorun", "user", "password", "name"],
+        mergeIdField: ['user'],
+        mergeActionField: 'actiontorun',
+        additionalProperties: false,
         properties:{
-          actiontorun: {enum: ["create","modify","delete"],type: "string", title: "Action", title_es: "Acción"},
-          groups: { title: "Groups", title_es: "Grupos", type: "array",items: { type: "string" } },
+          actiontorun: {enum: ["add","remove"],type: "string", title: "Action", title_es: "Acción"},
           user: { title: "User", title_es: "Usuario", type: "string" },
           name: { title: "Full Name", title_es: "Nombre Completo", type: "string" },
           password: { title: "Password", title_es: "Contraseña", type: "string"}

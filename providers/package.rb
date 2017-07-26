@@ -11,52 +11,86 @@
 
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
       if new_resource.package_list.any? 
         Chef::Log.info("Installing package list")
         new_resource.package_list.each do |pkg|
-# Support for package version blocking
-# Only ONE <package>=<version> per line accepted
-	pkg.strip!
-	if pkg =~ /\S+\s*=\s*\d+\S+\Z/
-	  parts = pkg.split("=")
-	  package parts[0].strip do
-	    version parts[1].strip
-# Added to support package downgrade
-	    options "--force-yes"
-            action :nothing
-          end.run_action(:install)
-          file '/etc/apt/preferences.d/'+parts[0].strip+'.ref' do
-            content "Package: #{parts[0].strip}\nPin: version #{parts[1].strip}\nPin-Priority: 1000\n"
-            mode '0644'
-            owner 'root'
-            group 'root'
-            action :create
-          end
-        else
-# Normal invocation of package resource: accepts one or more packages per line
-          package pkg do
-            action :nothing
-          end.run_action(:install)
-          file '/etc/apt/preferences.d/'+pkg.strip+'.ref' do
-            action(:delete)
-          end
-	end
-      end
-    end
+            Chef::Log.debug("Package: #{pkg}")
+            case pkg.action
+            when 'add'
+                # Add a package
 
-      if new_resource.pkgs_to_remove.any?
-        Chef::Log.info("Uninstalling packages not assigned to node")
-        new_resource.pkgs_to_remove.each do |pkg|
-          package pkg do
-            action :nothing
-          end.run_action(:purge)
-          file '/etc/apt/preferences.d/'+pkg.strip+'.ref' do
-            action(:delete)
-          end
+                # Execute apt-get update every 24 hours
+                execute "apt-get-update-periodic" do
+                    command "apt-get update"
+                    ignore_failure true
+                    only_if {
+                        ::File.exists?('/var/lib/apt/periodic/update-success-stamp') &&
+                        ::File.mtime('/var/lib/apt/periodic/update-success-stamp') < Time.now - 86400
+                    }
+                end                
+                
+                # Check the version parameter
+                case pkg.version
+                when 'current'
+                    # Remove the version pinning of this package (if exists)
+                    file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                        action(:delete)
+                    end
+                    
+                    # Install the current version of the package 
+                    # or ensure that any version of this package is installed
+                    package pkg.name do
+                        action :install
+                    end                
+                
+                when 'lastest'
+                    # Remove the version pinning of this package (if exists)
+                    file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                        action(:delete)
+                    end
+
+                    # Install a package and/or ensure that a package is the latest version.
+                    package pkg.name do
+                        action :upgrade
+                    end
+                    
+                else
+                    # Install a certain version of the package
+                    package pkg.name do
+                        version pkg.version
+                        # Added to support package downgrade
+                        options "--force-yes"
+                        action :install
+                    end
+
+                    # Ping this version to prevent updates
+                    file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                        content "Package: #{pkg.name}\nPin: version #{pkg.version}\nPin-Priority: 1000\n"
+                        mode '0644'
+                        owner 'root'
+                        group 'root'
+                        action :create
+                    end
+                    
+                
+                end
+                
+            when 'remove'
+                # Remove a package
+                package pkg.name do
+                    action :purge
+                end
+                
+                # Remove the version pinning of this package (if exists)
+                file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                    action(:delete)
+                end
+                
+            else
+                raise "Action for package #{pkg.name}=#{pkg.version} is not add nor remove (#{pkg.action})"
+            end 
+            
         end
       end
     else

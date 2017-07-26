@@ -38,7 +38,6 @@ default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:package_list] = []
-default[:gecos_ws_mgmt][:software_mgmt][:package_res][:pkgs_to_remove] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite", "Ubuntu 14.04.1 LTS"]
