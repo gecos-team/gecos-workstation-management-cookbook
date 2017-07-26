@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.4"
+version           "0.5.5"
 
 depends "apt"
 depends "chef-client"
@@ -1942,15 +1942,18 @@ local_groups_js = {
       type:"array",
       title: "Group to manage",
       title_es: "Grupos para gestionar",
+      uniqueItems: true,
       items: {
         type:"object",
-        required: ["group","users","remove_users","create"],
-        order:["users", "group", "remove_users", "create"],
+        required: ["group","user","action"],
+        order:["group", "user", "action"],
+        mergeIdField: ["group", "user"],
+        mergeActionField: "action",
+        additionalProperties: false,
         properties:{
           group: { type: "string", title: "Group", title_es: "Grupo" },
-          users: { type: "array",title: "Users", title_es: "Usuarios", items: { type: "string" } },
-          remove_users: { type: "boolean", title: "Remove users", title_es: "Eliminar usuarios", description: "Remove users in list", description_es: "Eliminar los usuarios de la lista", default: false },
-          create: { type: "boolean", title: "Create group", title_es: "Crear grupo", description: "Create group if it doesn't exist in node", description_es: "Crear grupo si no existe", default: false } 
+          user: { type: "string",title: "User", title_es: "Usuario" },
+          action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
         }
      }
   },
