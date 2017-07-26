@@ -1817,25 +1817,28 @@ package_js = {
   title: "Packages management",
   title_es: "Administración de paquetes",
   type: "object",
-  order:["package_list", "pkgs_to_remove"],
+  order:["package_list"],
   is_mergeable: true,
   properties:
   {
     package_list: {
       type:"array",
-      title: "Package list to install",
-      title_es: "Lista de paquetes para instalar",
+      title: "Package list",
+      title_es: "Lista de paquetes",
       minItems: 0,
       uniqueItems: true,
-      items: {type: "string"}
-    },
-    pkgs_to_remove: {
-      type:"array",
-      title: "Package list to remove",
-      title_es: "Lista de paquetes para eliminar",
-      minItems: 0,
-      uniqueItems: true,
-      items: {type: "string"}
+      items: {
+        type: "object",
+        required: ["name", "version", "action"],
+        order: ["name", "version", "action"],
+        mergeIdField: ["name"],
+        mergeActionField: "action",
+        properties: {
+          name: {title: "Name", title_es: "Nombre", type: "string"},
+          version: {title: "Version", title_es: "Versión", type: "string"},
+          action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+        }
+     }
     },
     job_ids: {
       type: "array",
