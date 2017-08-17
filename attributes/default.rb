@@ -2,9 +2,9 @@
 default[:gecos_ws_mgmt][:misc_mgmt][:chef_conf_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 default[:gecos_ws_mgmt][:misc_mgmt][:gcc_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids] = []
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:connections] = []
-default[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
+default[:gecos_ws_mgmt][:single_node][:network_res][:job_ids] = []
+default[:gecos_ws_mgmt][:single_node][:network_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
+default[:gecos_ws_mgmt][:single_node][:network_res][:connections] = []
 
 default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:global_config] = {}
 default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:mozilla_config] = {}
