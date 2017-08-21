@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.5"
+version           "0.5.7"
 
 depends "apt"
 depends "chef-client"
@@ -333,7 +333,7 @@ folder_sharing_js = {
   title_es: "Permisos para compartir",
   type: "object",
   required: ["users"],
-  is_mergeable: true,
+  is_mergeable: false,
   properties: {
     users: {
       title: "Users",
