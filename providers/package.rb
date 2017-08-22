@@ -44,7 +44,7 @@ action :setup do
                         action :install
                     end                
                 
-                when 'lastest'
+                when 'latest'
                     # Remove the version pinning of this package (if exists)
                     file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
                         action(:delete)
