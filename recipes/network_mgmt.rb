@@ -45,12 +45,3 @@ gecos_ws_mgmt_mobile_broadband "nm mobile broadband" do
   support_os node[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:support_os]
   action  :setup
 end
-
-gecos_ws_mgmt_network "localhost" do
-  connections node[:gecos_ws_mgmt][:network_mgmt][:network_res][:connections]
-  job_ids node[:gecos_ws_mgmt][:network_mgmt][:network_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:network_mgmt][:network_res][:support_os]
-  action  :presetup
-  notifies :test, 'gecos_ws_mgmt_connectivity[gcc_connectivity]', :immediately
-  subscribes :warn, 'gecos_ws_mgmt_connectivity[gcc_connectivity]', :immediately
-end

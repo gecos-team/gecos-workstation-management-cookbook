@@ -1838,7 +1838,7 @@ package_js = {
           version: {title: "Version", title_es: "Versión", type: "string"},
           action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
         }
-     }
+    }
     },
     job_ids: {
       type: "array",
@@ -2403,17 +2403,23 @@ complete_js = {
   properties: {
     gecos_ws_mgmt: {
       type: "object",
-      required: ["network_mgmt","software_mgmt", "printers_mgmt", "misc_mgmt", "users_mgmt"],
+      required: ["network_mgmt","software_mgmt", "printers_mgmt", "misc_mgmt", "users_mgmt","single_node"],
       properties: {
         network_mgmt: {
           type: "object",
-          required: ["network_res","forticlientvpn_res","mobile_broadband_res","system_proxy_res"],
+          required: ["forticlientvpn_res","mobile_broadband_res","system_proxy_res"],
           properties: {
-            network_res: network_resource_js,
             forticlientvpn_res: forticlientvpn_js,
             mobile_broadband_res: mobile_broadband_js,
             system_proxy_res: system_proxy_js
             #sssd_res: sssd_js
+          }
+        },
+        single_node: {
+          type: "object",
+          required: ["network_res"],
+          properties: {
+            network_res: network_resource_js
           }
         },
         misc_mgmt: {
