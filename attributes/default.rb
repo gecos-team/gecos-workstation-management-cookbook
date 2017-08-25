@@ -84,7 +84,6 @@ default[:gecos_ws_mgmt][:printers_mgmt][:printers_res][:support_os] = ["GECOS V3
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:onstop_update] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:onstart_update] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:days] = []
-default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:auto_updates_rules][:date] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:auto_updates_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
