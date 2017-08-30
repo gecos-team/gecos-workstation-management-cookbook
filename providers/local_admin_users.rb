@@ -17,20 +17,25 @@ action :setup do
     if new_resource.support_os.include?($gecos_os)
 
       local_admin_list = new_resource.local_admin_list
-      local_admin_remove_list = new_resource.local_admin_remove_list
-      if !local_admin_list.empty?
-  	group "sudo" do
-          members local_admin_list
-  	  append true
-          action :nothing
-  	end.run_action(:modify)
-      end
-      if !local_admin_remove_list.empty?
-  	group "sudo" do
-          excluded_members local_admin_remove_list
-  	  append true
-          action :nothing
-  	end.run_action(:modify)
+      local_admin_list.each do |admin|
+      case admin.action
+        when 'add'
+          group "sudo" do
+            members admin.name
+            append true
+            action :nothing
+            only_if "id -u #{admin.name}"
+          end.run_action(:modify)
+        when 'remove'
+          group "sudo" do
+            excluded_members admin.name
+            append true
+            action :nothing
+            only_if "id -u #{admin.name}"
+          end.run_action(:modify)
+        else
+          raise "Action for admin #{admin.name} is not add nor remove (#{admin.action})"
+        end
       end
     else
       Chef::Log.info("This resource is not support into your OS")

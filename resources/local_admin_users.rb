@@ -12,6 +12,5 @@
 actions :setup
 
 attribute :local_admin_list, :kind_of => Array
-attribute :local_admin_remove_list, :kind_of => Array
 attribute :job_ids, :kind_of => Array
 attribute :support_os, :kind_of => Array

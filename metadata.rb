@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.7"
+version           "0.5.8"
 
 depends "apt"
 depends "chef-client"
@@ -2028,7 +2028,7 @@ local_admin_users_js = {
   title_es: "Administradores locales",
   type: "object",
   required: ["local_admin_list"],
-  order: ["local_admin_list", "local_admin_remove_list"],
+  order: ["local_admin_list"],
   is_mergeable: true,
   properties:
   {local_admin_list: {
@@ -2037,15 +2037,17 @@ local_admin_users_js = {
       title_es: "Usuarios", 
       description: "Enter a local user to grant administrator rights",
       description_es: "Escriba un usuario local para concederle permisos de administrador",
-      items: { type:"string"}
-  },
-local_admin_remove_list: {
-      type:"array",
-      title: "users_to_remove",
-      title_es: "Usuarios a eliminar", 
-      description: "Enter a local user to revoke administrator rights",
-      description_es: "Escriba un usuario local para eliminar sus permisos de administrador",
-      items: { type:"string"}
+      items: {
+        type: "object",
+        required: ["name", "action"],
+        order: ["name", "action"],
+        mergeIdField: ["name"],
+        mergeActionField: "action",
+        properties: {
+          name: {title: "Name", title_es: "Nombre", type: "string"},
+          action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+        }
+      }
   },
   job_ids: {
     type: "array",
