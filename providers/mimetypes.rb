@@ -11,7 +11,12 @@
 
 require 'etc'
 require 'chef/mixin/shell_out'
+require 'inifile'
 include Chef::Mixin::ShellOut
+
+# Constants
+DEFAULT_SECTION='Default Applications'
+ADDED_SECTION='Added Associations'
 
 action :setup do
   begin
@@ -20,6 +25,13 @@ action :setup do
        action :nothing
       end.run_action(:install)
 
+      gem_depends = [ 'inifile' ]
+      gem_depends.each do |gem|
+        gem_package gem do
+          gem_binary($gem_path)
+            action :nothing
+        end.run_action(:install)
+      end
       users = new_resource.users
 
       users.each_key do |user_key|
@@ -47,14 +59,11 @@ action :setup do
 
         # Parse file associations stored
         mimeapps = {}
-        if ::File.exists?("#{localshareapp}/mimeapps.list")
-          ::File.open("#{localshareapp}/mimeapps.list") do |fp|
-            fp.each do |line|
-              key, value = line.chomp.split(/=/)
-              unless key.nil? || value.nil?
-                mimeapps[key] = value
-              end
-            end
+        mimefile = "#{localshareapp}/mimeapps.list"
+        if ::File.exists?(mimefile)
+          ini = IniFile.load(mimefile)
+          if ini.has_section?(DEFAULT_SECTION)
+            mimeapps = ini[DEFAULT_SECTION]
           end
         end
 
