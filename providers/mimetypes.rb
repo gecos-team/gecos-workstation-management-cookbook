@@ -11,7 +11,6 @@
 
 require 'etc'
 require 'chef/mixin/shell_out'
-require 'inifile'
 include Chef::Mixin::ShellOut
 
 # Constants
@@ -32,6 +31,9 @@ action :setup do
             action :nothing
         end.run_action(:install)
       end
+      Gem.clear_paths
+      require 'inifile'
+
       users = new_resource.users
 
       users.each_key do |user_key|
