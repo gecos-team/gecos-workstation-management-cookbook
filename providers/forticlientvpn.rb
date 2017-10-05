@@ -86,7 +86,7 @@ action :setup do
         template user_fctlsslvpnhistory do
           source "fctlsslvpnhistory.erb"
           owner "#{user}"
-          group "#{user}"
+          group Etc.getpwnam(user).gid
           mode  '644'
           variables(
             :proxyserver => res_proxyserver,
