@@ -13,8 +13,8 @@ action :setup do
   begin
     onstart_update = new_resource.onstart_update
     onstop_update = new_resource.onstop_update
-    days = new_resource.days
-    date = new_resource.date
+    days = new_resource.days || []
+    date = new_resource.date || {}
 # OS identification moved to recipes/default.rb
 #    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 #    if new_resource.support_os.include?(os)
