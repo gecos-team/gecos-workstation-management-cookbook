@@ -16,8 +16,7 @@ action :setup do
 #    if new_resource.support_os.include?(os)
 #Added check to avoid execution if no connections defined
 #    if new_resource.support_os.include?($gecos_os)
-    if new_resource.support_os.include?($gecos_os) and !new_resource.connections.nil?
-
+    if new_resource.support_os.include?($gecos_os) and !new_resource.connections.nil? and !new_resource.connections.empty?
 
       res_proxyserver = new_resource.proxyserver || node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyserver]
       res_proxyport = new_resource.proxyport || node[:gecos_ws_mgmt][:network_mgmt][:forticlientvpn_res][:proxyport]
