@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.8"
+version           "0.5.9"
 
 depends "apt"
 depends "chef-client"
@@ -1486,28 +1486,28 @@ user_apps_autostart_js = {
       type: "object",
       patternProperties: {
         ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-        order: ["desktops", "desktops_to_remove"],        
+          required: ["desktops"],
+          additionalProperties: false,
           properties: {
-              desktops: {
-                title: "Applications",
-                title_es: "Aplicaciones",
-                description: ".desktop file must exist in /usr/share/applications",
-                description_es: "Es necesario que exista el .desktop en /usr/share/applications",
-                type: "array",
-                minItems: 0,
-                uniqueItems: true,
-                items: {type: "string"}
+            desktops: {
+              title: "Applications",
+              title_es: "Aplicaciones",
+              description: ".desktop file must exist in /usr/share/applications",
+              description_es: "Es necesario que exista el .desktop en /usr/share/applications",
+              type: "array",
+              minItems: 0,
+              uniqueItems: true,
+              items: {
+                type: "object",
+                required: ["name", "action"],
+                order: ["name", "action"],
+                mergeActionField: "action",
+                properties: {
+                  name: {title: "Name", title_es: "Nombre", type: "string", validate: "desktopfileExtensionValidate"},
+                  action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]},
+                }
               },
-              desktops_to_remove: {
-                title: "Applications to remove from autostart",
-                title_es: "Aplicaciones a eliminar del inicio",
-                description: "Applications will not be run at session start anymore",
-                description_es: "Las aplicaciones ya no se ejecutarán al inicio de sesión",
-                type: "array",
-                minItems: 0,
-                uniqueItems: true,
-                items: {type: "string"}
-            }, 
+            },
             updated_by: updated_js
           }
         }
@@ -1515,12 +1515,12 @@ user_apps_autostart_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
     }
   }
 }

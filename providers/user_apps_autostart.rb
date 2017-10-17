@@ -16,7 +16,7 @@ action :setup do
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
       users = new_resource.users 
-      desktop_path = "/usr/share/applications/"
+      applications_path = "/usr/share/applications/"
 
       users.each_key do |user_key|
         nameuser = user_key 
@@ -31,22 +31,29 @@ action :setup do
           FileUtils.chown_R(username, gid, homedir+"/.config")
         end
       
-        user.desktops.each do |desktopfile|
-# Add ".desktop" if not present in launcher's name
-          if ! desktopfile.include? "\.desktop"
-	    desktopfile.concat(".desktop")
-	  end
-          if FileTest.exist? desktop_path + desktopfile and not desktopfile.empty? 
-            FileUtils.cp "#{desktop_path}#{desktopfile}",  autostart_path
-          end
-        end
-        user.desktops_to_remove.each do |desktopfile|
-# Add ".desktop" if not present in launcher's name
-          if ! desktopfile.include? "\.desktop"
-	    desktopfile.concat(".desktop")
-	  end
-          if FileTest.exist? autostart_path + desktopfile and not desktopfile.empty? 
-            FileUtils.rm "#{autostart_path}#{desktopfile}"
+        user.desktops.each do |desktop|
+          src = applications_path + desktop.name
+          dst = autostart_path + desktop.name
+
+          case desktop.action
+            when "add"
+              if ::File.file?(src)
+                FileUtils.cp src, dst
+                FileUtils.chown(username, gid, dst)
+                FileUtils.chmod 0755, dst
+                Chef::Log.info("Desktop startup created in #{dst}")
+              else
+                Chef::Log.warn("Desktop file #{src} not found")
+              end
+            when "remove"
+              if ::File.file?(dst)
+                FileUtils.rm dst
+                Chef::Log.info("Launcher removed from #{dst}")
+              else
+                Chef::Log.warn("Desktop file #{dst} not found")
+              end
+            else
+              Chef::Log.warn("No action found")
           end
         end
 
@@ -75,13 +82,10 @@ action :setup do
       end
     end
   ensure
-    
+
     gecos_ws_mgmt_jobids "user_apps_autostart_res" do
        recipe "users_mgmt"
     end.run_action(:reset)
-    
+
   end
 end
-
-
-
