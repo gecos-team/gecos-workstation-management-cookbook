@@ -35,27 +35,36 @@ action :setup do
             mode '755'
             action :nothing
           end.run_action(:create)
-        end  
-        user.launchers.each do |desktopfile|
-
-# Add ".desktop" if not present in launcher's name
-          if ! desktopfile.include? "\.desktop"
-	          desktopfile.concat(".desktop")
-	        end
-
-
-          if FileTest.exist? applications_path + desktopfile and not desktopfile.empty?
-            FileUtils.cp "#{applications_path}#{desktopfile}",  desktop_path
-            FileUtils.chown(username, gid, desktop_path + desktopfile)
-            FileUtils.chmod 0755, desktop_path + desktopfile
-	  else
-	    Chef::Log.warn("Desktop file #{desktopfile} not found")
-           end
         end
 
+        user.launchers.each do |launcher|
+          src = applications_path + launcher.name
+          dst = desktop_path + launcher.name
+ 
+          case launcher.action
+            when "add"
+              if ::File.file?(src)
+                FileUtils.cp src, dst
+                FileUtils.chown(username, gid, dst)
+                FileUtils.chmod 0755, dst
+                Chef::Log.info("Launcher created in #{dst}")
+              else
+                Chef::Log.warn("Desktop file #{src} not found")
+              end
+            when "remove"
+              if ::File.file?(dst)
+                FileUtils.rm dst
+                Chef::Log.info("Launcher removed from #{dst}")
+              else
+                Chef::Log.warn("Desktop file #{dst} not found")
+              end
+            else
+              Chef::Log.warn("No action found")
+          end
+        end
       end
     else
-      Chef::Log.info("Policy is not compatible with this operative system")
+      Chef::Log.info("This resource is not support into your OS")
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
