@@ -1501,9 +1501,10 @@ user_apps_autostart_js = {
                 type: "object",
                 required: ["name", "action"],
                 order: ["name", "action"],
+                mergeIdField: ["name"],
                 mergeActionField: "action",
                 properties: {
-                  name: {title: "Name", title_es: "Nombre", type: "string", validate: "desktopfileExtensionValidate"},
+                  name: {title: "Name", title_es: "Nombre", type: "string"},
                   action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]},
                 }
               },

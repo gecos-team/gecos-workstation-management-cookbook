@@ -7,7 +7,8 @@
 #
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
-#
+
+
 
 action :setup do
   begin
@@ -16,22 +17,43 @@ action :setup do
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
       users = new_resource.users 
-      applications_path = "/usr/share/applications/"
 
+      case node['platform']
+        when 'debian', 'ubuntu', 'redhat', 'centos', 'fedora'
+          applications_path = "/usr/share/applications/"
+          subdirs = %w(.config/ autostart/)
+          file_ext  = '.desktop'
+        when 'windows'
+          # TODO
+        when 'mac_os_x'
+          # TODO
+      end
+          
       users.each_key do |user_key|
         nameuser = user_key 
         username = nameuser.gsub('###','.')
         user = users[user_key]
+        gid  = Etc.getpwnam(username).gid
 
-        homedir = `eval echo ~#{username}`.gsub("\n","")
-        autostart_path = "#{homedir}/.config/autostart/"
-        unless Kernel::test('d', autostart_path)
-          FileUtils.mkdir_p(autostart_path)
-          gid = Etc.getpwnam(username).gid
-          FileUtils.chown_R(username, gid, homedir+"/.config")
+        autostart_path = ::File.expand_path("~#{username}")
+
+        subdirs.each do |subdir|
+          autostart_path = ::File.join(autostart_path, subdir)
+          directory autostart_path do
+            owner username
+            group gid
+            mode '0755'
+            action :nothing
+          end.run_action(:create)
         end
-      
+        Chef::Log.debug("user_apps_autostart ::: setup - autostart_path = #{autostart_path}")
+
         user.desktops.each do |desktop|
+
+          if !desktop.name.end_with?(file_ext)
+            desktop.name.concat(file_ext)
+          end
+
           src = applications_path + desktop.name
           dst = autostart_path + desktop.name
 
