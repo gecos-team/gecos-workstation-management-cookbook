@@ -488,7 +488,7 @@ user_launchers_js = {
                 mergeIdField: ["name"],
                 mergeActionField: "action",
                 properties: {
-                  name: {title: "Name", title_es: "Nombre", type: "string", validate: "desktopfileExtensionValidate"},
+                  name: {title: "Name", title_es: "Nombre", type: "string"},
                   action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
                 }
               }

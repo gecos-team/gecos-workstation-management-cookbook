@@ -16,28 +16,43 @@ action :setup do
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
       users = new_resource.users 
-      applications_path = "/usr/share/applications/"
+
+      case node['platform']
+        when 'debian', 'ubuntu', 'redhat', 'centos', 'fedora'
+          applications_path = "/usr/share/applications/"
+          subdirs = %w(Escritorio/)
+          file_ext  = '.desktop'
+        when 'windows'
+          # TODO
+        when 'mac_os_x'
+          # TODO
+      end
 
       users.each_key do |user_key|
         nameuser = user_key 
         username = nameuser.gsub('###','.')
         user = users[user_key]
-
-        homedir = Etc.getpwnam(username).dir
-#TODO: change desktop path to localizated (xdg) version. Put it in a generic function in default.rb
-        desktop_path = "#{homedir}/Escritorio/"
         gid = Etc.getpwnam(username).gid
-#Create desktop directory if missing (user never logged in to desktop)        
-        if !::File.directory? desktop_path
+
+        desktop_path = ::File.expand_path("~#{username}")
+
+        subdirs.each do |subdir|
+          desktop_path = ::File.join(desktop_path, subdir)
           directory desktop_path do
             owner username
             group gid
-            mode '755'
+            mode '0755'
             action :nothing
           end.run_action(:create)
         end
+        Chef::Log.debug("user_launchers ::: setup - desktop_path = #{desktop_path}")
 
         user.launchers.each do |launcher|
+
+          if !launcher.name.end_with?(file_ext)
+            launcher.name.concat(file_ext)
+          end
+
           src = applications_path + launcher.name
           dst = desktop_path + launcher.name
  
