@@ -79,7 +79,7 @@ action :setup do
         end
       end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info("Policy is not compatible with this operative system")
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
