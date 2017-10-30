@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.8"
+version           "0.5.10"
 
 depends "apt"
 depends "chef-client"
@@ -482,7 +482,15 @@ user_launchers_js = {
               minItems: 0,
               uniqueItems: true,
               items: {
-                type: "string"
+                type: "object",
+                required: ["name", "action"],
+                order: ["name", "action"],
+                mergeIdField: ["name"],
+                mergeActionField: "action",
+                properties: {
+                  name: {title: "Name", title_es: "Nombre", type: "string"},
+                  action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+                }
               }
             }, 
             updated_by: updated_js
