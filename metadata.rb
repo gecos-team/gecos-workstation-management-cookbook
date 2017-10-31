@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.10"
+version           "0.5.11"
 
 depends "apt"
 depends "chef-client"
@@ -45,6 +45,7 @@ mobile_broadband_js = {
   type: "object",
   required: ["connections"],
   is_mergeable: true,
+  autoreverse: false,
   properties: {
     connections: {
       title: "Connections",
@@ -94,6 +95,7 @@ forticlientvpn_js = {
   type: "object",
   required: ["connections"],
   is_mergeable: false,
+  autoreverse: false,
   order: ["connections", "proxyserver", "proxyport", "proxyuser", "autostart", "keepalive"],
   properties: {
     connections: {
@@ -171,6 +173,7 @@ sssd_js = {
   type: "object",
   required: ["auth_type", "enabled"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     krb_url: { type: "string" , title: "Url of Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
     smb_url: { type: "string" , title: "Url of Samba file configuration", title_es: "Archivo de configuración Url Samba"},
@@ -244,6 +247,7 @@ user_mount_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -277,6 +281,7 @@ screensaver_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -334,6 +339,7 @@ folder_sharing_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -367,6 +373,7 @@ desktop_control_js = {
   type: "object",
   required: ["users"],
   is_mergeable: true,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -412,6 +419,7 @@ desktop_menu_js = {
   type: "object",
   required: ["users"],
   is_mergeable: true,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -464,6 +472,7 @@ user_launchers_js = {
   type: "object",
   required: ["users"],
   is_mergeable: true,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -534,6 +543,7 @@ desktop_background_js = {
   title_es: "Fondo de escritorio",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -568,6 +578,7 @@ file_browser_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties:{
     users: {
       title: "Users",
@@ -606,6 +617,7 @@ cert_js = {
   title_es: "Gestion de Certificados",
   type: "object",
   is_mergeable: true,
+  autoreverse: false,
   properties:{
     java_keystores: {
       title: "Java Keystores",
@@ -663,6 +675,7 @@ web_browser_js = {
   type: "object",
   required: ["users"],
   is_mergeable: true,
+  autoreverse: false,
   properties: {
     users: {
       type: "object",
@@ -780,6 +793,7 @@ email_client_js = {
   title_es: "Configuración de email",
   type: "object",
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       type: "object",
@@ -883,6 +897,7 @@ user_alerts_js = {
   title_es: "Alertas de usuario",
   type: "object",
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       type: "object",
@@ -941,6 +956,7 @@ remote_shutdown_js = {
   type: "object",
   required: ["shutdown_mode"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     shutdown_mode: {
       title: "Shutdown mode",
@@ -969,6 +985,7 @@ user_shared_folders_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: true,
   properties: {
     users: {
       title: "Users",
@@ -1017,6 +1034,7 @@ app_config_js = {
  # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
   required: ["java_config", "loffice_config"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     #citrix_config: {title: "Citrix Configuration", title_es: "Configuración de Citrix", type: "object"},
     java_config: {
@@ -1149,6 +1167,7 @@ appconfig_libreoffice_js = {
   type: "object",
   required: ["config_libreoffice"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     config_libreoffice: {
       title: "LibreOffice Configuration",
@@ -1183,6 +1202,7 @@ appconfig_thunderbird_js = {
   type: "object",
   required: ["config_thunderbird"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     config_thunderbird: {
       title: "Thunderbird Configuration",
@@ -1217,6 +1237,7 @@ appconfig_firefox_js = {
   type: "object",
   required: ["config_firefox"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     config_firefox: {
       title: "Firefox Configuration",
@@ -1251,6 +1272,7 @@ appconfig_java_js = {
   type: "object",
   required: ["config_java"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
    config_java: {
       title: "Java Configuration",
@@ -1350,6 +1372,7 @@ auto_updates_js = {
   type: "object",
   required: ["auto_updates_rules"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     auto_updates_rules: {
       type: "object",
@@ -1425,6 +1448,8 @@ boot_lock_js = {
   title_es: "Bloqueo del menú de arranque",
   type: "object",
   order:["lock_boot","unlock_user","unlock_pass"],
+  is_mergeable: false,
+  autoreverse: false,
   properties: {
     lock_boot: {title: "Lock boot menu?", title_es: "¿Bloquear el menú de inicio?",  type: "boolean"},
     unlock_user: {title: "Unlock user", title_es: "Usuario de desbloqueo", type: "string"},
@@ -1448,6 +1473,7 @@ user_modify_nm_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -1487,6 +1513,7 @@ user_apps_autostart_js = {
   type: "object",
   required: ["users"],
   is_mergeable: true,
+  autoreverse: false,
   properties: {
     users: {
       title: "Users",
@@ -1539,6 +1566,7 @@ tz_date_js = {
   type: "object",
   required: ["server"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     server: {
       type: "string",
@@ -1566,6 +1594,7 @@ scripts_launch_js = {
   type: "object",
   required: ["on_startup","on_shutdown"],
   is_mergeable: true,
+  autoreverse: true,
   order: ["on_startup", "on_shutdown"],
   properties:
   {
@@ -1612,6 +1641,7 @@ network_resource_js = {
   title_es: "Administrador de red",
   required: ["connections"],
   is_mergeable: false,
+  autoreverse: false,
   properties:
   {
     connections: {
@@ -1762,6 +1792,7 @@ software_sources_js = {
   type: "object",
   required: ["repo_list"],
   is_mergeable: true,
+  autoreverse: true,
   properties:{
     repo_list: {
       type:"array",
@@ -1798,6 +1829,7 @@ package_profile_js = {
   type: "object",
   order:["package_list"],
   is_mergeable: true,
+  autoreverse: false,
   properties:
   {
     package_list: {
@@ -1827,6 +1859,7 @@ package_js = {
   type: "object",
   order:["package_list"],
   is_mergeable: true,
+  autoreverse: false,
   properties:
   {
     package_list: {
@@ -1867,6 +1900,7 @@ printers_js = {
   type: "object",
   required: ["printers_list"],
   is_mergeable: true,
+  autoreverse: true,
   properties:
   {
     printers_list: {
@@ -1906,6 +1940,7 @@ local_users_js = {
   type: "object",
   required: ["users_list"],
   is_mergeable: true,
+  autoreverse: false,
   properties:
   {users_list: {
       type:"array",
@@ -1945,6 +1980,7 @@ local_groups_js = {
   type: "object",
   required: ["groups_list"],
   is_mergeable: true,
+  autoreverse: false,
   properties:
   {groups_list: {
       type:"array",
@@ -1985,6 +2021,7 @@ local_file_js = {
   required: ["delete_files", "copy_files"],
   order: ["copy_files", "delete_files"],
   is_mergeable: true,
+  autoreverse: false,
   properties:
   {delete_files: {
       type:"array",
@@ -2038,6 +2075,7 @@ local_admin_users_js = {
   required: ["local_admin_list"],
   order: ["local_admin_list"],
   is_mergeable: true,
+  autoreverse: false,
   properties:
   {local_admin_list: {
       type:"array",
@@ -2076,6 +2114,7 @@ folder_sync_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties:
   {users: {
     title: "Users", 
@@ -2109,6 +2148,7 @@ power_conf_js = {
 #  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   order: ["cpu_freq_gov", "usb_autosuspend", "auto_shutdown"],
   is_mergeable: false,
+  autoreverse: false,
   properties:
     {cpu_freq_gov: {
        title: "CPU frequency governor",
@@ -2164,6 +2204,7 @@ shutdown_options_js = {
   type: "object",
   required: ["users"],
   is_mergeable: false,
+  autoreverse: false,
   properties: { 
     systemlock: { type: "boolean", title: "System-wide lockdown of the key", title_es: "Bloqueo para todo el sistema de la llave"},
     users: {
@@ -2203,6 +2244,8 @@ mimetypes_js = {
   title: "Default aplications per (MIME) type",
   title_es: "Aplicaciones preferidas por tipo (MIME)",
   type: "object",
+  is_mergeable: false,
+  autoreverse: false,
   properties: {
     users: {
       type: "object",
@@ -2260,6 +2303,7 @@ system_proxy_js = {
   required: ["global_config","mozilla_config"],
   order: ["global_config","mozilla_config"],
   is_mergeable: false,
+  autoreverse: false,
   properties: {
     global_config: {
       title: "Global Proxy Configuration",
