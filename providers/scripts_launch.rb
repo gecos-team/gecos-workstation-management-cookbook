@@ -15,8 +15,11 @@ action :setup do
 #    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
-      on_startup = new_resource.on_startup
-      on_shutdown = new_resource.on_shutdown
+      on_startup  = new_resource.on_startup.select  { |script| ::File.exists?(script) and ::File.executable?(script) }
+      on_shutdown = new_resource.on_shutdown.select { |script| ::File.exists?(script) and ::File.executable?(script) }
+
+      Chef::Log.debug("scripts_launch ::: on_startup  = #{on_startup}")
+      Chef::Log.debug("scripts_launch ::: on_shutdown = #{on_shutdown}")
 
       if !on_startup.nil? or !on_startup.empty?
         template "/etc/init.d/scripts-onstartup" do
