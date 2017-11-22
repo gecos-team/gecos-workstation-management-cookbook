@@ -112,9 +112,7 @@ default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list] =[]
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:job_ids] =[]
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
-
-default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files] = []
-default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:localfiles] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]

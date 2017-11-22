@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.11"
+version           "0.5.13"
 
 depends "apt"
 depends "chef-client"
@@ -466,6 +466,7 @@ desktop_menu_js = {
   }
 }
 
+                         
 user_launchers_js = {
   title: "User Launchers",
   title_es: "Acceso directo en el escritorio",
@@ -1507,6 +1508,8 @@ user_modify_nm_js = {
   }
 }
 
+                             
+                             
 user_apps_autostart_js = {
   title: "Applications that will run at the start of the system",
   title_es: "Aplicaciones que se ejecutarán al inicio",
@@ -1532,6 +1535,12 @@ user_apps_autostart_js = {
                 minItems: 0,
                 uniqueItems: true,
                 items: {type: "string"}
+                               
+                                             
+                                          
+                                       
+                                           
+                             
               },
               desktops_to_remove: {
                 title: "Applications to remove from autostart",
@@ -1635,6 +1644,10 @@ scripts_launch_js = {
   }
 }
 
+                             
+                          
+               
+                            
 network_resource_js = {
   type: "object",
   title: "Network Manager",
@@ -2018,42 +2031,71 @@ local_file_js = {
   title: "Local files",
   title_es: "Archivos locales",
   type: "object",
-  required: ["delete_files", "copy_files"],
-  order: ["copy_files", "delete_files"],
+  required: ["localfiles"],
   is_mergeable: true,
   autoreverse: false,
+  additionalProperties: false,
+  form: {
+    type: "array",            
+    title: "Files list",              
+    title_es: "Lista de archivos",
+    items: {  
+      type: "section",
+      items: [
+         "localfiles[].file_dest",
+         {
+          type: "selectfieldset",
+          title: "Select an action",
+          title_es: "Selecciona una acción",
+          key: "localfiles[].action",
+          items: [
+            {
+              type:"section",
+              items: [
+                "localfiles[].file",
+                "localfiles[].user",
+                "localfiles[].group",
+                "localfiles[].mode",
+                "localfiles[].overwrite"
+              ]
+            },
+            {
+              type:"section",
+              items: [
+                "localfiles[].backup"
+              ]
+            }
+          ]
+         }
+      ]
+    }
+  },
   properties:
-  {delete_files: {
+  {
+    localfiles: {
       type:"array",
-      title: "File list to delete",
-      title_es: "Lista de archivos para eliminar",
+      title: "Files list",
+      title_es: "Lista de archivos",
+      minItems: 0,
+      uniqueItems: true,
       items: {
         type:"object",
-        required: ["file"],
-        order:["file", "backup"],
+        required: ["action","file_dest"],
+        order:["action","file_dest"],
+        mergeIdField: ["file_dest"],
+        mergeActionField: "action",
         properties:{
-          file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path of the file to delete", description_es: "Introduzca la ruta absoluta del archivo a borrar"},
-          backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" }
+          action:{title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]},
+          file_dest: {type: "string", title: "File Path", title_es: "Ruta del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
+          user: {type: "string", title:"User", title_es: "Usuario"},
+          group: {type: "string", title: "Group", title_es: "Grupo"},
+          mode: {type: "string", title: "Mode", title_es: "Permisos"},
+          overwrite: {type: "boolean", title: "Overwrite?", title_es: "Sobrescribir"},
+          backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" },
+          file: {type: "string", title: "File URL", title_es: "URL del archivo", description: "Enter the URL where the file was downloaded", description_es: "Introduzca la URL donde se descargará el archivo"},
+
         }
-     }
-  },
-  copy_files: {
-    type: "array",
-    title: "File list to copy",
-    title_es: "Lista de archivos para copiar",
-    items: {
-      type: "object",
-      required: ["file_orig","file_dest"],
-      order:["user", "group", "file_orig", "file_dest", "mode", "overwrite"],
-      properties:{
-        file_orig: {type: "string", title: "File URL", title_es: "URL del archivo", description: "Enter the URL where the file was downloaded", description_es: "Introduzca la URL donde se descargará el archivo"},
-        file_dest: {type: "string", title: "File Path", title_es: "Ruta del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
-        user: {type: "string", title:"User", title_es: "Usuario"},
-        group: {type: "string", title: "Group", title_es: "Grupo"},
-        mode: {type: "string", title: "Mode", title_es: "Permisos"},
-        overwrite: {type: "boolean", title: "Overwrite?", title_es: "Sobrescribir"}
       }
-    }
   },
   job_ids: {
     type: "array",
@@ -2077,6 +2119,7 @@ local_admin_users_js = {
   is_mergeable: true,
   autoreverse: false,
   properties:
+   
   {local_admin_list: {
       type:"array",
       title: "users",
