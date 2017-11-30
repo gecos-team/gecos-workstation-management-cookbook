@@ -29,7 +29,7 @@ action :setup do
 	    options "--force-yes"
             action :nothing
           end.run_action(:install)
-          file '/etc/apt/preferences.d/'+parts[0].strip+'.ref' do
+          file '/etc/apt/preferences.d/'+parts[0].strip+'.pref' do
             content "Package: #{parts[0].strip}\nPin: version #{parts[1].strip}\nPin-Priority: 1000\n"
             mode '0644'
             owner 'root'
@@ -41,7 +41,7 @@ action :setup do
           package pkg do
             action :nothing
           end.run_action(:install)
-          file '/etc/apt/preferences.d/'+pkg.strip+'.ref' do
+          file '/etc/apt/preferences.d/'+pkg.strip+'.pref' do
             action(:delete)
           end
 	end
@@ -54,7 +54,7 @@ action :setup do
           package pkg do
             action :nothing
           end.run_action(:purge)
-          file '/etc/apt/preferences.d/'+pkg.strip+'.ref' do
+          file '/etc/apt/preferences.d/'+pkg.strip+'.pref' do
             action(:delete)
           end
         end
