@@ -14,12 +14,12 @@ def create_ppd(prt_name, prt_model, prt_id)
 
 	# foomatic needs all compatible drivers (CompatibleDrivers) for one printer in
 	# order to create the PPD file. But sometimes, there's only one driver available (Driver).
-	temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
+	temp = `foomatic-ppdfile -P '#{prt_model}'|grep -i "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
 
 	begin
 		printer_drv = temp[0][0]
 	rescue
-		temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
+		temp = `foomatic-ppdfile -P '#{prt_model}'|grep -i "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
 		printer_drv = temp[0][0]
 	end
 
