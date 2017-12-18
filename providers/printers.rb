@@ -80,7 +80,7 @@ action :setup do
         Chef::Log.info("Processing printer: #{printer.name}")
 
         curr_ptr_name  = printer.name.gsub(" ","+")
-        curr_ptr_id    = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
+        curr_ptr_id    = printer.manufacturer.gsub(" ","_") + "-" + printer.model.gsub(" ","_")
 
         oppolicy = 'default'
         if printer.attribute?('oppolicy')
