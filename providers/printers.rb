@@ -14,12 +14,12 @@ def create_ppd(prt_name, prt_model, prt_id)
 
 	# foomatic needs all compatible drivers (CompatibleDrivers) for one printer in
 	# order to create the PPD file. But sometimes, there's only one driver available (Driver).
-	temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
+	temp = `foomatic-ppdfile -P '#{prt_model}'|grep -i "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
 
 	begin
 		printer_drv = temp[0][0]
 	rescue
-		temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
+		temp = `foomatic-ppdfile -P '#{prt_model}'|grep -i "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
 		printer_drv = temp[0][0]
 	end
 
@@ -50,7 +50,9 @@ def delete_printer(prt_name)
 	Chef::Log.info("Deleting printer #{prt_name}... ")
 	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
-	if lpadm_dele.exitstatus == 0
+	ppd_dele = Mixlib::ShellOut.new("rm /usr/share/cups/model/#{prt_name}.ppd")
+	ppd_dele.run_command
+	if lpadm_dele.exitstatus == 0 and ppd_dele.exitstatus == 0
         	Chef::Log.info(" - deleted successfully")
 	else
         	Chef::Log.info(" - error deleting #{prt_name}")
