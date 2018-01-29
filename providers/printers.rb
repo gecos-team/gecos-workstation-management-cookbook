@@ -50,7 +50,9 @@ def delete_printer(prt_name)
 	Chef::Log.info("Deleting printer #{prt_name}... ")
 	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
-	if lpadm_dele.exitstatus == 0
+	ppd_dele = Mixlib::ShellOut.new("rm /usr/share/cups/model/#{prt_name}.ppd")
+	ppd_dele.run_command
+	if lpadm_dele.exitstatus == 0 and ppd_dele.exitstatus == 0
         	Chef::Log.info(" - deleted successfully")
 	else
         	Chef::Log.info(" - error deleting #{prt_name}")
