@@ -14,12 +14,12 @@ def create_ppd(prt_name, prt_model, prt_id)
 
 	# foomatic needs all compatible drivers (CompatibleDrivers) for one printer in
 	# order to create the PPD file. But sometimes, there's only one driver available (Driver).
-	temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
+	temp = `foomatic-ppdfile -P '#{prt_model}'|grep -i "Id='#{prt_id}'"`.scan(/CompatibleDrivers='(.*)'/)
 
 	begin
 		printer_drv = temp[0][0]
 	rescue
-		temp = `foomatic-ppdfile -P '#{prt_model}'|grep "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
+		temp = `foomatic-ppdfile -P '#{prt_model}'|grep -i "Id='#{prt_id}'"`.scan(/Driver='(\S+)*'/)
 		printer_drv = temp[0][0]
 	end
 
@@ -50,7 +50,9 @@ def delete_printer(prt_name)
 	Chef::Log.info("Deleting printer #{prt_name}... ")
 	lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
 	lpadm_dele.run_command
-	if lpadm_dele.exitstatus == 0
+	ppd_dele = Mixlib::ShellOut.new("rm /usr/share/cups/model/#{prt_name}.ppd")
+	ppd_dele.run_command
+	if lpadm_dele.exitstatus == 0 and ppd_dele.exitstatus == 0
         	Chef::Log.info(" - deleted successfully")
 	else
         	Chef::Log.info(" - error deleting #{prt_name}")
@@ -80,7 +82,7 @@ action :setup do
         Chef::Log.info("Processing printer: #{printer.name}")
 
         curr_ptr_name  = printer.name.gsub(" ","+")
-        curr_ptr_id    = printer.manufacturer.gsub(" ","-") + "-" + printer.model.gsub(" ","_")
+        curr_ptr_id    = printer.manufacturer.gsub(" ","_") + "-" + printer.model.gsub(" ","_")
 
         oppolicy = 'default'
         if printer.attribute?('oppolicy')
@@ -105,25 +107,25 @@ action :setup do
         end
 
         create_ppd_with_ppd_uri = false
-	if printer.attribute?('ppd_uri')
-		if not ::File.exists?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
-			Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
-			FileUtils.mkdir_p('/usr/share/cups/model')
-			ppd_uri_dw = Mixlib::ShellOut.new("/usr/bin/wget --no-check-certificate -O /usr/share/cups/model/#{curr_ptr_name}.ppd #{printer.ppd_uri}")
-			ppd_uri_dw.run_command
-			if ppd_uri_dw.exitstatus == 0
-				file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
-					mode '0644'
-					owner 'root'
-					group 'root'
-				end
-				create_ppd_with_ppd_uri = true
-			else
-				Chef::Log.info(" - failed to obtain PPD using #{printer.ppd_uri}")
-			end
-		end
+	      if printer.attribute?('ppd_uri')
+		      if not ::File.exists?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
+			      Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
+			      FileUtils.mkdir_p('/usr/share/cups/model')
+			      ppd_uri_dw = Mixlib::ShellOut.new("/usr/bin/wget --no-check-certificate -O /usr/share/cups/model/#{curr_ptr_name}.ppd #{printer.ppd_uri}")
+			      ppd_uri_dw.run_command
+			      if ppd_uri_dw.exitstatus == 0
+				      file "/usr/share/cups/model/#{curr_ptr_name}.ppd" do
+					      mode '0644'
+					      owner 'root'
+					      group 'root'
+				      end
+				      create_ppd_with_ppd_uri = true
+			      else
+				      Chef::Log.info(" - failed to obtain PPD using #{printer.ppd_uri}")
+			      end
+		      end
         else
-		ppd_uri = ''
+		      ppd_uri = ''
         end
 
         if not create_ppd_with_ppd_uri
@@ -132,53 +134,59 @@ action :setup do
             end
         end
 
-	install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
+	      install_or_update_printer(curr_ptr_name, printer.uri, printer.oppolicy, ppd_uri)
 
-	cups_ptr_list = []
-	cups_ptr_list = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
-	cups_ptr_list.run_command
-	cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+	      cups_ptr_list = []
+	      cups_ptr_list = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
+	      cups_ptr_list.run_command
+	      cups_list = cups_ptr_list.stdout.split(/\r?\n/)
 
-	cups_list.each do |cups_printer|
-		ptr_found = false
-		printers_list.each do |printer|
-			if cups_printer.eql? printer.name.gsub(" ","+")
-				ptr_found = true
-				break
-			end
-		end
-		if not ptr_found
-			if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
-            			delete_printer(cups_printer)
-			end
-		end
-	end
-  end
-end
-
+	      cups_list.each do |cups_printer|
+		       ptr_found = false
+		       printers_list.each do |printer|
+			       if cups_printer.eql? printer.name.gsub(" ","+")
+				       ptr_found = true
+				       break
+			       end
+		       end
+		      if not ptr_found
+			      if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
+          	  delete_printer(cups_printer)
+			      end
+		      end
+	      end
+	    end
+	  else
+	  	cups_ptr_list = []
+	    cups_ptr_list = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
+	    cups_ptr_list.run_command
+	    cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+	    cups_list.each do |cups_printer| 
+	    	if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
+	    		delete_printer(cups_printer)
+		    end 
+	    end	
+    end
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
-    # just save current job ids as "failed"
-    # save_failed_job_ids
-    Chef::Log.error(e.message)
-    job_ids = new_resource.job_ids
-    job_ids.each do |jid|
-      node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
-      else
-        node.normal['job_status'][jid]['message'] = e.message
-      end
-    end
-  ensure
-  
-    gecos_ws_mgmt_jobids "printers_res" do
-       recipe "printers_mgmt"
-    end.run_action(:reset)
-  
-  end
-end
+		rescue Exception => e
+			# just save current job ids as "failed"
+			# save_failed_job_ids
+			Chef::Log.error(e.message)
+			job_ids = new_resource.job_ids
+			job_ids.each do |jid|
+				node.normal['job_status'][jid]['status'] = 1
+				if not e.message.frozen?
+				node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+				else
+					node.normal['job_status'][jid]['message'] = e.message
+				end
+			end
+		ensure
+			gecos_ws_mgmt_jobids "printers_res" do
+			 recipe "printers_mgmt"
+			end.run_action(:reset)
+		end
+	end
