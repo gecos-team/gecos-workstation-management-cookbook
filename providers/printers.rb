@@ -156,6 +156,16 @@ action :setup do
 		end
 	end
   end
+  else
+	  cups_ptr_list = []
+	  cups_ptr_list = Mixlib::ShellOut.new("lpstat -a | egrep '^\\S' | awk '{print $1}'")
+	  cups_ptr_list.run_command
+	  cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+	  cups_list.each do |cups_printer| 
+	  	if `/usr/bin/lpoptions -p #{cups_printer}`.include? 'managed-by-GCC=true'
+	  		delete_printer(cups_printer)
+		  end 
+    end	
 end
 
     job_ids = new_resource.job_ids
