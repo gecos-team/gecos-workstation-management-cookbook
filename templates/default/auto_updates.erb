@@ -1,15 +1,23 @@
 #! /bin/sh
 
 ### BEGIN INIT INFO
+# Provides: auto_updates
 # Required-Start: $remote_fs
 # Required-Stop:  $remote_fs
 # Should-Start:   $network $syslog
 <% if not @arrinit.nil? %>
-# Default-Start:  <%= @arrinit %>
+# Default-Start: <% @arrinit.each do |arr|;%> <%= arr %><% ;end %>  
+<% else %> 
+# Default-Start: 
 <% end %>
 <% if not @arrhalt.nil? %>
 # Default-Stop: <% @arrhalt.each do |arr|;%> <%= arr %><% ;end %>  
+<% else %> 
+# Default-Stop: 
 <% end %>
+#Short-Description: Automatic package upgrades
+#Description: Automatic package upgrades from configured repositories
+#             Added by GECOS Control Center
 ### END INIT INFO
 
 NAME=auto_update
