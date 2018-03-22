@@ -34,7 +34,7 @@ action :setup do
                 case pkg.version
                 when 'current'
                     # Remove the version pinning of this package (if exists)
-                    file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                    file '/etc/apt/preferences.d/'+pkg.name+'.pref' do
                         action(:delete)
                     end
                     
@@ -46,7 +46,7 @@ action :setup do
                 
                 when 'latest'
                     # Remove the version pinning of this package (if exists)
-                    file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                    file '/etc/apt/preferences.d/'+pkg.name+'.pref' do
                         action(:delete)
                     end
 
@@ -65,7 +65,7 @@ action :setup do
                     end
 
                     # Ping this version to prevent updates
-                    file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                    file '/etc/apt/preferences.d/'+pkg.name+'.pref' do
                         content "Package: #{pkg.name}\nPin: version #{pkg.version}\nPin-Priority: 1000\n"
                         mode '0644'
                         owner 'root'
@@ -83,7 +83,7 @@ action :setup do
                 end
                 
                 # Remove the version pinning of this package (if exists)
-                file '/etc/apt/preferences.d/'+pkg.name+'.ref' do
+                file '/etc/apt/preferences.d/'+pkg.name+'.pref' do
                     action(:delete)
                 end
                 
