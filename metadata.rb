@@ -2406,6 +2406,34 @@ system_proxy_js = {
   }
 }
 
+ttys_js = {
+  title: "TTYs Configuration",
+  title_es: "Configuración de Consolas Virtuales",
+  type: "object",
+  is_mergeable: false,
+  autoreversible: false,
+  properties:
+  {
+    ttys: {
+      type:"boolean",
+      title: "Disable ttys",
+      title_es: "Deshabilitar consolas virtuales",
+      description: "Checking the box will disable all ttys",
+      description_es: "Si activa la casilla, deshabilitará todas las consolas virtuales del equipo",
+      default: false
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}                   
 network_resource_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 tz_date_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 scripts_launch_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
@@ -2447,6 +2475,7 @@ cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
+ttys_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
@@ -2478,7 +2507,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res"],
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res", "ttys_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
@@ -2491,7 +2520,8 @@ complete_js = {
             power_conf_res: power_conf_js,
             local_admin_users_res: local_admin_users_js,
             remote_shutdown_res: remote_shutdown_js,
-            cert_res: cert_js
+            cert_res: cert_js,
+            ttys_res: ttys_js,
           }
         },
         software_mgmt: {
