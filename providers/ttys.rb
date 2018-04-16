@@ -21,7 +21,7 @@ action :setup do
 
       Chef::Log.debug("ttys: #{new_resource.ttys}")
 
-      if new_resource.ttys # ENABLE TTYs
+      if new_resource.ttys # DISABLE TTYs
 
         case $gecos_os
 
@@ -76,7 +76,7 @@ action :setup do
             
         end
 
-      else # DISABLE TTYs
+      else # ENABLE TTYs
 
         case $gecos_os
 
