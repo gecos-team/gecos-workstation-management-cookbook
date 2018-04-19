@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.11"
+version           "0.5.13"
 
 depends "apt"
 depends "chef-client"
@@ -2406,6 +2406,83 @@ system_proxy_js = {
   }
 }
 
+idle_timeout_js = {
+  title: "Idle session timeout",
+  title_es: "Control de inactividad de sesión",
+  type: "object",
+  required: ["users"],
+  is_mergeable: false,
+  autoreverse: false,
+  form: {
+      type:"section",
+      items: [
+        "idle_enabled",
+        type:"section",
+        items: [
+          "idle_options.timeout",
+          "idle_options.command",
+          {
+            key:"idle_options.notification",
+            type:"textarea"
+          }
+        ]
+     ]
+  },
+  properties: {
+    users: {
+      title: "Users",
+      title_es: "Usuarios",
+      type: "object",
+      patternProperties: {
+        ".*" => { 
+          type: "object",
+          title: "Username",
+          title_es: "Nombre de usuario",
+          required: ["idle_enabled"],
+          properties: {
+            idle_enabled: {
+              title: "Idle session enabled?",
+              title_es: "¿Control de inactividad habilitado?",
+              type: "boolean",
+              enum: [true,false],
+              default:true
+            },
+            idle_options: {
+              type: "object",
+              title: "Idle options",
+              title_es: "Opciones de configuración",
+              properties: {
+                timeout: {title:"Idle time", title_es: "Tiempo de inactividad", type:"integer",description:"(mins)"},
+                command: {title:"Command", title_es:"Comando", type:"string"},
+                notification: {title:"Notification", title_es:"Notificacion", type:"string"},
+              },
+            },
+            updated_by: updated_js
+          },
+          dependencies: {
+            idle_enabled: ["idle_options"]
+          },
+          customFormItems: {
+            idle_enabled: {
+              inlinetitle: "Si activa la casilla, habilitará el control de sesión",
+              toggleNext: 1
+            }
+          },
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
+}
+
 network_resource_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 tz_date_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 scripts_launch_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
@@ -2447,6 +2524,7 @@ cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
+idle_timeout_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
@@ -2517,7 +2595,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res"],          properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             email_client_res: email_client_js,
@@ -2534,7 +2612,8 @@ complete_js = {
             user_mount_res: user_mount_js,
             user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js,
-            mimetypes_res: mimetypes_js
+            mimetypes_res: mimetypes_js,
+            idle_timeout_res: idle_timeout_js
           }
         }
       }
