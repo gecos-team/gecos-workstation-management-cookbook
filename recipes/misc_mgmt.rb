@@ -17,8 +17,7 @@ gecos_ws_mgmt_local_users 'manage local users' do
 end
 
 gecos_ws_mgmt_local_file 'manage local files' do
-  delete_files node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files]
-  copy_files node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files]
+  localfiles node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:localfiles]
   job_ids node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:job_ids]
   support_os node[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:support_os]
   action :setup
