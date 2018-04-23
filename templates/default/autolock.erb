@@ -11,7 +11,9 @@
 IDLE_TIME=<%= @timeout %>
 LOCK_CMD="<%= @command %>"
 NOTIFY="15" # 15 seconds before locking
+<% if not @notification.nil? and not @notification.empty? %>
 NOTIFIER="/usr/bin/zenity --warning --text \"<%= @notification %>\" --timeout 5"
+<% end %>
 
 # Print the given message with a timestamp.
 info() { printf '%s\t%s\n' "$(date)" "$*"; }
@@ -26,7 +28,11 @@ log() {
 
 xautolock_cmd() {
     log "Launching xautolock ..."
-    xautolock -time $IDLE_TIME -locker "$LOCK_CMD" -notify $NOTIFY -notifier "$NOTIFIER > /dev/null 2>&1"
+    if [ -z "${NOTIFIER}" ]; then
+      xautolock -time $IDLE_TIME -locker "$LOCK_CMD"
+    else
+      xautolock -time $IDLE_TIME -locker "$LOCK_CMD" -notify $NOTIFY -notifier "$NOTIFIER > /dev/null 2>&1"
+    fi
 }
 
 # Main

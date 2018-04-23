@@ -37,17 +37,20 @@ action :setup do
         Chef::Log.debug("idle_timeout ::: username = #{username}")
 
         autostart = ::File.expand_path("~#{username}/.config/autostart")
+        homebin = ::File.expand_path("~#{username}/bin")
         Chef::Log.debug("idle_timeout ::: autostart file = #{autostart}")
 
         if user.idle_enabled
 
-          directory autostart do
-            owner username
-            group gid
-            recursive true
-            action :nothing
-            mode '0755'
-          end.run_action(:create)
+          %W(#{autostart} #{homebin}).each do |userdir|
+            directory userdir do
+              owner username
+              group gid
+              recursive true
+              action :nothing
+              mode '0755'
+            end.run_action(:create)
+          end
 
           cookbook_file "autolock.desktop" do
             path "#{autostart}/autolock.desktop"
@@ -57,7 +60,7 @@ action :setup do
             action :nothing
           end
 
-          template '/usr/bin/autolock.sh' do
+          template "#{homebin}/autolock.sh" do
             source 'autolock.erb'
             mode '0755'
             variables ({
@@ -66,12 +69,11 @@ action :setup do
               :notification => user.idle_options['notification']
             })
             notifies :create, 'cookbook_file[autolock.desktop]', :immediately
-            #only_if { ::File.executable?(user.idle_options['command']) }
           end
 
         else
 
-          %W(#{autostart}/autolock.desktop /usr/bin/autolock.sh).each do |f|
+          %W(#{autostart}/autolock.desktop #{homebin}/autolock.sh).each do |f|
             file f do
               action :delete
               only_if { ::File.exists?(f) }
