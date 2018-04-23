@@ -92,3 +92,10 @@ gecos_ws_mgmt_cert 'cert' do
   support_os node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:support_os]
   action :setup
 end
+
+gecos_ws_mgmt_ttys 'ttys' do
+  ttys node[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:ttys]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:support_os]
+  action :setup
+end
