@@ -21,6 +21,10 @@ action :setup do
         action :nothing
       end.run_action(:install)
      
+      package 'xautolock' do
+        action :nothing
+      end.run_action(:install)
+
       users = new_resource.users
 
       users.each_key do |user_key|
@@ -36,10 +40,6 @@ action :setup do
         Chef::Log.debug("idle_timeout ::: autostart file = #{autostart}")
 
         if user.idle_enabled
-
-          package 'xautolock' do
-            action :install
-          end
 
           directory autostart do
             owner username
@@ -71,10 +71,6 @@ action :setup do
 
         else
 
-          package 'xautolock' do
-            action :remove
-          end
- 
           %W(#{autostart}/autolock.desktop /usr/bin/autolock.sh).each do |f|
             file f do
               action :delete
