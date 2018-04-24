@@ -25,6 +25,11 @@ action :setup do
         action :nothing
       end.run_action(:install)
 
+      template '/usr/bin/autolock.sh' do
+        source 'autolock.sh.erb'
+        mode '0755'
+      end
+
       users = new_resource.users
 
       users.each_key do |user_key|
@@ -33,26 +38,23 @@ action :setup do
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
 
-        Chef::Log.debug("idle_timeout ::: user = #{user}")
-        Chef::Log.debug("idle_timeout ::: username = #{username}")
-
         autostart = ::File.expand_path("~#{username}/.config/autostart")
-        homebin = ::File.expand_path("~#{username}/bin")
-        Chef::Log.debug("idle_timeout ::: autostart file = #{autostart}")
+        home = ::File.expand_path("~#{username}")
+        Chef::Log.debug("idle_timeout ::: autostart = #{autostart}")
+        Chef::Log.debug("idle_timeout ::: home = #{home}")
 
         if user.idle_enabled
 
-          %W(#{autostart} #{homebin}).each do |userdir|
-            directory userdir do
-              owner username
-              group gid
-              recursive true
-              action :nothing
-              mode '0755'
-            end.run_action(:create)
-          end
+          directory "#{autostart}" do
+            owner username
+            group gid
+            recursive true
+            action :nothing
+            mode '0755'
+          end.run_action(:create)
 
-          cookbook_file "autolock.desktop" do
+          cookbook_file "#{username}_autolock.desktop" do
+            source "autolock.desktop"
             path "#{autostart}/autolock.desktop"
             owner username
             group gid
@@ -60,20 +62,20 @@ action :setup do
             action :nothing
           end
 
-          template "#{homebin}/autolock.sh" do
+          template "#{home}/.autolock" do
             source 'autolock.erb'
-            mode '0755'
+            mode '0644'
             variables ({
               :timeout => user.idle_options['timeout'],
               :command => user.idle_options['command'],
               :notification => user.idle_options['notification']
             })
-            notifies :create, 'cookbook_file[autolock.desktop]', :immediately
+            notifies :create, "cookbook_file[#{username}_autolock.desktop]", :immediately
           end
 
         else
 
-          %W(#{autostart}/autolock.desktop #{homebin}/autolock.sh).each do |f|
+          %W(#{autostart}/autolock.desktop #{home}/.autolock).each do |f|
             file f do
               action :delete
               only_if { ::File.exists?(f) }

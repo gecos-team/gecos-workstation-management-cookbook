@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=sh -c "$HOME/bin/autolock.sh"
+Exec=sh -c "/usr/bin/autolock.sh $HOME/.autolock"
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
