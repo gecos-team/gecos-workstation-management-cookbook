@@ -25,8 +25,8 @@ action :setup do
         action :nothing
       end.run_action(:install)
 
-      template '/usr/bin/autolock.sh' do
-        source 'autolock.sh.erb'
+      cookbook_file '/usr/bin/autolock.sh' do
+        source 'autolock.sh'
         mode '0755'
       end
 
@@ -58,7 +58,7 @@ action :setup do
             path "#{autostart}/autolock.desktop"
             owner username
             group gid
-            mode '0755'
+            mode '0544'
             action :nothing
           end
 
