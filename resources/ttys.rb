@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gecos-ws-mgmt
-# Resource:: local_file
+# Resource:: ttys
 #
 # Copyright 2013, Junta de Andalucia
 # http://www.juntadeandalucia.es/
@@ -11,7 +11,6 @@
 
 actions :setup
 
-attribute :localfiles, :kind_of => Array
+attribute :ttys, :kind_of => [TrueClass, FalseClass]
 attribute :job_ids, :kind_of => Array
 attribute :support_os, :kind_of => Array
-
