@@ -112,9 +112,7 @@ default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:users_list] =[]
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:job_ids] =[]
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:local_users_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
-
-default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:delete_files] = []
-default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:copy_files] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:localfiles] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:misc_mgmt][:local_file_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
@@ -214,6 +212,13 @@ default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:mimetypes_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
+default[:gecos_ws_mgmt][:users_mgmt][:idle_timeout_res][:users] = {}
+default[:gecos_ws_mgmt][:users_mgmt][:idle_timeout_res][:job_ids] = []
+default[:gecos_ws_mgmt][:users_mgmt][:idle_timeout_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:shutdown_mode] = ''
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_shutdown_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
+
+default[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:ttys] = false
+default[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:job_ids] = []
+default[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
