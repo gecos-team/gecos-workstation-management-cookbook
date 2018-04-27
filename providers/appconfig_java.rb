@@ -1,4 +1,4 @@
-#
+#{$arch}#
 # Cookbook Name:: gecos-ws-mgmt
 # Provider:: appconfig_java
 #
@@ -49,8 +49,8 @@ action :setup do
         #Setting java plugin version
         alternative_exists = shell_out("#{alternatives_cmd} --display mozilla-javaplugin.so| grep #{plug_version}").exitstatus == 0
         if alternative_exists
-          Chef::Log.info("Setting alternative for mozilla-javaplugin.so with value #{plug_version}/jre/lib/i386/libnpjp2.so")
-          set_cmd = shell_out("#{alternatives_cmd} --set mozilla-javaplugin.so #{plug_version}/jre/lib/i386/libnpjp2.so")
+          Chef::Log.info("Setting alternative for mozilla-javaplugin.so with value #{plug_version}/jre/lib/#{$arch}/libnpjp2.so")
+          set_cmd = shell_out("#{alternatives_cmd} --set mozilla-javaplugin.so #{plug_version}/jre/lib/#{$arch}/libnpjp2.so")
           unless set_cmd.exitstatus == 0
             Chef::Log.error(%Q[ set alternative failed ])
           end
