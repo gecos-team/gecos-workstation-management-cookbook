@@ -12,6 +12,12 @@
 # Global variable $gecos_os created to reduce calls to external programs
 $gecos_os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 
+$arch = case node[:kernel][:machine]
+  when "x86_64": "amd64"
+  when "i686": "i386"
+  else  ""
+end
+
 $gem_path = "/opt/chef/embedded/bin/gem"
 if not ::File.exist?($gem_path)
     $gem_path = "/usr/bin/gem"
