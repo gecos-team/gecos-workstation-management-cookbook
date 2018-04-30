@@ -1,4 +1,3 @@
-#{$arch}#
 # Cookbook Name:: gecos-ws-mgmt
 # Provider:: appconfig_java
 #
