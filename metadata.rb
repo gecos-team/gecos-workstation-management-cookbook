@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS workstations administration"
-version           "0.5.13"
+version           "0.5.14"
 
 depends "apt"
 depends "chef-client"
@@ -2032,6 +2032,7 @@ local_file_js = {
   title_es: "Archivos locales",
   type: "object",
   required: ["localfiles"],
+                                        
   is_mergeable: true,
   autoreverse: false,
   additionalProperties: false,
@@ -2449,6 +2450,58 @@ system_proxy_js = {
   }
 }
 
+display_manager_js = {
+  title: "Display Manager",
+  title_es: "Gestor de inicio de sesión",
+  type: "object",
+  is_mergeable: false,
+  autoreversible: false,
+  properties:
+  {
+    dm: {
+      type: "string",
+      title: "Select a DM",
+      title_es: "Selecciona un DM",
+      enum: ["MDM", "Lightdm"],
+      description: "Autologin timeout in MDM is set to more than 5 seconds and it cannot be changed. For a kiosk-like client it is recommended LightDM as display manager because it has no minimum timeout",
+      description_es: "MDM tiene un tiempo de espera de login automático no inferior a 5 segundos. Para un kiosco se recomienda la opción LightDM al no tener tiempo de espera mínimo"
+    },
+    autologin: {
+      type:"boolean",
+      title: "Checking the box will enable login autologin",
+      title_es: "Si activa la casilla, habilitará el login automático"
+    },
+    autologin_options: {
+        type: "object",
+        required: ["username","timeout"],
+        properties: {
+           username: {
+             title: "Username",
+             title_es: "Usuario",
+             type: "string",
+             default: ""
+           },
+           timeout: {
+             title: "Autologin user timeout ",
+             title_es: "Timeout de autologin",
+             type: "integer",
+             default: 15
+           }
+        }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  },
+  dependencies: {
+    autologin: ["autologin_options"]
+  },
+  customFormItems: {
+    autologin: {
+      inlinetitle: "Si activa la casilla, habilitará el login automático",
+      toggleNext: 1
+    }
+  }
+}
 
 idle_timeout_js = {
   title: "Idle session timeout",
@@ -2555,7 +2608,7 @@ ttys_js = {
     support_os: support_os_js.clone,
     updated_by: updated_js
   }
-}                   
+}
 
 network_resource_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 tz_date_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
@@ -2598,6 +2651,7 @@ cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
+display_manager_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 idle_timeout_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 ttys_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 
@@ -2651,7 +2705,7 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res", "display_manager_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
@@ -2660,7 +2714,8 @@ complete_js = {
             appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
-            appconfig_java_res: appconfig_java_js
+            appconfig_java_res: appconfig_java_js,
+            display_manager_res: display_manager_js
           }
         },
         printers_mgmt: {

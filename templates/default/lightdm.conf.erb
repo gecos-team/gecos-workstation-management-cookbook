@@ -1,0 +1,12 @@
+[SeatDefaults]
+allow-guest=false
+
+<% if @autologin %>
+autologin-guest=false
+autologin-user=<%= @autologin_user %>
+autologin-user-timeout=<%= @autologin_timeout %>
+
+allow-user-switching=true
+greeter-hide-users=true
+greeter-show-manual-login=true
+<% end %>
