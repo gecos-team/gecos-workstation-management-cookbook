@@ -14,14 +14,15 @@ regex1 = "tty[1-6].conf"
 regex2 = ".*(tty[1-6]).conf(.bak)?"
 upstart_dir ="/etc/init/"
 backup_suffix = ".bak"
+logind_conf = "/etc/systemd/logind.conf"
 
 action :setup do
   begin
     if new_resource.support_os.include?($gecos_os)
 
-      Chef::Log.debug("ttys: #{new_resource.ttys}")
+      Chef::Log.debug("disable_ttys: #{new_resource.disable_ttys}")
 
-      if new_resource.ttys # DISABLE TTYs
+      if new_resource.disable_ttys # DISABLE TTYs
 
         case $gecos_os
 
@@ -51,14 +52,14 @@ action :setup do
             # V3: SYSTEMD
             ruby_block "Configure logind.conf" do
               block do
-                fe = Chef::Util::FileEdit.new('/etc/systemd/logind.conf')
+                fe = Chef::Util::FileEdit.new(logind_conf)
                 fe.search_file_delete_line("NAutoVTs")
                 fe.search_file_delete_line("ReserveVT")
                 fe.insert_line_if_no_match("NAutoVTs", "NAutoVTs=0")
                 fe.insert_line_if_no_match("ReserveVT", "ReserveVT=0")
                 fe.write_file
               end
-              only_if { ::File.exist?('/etc/systemd/logind.conf') }
+              not_if "grep -q 'NAutoVTs=0' #{logind_conf} && grep -q 'ReserveVT=0' #{logind_conf}"
               notifies :restart, 'service[systemd-logind]', :immediately
             end
 
@@ -81,7 +82,7 @@ action :setup do
         case $gecos_os
 
           when *V2
-
+            # V2: UPSTART
             Dir.glob("#{upstart_dir}#{regex1}#{backup_suffix}").each do |file|
               Chef::Log.debug("file: #{file}")
 
@@ -101,15 +102,15 @@ action :setup do
               end.run_action(:start)
             end
           else
-
+            # V3: SYSTEMD
             ruby_block "Configure logind.conf" do
               block do
-                fe = Chef::Util::FileEdit.new('/etc/systemd/logind.conf')
+                fe = Chef::Util::FileEdit.new(logind_conf)
                 fe.search_file_delete_line("NAutoVTs")
                 fe.search_file_delete_line("ReserveVT")
                 fe.write_file
               end
-              only_if { ::File.exist?('/etc/systemd/logind.conf') }
+              only_if "grep -q 'NAutoVTs=0' #{logind_conf} && grep -q 'ReserveVT=0' #{logind_conf}"
               notifies :restart, 'service[systemd-logind]', :immediately
             end
 

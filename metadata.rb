@@ -2536,7 +2536,7 @@ ttys_js = {
   autoreversible: false,
   properties:
   {
-    ttys: {
+    disable_ttys: {
       type:"boolean",
       title: "Disable ttys",
       title_es: "Deshabilitar consolas virtuales",
