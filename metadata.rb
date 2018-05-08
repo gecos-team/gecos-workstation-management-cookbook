@@ -2047,7 +2047,7 @@ local_file_js = {
          {
           type: "selectfieldset",
           title: "Select an action",
-          title_es: "Selecciona una acción",
+          title_es: "Seleccione una acción",
           key: "localfiles[].action",
           items: [
             {
@@ -2461,7 +2461,7 @@ display_manager_js = {
     dm: {
       type: "string",
       title: "Select a Display Manager",
-      title_es: "Selecciona un Display Manager",
+      title_es: "Seleccione un Display Manager",
       enum: ["MDM", "Lightdm"],
       description: "Autologin timeout in MDM can not be less than5 seconds. For a kiosk workstation LightDM is recommended because it has got no minimum timeout",
       description_es: "MDM tiene un tiempo de espera de login automático no inferior a 5 segundos. Para un kiosco se recomienda LightDM al no tener tiempo de espera mínimo"
