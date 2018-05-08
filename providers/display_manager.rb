@@ -38,9 +38,9 @@ action :setup do
           OTHER = 'lightdm'
         else
           PACKAGES = if new_resource.autologin
-            %w(lightdm lightdm-gtk-greeter gecosws-lightdm-autologin)
+            %w(gir1.2-lightdm-1 python-gobject lightdm lightdm-gtk-greeter gecosws-lightdm-autologin)
           else
-            %w(lightdm lightdm-gtk-greeter)
+            %w(gir1.2-lightdm-1 python-gobject lightdm lightdm-gtk-greeter)
           end
           SERVICE = 'lightdm'
           TEMPLATE = 'lightdm.conf.erb'
