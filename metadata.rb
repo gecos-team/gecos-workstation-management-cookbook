@@ -2460,15 +2460,15 @@ display_manager_js = {
   {
     dm: {
       type: "string",
-      title: "Select a DM",
-      title_es: "Selecciona un DM",
+      title: "Select a Display Manager",
+      title_es: "Selecciona un Display Manager",
       enum: ["MDM", "Lightdm"],
-      description: "Autologin timeout in MDM is set to more than 5 seconds and it cannot be changed. For a kiosk-like client it is recommended LightDM as display manager because it has no minimum timeout",
-      description_es: "MDM tiene un tiempo de espera de login automático no inferior a 5 segundos. Para un kiosco se recomienda la opción LightDM al no tener tiempo de espera mínimo"
+      description: "Autologin timeout in MDM can not be less than5 seconds. For a kiosk workstation LightDM is recommended because it has got no minimum timeout",
+      description_es: "MDM tiene un tiempo de espera de login automático no inferior a 5 segundos. Para un kiosco se recomienda LightDM al no tener tiempo de espera mínimo"
     },
     autologin: {
       type:"boolean",
-      title: "Checking the box will enable login autologin",
+      title: "Check this box to enable automatic login",
       title_es: "Si activa la casilla, habilitará el login automático"
     },
     autologin_options: {
