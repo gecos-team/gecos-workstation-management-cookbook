@@ -76,7 +76,7 @@ default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:updated_by] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
-default[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:dm] = 'MDM'
+default[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:dm] = ''
 default[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:autologin] = false
 default[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:autologin_options] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:job_ids] = [] 
