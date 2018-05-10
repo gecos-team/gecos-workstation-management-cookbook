@@ -38,7 +38,7 @@ action :setup do
           OTHER = 'lightdm'
         else
           PACKAGES = if new_resource.autologin
-            %w(gir1.2-lightdm-1 python-gobject lightdm lightdm-gtk-greeter gecosws-lightdm-autologin)
+            %w(gir1.2-lightdm-1 python-gobject lightdm gecosws-lightdm-autologin)
           else
             %w(gir1.2-lightdm-1 python-gobject lightdm lightdm-gtk-greeter)
           end
@@ -68,14 +68,6 @@ action :setup do
         only_if { !new_resource.autologin and SERVICE=='lightdm' }
       end
 
-      # Sets default display manager
-      file '/etc/X11/default-display-manager' do
-        content "#{BIN}\n"
-        action :create
-        notifies :stop, "service[#{OTHER}]", :immediately
-        notifies :disable, "service[#{OTHER}]", :immediately
-      end
-           
       # Stops current DM
       service OTHER do
         provider PROVIDER
@@ -85,8 +77,17 @@ action :setup do
       # Enables and starts new DM
       service SERVICE do
         provider PROVIDER
-        action [:enable, :start]
+        action [:enable]
+#        action [:enable, :start]
       end
+
+      # Sets default display manager
+      file '/etc/X11/default-display-manager' do
+        content "#{BIN}\n"
+        action :create
+#        notifies :stop, "service[#{OTHER}]", :immediately
+        notifies :disable, "service[#{OTHER}]", :immediately
+      end          
 
       # Configures DM
       template CONFIGFILE do
@@ -100,7 +101,7 @@ action :setup do
       end
 
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info("Policy is not compatible with this operative system")
     end
     
     # save current job ids (new_resource.job_ids) as "ok"
