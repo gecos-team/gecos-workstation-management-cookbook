@@ -26,7 +26,8 @@ action :setup do
         Chef::Provider::Service::Systemd
     end
  
-    if new_resource.support_os.include?($gecos_os)
+    if new_resource.support_os.include?($gecos_os) and not new_resource.dm.empty?
+
 
       case new_resource.dm
         when 'MDM'
@@ -36,7 +37,7 @@ action :setup do
           CONFIGFILE = '/etc/mdm/mdm.conf'
           BIN = '/usr/sbin/mdm'
           OTHER = 'lightdm'
-        else
+        when 'LightDM'
           PACKAGES = if new_resource.autologin
             %w(gir1.2-lightdm-1 python-gobject lightdm gecosws-lightdm-autologin)
           else
