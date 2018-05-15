@@ -61,6 +61,7 @@ action :setup do
         # Packages installation
         PACKAGES.each do |pkg|
           package pkg do
+            ignore_failure true
             action :install
           end
         end
@@ -75,7 +76,7 @@ action :setup do
         file ETC_DISPLAY_MANAGER do
           content "#{BIN}\n"
           action :create
-          notifies :stop, "service[#{CURRENT_DISPLAY_MANAGER}]", :delayed
+          #notifies :stop, "service[#{CURRENT_DISPLAY_MANAGER}]", :delayed
           notifies :disable, "service[#{CURRENT_DISPLAY_MANAGER}]", :delayed
         end
 
@@ -88,7 +89,8 @@ action :setup do
         # Enables and starts new DM
         service NEW_DISPLAY_MANAGER do
           provider PROVIDER
-          action [:enable, :start]
+          action :enable
+          #action [:enable, :start]
           only_if "dpkg-query -W #{NEW_DISPLAY_MANAGER}"
         end
 
@@ -100,7 +102,8 @@ action :setup do
             :autologin_user => new_resource.autologin_options['username'],
             :autologin_timeout => new_resource.autologin_options['timeout']
           })
-          notifies :restart, "service[#{NEW_DISPLAY_MANAGER}]", :delayed
+          only_if { Etc.getpwnam(new_resource.autologin_options['username']) rescue false }
+          #notifies :restart, "service[#{NEW_DISPLAY_MANAGER}]", :delayed
         end
       end
 
