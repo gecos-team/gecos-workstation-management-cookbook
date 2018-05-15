@@ -38,7 +38,7 @@ action :setup do
             TEMPLATE = 'mdm.conf.erb'
             CONFIGFILE = '/etc/mdm/mdm.conf'
             BIN = '/usr/sbin/mdm'
-          when 'Lightdm'
+          when 'LightDM'
             PACKAGES = if new_resource.autologin
               %w(gir1.2-lightdm-1 python-gobject lightdm lightdm-gtk-greeter gecosws-lightdm-autologin)
             else
@@ -102,7 +102,7 @@ action :setup do
             :autologin_user => new_resource.autologin_options['username'],
             :autologin_timeout => new_resource.autologin_options['timeout']
           })
-          only_if { Etc.getpwnam(new_resource.autologin_options['username']) rescue false }
+          not_if "#{new_resource.autologin} && ! getent passwd #{new_resource.autologin_options['username']}"
           #notifies :restart, "service[#{NEW_DISPLAY_MANAGER}]", :delayed
         end
       end
