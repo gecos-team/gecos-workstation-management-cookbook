@@ -27,10 +27,8 @@ action :setup do
         Chef::Provider::Service::Systemd
     end
  
-    if new_resource.support_os.include?($gecos_os)
+    if new_resource.support_os.include?($gecos_os) and not new_resource.dm.empty?
 
-      unless new_resource.dm.empty?
-      
         case new_resource.dm
           when 'MDM'
             PACKAGES = %w(mdm gecosws-mdm-theme)
@@ -105,10 +103,9 @@ action :setup do
           not_if "#{new_resource.autologin} && ! getent passwd #{new_resource.autologin_options['username']}"
           #notifies :restart, "service[#{NEW_DISPLAY_MANAGER}]", :delayed
         end
-      end
 
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info("Policy is not compatible with this operative system")
     end
     
     # save current job ids (new_resource.job_ids) as "ok"

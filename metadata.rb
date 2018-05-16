@@ -3,8 +3,8 @@ name              "gecos_ws_mgmt"
 maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
-description       "Cookbook for GECOS workstations administration"
-version           "0.5.14"
+description       "Cookbook for GECOS Workstations management"
+version           "0.6.0"
 
 depends "apt"
 depends "chef-client"
@@ -2677,9 +2677,9 @@ cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-display_manager_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-idle_timeout_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-ttys_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
+display_manager_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+idle_timeout_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+ttys_js[:properties][:support_os][:default]=["GECOS Kiosk"]
 
 
 complete_js = {
