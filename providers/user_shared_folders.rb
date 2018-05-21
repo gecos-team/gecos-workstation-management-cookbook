@@ -55,10 +55,13 @@ action :setup do
             if bookmark.uri.match(pattern)
               bookmark_uri = VariableManager.expand_variables(bookmark.uri)
               bookmark_name = VariableManager.expand_variables(bookmark.name)
-              line_to_add = "#{bookmark_uri} #{bookmark_name}"
+              # Do not create the bookmark if the variable expansion returns nil
+              if bookmark_uri and bookmark_name
+              	line_to_add = "#{bookmark_uri} #{bookmark_name}"
  # If there's no line containing the bookmark URI (removing lading spaces and trailing slash), insert the bookmark. We only search for URI, so renamed bookmarks are nor duplicated
-              tmp_file.insert_line_if_no_match(bookmark_uri.chop().lstrip(), line_to_add)
-              Chef::Log.info("Adding shortcuts to shared folders")
+                tmp_file.insert_line_if_no_match(bookmark_uri.chop().lstrip(), line_to_add)
+                Chef::Log.info("Adding shortcuts to shared folders")
+              end
             else
               Chef::Log.warn("Bookmark URI doesn't match the pattern: #{bookmark.uri} username: #{username}")
             end

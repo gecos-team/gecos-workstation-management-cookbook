@@ -50,7 +50,7 @@ begin
   File.open('/etc/pclabel','r') do |pclabelfile|
     pclabel = pclabelfile.gets
   end
-  $gecos_environ['station'.to_sym] = pclabel
+  $gecos_environ['STATION'.to_sym] = pclabel
   
 rescue Exception => e
   Chef::Log.warn("Can't read /etc/pclabel: #{e.message}")
