@@ -70,6 +70,16 @@ action :setup do
           only_if { !new_resource.autologin and NEW_DISPLAY_MANAGER=='lightdm' }
         end
 
+        # Bugfix ligthdm package
+        # systemctl enable lightdm command no create symlink in /etc/systemd/system
+        # Must be:
+        # /etc/systemd/system/display-manager.service -> /lib/systemd/system/lightdm.service
+        cookbook_file '/lib/systemd/system/lightdm.service' do
+          source 'lightdm.service'
+          action :nothing
+          only_if { NEW_DISPLAY_MANAGER=='lightdm' }
+        end.run_action(:create)
+
         # Sets default display manager
         file ETC_DISPLAY_MANAGER do
           content "#{BIN}\n"
