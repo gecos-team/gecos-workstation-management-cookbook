@@ -70,10 +70,12 @@ action :setup do
           only_if { !new_resource.autologin and NEW_DISPLAY_MANAGER=='lightdm' }
         end
 
-        # Bugfix ligthdm package
+        # Bugfix ligthdm package (Ubuntu 16.04 Xenial)
         # systemctl enable lightdm command no create symlink in /etc/systemd/system
         # Must be:
         # /etc/systemd/system/display-manager.service -> /lib/systemd/system/lightdm.service
+        # WORKAROUND
+        # Ubuntu 18.04 resolved: https://bugs.launchpad.net/ubuntu/+source/lightdm/+bug/1757091
         cookbook_file '/lib/systemd/system/lightdm.service' do
           source 'lightdm.service'
           action :nothing
