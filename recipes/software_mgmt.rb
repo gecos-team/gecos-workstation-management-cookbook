@@ -69,3 +69,12 @@ gecos_ws_mgmt_appconfig_java 'java config' do
   support_os node[:gecos_ws_mgmt][:software_mgmt][:appconfig_java_res][:support_os]
   action :setup
 end
+
+gecos_ws_mgmt_display_manager 'display manager' do
+  dm node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:dm]
+  autologin node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:autologin]
+  autologin_options node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:autologin_options]
+  job_ids node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:support_os]
+  action :setup
+end

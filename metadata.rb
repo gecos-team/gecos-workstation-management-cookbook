@@ -3,9 +3,8 @@ name              "gecos_ws_mgmt"
 maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
-description       "Cookbook for GECOS workstations administration"
-version           "0.5.12"
-
+description       "Cookbook for GECOS Workstations management"
+version           "0.6.0"
 
 depends "apt"
 depends "chef-client"
@@ -467,6 +466,7 @@ desktop_menu_js = {
   }
 }
 
+                         
 user_launchers_js = {
   title: "User Launchers",
   title_es: "Acceso directo en el escritorio",
@@ -1508,6 +1508,8 @@ user_modify_nm_js = {
   }
 }
 
+                             
+                             
 user_apps_autostart_js = {
   title: "Applications that will run at the start of the system",
   title_es: "Aplicaciones que se ejecutarán al inicio",
@@ -1637,6 +1639,10 @@ scripts_launch_js = {
   }
 }
 
+                             
+                          
+               
+                            
 network_resource_js = {
   type: "object",
   title: "Network Manager",
@@ -2020,42 +2026,72 @@ local_file_js = {
   title: "Local files",
   title_es: "Archivos locales",
   type: "object",
-  required: ["delete_files", "copy_files"],
-  order: ["copy_files", "delete_files"],
+  required: ["localfiles"],
+                                        
   is_mergeable: true,
   autoreverse: false,
+  additionalProperties: false,
+  form: {
+    type: "array",            
+    title: "Files list",              
+    title_es: "Lista de archivos",
+    items: {  
+      type: "section",
+      items: [
+         "localfiles[].file_dest",
+         {
+          type: "selectfieldset",
+          title: "Select an action",
+          title_es: "Seleccione una acción",
+          key: "localfiles[].action",
+          items: [
+            {
+              type:"section",
+              items: [
+                "localfiles[].file",
+                "localfiles[].user",
+                "localfiles[].group",
+                "localfiles[].mode",
+                "localfiles[].overwrite"
+              ]
+            },
+            {
+              type:"section",
+              items: [
+                "localfiles[].backup"
+              ]
+            }
+          ]
+         }
+      ]
+    }
+  },
   properties:
-  {delete_files: {
+  {
+    localfiles: {
       type:"array",
-      title: "File list to delete",
-      title_es: "Lista de archivos para eliminar",
+      title: "Files list",
+      title_es: "Lista de archivos",
+      minItems: 0,
+      uniqueItems: true,
       items: {
         type:"object",
-        required: ["file"],
-        order:["file", "backup"],
+        required: ["action","file_dest"],
+        order:["action","file_dest"],
+        mergeIdField: ["file_dest"],
+        mergeActionField: "action",
         properties:{
-          file: {type: "string", title:"File", title_es: "Archivo", description: "Enter the absolute path of the file to delete", description_es: "Introduzca la ruta absoluta del archivo a borrar"},
-          backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" }
+          action:{title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]},
+          file_dest: {type: "string", title: "File Path", title_es: "Ruta del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
+          user: {type: "string", title:"User", title_es: "Usuario"},
+          group: {type: "string", title: "Group", title_es: "Grupo"},
+          mode: {type: "string", title: "Mode", title_es: "Permisos"},
+          overwrite: {type: "boolean", title: "Overwrite?", title_es: "Sobrescribir"},
+          backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" },
+          file: {type: "string", title: "File URL", title_es: "URL del archivo", description: "Enter the URL where the file was downloaded", description_es: "Introduzca la URL donde se descargará el archivo"},
+
         }
-     }
-  },
-  copy_files: {
-    type: "array",
-    title: "File list to copy",
-    title_es: "Lista de archivos para copiar",
-    items: {
-      type: "object",
-      required: ["file_orig","file_dest"],
-      order:["user", "group", "file_orig", "file_dest", "mode", "overwrite"],
-      properties:{
-        file_orig: {type: "string", title: "File URL", title_es: "URL del archivo", description: "Enter the URL where the file was downloaded", description_es: "Introduzca la URL donde se descargará el archivo"},
-        file_dest: {type: "string", title: "File Path", title_es: "Ruta del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
-        user: {type: "string", title:"User", title_es: "Usuario"},
-        group: {type: "string", title: "Group", title_es: "Grupo"},
-        mode: {type: "string", title: "Mode", title_es: "Permisos"},
-        overwrite: {type: "boolean", title: "Overwrite?", title_es: "Sobrescribir"}
       }
-    }
   },
   job_ids: {
     type: "array",
@@ -2079,6 +2115,7 @@ local_admin_users_js = {
   is_mergeable: true,
   autoreverse: false,
   properties:
+   
   {local_admin_list: {
       type:"array",
       title: "users",
@@ -2408,6 +2445,166 @@ system_proxy_js = {
   }
 }
 
+display_manager_js = {
+  title: "Display Manager",
+  title_es: "Gestor de inicio de sesión",
+  type: "object",
+  is_mergeable: false,
+  autoreversible: false,
+  properties:
+  {
+    dm: {
+      type: "string",
+      title: "Select a Display Manager",
+      title_es: "Seleccione un Display Manager",
+      enum: ["MDM", "LightDM"],
+      description: "Autologin timeout in MDM can not be less than 5 seconds. For a kiosk workstation LightDM is recommended because it has got no minimum timeout",
+      description_es: "MDM tiene un tiempo de espera de login automático no inferior a 5 segundos. Para un kiosco se recomienda LightDM al no tener tiempo de espera mínimo"
+    },
+    autologin: {
+      type:"boolean",
+      title: "Check this box to enable automatic login",
+      title_es: "Si activa la casilla, habilitará el login automático"
+    },
+    autologin_options: {
+        type: "object",
+        required: ["username","timeout"],
+        properties: {
+           username: {
+             title: "Username",
+             title_es: "Usuario",
+             type: "string",
+             default: ""
+           },
+           timeout: {
+             title: "Autologin user timeout ",
+             title_es: "Timeout de autologin",
+             type: "integer",
+             default: 15
+           }
+        }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  },
+  dependencies: {
+    autologin: ["autologin_options"]
+  },
+  customFormItems: {
+    autologin: {
+      inlinetitle: "Si activa la casilla, habilitará el login automático",
+      toggleNext: 1
+    }
+  }
+}
+
+idle_timeout_js = {
+  title: "Idle session timeout",
+  title_es: "Control de inactividad de sesión",
+  type: "object",
+  required: ["users"],
+  is_mergeable: false,
+  autoreverse: false,
+  form: {
+      type:"section",
+      items: [
+        "idle_enabled",
+        type:"section",
+        items: [
+          "idle_options.timeout",
+          "idle_options.command",
+          {
+            key:"idle_options.notification",
+            type:"textarea"
+          }
+        ]
+     ]
+  },
+  properties: {
+    users: {
+      title: "Users",
+      title_es: "Usuarios",
+      type: "object",
+      patternProperties: {
+        ".*" => { 
+          type: "object",
+          title: "Username",
+          title_es: "Nombre de usuario",
+          required: ["idle_enabled"],
+          properties: {
+            idle_enabled: {
+              title: "Idle session enabled?",
+              title_es: "¿Control de inactividad habilitado?",
+              type: "boolean",
+              enum: [true,false],
+              default:true
+            },
+            idle_options: {
+              type: "object",
+              title: "Idle options",
+              title_es: "Opciones de configuración",
+              properties: {
+                timeout: {title:"Idle time", title_es: "Tiempo de inactividad", type:"integer",description:"(mins)"},
+                command: {title:"Command", title_es:"Comando", type:"string"},
+                notification: {title:"Notification", title_es:"Notificacion", type:"string"},
+              },
+            },
+            updated_by: updated_js
+          },
+          dependencies: {
+            idle_enabled: ["idle_options"]
+          },
+          customFormItems: {
+            idle_enabled: {
+              inlinetitle: "Si activa la casilla, habilitará el control de sesión",
+              toggleNext: 1
+            }
+          },
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+        type: "array",
+        minItems: 0,
+        uniqueItems: true,
+        items: {
+          type: "string"
+        }
+    }
+  }
+}
+
+
+ttys_js = {
+  title: "TTYs Configuration",
+  title_es: "Configuración de Consolas Virtuales",
+  type: "object",
+  is_mergeable: false,
+  autoreversible: false,
+  properties:
+  {
+    disable_ttys: {
+      type:"boolean",
+      title: "Disable ttys",
+      title_es: "Deshabilitar consolas virtuales",
+      description: "Checking the box will disable all ttys",
+      description_es: "Si activa la casilla, deshabilitará todas las consolas virtuales del equipo",
+      default: false
+    },
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
 network_resource_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 tz_date_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 scripts_launch_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
@@ -2449,6 +2646,10 @@ cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
+display_manager_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+idle_timeout_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+ttys_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+
 
 complete_js = {
   description: "GECOS workstation management LWRPs json-schema",
@@ -2480,7 +2681,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res"],
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res", "ttys_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
@@ -2493,12 +2694,13 @@ complete_js = {
             power_conf_res: power_conf_js,
             local_admin_users_res: local_admin_users_js,
             remote_shutdown_res: remote_shutdown_js,
-            cert_res: cert_js
+            cert_res: cert_js,
+            ttys_res: ttys_js,
           }
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res", "display_manager_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
@@ -2507,7 +2709,8 @@ complete_js = {
             appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
-            appconfig_java_res: appconfig_java_js
+            appconfig_java_res: appconfig_java_js,
+            display_manager_res: display_manager_js
           }
         },
         printers_mgmt: {
@@ -2519,7 +2722,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res"],          properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             email_client_res: email_client_js,
@@ -2536,7 +2739,8 @@ complete_js = {
             user_mount_res: user_mount_js,
             user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js,
-            mimetypes_res: mimetypes_js
+            mimetypes_res: mimetypes_js,
+            idle_timeout_res: idle_timeout_js
           }
         }
       }

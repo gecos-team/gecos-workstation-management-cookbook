@@ -122,3 +122,9 @@ gecos_ws_mgmt_mimetypes 'mimetypes' do
   action :setup
 end
 
+gecos_ws_mgmt_idle_timeout 'idle timeout' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:idle_timeout_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:idle_timeout_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:idle_timeout_res][:support_os]
+  action :setup
+end

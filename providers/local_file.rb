@@ -16,69 +16,64 @@ action :setup do
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
 
-      if new_resource.delete_files.any?
-        new_resource.delete_files.each do |value|
-        makebackup = 1 if value.backup 
-         if ::File.exists?(value.file)
-           if ::File.file?(value.file)
-             file value.file do
-               backup makebackup
-               action :nothing
-             end.run_action(:delete)
-           elsif ::File.directory?(value.file)
-             directory value.file do
-               recursive true
-               action :nothing
-             end.run_action(:delete)
-           end
-         end
+      localfiles = new_resource.localfiles
+      
+      Chef::Log.debug("local_file.rb ::: localfiles = #{localfiles}")
+      
+      localfiles.each do |local|                                
+        case local.action
+          when 'add'
+            # Variables
+            act   = local.overwrite ?
+                      'create' : 'create_if_missing'
+            dest  = ::File.directory?(local.file_dest) ?
+                      ::File.join(local.file_dest, ::File.basename(local.file)) : local.file_dest
+            uid  = local.attribute?('user')  ? Etc.getpwnam(local.user).uid  : '0'
+            gid  = local.attribute?('group') ? Etc.getgrnam(local.group).gid : Etc.getpwuid(uid).gid
+            mode = local.attribute?('mode')  ? local.mode  : '755'
+            
+            Chef::Log.debug("local_file.rb ::: act   = #{act}")
+            Chef::Log.debug("local_file.rb ::: dest  = #{dest}")
+            Chef::Log.debug("local_file.rb ::: uid   = #{uid}")
+            Chef::Log.debug("local_file.rb ::: group = #{gid}")
+            Chef::Log.debug("local_file.rb ::: mode  = #{mode}")
+            
+            remote_file dest do
+              source local.file
+              action :nothing
+            end.run_action(act)
+
+            execute "Changing file perms" do
+              command "chown #{uid}:#{gid} #{dest} && chmod #{mode} #{dest}"
+              not_if {
+                ::File.stat(dest).mode.to_s(8)[3..5] == mode and
+                ::File.stat(dest).uid  == uid and
+                ::File.stat(dest).gid  == gid
+              }
+              action :nothing
+            end.run_action(:run)
+
+          when 'remove'
+            # Variables
+            makebackup = local.backup ? 1 : 0
+            Chef::Log.debug("local_file.rb ::: makebackup = #{makebackup}")
+            Chef::Log.debug("local_file.rb ::: local.file_dest = #{local.file_dest}")
+            file local.file_dest do
+              backup makebackup
+              only_if {::File.file?(local.file_dest)}
+              action :nothing
+            end.run_action(:delete)
+
+            directory local.file_dest do
+              recursive true
+              only_if {::File.directory?(local.file_dest)}
+              action :nothing
+            end.run_action(:delete)
         end
       end
-
-      if new_resource.copy_files.any?
-        new_resource.copy_files.each do |file|                 
-          if file.attribute?(:mode)
-            local_mode = file.mode
-          else
-            local_mode = '755'
-          end
-          if file.attribute?(:user)
-            local_user = file.user 
-          else
-            local_user = 'root'
-          end
-          if file.attribute?(:group)
-            local_group = file.group
-          else
-            local_group = Etc.getpwnam(local_user).gid
-          end
-          if ::File.directory?(file.file_dest)
-            file.file_dest.concat(::File.basename(file.file_orig))
-          end         
-          if file.overwrite 
-# Not used   grp_members = ::Etc.getgrnam(file.group).mem
-            remote_file file.file_dest do
-              source file.file_orig
-              owner local_user
-              mode local_mode
-              group local_group
-              action :nothing
-            end.run_action(:create)
-          else
- # Not used  grp_members = ::Etc.getgrnam(file.group).mem 
-            remote_file file.file_dest do
-               source file.file_orig
-               owner local_user
-               mode local_mode
-               group local_group
-               action :nothing
-             end.run_action(:create_if_missing)
-           end
-         end
-       end
-     else
+    else
        Chef::Log.info("This resource is not support into your OS")
-     end
+    end
     
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

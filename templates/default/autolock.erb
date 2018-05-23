@@ -1,0 +1,6 @@
+IDLE_TIME=<%= @timeout %>
+LOCK_CMD="<%= @command %>"
+NOTIFY="15" # 15 seconds before locking
+<% if not @notification.nil? and not @notification.empty? %>
+NOTIFIER="/usr/bin/zenity --warning --text \"<%= @notification %>\" --timeout 5"
+<% end %>
