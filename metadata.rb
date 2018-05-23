@@ -2646,9 +2646,10 @@ cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-display_manager_js[:properties][:support_os][:default]=["GECOS Kiosk"]
-idle_timeout_js[:properties][:support_os][:default]=["GECOS Kiosk"]
-ttys_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+#Temporarily disabled until further testing
+#display_manager_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+#idle_timeout_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+#ttys_js[:properties][:support_os][:default]=["GECOS Kiosk"]
 
 
 complete_js = {
