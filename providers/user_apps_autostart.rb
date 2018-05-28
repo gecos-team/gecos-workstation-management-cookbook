@@ -7,7 +7,8 @@
 #
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
-#
+
+
 
 action :setup do
   begin
@@ -16,37 +17,65 @@ action :setup do
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
       users = new_resource.users 
-      desktop_path = "/usr/share/applications/"
 
+      case node['platform']
+        when 'debian', 'ubuntu', 'redhat', 'centos', 'fedora'
+          applications_path = "/usr/share/applications/"
+          subdirs = %w(.config/ autostart/)
+          file_ext  = '.desktop'
+        when 'windows'
+          # TODO
+        when 'mac_os_x'
+          # TODO
+      end
+          
       users.each_key do |user_key|
         nameuser = user_key 
         username = nameuser.gsub('###','.')
         user = users[user_key]
+        gid  = Etc.getpwnam(username).gid
 
-        homedir = `eval echo ~#{username}`.gsub("\n","")
-        autostart_path = "#{homedir}/.config/autostart/"
-        unless Kernel::test('d', autostart_path)
-          FileUtils.mkdir_p(autostart_path)
-          gid = Etc.getpwnam(username).gid
-          FileUtils.chown_R(username, gid, homedir+"/.config")
+        autostart_path = ::File.expand_path("~#{username}")
+
+        subdirs.each do |subdir|
+          autostart_path = ::File.join(autostart_path, subdir)
+          directory autostart_path do
+            owner username
+            group gid
+            mode '0755'
+            action :nothing
+          end.run_action(:create)
         end
-      
-        user.desktops.each do |desktopfile|
-# Add ".desktop" if not present in launcher's name
-          if ! desktopfile.include? "\.desktop"
-	    desktopfile.concat(".desktop")
-	  end
-          if FileTest.exist? desktop_path + desktopfile and not desktopfile.empty? 
-            FileUtils.cp "#{desktop_path}#{desktopfile}",  autostart_path
+        Chef::Log.debug("user_apps_autostart ::: setup - autostart_path = #{autostart_path}")
+
+        user.desktops.each do |desktop|
+
+          if !desktop.name.end_with?(file_ext)
+            desktop.name.concat(file_ext)
           end
-        end
-        user.desktops_to_remove.each do |desktopfile|
-# Add ".desktop" if not present in launcher's name
-          if ! desktopfile.include? "\.desktop"
-	    desktopfile.concat(".desktop")
-	  end
-          if FileTest.exist? autostart_path + desktopfile and not desktopfile.empty? 
-            FileUtils.rm "#{autostart_path}#{desktopfile}"
+
+          src = applications_path + desktop.name
+          dst = autostart_path + desktop.name
+
+          case desktop.action
+            when "add"
+              if ::File.file?(src)
+                FileUtils.cp src, dst
+                FileUtils.chown(username, gid, dst)
+                FileUtils.chmod 0755, dst
+                Chef::Log.info("Desktop startup created in #{dst}")
+              else
+                Chef::Log.warn("Desktop file #{src} not found")
+              end
+            when "remove"
+              if ::File.file?(dst)
+                FileUtils.rm dst
+                Chef::Log.info("Launcher removed from #{dst}")
+              else
+                Chef::Log.warn("Desktop file #{dst} not found")
+              end
+            else
+              Chef::Log.warn("No action found")
           end
         end
 
@@ -75,13 +104,10 @@ action :setup do
       end
     end
   ensure
-    
+
     gecos_ws_mgmt_jobids "user_apps_autostart_res" do
        recipe "users_mgmt"
     end.run_action(:reset)
-    
+
   end
 end
-
-
-
