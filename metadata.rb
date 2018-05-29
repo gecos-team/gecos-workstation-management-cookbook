@@ -2646,10 +2646,9 @@ cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 
 mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-#Temporarily disabled until further testing
-#display_manager_js[:properties][:support_os][:default]=["GECOS Kiosk"]
-#idle_timeout_js[:properties][:support_os][:default]=["GECOS Kiosk"]
-#ttys_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+display_manager_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+idle_timeout_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+ttys_js[:properties][:support_os][:default]=["GECOS Kiosk"]
 
 
 complete_js = {
@@ -2682,7 +2681,7 @@ complete_js = {
         },
         misc_mgmt: {
           type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res", "ttys_res"],
+          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res"],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
@@ -2695,13 +2694,13 @@ complete_js = {
             power_conf_res: power_conf_js,
             local_admin_users_res: local_admin_users_js,
             remote_shutdown_res: remote_shutdown_js,
-            cert_res: cert_js,
-            ttys_res: ttys_js,
+            cert_res: cert_js
+#            ttys_res: ttys_js,
           }
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res", "display_manager_res"],
+          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
@@ -2710,8 +2709,8 @@ complete_js = {
             appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
-            appconfig_java_res: appconfig_java_js,
-            display_manager_res: display_manager_js
+            appconfig_java_res: appconfig_java_js
+#            display_manager_res: display_manager_js
           }
         },
         printers_mgmt: {
@@ -2723,7 +2722,8 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res"],
+          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             email_client_res: email_client_js,
@@ -2740,8 +2740,8 @@ complete_js = {
             user_mount_res: user_mount_js,
             user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js,
-            mimetypes_res: mimetypes_js,
-            idle_timeout_res: idle_timeout_js
+            mimetypes_res: mimetypes_js
+#            idle_timeout_res: idle_timeout_js
           }
         }
       }
