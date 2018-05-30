@@ -176,9 +176,19 @@ action :setup do
               template = template + expanded_line + "\n"
           end
 
-          Chef::Log.info("template = #{template}")          
+          # Chef::Log.info("template = #{template}")          
            
+          # Check if there are configuration changes by 
+          # comparing the current template signature and the 
+          # previous template signature
+          current_hash = Digest::SHA256.hexdigest template
+          
+          previous_hash = ''
+          if ::File.exist?("#{homedir}/.thunderbird/gecos/digest")
+            previous_hash = ::File.read("#{homedir}/.thunderbird/gecos/digest")
+          end
            
+          # Chef::Log.info("current_hash = #{current_hash} previous_hash = #{previous_hash}")   
            
           file "#{homedir}/.thunderbird/gecos/prefs.js" do
             content template
@@ -186,8 +196,17 @@ action :setup do
             owner username
             group gid
             action :create
-            only_if { ::File.exist?("#{homedir}/.thunderbird/gecos") }
+            only_if { ::File.exist?("#{homedir}/.thunderbird/gecos") and previous_hash != current_hash }
           end
+           
+          file "#{homedir}/.thunderbird/gecos/digest" do
+            content current_hash
+            mode '0700'
+            owner username
+            group gid
+            action :create
+            only_if { ::File.exist?("#{homedir}/.thunderbird/gecos") }
+          end          
 
 	end
         
