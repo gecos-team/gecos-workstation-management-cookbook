@@ -30,21 +30,18 @@ action :setup do
           user = users[user_key]
           Chef::Log.info("Setting wallpaper #{user.desktop_file}")
           desktop_file = user.desktop_file
-          gecos_ws_mgmt_desktop_setting "picture-uri" do
-            type "string"
-            value "file://" + desktop_file.to_s
-            schema "org.cinnamon.desktop.background"
-            username username
-            provider "gecos_ws_mgmt_gsettings"
+          
+          desktop_gsettings "org.cinnamon.desktop.background" do
+            key "picture-uri"
+            value "'file://#{desktop_file.to_s}'"
+            user username
             action :nothing
           end.run_action(:set)
 
-          gecos_ws_mgmt_desktop_setting "picture-uri" do
-            type "string"
-            value "file://" + desktop_file.to_s
-            schema "org.gnome.desktop.background"
-            username username
-            provider "gecos_ws_mgmt_gsettings"
+          desktop_gsettings "org.gnome.desktop.background" do
+            key "picture-uri"
+            value "'file://#{desktop_file.to_s}'"
+            user username
             action :nothing
           end.run_action(:set)
 

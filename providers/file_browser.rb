@@ -20,58 +20,53 @@ action :setup do
         nameuser = user_key 
         username = nameuser.gsub('###','.')
         user = users[user_key]
-      
+
         #default_folder_viewer
         if !user.default_folder_viewer.empty? and !user.default_folder_viewer.nil?
-          gecos_ws_mgmt_desktop_setting "default-folder-viewer" do
+          desktop_gsettings "org.nemo.preferences" do
+            key "default-folder-viewer"
+            user username
             value user.default_folder_viewer
-            schema "org.nemo.preferences"
-            username username
-            provider "gecos_ws_mgmt_gsettings"
             action :nothing
           end.run_action(:set)
         end
 
         #show_hidden_files
         if !user.show_hidden_files.empty? and !user.show_hidden_files.nil? 
-          gecos_ws_mgmt_desktop_setting "show-hidden-files" do
+          desktop_gsettings "org.nemo.preferences" do
+            key "show-hidden-files"
+            user username
             value user.show_hidden_files
-            schema "org.nemo.preferences"
-            username username
-            provider "gecos_ws_mgmt_gsettings"
             action :nothing
           end.run_action(:set)
         end
      
         #show_search_icon_toolbar
         if !user.show_search_icon_toolbar.empty? and !user.show_search_icon_toolbar.nil? 
-          gecos_ws_mgmt_desktop_setting "show-search-icon-toolbar" do
+          desktop_gsettings "org.nemo.preferences" do
+            key "show-search-icon-toolbar"
+            user username
             value user.show_search_icon_toolbar
-            schema "org.nemo.preferences"
-            username username
-            provider "gecos_ws_mgmt_gsettings"
             action :nothing
           end.run_action(:set)
         end
 
         #click_policy
         if !user.click_policy.empty? and !user.click_policy.nil? 
-          gecos_ws_mgmt_desktop_setting "click-policy" do
+          desktop_gsettings "org.nemo.preferences" do
+            key "click-policy"
+            user username
             value user.click_policy
-            schema "org.nemo.preferences"
-            username username
-            provider "gecos_ws_mgmt_gsettings"
             action :nothing
           end.run_action(:set)
         end
 
         #confirm_trash
         if !user.confirm_trash.empty? and !user.confirm_trash.nil? 
-          gecos_ws_mgmt_desktop_setting "confirm-trash" do
+          desktop_gsettings "org.nemo.preferences" do
+            key "confirm-trash"
+            user username
             value user.confirm_trash
-            schema "org.nemo.preferences"
-            username username
-            provider "gecos_ws_mgmt_gsettings"
             action :nothing
           end.run_action(:set)
         end

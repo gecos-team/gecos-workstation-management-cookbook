@@ -63,12 +63,11 @@ action :setup do
         disable_log_out = user.disable_log_out
 	
 	if not lite
-          gecos_ws_mgmt_desktop_settings "disable-log-out" do
-            provider "gecos_ws_mgmt_gsettings"
-            schema "org.cinnamon.desktop.lockdown"
-            type "boolean"
-            username username
+          desktop_gsettings "org.cinnamon.desktop.lockdown" do
+            key "disable-log-out"
+            user username
             value "#{disable_log_out}"
+            action :nothing
           end.run_action(:set)
 	else
 	  if disable_log_out

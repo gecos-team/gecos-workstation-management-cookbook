@@ -8,6 +8,7 @@ version           "0.6.0"
 
 depends "apt"
 depends "chef-client"
+depends "compat_resource"
 
 %w{ ubuntu debian }.each do |os|
   supports os
