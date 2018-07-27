@@ -69,6 +69,7 @@ end
 #    action [:disable, :stop]
 #end
 
+include_recipe "gecos_ws_mgmt::required_packages"
 include_recipe "gecos_ws_mgmt::software_mgmt"
 include_recipe "gecos_ws_mgmt::misc_mgmt"
 include_recipe "gecos_ws_mgmt::network_mgmt"
