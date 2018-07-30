@@ -2451,6 +2451,24 @@ display_manager_js = {
   type: "object",
   is_mergeable: false,
   autoreversible: false,
+  form: {
+      type:"section",
+      items: [
+        "dm",
+        "autologin",
+        type:"section",
+        items: [
+          {
+            key: "autologin_options.username",
+            value: " "
+          },
+          {
+            key:"autologin_options.timeout",
+            value: 0
+          }
+        ]
+     ]
+  },
   properties:
   {
     dm: {
@@ -2511,11 +2529,18 @@ idle_timeout_js = {
         "idle_enabled",
         type:"section",
         items: [
-          "idle_options.timeout",
-          "idle_options.command",
           {
-            key:"idle_options.notification",
-            type:"textarea"
+            key: "idle_options.timeout",
+            value: 0
+          },
+          {
+            key: "idle_options.command",
+            value: " "
+          },
+          {
+            key: "idle_options.notification",
+            type: "textarea",
+            value: " "
           }
         ]
      ]
@@ -2543,6 +2568,7 @@ idle_timeout_js = {
               type: "object",
               title: "Idle options",
               title_es: "Opciones de configuración",
+              required: ["timeout", "command"],
               properties: {
                 timeout: {title:"Idle time", title_es: "Tiempo de inactividad", type:"integer",description:"(mins)"},
                 command: {title:"Command", title_es:"Comando", type:"string"},
