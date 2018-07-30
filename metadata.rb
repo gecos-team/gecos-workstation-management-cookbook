@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS Workstations management"
-version           "0.6.0"
+version           "0.6.1"
 
 depends "apt"
 depends "chef-client"
@@ -1956,7 +1956,7 @@ local_users_js = {
       title_es: "Lista de usuarios para gestionar",
       items: {
         type:"object",
-        required: ["user","actiontorun"],
+        required: ["user","actiontorun","password"],
         order:["actiontorun", "user", "password", "name"],
         mergeIdField: ['user'],
         mergeActionField: 'actiontorun',
