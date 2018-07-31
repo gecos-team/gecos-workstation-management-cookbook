@@ -19,11 +19,12 @@ action :setup do
     
       users = new_resource.users
 
-      if not users.nil? and not users.empty?
-        package "owncloud-client" do
-          action :install
-          options "--force-yes"
-        end
+      #end
+      $required_pkgs['folder_sync_res'].each do |pkg|
+        Chef::Log.debug("folder_sync.rb - REQUIRED PACKAGE = %s" % pkg)
+        package pkg do
+          action :nothing
+        end.run_action(:install)
       end
       
       users.each_key do |user_key|
