@@ -24,12 +24,9 @@ action :setup do
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
     if new_resource.support_os.include?(os)
 #    if new_resource.support_os.include?($gecos_os)
-      $required_pkgs['sssd_res'].each do |pkg|
-        Chef::Log.debug("sssd.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
+      package 'sssd' do
+        action :nothing
+      end.run_action(:install)
 
       if new_resource.enabled
         domain = new_resource.domain

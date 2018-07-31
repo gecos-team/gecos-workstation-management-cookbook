@@ -21,12 +21,15 @@ action :setup do
       users_to_add = []
       users_to_remove = []
     
-      $required_pkgs['folder_sharing_res'].each do |pkg|
-        Chef::Log.debug("folder_sharing.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
+      if $gecos_os == "GECOS V2" or $gecos_os == "GECOS V3"
+        package 'nemo-share' do
           action :nothing
         end.run_action(:install)
       end
+
+      package 'samba' do
+        action :nothing
+      end.run_action(:install)
 
     # Default Samba group
       GRP_SAMBA = 'sambashare'
