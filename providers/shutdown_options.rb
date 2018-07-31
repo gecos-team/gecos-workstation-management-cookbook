@@ -18,12 +18,9 @@ action :setup do
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
 
-      $required_pkgs['shutdown_options_res'].each do |pkg|
-        Chef::Log.debug("shutdown_options.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
+      package "dconf-tools" do
+       action :nothing
+      end.run_action(:install) 
 
       systemlock = new_resource.systemlock
       systemset = new_resource.systemset

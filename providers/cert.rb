@@ -16,12 +16,11 @@ action :setup do
 #    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
 
-      $required_pkgs['cert_res'].each do |pkg|
-        Chef::Log.debug("cert.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
+      
+      # install depends
+      package "libnss3-tools" do
+        action :nothing
+      end.run_action(:install)
 
       require 'fileutils'
 

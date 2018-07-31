@@ -14,13 +14,7 @@ action :setup do
     # package "dconf-tools" do
       # action :nothing
     # end.run_action(:install)
-    $required_pkgs['desktop_background_res'].each do |pkg|
-      Chef::Log.debug("desktop_background.rb - REQUIRED PACKAGE = %s" % pkg)
-      package pkg do
-        action :nothing
-      end.run_action(:install)
-    end
-
+    
 # OS identification moved to recipes/default.rb
 #    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
 #    if new_resource.support_os.include?(os)

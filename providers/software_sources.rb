@@ -75,12 +75,10 @@ action :setup do
       current_lists = []
       remote_lists = []    
       
-      $required_pkgs['software_sources_res'].each do |pkg|
-        Chef::Log.debug("software_sources.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
+      # Install or upgrade gecosws-repository-compatibility package
+      package 'gecosws-repository-compatibility' do
+        action :nothing
+      end.run_action(:upgrade)      
       
       # We must always preserve the default repository for the distribution
       default_repo = $gecos_os.downcase.gsub(/lite/, '').gsub(/[^A-Za-z0-9]/, '') + ".list"

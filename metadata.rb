@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS Workstations management"
-version           "0.6.2"
+version           "0.6.0"
 
 depends "apt"
 depends "chef-client"

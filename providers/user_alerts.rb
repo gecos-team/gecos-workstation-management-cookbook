@@ -18,12 +18,10 @@ action :setup do
   begin
     if new_resource.support_os.include?($gecos_os)
 
-      $required_pkgs['user_alerts_res'].each do |pkg|
-        Chef::Log.debug("user_alerts.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
+      # Installs the notify-send command
+      package "libnotify-bin" do
+        action :nothing
+      end.run_action(:install)
 
       usernames = []
 

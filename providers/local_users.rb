@@ -18,12 +18,9 @@ action :setup do
 
       require 'etc'
 
-      $required_pkgs['local_users_res'].each do |pkg|
-        Chef::Log.debug("local_users.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
+      package "libshadow-ruby1.8" do
+        action :nothing
+      end.run_action(:install)
 
       users = new_resource.users_list
       users.each do |usrdata| 
