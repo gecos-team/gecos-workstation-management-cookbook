@@ -21,7 +21,7 @@ action :setup do
     ffx = shell_out("apt-cache policy firefox").exitstatus
     if new_resource.support_os.include?($gecos_os) and ffx
 
-      $required_pkgs['web_browser_res'].each do |pkg|
+      $required_pkgs['web_browser'].each do |pkg|
          Chef::Log.debug("web_browser.rb - REQUIRED PACKAGES = %s" % pkg)
          package pkg do
            action :nothing

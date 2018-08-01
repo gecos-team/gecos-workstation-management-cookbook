@@ -18,7 +18,7 @@ action :setup do
 
       require 'time'
 
-      $required_pkgs['power_conf_res'].each do |pkg|
+      $required_pkgs['power_conf'].each do |pkg|
         Chef::Log.debug("power_conf.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

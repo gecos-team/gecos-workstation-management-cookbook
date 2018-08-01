@@ -20,7 +20,7 @@ ADDED_SECTION='Added Associations'
 action :setup do
   begin
     if new_resource.support_os.include?($gecos_os)
-      $required_pkgs['mimetypes_res'].each do |pkg|
+      $required_pkgs['mimetypes'].each do |pkg|
         Chef::Log.debug("mimetypes.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

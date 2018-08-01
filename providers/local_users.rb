@@ -18,7 +18,7 @@ action :setup do
 
       require 'etc'
 
-      $required_pkgs['local_users_res'].each do |pkg|
+      $required_pkgs['local_users'].each do |pkg|
         Chef::Log.debug("local_users.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

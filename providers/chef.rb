@@ -19,7 +19,7 @@
 
 action :setup do
   begin
-    $required_pkgs['chef_conf_res'].each do |pkg|
+    $required_pkgs['chef'].each do |pkg|
       Chef::Log.debug("chef.rb - REQUIRED PACKAGE = %s" % pkg)
       package pkg do
         action :nothing

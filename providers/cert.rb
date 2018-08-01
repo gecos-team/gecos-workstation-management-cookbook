@@ -18,7 +18,7 @@ action :setup do
 
       
       # install depends
-      $required_pkgs['cert_res'].each do |pkg|
+      $required_pkgs['cert'].each do |pkg|
         Chef::Log.debug("cert.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

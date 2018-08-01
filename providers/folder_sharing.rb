@@ -21,7 +21,7 @@ action :setup do
       users_to_add = []
       users_to_remove = []
     
-      $required_pkgs['folder_sharing_res'].each do |pkg|
+      $required_pkgs['folder_sharing'].each do |pkg|
         Chef::Log.debug("folder_sharing.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

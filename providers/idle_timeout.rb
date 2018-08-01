@@ -17,7 +17,7 @@ action :setup do
 
     if new_resource.support_os.include?($gecos_os)
 
-      $required_pkgs['idle_timeout_res'].each do |pkg|
+      $required_pkgs['idle_timeout'].each do |pkg|
         Chef::Log.debug("idle_timeout.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

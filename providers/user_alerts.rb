@@ -19,7 +19,7 @@ action :setup do
     if new_resource.support_os.include?($gecos_os)
 
       # Installs the notify-send command
-      $required_pkgs['user_alerts_res'].each do |pkg|
+      $required_pkgs['user_alerts'].each do |pkg|
         Chef::Log.debug("user_alerts.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

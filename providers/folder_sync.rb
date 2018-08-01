@@ -19,7 +19,7 @@ action :setup do
     
       users = new_resource.users
 
-      $required_pkgs['folder_sync_res'].each do |pkg|
+      $required_pkgs['folder_sync'].each do |pkg|
         Chef::Log.debug("folder_sync.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

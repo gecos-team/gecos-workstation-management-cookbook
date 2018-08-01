@@ -11,35 +11,35 @@
 
 # Commons
 $required_pkgs = {
-  'cert_res' => ['libnss3-tools'],
-  'software_sources_res' => ['gecosws-repository-compatibility'],
-  'folder_sync_res' => ['owncloud-client'],
-  'chef_conf_res' => ['chef'],
-  'tz_date_res' => ['ntpdate'],
+  'cert' => ['libnss3-tools'],
+  'software_sources' => ['gecosws-repository-compatibility'],
+  'folder_sync' => ['owncloud-client'],
+  'chef' => ['chef'],
+  'tz_date' => ['ntpdate'],
   'idle_timeout' => ['zenity','xautolock'],
-  'desktop_background_res' => ['dconf-tools'],
-  'printers_res' => ['printer-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient'],
-  'folder_sharing_res' => ['samba'],
-  'mimetypes_res' => ['xdg-utils'],
-  'power_conf_res' => ['cpufrequtils','powernap'],
-  'sssd_res' => ['sssd'],
-  'web_browser_res' => ['ruby-sqlite3','libsqlite3-dev', 'unzip','xmlstarlet'],
-  'shutdown_options_res' => ['dconf-tools'],
-  'user_alerts_res' => ['libnotify-bin'],
-  'local_users_res' => ['libshadow-ruby1.8']
+  'desktop_background' => ['dconf-tools'],
+  'printers' => ['printer-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient'],
+  'folder_sharing' => ['samba'],
+  'mimetypes' => ['xdg-utils'],
+  'power_conf' => ['cpufrequtils','powernap'],
+  'sssd' => ['sssd'],
+  'web_browser' => ['ruby-sqlite3','libsqlite3-dev', 'unzip','xmlstarlet'],
+  'shutdown_options' => ['dconf-tools'],
+  'user_alerts' => ['libnotify-bin'],
+  'local_users' => ['libshadow-ruby1.8']
 }
 
 # Platform dependencies
 case $gecos_os
   when "GECOS V2"
-    $required_pkgs['folder_sharing_res'].push('nemo-share')
+    $required_pkgs['folder_sharing'].push('nemo-share')
 
   when "Gecos V2 Lite"
 
   when "GECOS Kiosk"
 
   when "GECOS V3" 
-    $required_pkgs['folder_sharing_res'].push('nemo-share')
+    $required_pkgs['folder_sharing'].push('nemo-share')
 
   when "GECOS V3 Lite"
 

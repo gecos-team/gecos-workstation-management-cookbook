@@ -76,7 +76,7 @@ action :setup do
       remote_lists = []    
       
       # Install or upgrade gecosws-repository-compatibility package
-      $required_pkgs['software_sources_res'].each do |pkg|
+      $required_pkgs['software_sources'].each do |pkg|
         Chef::Log.debug("software_sources.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

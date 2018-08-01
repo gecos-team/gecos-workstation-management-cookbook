@@ -71,7 +71,7 @@ action :setup do
         action :nothing
       end.run_action(:restart)
 
-      $required_pkgs['printers_res'].each do |pkg|
+      $required_pkgs['printers'].each do |pkg|
         Chef::Log.debug("printers.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing

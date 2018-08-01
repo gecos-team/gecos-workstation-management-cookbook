@@ -11,7 +11,7 @@
 
 action :setup do
   begin
-    $required_pkgs['desktop_background_res'].each do |pkg|
+    $required_pkgs['desktop_background'].each do |pkg|
       Chef::Log.debug("desktop_background.rb - REQUIRED PACKAGE = %s" % pkg)
       package pkg do
         action :nothing
