@@ -21,37 +21,12 @@ action :setup do
     ffx = shell_out("apt-cache policy firefox").exitstatus
     if new_resource.support_os.include?($gecos_os) and ffx
 
-      trusty = false
-      pkg = shell_out("apt-cache policy libsqlite3-ruby").exitstatus
-      if pkg
-        trusty = true
+      $required_pkgs['web_browser'].each do |pkg|
+         Chef::Log.debug("web_browser.rb - REQUIRED PACKAGES = %s" % pkg)
+         package pkg do
+           action :nothing
+         end.run_action(:install)
       end
-      if not trusty
-        package 'libsqlite3-ruby' do
-          action :nothing
-        end.run_action(:install)
-      else
-        package 'ruby-sqlite3' do
-          action :nothing
-        end.run_action(:install)
-      end
-
-      package 'libsqlite3-dev' do
-        action :nothing
-      end.run_action(:install)
-
-      # Neccessary for "certutil" command (used in "CERTS STUFF" code)
-      # package 'libnss3-tools' do
-        # action :nothing
-      # end.run_action(:install)
-
-      package 'unzip' do
-        action :nothing
-      end.run_action(:install)
-      
-      package 'xmlstarlet' do
-        action :nothing
-      end.run_action(:install)
 
       gem_depends = [ 'sqlite3' ]
       

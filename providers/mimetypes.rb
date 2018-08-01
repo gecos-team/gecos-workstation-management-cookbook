@@ -20,9 +20,12 @@ ADDED_SECTION='Added Associations'
 action :setup do
   begin
     if new_resource.support_os.include?($gecos_os)
-      package "xdg-utils" do
-       action :nothing
-      end.run_action(:install)
+      $required_pkgs['mimetypes'].each do |pkg|
+        Chef::Log.debug("mimetypes.rb - REQUIRED PACKAGE = %s" % pkg)
+        package pkg do
+          action :nothing
+        end.run_action(:install)
+      end
 
       gem_depends = [ 'inifile' ]
       gem_depends.each do |gem|

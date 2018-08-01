@@ -17,13 +17,12 @@ action :setup do
 
     if new_resource.support_os.include?($gecos_os)
 
-      package "zenity" do
-        action :nothing
-      end.run_action(:install)
-     
-      package 'xautolock' do
-        action :nothing
-      end.run_action(:install)
+      $required_pkgs['idle_timeout'].each do |pkg|
+        Chef::Log.debug("idle_timeout.rb - REQUIRED PACKAGE = %s" % pkg)
+        package pkg do
+          action :nothing
+        end.run_action(:nothing)
+      end
 
       cookbook_file '/usr/bin/autolock.sh' do
         source 'autolock.sh'

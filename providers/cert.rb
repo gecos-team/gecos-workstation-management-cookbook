@@ -18,9 +18,12 @@ action :setup do
 
       
       # install depends
-      package "libnss3-tools" do
-        action :nothing
-      end.run_action(:install)
+      $required_pkgs['cert'].each do |pkg|
+        Chef::Log.debug("cert.rb - REQUIRED PACKAGE = %s" % pkg)
+        package pkg do
+          action :nothing
+        end.run_action(:install)
+      end
 
       require 'fileutils'
 

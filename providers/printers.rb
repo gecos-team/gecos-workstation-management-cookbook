@@ -71,8 +71,8 @@ action :setup do
         action :nothing
       end.run_action(:restart)
 
-      pkgs = ['printer-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient']
-      pkgs.each do |pkg|
+      $required_pkgs['printers'].each do |pkg|
+        Chef::Log.debug("printers.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
           action :nothing
         end.run_action(:install)
