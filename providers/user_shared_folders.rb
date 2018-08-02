@@ -20,6 +20,7 @@ action :setup do
       users = new_resource.users
       users.each_key do |user_key|
         nameuser = user_key 
+        VariableManager.add_to_environ(user_key)
         username = nameuser.gsub('###','.')
         user = users[user_key]
      
@@ -52,10 +53,17 @@ action :setup do
           tmp_file = Chef::Util::FileEdit.new gtkbook
           user.gtkbookmarks.each do |bookmark|
             if bookmark.uri.match(pattern)
-              line_to_add = "#{bookmark.uri} #{bookmark.name}"
+              bookmark_uri = VariableManager.expand_variables(bookmark.uri)
+              bookmark_name = VariableManager.expand_variables(bookmark.name)
+              # Do not create the bookmark if the variable expansion returns nil
+              if bookmark_uri and bookmark_name
+              	line_to_add = "#{bookmark_uri} #{bookmark_name}"
  # If there's no line containing the bookmark URI (removing lading spaces and trailing slash), insert the bookmark. We only search for URI, so renamed bookmarks are nor duplicated
-              tmp_file.insert_line_if_no_match(bookmark.uri.chop().lstrip(), line_to_add)
-              Chef::Log.info("Adding shortcuts to shared folders")
+                tmp_file.insert_line_if_no_match(bookmark_uri.chop().lstrip(), line_to_add)
+                Chef::Log.info("Adding shortcuts to shared folders")
+              end
+            else
+              Chef::Log.warn("Bookmark URI doesn't match the pattern: #{bookmark.uri} username: #{username}")
             end
           end
           tmp_file.write_file

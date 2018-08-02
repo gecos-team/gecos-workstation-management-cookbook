@@ -787,8 +787,8 @@ web_browser_js = {
 }
 
 email_client_js = {
-  title: "Email Configuration",
-  title_es: "Configuración de email",
+  title: "DEPRECATED: Email Configuration",
+  title_es: "OBSOLETA: Configuración de email",
   type: "object",
   is_mergeable: false,
   autoreverse: false,
@@ -889,6 +889,176 @@ email_client_js = {
     }
   }
 }
+
+email_setup_js = {
+  title: "Email Configuration",
+  title_es: "Configuración de email",
+  type: "object",
+  is_mergeable: false,
+  autoreverse: false,
+  properties: {
+    users: {
+      type: "object",
+      title: "Users",
+      title_es: "Usuarios",
+      patternProperties: {
+        ".*" => { 
+          type: "object", title: "Username", title_es: "Nombre de usuario",
+          required: ["base", "identity"],
+          order: ["base", "identity"],
+          properties: {  
+            base: {
+              title: "Base setup",
+              title_es: "Configuración base",
+              type: "object",
+              order: ["email_setup", "default_email", "email_template"],
+              properties: {
+                email_setup: {
+                  title: "Perform email setup?",
+                  title_es: "¿Configurar correo?",
+                  description: "If this box is not checked the email setup will not be applied",
+                  description_es: "Si no se marca esta casilla no se configurará el correo",
+                  type: "boolean",
+                  default: false
+                },
+                default_email: {
+                  title: "Default profile?",
+                  title_es: "¿Perfil por defecto?",
+                  description: "If this box is checked the email will be configured as the default email profile",
+                  description_es: "Si se marca esta casilla se configurará el email como perfil por defecto",
+                  type: "boolean",
+                  default: false
+                },
+                email_template: {
+                  title: "Configuration template",
+                  title_es: "Plantilla de configuración",
+                  type: "string",
+                  enum: ['Plain', 'Secure'], 
+                }
+              } # properties
+            }, # base
+            identity: {
+              title: "Identity of the user",
+              title_es: "Identidad del usuario",
+              type: "object",
+              order: ["name", "surname", "email"],
+              properties: {
+                name: {
+                  title: "Name",
+                  title_es: "Nombre",
+                  type: "string"
+                },
+                surname: {
+                  title: "Surname",
+                  title_es: "Apellidos",
+                  type: "string"
+                },
+                email: {
+                  title: "Email address",
+                  title_es: "Dirección de correo electrónico",
+                  type: "string"
+                }
+              } # properties
+            }, # identity
+            updated_by: updated_js
+          } # properties
+        } # pattern
+      } # patternProperties
+    }, # users
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }
+  }
+}
+
+
+im_client_js = {
+  title: "Instant messaging client configuration",
+  title_es: "Configuración del cliente de mensajería intantánea",
+  type: "object",
+  is_mergeable: false,
+  autoreverse: false,
+  properties: {
+    users: {
+      type: "object",
+      title: "Users",
+      title_es: "Usuarios",
+      patternProperties: {
+        ".*" => { 
+          type: "object", title: "Username", title_es: "Nombre de usuario",
+          required: ["base", "identity"],
+          order: ["base", "identity"],
+          properties: {  
+            base: {
+              title: "Base setup",
+              title_es: "Configuración base",
+              type: "object",
+              order: ["im_setup", "overwrite"],
+              properties: {
+                im_setup: {
+                  title: "Perform instant messaging client setup?",
+                  title_es: "¿Configurar el cliente de mensajería intantánea?",
+                  description: "If this box is not checked the instant messaging client setup will not be applied",
+                  description_es: "Si no se marca esta casilla no se configurará el cliente de mensajería intantánea",
+                  type: "boolean",
+                  default: false
+                },
+                overwrite: {
+                  title: "Overwrite the whole configuration?",
+                  title_es: "¿Sobreescribir toda la configuración?",
+                  description: "If this box is checked the whole configuration file will be overwriten",
+                  description_es: "Si se marca esta casilla se sobreescribirá el fichero de configuración completo",
+                  type: "boolean",
+                  default: false
+                },
+              } # properties
+            }, # base
+            identity: {
+              title: "Identity of the user",
+              title_es: "Identidad del usuario",
+              type: "object",
+              order: ["name", "surname", "email"],
+              properties: {
+                name: {
+                  title: "Name",
+                  title_es: "Nombre",
+                  type: "string"
+                },
+                surname: {
+                  title: "Surname",
+                  title_es: "Apellidos",
+                  type: "string"
+                },
+                email: {
+                  title: "Email address",
+                  title_es: "Dirección de correo electrónico",
+                  type: "string"
+                }
+              } # properties
+            }, # identity
+            updated_by: updated_js
+          } # properties
+        } # pattern
+      } # patternProperties
+    }, # users
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: "array",
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: "string"
+      }
+    }
+  }
+}
+
 
 user_alerts_js = {
   title: "User alert",
@@ -2650,6 +2820,8 @@ printers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS
 user_shared_folders_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
 web_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 email_client_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
+email_setup_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
+im_client_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 file_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
 user_launchers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 desktop_background_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
@@ -2745,10 +2917,12 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "email_setup_res", "im_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             email_client_res: email_client_js,
+            email_setup_res: email_setup_js,
+            im_client_res: im_client_js,
             file_browser_res: file_browser_js,
             user_alerts_res: user_alerts_js,
             user_launchers_res: user_launchers_js,

@@ -26,7 +26,8 @@ $required_pkgs = {
   'web_browser' => ['ruby-sqlite3','libsqlite3-dev', 'unzip','xmlstarlet'],
   'shutdown_options' => ['dconf-tools'],
   'user_alerts' => ['libnotify-bin'],
-  'local_users' => ['libshadow-ruby1.8']
+  'local_users' => ['libshadow-ruby1.8'],
+  'im_client' => ['pidgin']
 }
 
 # Platform dependencies
