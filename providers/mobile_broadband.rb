@@ -35,6 +35,15 @@ action :setup do
       require 'json'
       require 'active_support/core_ext/hash'
 
+      # Please, keep this file updated with the latest package
+      cookbook_file '/usr/share/mobile-broadband-provider-info/serviceproviders.xml' do
+        source 'serviceproviders.xml'
+        owner 'root'
+        group 'root'
+        mode '0644'
+        action :nothing
+      end.run_action(:create)
+
       # setup system connections
       connections = new_resource.connections
       Chef::Log.info("Connections: #{connections}")

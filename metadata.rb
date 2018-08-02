@@ -44,7 +44,7 @@ mobile_broadband_js = {
   title_es: "Conexiones de banda ancha móvil",
   type: "object",
   required: ["connections"],
-  is_mergeable: true,
+  is_mergeable: false,
   autoreverse: false,
   properties: {
     connections: {
@@ -57,22 +57,19 @@ mobile_broadband_js = {
         type: "object",
         title: "Provider",
         title_es: "Proveedor",
-        required: ["provider", "country"],
-        order: ["provider","country"],
+        required: ["country","provider"],
+        order: ["country","provider"],
         properties: { 
           provider: {
             type: "string",
             title: "Provider",
             title_es: "Proveedor",
-            enum: ['Euskaltel','Másmovil','móbil R (Mundo-R)','moviData','ONO','Pepephone','Orange','Simyo/Blau','Telecable','Movistar (Telefónica)','Vodafone (Airtel)','Yoigo','Jazztel','Carrefour Móvil','Eroski Móvil'], 
           },
           country: {
             type: "string",
             title: "Country code",
             title_es: "Código de país",
-            enum: ["es"]
           }
-            
         }
       }
     },
