@@ -18,13 +18,12 @@ action :setup do
 
       require 'time'
 
-      package 'cpufrequtils' do
-        action :nothing
-      end.run_action(:install)
-
-      package 'powernap' do
-        action :nothing
-      end.run_action(:install)
+      $required_pkgs['power_conf'].each do |pkg|
+        Chef::Log.debug("power_conf.rb - REQUIRED PACKAGE = %s" % pkg)
+        package pkg do
+          action :nothing
+        end.run_action(:install)
+      end
 
       cpu_freq_gov = new_resource.cpu_freq_gov
       auto_shutdown = new_resource.auto_shutdown

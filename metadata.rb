@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS Workstations management"
-version           "0.6.1"
+version           "0.6.2"
 
 depends "apt"
 depends "chef-client"
@@ -1953,7 +1953,7 @@ local_users_js = {
       title_es: "Lista de usuarios para gestionar",
       items: {
         type:"object",
-        required: ["user","actiontorun"],
+        required: ["user","actiontorun","password"],
         order:["actiontorun", "user", "password", "name"],
         mergeIdField: ['user'],
         mergeActionField: 'actiontorun',
@@ -2448,6 +2448,24 @@ display_manager_js = {
   type: "object",
   is_mergeable: false,
   autoreversible: false,
+  form: {
+      type:"section",
+      items: [
+        "dm",
+        "autologin",
+        type:"section",
+        items: [
+          {
+            key: "autologin_options.username",
+            value: " "
+          },
+          {
+            key:"autologin_options.timeout",
+            value: 0
+          }
+        ]
+     ]
+  },
   properties:
   {
     dm: {
@@ -2508,11 +2526,18 @@ idle_timeout_js = {
         "idle_enabled",
         type:"section",
         items: [
-          "idle_options.timeout",
-          "idle_options.command",
           {
-            key:"idle_options.notification",
-            type:"textarea"
+            key: "idle_options.timeout",
+            value: 0
+          },
+          {
+            key: "idle_options.command",
+            value: " "
+          },
+          {
+            key: "idle_options.notification",
+            type: "textarea",
+            value: " "
           }
         ]
      ]
@@ -2540,6 +2565,7 @@ idle_timeout_js = {
               type: "object",
               title: "Idle options",
               title_es: "Opciones de configuración",
+              required: ["timeout", "command"],
               properties: {
                 timeout: {title:"Idle time", title_es: "Tiempo de inactividad", type:"integer",description:"(mins)"},
                 command: {title:"Command", title_es:"Comando", type:"string"},

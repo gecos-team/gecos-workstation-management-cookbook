@@ -19,9 +19,12 @@
 
 action :setup do
   begin
-    package 'chef' do
-      action :nothing
-    end.run_action(:install)
+    $required_pkgs['chef'].each do |pkg|
+      Chef::Log.debug("chef.rb - REQUIRED PACKAGE = %s" % pkg)
+      package pkg do
+        action :nothing
+      end.run_action(:install)
+    end
 # We moved OS identification to recipes/default.rb
 # But this recipe launches alone, and default.rb is not executed
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
