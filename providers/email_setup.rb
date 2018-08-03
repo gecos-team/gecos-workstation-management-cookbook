@@ -18,18 +18,14 @@ action :setup do
     # Checking OS and Thunderbird
     if new_resource.support_os.include?($gecos_os)
 
-      # Install thunderbird (in Spanish)
-      package 'thunderbird-locale-es-es' do
-        action :install
+      $required_pkgs['email_setup'].each do |pkg|
+        Chef::Log.debug("email_setup.rb - REQUIRED PACKAGE = %s" % pkg)
+        package pkg do
+          action :nothing
+        end.run_action(:install)
       end
       
-      # Xvfb is necessary for running thunderbird -CreateProfile
-      # because there is no headless mode by using MOZ_HEADLESS environment variable
-      package 'xvfb' do
-        action :install
-      end     
       
-
       # Setup email for users
       users = new_resource.users
       users.each_key do |user_key|
@@ -62,6 +58,8 @@ action :setup do
             action :nothing
           end.run_action(:create)
            
+          # Xvfb is necessary for running thunderbird -CreateProfile
+          # because there is no headless mode by using MOZ_HEADLESS environment variable
 
           file '/tmp/.X99-lock' do
             action :nothing
