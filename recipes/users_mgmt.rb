@@ -58,6 +58,13 @@ gecos_ws_mgmt_email_client 'email client' do
   action :setup
 end
 
+gecos_ws_mgmt_email_setup 'email setup' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:email_setup_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:email_setup_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:email_setup_res][:support_os]
+  action :setup
+end
+
 gecos_ws_mgmt_shutdown_options 'shutdown options' do
   users node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users]
   systemset node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemset]
