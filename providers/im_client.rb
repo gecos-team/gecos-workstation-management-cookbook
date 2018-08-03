@@ -100,7 +100,7 @@ action :setup do
            
           #Chef::Log.info("current_hash = #{current_hash} previous_hash = #{previous_hash}")   
           
-	  if ::File.exist?("#{homedir}/.purple") and (previous_hash != current_hash or user.base.overwrite)
+	        if ::File.exist?("#{homedir}/.purple") and (previous_hash != current_hash or user.base.overwrite)
             if user.base.overwrite or not ::File.exist?("#{homedir}/.purple/accounts.xml")
                 # If overwrite flag is active the accounts.xml must be overwritten if the content of the file 
                 # is different
@@ -123,87 +123,88 @@ action :setup do
             else
                # Only add/modify this entry
             
-               gem_depends = [ 'libxml-ruby' ]
-      
-               gem_depends.each do |gem|
-                   gem_package gem do
+               if not XMLUtil.isLoaded()
+                   gem_package 'libxml-ruby' do
                        gem_binary($gem_path)
                        action :nothing
                    end.run_action(:install)
-               end
+               end 
 
-               template_doc = XMLUtil.parseString(template)
-               accounts_xml_doc =  XMLUtil.parseFile("#{homedir}/.purple/accounts.xml")
-               if not accounts_xml_doc or not accounts_xml_doc.root
-                   Chef::Log.error("Bad XML in accounts.xml")  
-               end
+               if XMLUtil.isLoaded()
+              
+                 template_doc = XMLUtil.parseString(template)
+                 accounts_xml_doc =  XMLUtil.parseFile("#{homedir}/.purple/accounts.xml")
+                 if not accounts_xml_doc or not accounts_xml_doc.root
+                     Chef::Log.error("Bad XML in accounts.xml")  
+                 end
 
-               if not template_doc or not template_doc.root
-                   Chef::Log.error("Bad XML in pidgin template")  
-               end
+                 if not template_doc or not template_doc.root
+                     Chef::Log.error("Bad XML in pidgin template")  
+                 end
 
-               template_doc.root.each_element do |node|
-                  case node.name
-                  when 'account'
-                      accountName = 'UNKNOWN'
-                      node.each_element  do |elm|
-                          case elm.name
-                          when 'name'
-                              accountName = elm.content
+                 template_doc.root.each_element do |node|
+                    case node.name
+                    when 'account'
+                        accountName = 'UNKNOWN'
+                        node.each_element  do |elm|
+                            case elm.name
+                            when 'name'
+                                accountName = elm.content
+                            end # case
+                        end # each element
+
+                        if accountName == 'UNKNOWN'
+                            Chef::Log.error("No account name in template") 
+                            next
+                        end
+
+                       Chef::Log.info("Check if #{accountName} account exists in accounts_xml") 
+                       exists = false
+                       accounts_xml_doc.root.each_element do |node2|
+                          case node2.name
+                          when 'account'
+                              accName = 'UNKNOWN'
+                              node2.each_element  do |elm|
+                                  case elm.name
+                                      when 'name'
+                                     accName = elm.content
+                                  end # case
+                              end # each element
+
+                              if accName == 'UNKNOWN'
+                                 Chef::Log.error("No account name in accounts.xml") 
+                                 next
+                              end
+
+                              if accName == accountName
+                                  # An account with this name already exists --> Overwrite it
+                                  Chef::Log.info("Overwrite #{accountName} account") 
+                                  exists = true
+                                  XMLUtil.replaceContent(accounts_xml_doc, node2, node)
+
+                                  break
+                              end # accName == accountName
+
+                          else
+                              Chef::Log.error("Strange node in template: #{node.name}")   
                           end # case
-                      end # each element
+                       end # each_element
 
-                      if accountName == 'UNKNOWN'
-                          Chef::Log.error("No account name in template") 
-                          next
-                      end
+                       if not exists
+                           # An account with this name does not exists --> Append it
+                           Chef::Log.info("Append #{accountName} account") 
+                           accounts_xml_doc = XMLUtil.appendNode(accounts_xml_doc, node)
 
-                     Chef::Log.info("Check if #{accountName} account exists in accounts_xml") 
-                     exists = false
-                     accounts_xml_doc.root.each_element do |node2|
-                        case node2.name
-                        when 'account'
-                            accName = 'UNKNOWN'
-                            node2.each_element  do |elm|
-                                case elm.name
-                                    when 'name'
-                                   accName = elm.content
-                                end # case
-                            end # each element
+                       end # not exists
 
-                            if accName == 'UNKNOWN'
-                               Chef::Log.error("No account name in accounts.xml") 
-                               next
-                            end
+                    else
+                       Chef::Log.error("Strange node in template: #{node.name}")   
 
-                            if accName == accountName
-                                # An account with this name already exists --> Overwrite it
-                                Chef::Log.info("Overwrite #{accountName} account") 
-                                exists = true
-                                XMLUtil.replaceContent(accounts_xml_doc, node2, node)
+                    end # case
+                 end # each_element
 
-                                break
-                            end # accName == accountName
-
-                        else
-                            Chef::Log.error("Strange node in template: #{node.name}")   
-                        end # case
-                     end # each_element
-                     
-                     if not exists
-                         # An account with this name does not exists --> Append it
-                         Chef::Log.info("Append #{accountName} account") 
-                         accounts_xml_doc = XMLUtil.appendNode(accounts_xml_doc, node)
-
-                     end # not exists
-
-                  else
-                     Chef::Log.error("Strange node in template: #{node.name}")   
-
-                  end # case
-               end # each_element
-
-               XMLUtil.saveFile(accounts_xml_doc, "#{homedir}/.purple/accounts.xml")
+                 XMLUtil.saveFile(accounts_xml_doc, "#{homedir}/.purple/accounts.xml")
+               end #XMLUtil.isLoaded()
                
             end # if user.base.overwrite
 
@@ -216,7 +217,7 @@ action :setup do
             owner username
             group gid
             action :nothing
-            only_if { ::File.exist?("#{homedir}/.purple") and previous_hash != current_hash }
+            only_if { ::File.exist?("#{homedir}/.purple") and previous_hash != current_hash and XMLUtil.isLoaded() }
           end.run_action(:create)  
            
            
