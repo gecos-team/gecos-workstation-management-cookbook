@@ -41,6 +41,12 @@ execute "gecos-snitch-client" do
   action :nothing
 end.run_action(:run)
 
+# Prepare the environment variables
+Chef::Log.info("Prepare the environment variables for #{node['ohai_gecos']['pclabel']} computer")
+$gecos_environ = ENV.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+$gecos_environ['STATION'.to_sym] = node['ohai_gecos']['pclabel']
+$node = node
+
 
 # This should not be necessary, as wrapper is in new GECOS-Agent package. It is a transitional solution.
 Chef::Log.info("Installing wrapper")
