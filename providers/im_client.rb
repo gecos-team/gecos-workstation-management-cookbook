@@ -18,10 +18,13 @@ action :setup do
     # Checking OS and Pidgin
     if new_resource.support_os.include?($gecos_os)
 
-      # Install pidgin
-      package 'pidgin' do
-        action :install
-      end
+      # Install required packages
+      $required_pkgs['im_client'].each do |pkg|
+         Chef::Log.debug("im_client.rb - REQUIRED PACKAGES = %s" % pkg)
+         package pkg do
+           action :nothing
+         end.run_action(:install)
+      end      
       
       # Setup email for users
       users = new_resource.users
