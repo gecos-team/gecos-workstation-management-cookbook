@@ -42,20 +42,9 @@ execute "gecos-snitch-client" do
 end.run_action(:run)
 
 # Prepare the environment variables
+Chef::Log.info("Prepare the environment variables for #{node['ohai_gecos']['pclabel']} computer")
 $gecos_environ = ENV.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
-
-# Get workstation name from /etc/pclabel
-begin
-  pclabel = ''
-  File.open('/etc/pclabel','r') do |pclabelfile|
-    pclabel = pclabelfile.gets
-  end
-  $gecos_environ['STATION'.to_sym] = pclabel
-  
-rescue Exception => e
-  Chef::Log.warn("Can't read /etc/pclabel: #{e.message}")
-end
-
+$gecos_environ['STATION'.to_sym] = node['ohai_gecos']['pclabel']
 $node = node
 
 
