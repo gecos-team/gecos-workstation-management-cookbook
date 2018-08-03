@@ -56,6 +56,10 @@
       {
          "name":"lighting",
          "url":"https://addons.mozilla.org/thunderbird/downloads/latest/lightning/platform:2/addon-2313-latest.xpi" 
+      },
+      {
+         "name":"Google Calendar",
+         "url":"https://addons.mozilla.org/thunderbird/downloads/latest/provider-for-google-calendar/addon-4631-latest.xpi" 
       }
    ]
 }
