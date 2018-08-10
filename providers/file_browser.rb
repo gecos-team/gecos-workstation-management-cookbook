@@ -23,7 +23,8 @@ action :setup do
 
         #default_folder_viewer
         if !user.default_folder_viewer.empty? and !user.default_folder_viewer.nil?
-          desktop_gsettings "org.nemo.preferences" do
+          desktop_gsettings "default-folder-viewer" do
+            schema "org.nemo.preferences"
             key "default-folder-viewer"
             user username
             value user.default_folder_viewer
@@ -33,7 +34,8 @@ action :setup do
 
         #show_hidden_files
         if !user.show_hidden_files.empty? and !user.show_hidden_files.nil? 
-          desktop_gsettings "org.nemo.preferences" do
+          desktop_gsettings "show-hidden-files" do
+            schema "org.nemo.preferences"
             key "show-hidden-files"
             user username
             value user.show_hidden_files
@@ -43,7 +45,8 @@ action :setup do
      
         #show_search_icon_toolbar
         if !user.show_search_icon_toolbar.empty? and !user.show_search_icon_toolbar.nil? 
-          desktop_gsettings "org.nemo.preferences" do
+          desktop_gsettings "show-search-icon-toolbar" do
+            schema "org.nemo.preferences"
             key "show-search-icon-toolbar"
             user username
             value user.show_search_icon_toolbar
@@ -53,7 +56,8 @@ action :setup do
 
         #click_policy
         if !user.click_policy.empty? and !user.click_policy.nil? 
-          desktop_gsettings "org.nemo.preferences" do
+          desktop_gsettings "click-policy" do
+            schema "org.nemo.preferences"
             key "click-policy"
             user username
             value user.click_policy
@@ -63,7 +67,8 @@ action :setup do
 
         #confirm_trash
         if !user.confirm_trash.empty? and !user.confirm_trash.nil? 
-          desktop_gsettings "org.nemo.preferences" do
+          desktop_gsettings "confirm-trash" do
+            schema "org.nemo.preferences"
             key "confirm-trash"
             user username
             value user.confirm_trash
