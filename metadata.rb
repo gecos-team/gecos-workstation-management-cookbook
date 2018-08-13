@@ -4,7 +4,7 @@ maintainer        "GECOS Team"
 maintainer_email  "gecos@guadalinex.org"
 license           "Apache 2.0"
 description       "Cookbook for GECOS Workstations management"
-version           "0.6.2"
+version           "0.6.3"
 
 depends "apt"
 depends "chef-client"
@@ -2322,6 +2322,29 @@ folder_sync_js = {
   required: ["users"],
   is_mergeable: false,
   autoreverse: false,
+  form: {
+      type:"section",
+      items: [
+        "owncloud_url",
+        "owncloud_authuser",
+        "owncloud_notifications",
+        {
+          key: "owncloud_ask",
+          value: 0
+        },
+        {
+          key: "owncloud_upload_bandwith",
+          type: "range",
+          value: 50
+        },
+        {
+          key: "owncloud_download_bandwith",
+          type: "range",
+          value: 100
+        },
+        "owncloud_folders"
+      ]
+  },
   properties:
   {users: {
     title: "Users", 
@@ -2329,8 +2352,40 @@ folder_sync_js = {
     type: "object",
     patternProperties: {
       ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
+        order: ["owncloud_url","owncloud_authuser","owncloud_notifications","owncloud_ask","owncloud_upload_bandwith", "owncloud_download_bandwith", "owncloud_folders"],
         properties: {
           owncloud_url: {title: "Owncloud URL", title_es: "URL de Owncloud", type: "string"},
+          owncloud_authuser: { title: "User", title_es: "Usuario", type: "string"},
+          owncloud_notifications: { title: "Desktop Notifications", title_es: "Notificaciones de Escritorio", type:"boolean"},
+          owncloud_ask:{ title: "Ask confirmation before downloading folders larger than", title_es: "Preguntar antes de descargar carpetas de más de", type:"integer"},
+          owncloud_upload_bandwith: {
+            title:"Upload Bandwith",
+            title_es:"Ancho de banda de subida",
+            type:"integer",
+            minimum: 0,
+            maximum: 500,
+            exclusiveMinimum: false,
+            exclusiveMaximum: false,
+            description:"Between 0 and 500 KB/s"
+          },
+          owncloud_download_bandwith: {
+            title:"Download Bandwith",
+            title_es:"Ancho de banda de bajada",
+            type:"integer",
+            minimum: 0,
+            maximum: 500,
+            exclusiveMinimum: false,
+            exclusiveMaximum: false,
+            description:"Between 0 and 500 KB/s"
+          },
+          owncloud_folders: {
+            title: "Sync folders",
+            title_es: "Carpetas a sincronizar",
+            minItems: 0,
+            uniqueItems: true,
+            type: "array",
+            items: { type: "string" }
+          },
           updated_by: updated_js
         }
       }

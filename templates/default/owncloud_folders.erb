@@ -1,6 +1,13 @@
 [ownCloud]
-localPath=/home/<%= @username %>/Documentos
+
+<% @folders.each do |folder| %>
+<% folderpath = "/home/" + @username + "/#{folder}" %>
+<% if File.directory?(folderpath) %>
+localPath=<%= folderpath %>
 targetPath=/
 backend=owncloud
 connection=ownCloud
 blackList=@Invalid()
+
+<% end %>
+<% end %>

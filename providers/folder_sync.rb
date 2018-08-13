@@ -30,10 +30,23 @@ action :setup do
 
         nameuser = user_key 
         username = nameuser.gsub('###','.')
-        user = users[user_key]        
-        owncloud_url = user.owncloud_url
-        url_array = owncloud_url.partition(":")
-        owncloud_authtype = url_array[0]
+        user = users[user_key]
+
+        # Prepare environment variables
+        VariableManager.reset_environ()
+        VariableManager.add_to_environ(user_key)
+
+        # Authentication user
+        owncloud_authuser = user.owncloud_authuser
+        if VariableManager.expand_variables(owncloud_authuser)
+          owncloud_authuser = VariableManager.expand_variables(owncloud_authuser)
+        end
+        Chef::Log.debug("folder_sync.rb ::: owncloud_authuser = #{owncloud_authuser}")
+
+        if owncloud_authuser.nil? or owncloud_authuser.empty?
+          Chef::Log.warn("User #{username} not email configured.")
+          next
+        end
 
         autostart_dir = "/home/#{username}/.config/autostart"
         home = "/home/#{username}"
@@ -67,8 +80,11 @@ action :setup do
           action :create
           variables({
             :username => username,
-            :owncloud_authtype => owncloud_authtype,
-            :owncloud_url => owncloud_url
+            :owncloud_url => user.owncloud_url,
+            :owncloud_notifications => user.owncloud_notifications,
+            :owncloud_ask => user.owncloud_ask,
+            :owncloud_upload => user.owncloud_upload_bandwith,
+            :owncloud_download => user.owncloud_download_bandwith
           })
         end
   
@@ -79,6 +95,7 @@ action :setup do
           action :create
         end
    
+        Chef::Log.debug("folder_sync.rb ::: owncloud_folders = #{user.owncloud_folders}")
         template "#{owncloud_dir}/folders/ownCloud" do
           source "owncloud_folders.erb"
           owner "root"
@@ -86,13 +103,20 @@ action :setup do
           action :create
           variables({
             :username => username,
+            :folders => user.owncloud_folders
           })
-  
         end
-      end 
+      end
+      
     else
       Chef::Log.info("This resource is not support into your OS")
     end
+    
+    # save current job ids (new_resource.job_ids) as "ok"
+    job_ids = new_resource.job_ids
+    job_ids.each do |jid|
+       node.normal['job_status'][jid]['status'] = 0
+    end    
 
   rescue Exception => e
     # just save current job ids as "failed"

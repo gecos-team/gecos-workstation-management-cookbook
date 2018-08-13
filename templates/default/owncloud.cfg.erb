@@ -1,17 +1,31 @@
 [General]
-optionalDesktopNotifications=true
+optionalDesktopNotifications=<%= @owncloud_notifications %>
+<% if @owncloud_ask.to_i > 0 %>
+useNewBigFolderSizeLimit=true
+newBigFolderSizeLimit=<%= @owncloud_ask %>
+<% else %>
+useNewBigFolderSizeLimit=false
+<% end %>
 
 [ownCloud]
 url=<%= @owncloud_url %>
 http_user=<%= @username %>
-authType=<%= @owncloud_authtype %>
+authType=http
 user=<%= @username %>
 
 [Settings]
 geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\x1\x13\0\0\0\xf3\0\0\x3\xdb\0\0\x2\xe5\0\0\x1\x1d\0\0\x1\x13\0\0\x3\xd1\0\0\x2\xdb\0\0\0\0\0\0)
 
 [BWLimit]
-useDownloadLimit=False
-useUploadLimit=False
-downloadLimit=0
-uploadLimit=0
+<% if @owncloud_download.to_i > 0 %>
+useDownloadLimit=1
+<% else %>
+useDownloadLimit=0
+<% end %>
+<% if @owncloud_upload.to_i > 0 %>
+useUploadLimit=1
+<% else %>
+useUploadLimit=0
+<% end %>
+uploadLimit=<%= @owncloud_upload %>
+downloadLimit=<%= @owncloud_download %>
