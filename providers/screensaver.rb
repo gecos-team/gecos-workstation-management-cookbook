@@ -31,39 +31,35 @@ action :setup do
   ## Distinguir entre sesion Cinnamon y LXDE
 
   #     session = node["desktop_session"] 
-        gecos_ws_mgmt_desktop_setting "idle-activation-enabled" do
-          type "string"
+        desktop_gsettings "idle-activation-enabled" do
+          schema "org.cinnamon.desktop.screensaver"
+          key "idle-activation-enabled"
+          user username
           value idle_enabled.to_s
-          schema "org.cinnamon.desktop.screensaver"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
           action :nothing
         end.run_action(:set)
     
-        gecos_ws_mgmt_desktop_setting "lock-enabled" do
-          type "string"
+        desktop_gsettings "lock-enabled" do
+          schema "org.cinnamon.desktop.screensaver"
+          key "lock-enabled"
+          user username
           value lock_enabled.to_s
-          schema "org.cinnamon.desktop.screensaver"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
           action :nothing
         end.run_action(:set)
     
-        gecos_ws_mgmt_desktop_setting "idle-delay" do
-          type "string"
-          value idle_delay
+        desktop_gsettings "idle-delay" do
           schema "org.cinnamon.desktop.session"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
+          key "idle-delay"
+          user username
+          value idle_delay
           action :nothing
         end.run_action(:set)
     
-        gecos_ws_mgmt_desktop_setting "lock-delay" do
-          type "string"
-          value lock_delay
+        desktop_gsettings "lock-delay" do
           schema "org.cinnamon.desktop.screensaver"
-          username username
-          provider "gecos_ws_mgmt_gsettings"
+          key "lock-delay"
+          user username
+          value lock_delay
           action :nothing
         end.run_action(:set)
       end
