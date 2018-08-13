@@ -17,3 +17,11 @@ gecos_ws_mgmt_network "localhost" do
   notifies :test, 'gecos_ws_mgmt_connectivity[gcc_connectivity]', :immediately
   subscribes :warn, 'gecos_ws_mgmt_connectivity[gcc_connectivity]', :immediately
 end
+
+gecos_ws_mgmt_debug_mode "debug mode" do
+  expire_datetime node[:gecos_ws_mgmt][:single_node][:debug_mode_res][:expire_datetime]
+  enable_debug node[:gecos_ws_mgmt][:single_node][:debug_mode_res][:enable_debug]
+  job_ids node[:gecos_ws_mgmt][:single_node][:debug_mode_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:single_node][:debug_mode_res][:support_os]
+  action :setup
+end
