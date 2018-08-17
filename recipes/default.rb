@@ -47,6 +47,13 @@ $gecos_environ = ENV.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
 $gecos_environ['STATION'.to_sym] = node['ohai_gecos']['pclabel']
 $node = node
 
+# Get locale
+$locale = ENV['LANG'].downcase
+if $locale.include? "."
+  $locale = $locale.split('.')[0]
+end
+Chef::Log.info("Locale is #{$locale}")
+
 
 # This should not be necessary, as wrapper is in new GECOS-Agent package. It is a transitional solution.
 Chef::Log.info("Installing wrapper")
