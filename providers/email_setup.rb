@@ -18,14 +18,6 @@ action :setup do
     # Checking OS and Thunderbird
     if new_resource.support_os.include?($gecos_os)
 
-      $required_pkgs['email_setup'].each do |pkg|
-        Chef::Log.debug("email_setup.rb - REQUIRED PACKAGE = %s" % pkg)
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
-      
-      
       # Setup email for users
       users = new_resource.users
       users.each_key do |user_key|
@@ -39,6 +31,13 @@ action :setup do
         Chef::Log.info("Check if the email must be configured")
         if user.base.email_setup
 
+          $required_pkgs['email_setup'].each do |pkg|
+            Chef::Log.debug("email_setup.rb - REQUIRED PACKAGE = %s" % pkg)
+            package pkg do
+              action :nothing
+            end.run_action(:install)
+          end
+          
           # Create GECOS profile if doesn't exists
           homedir = `eval echo ~#{username}`.gsub("\n","")
           thunderbird_dir = "#{homedir}/.thunderbird"
