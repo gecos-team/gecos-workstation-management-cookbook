@@ -176,10 +176,6 @@ default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:user_launchers_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
 
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:users] = {}
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:job_ids] = []
-default[:gecos_ws_mgmt][:users_mgmt][:desktop_control_res][:support_os] = []
-
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:users] = {}
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:job_ids] = []
 default[:gecos_ws_mgmt][:users_mgmt][:folder_sharing_res][:support_os] = ["GECOS V3", "GECOS V2"]

@@ -365,52 +365,6 @@ folder_sharing_js = {
   }
 }
 
-desktop_control_js = {
-  title: "Control panel",
-  title_es: "Panel de control",
-  type: "object",
-  required: ["users"],
-  is_mergeable: true,
-  autoreverse: false,
-  properties: {
-    users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
-      patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["desktop_files"],
-          properties: {
-            desktop_files: {
-              type: "array",
-              title: "Categories",
-              title_es: "Categorias",
-              description: "Deletes the control panel category",
-              description_es: "Elimina la categoría del panel de control",
-              minItems: 0,
-              uniqueItems: true,
-              items: {
-                type: "string"
-              }
-            }, 
-            updated_by: updated_js
-          }
-        }
-      }
-    },
-    support_os: support_os_js.clone,
-    job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }
-  }
-}
-
-
 user_launchers_js = {
   title: "User Launchers",
   title_es: "Acceso directo en el escritorio",
@@ -2621,7 +2575,6 @@ im_client_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECO
 file_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
 user_launchers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 desktop_background_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
-desktop_control_js[:properties][:support_os][:default]=[]
 user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 folder_sharing_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
 screensaver_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
@@ -2712,7 +2665,7 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_setup_res", "im_client_res", "file_browser_res", "user_launchers_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_setup_res", "im_client_res", "file_browser_res", "user_launchers_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
             email_setup_res: email_setup_js,
@@ -2721,7 +2674,6 @@ complete_js = {
             user_alerts_res: user_alerts_js,
             user_launchers_res: user_launchers_js,
             desktop_background_res: desktop_background_js,
-            desktop_control_res: desktop_control_js,
             user_apps_autostart_res: user_apps_autostart_js,
             folder_sharing_res: folder_sharing_js,
             screensaver_res: screensaver_js,
