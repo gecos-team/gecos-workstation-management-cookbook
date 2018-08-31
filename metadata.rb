@@ -1694,36 +1694,6 @@ software_sources_js = {
    }
 }
 
-package_profile_js = {
-  title: "Packages Profile management",
-  title_es: "Administración de perfiles de software",
-  type: "object",
-  order:["package_list"],
-  is_mergeable: true,
-  autoreverse: false,
-  properties:
-  {
-    package_list: {
-      type:"array",
-      title: "Package list to install",
-      title_es: "Lista de paquetes para instalar",
-      minItems: 0,
-      uniqueItems: true,
-      items: {type: "string"}
-    },
-    job_ids: {
-      type: "array",
-      minItems: 0,
-      uniqueItems: true,
-      items: {
-        type: "string"
-      }
-    },
-    support_os: support_os_js.clone,
-    updated_by: updated_js
-  }
-}
-
 package_js = {
   title: "Packages management",
   title_es: "Administración de paquetes",
@@ -2562,7 +2532,6 @@ power_conf_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GEC
 local_admin_users_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 software_sources_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 package_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS",  "GECOS V3 Lite", "Gecos V2 Lite"]
-package_profile_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS",  "GECOS V3 Lite", "Gecos V2 Lite"]
 appconfig_libreoffice_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 appconfig_thunderbird_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 appconfig_firefox_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
@@ -2644,11 +2613,10 @@ complete_js = {
         },
         software_mgmt: {
           type: "object",
-          required: ["software_sources_res","package_res", "appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res", "display_manager_res"],
+          required: ["software_sources_res","package_res", "appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res", "display_manager_res"],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
-            package_profile_res: package_profile_js,
             appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,

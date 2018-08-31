@@ -24,13 +24,6 @@ gecos_ws_mgmt_package 'install packages list' do
   action :setup
 end
 
-gecos_ws_mgmt_package_profile 'install packages prfile' do
-  package_list node[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:package_list]
-  job_ids node[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:support_os]
-  action :setup
-end
-
 gecos_ws_mgmt_appconfig_libreoffice 'libreoffice config' do
   config_libreoffice node[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:config_libreoffice]
   job_ids node[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:job_ids]

@@ -47,11 +47,6 @@ default[:gecos_ws_mgmt][:software_mgmt][:package_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:package_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite", "Ubuntu 14.04.1 LTS"]
 
-default[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:package_list] = []
-default[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:job_ids] = []
-default[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:support_os] = ["GECOS V3", "GECOS V2","Gecos V2 Lite", "GECOS V3 Lite", "Ubuntu 14.04.1 LTS"]
-
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:config_libreoffice] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:job_ids] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:updated_by] = {} 
