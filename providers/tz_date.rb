@@ -11,11 +11,8 @@
 
 action :setup do
   begin
-# We moved OS identification to recipes/default.rb
-# But this recipe launches alone, and default.rb is not executed
     os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
-#    if new_resource.support_os.include?($gecos_os)
+    if new_resource.support_os.include?($gecos_os)
       $required_pkgs['tz_date'].each do |pkg|
         Chef::Log.debug("tz_date.rb - REQUIRED PACKAGE = %s" % pkg)
         package pkg do
