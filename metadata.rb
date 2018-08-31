@@ -787,109 +787,6 @@ web_browser_js = {
   }
 }
 
-email_client_js = {
-  title: "DEPRECATED: Email Configuration",
-  title_es: "OBSOLETA: Configuración de email",
-  type: "object",
-  is_mergeable: false,
-  autoreverse: false,
-  properties: {
-    users: {
-      type: "object",
-      title: "Users",
-      title_es: "Usuarios",
-      patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["identity", "imap", "smtp"],
-          order: ["identity", "imap", "smtp"],
-          properties: {  
-            identity: {
-              title: "Identity of the user",
-              title_es: "Identidad del usuario",
-              type: "object",
-              order: ["name", "email"],
-              properties: {
-                name: {
-                  title: "Name",
-                  title_es: "Nombre",
-                  type: "string"
-                },
-                email: {
-                  title: "Email address",
-                  title_es: "Dirección de correo electrónico",
-                  # pattern: TODO !!!!
-                  type: "string"
-                }
-              }
-            },
-            imap: {
-              title: "IMAP server",
-              title_es: "Servidor IMAP",
-              type: "object",
-              order: ["username", "hostname", "port"],
-              properties: {
-                hostname: {
-                  title: "Hostname",
-                  title_es: "Hostname",
-                  # pattern: TODO !!!!
-                  type: "string"
-                },
-                port: {
-                  title: "Port",
-                  title_es: "Puerto",
-                  default: 143,
-                  # selector: 143 / Libre TODO !!!!
-                  type: "number"
-                },
-                username: {
-                  title: "Username",
-                  title_es: "Nombre de usuario",
-                  type: "string"
-                }
-              }
-            },
-            smtp: {
-              title: "SMTP server",
-              title_es: "Servidor SMTP",
-              type: "object",
-              order: ["username", "hostname", "port"],
-              properties: {
-                hostname: {
-                  title: "Hostname",
-                  title_es: "Hostname",
-                  # pattern: TODO !!!!
-                  type: "string"
-                },
-                port: {
-                  title: "Port",
-                  title_es: "Puerto",
-                  default: 25,
-                  # selector: 25 / 110 / Libre TODO !!!!
-                  type: "number"
-                },
-                username: {
-                  title: "Username",
-                  title_es: "Nombre de usuario",
-                  type: "string"
-                }
-              }
-            },
-            updated_by: updated_js
-          }
-        }
-      }
-    },
-    support_os: support_os_js.clone,
-    job_ids: {
-      type: "array",
-      minItems: 0,
-      uniqueItems: true,
-      items: {
-        type: "string"
-      }
-    }
-  }
-}
 
 email_setup_js = {
   title: "Email Configuration",
@@ -2773,7 +2670,6 @@ appconfig_java_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  
 printers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 user_shared_folders_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
 web_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-email_client_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 email_setup_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 im_client_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
 file_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
@@ -2871,10 +2767,9 @@ complete_js = {
         },
         users_mgmt: {
           type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "email_setup_res", "im_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
+          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_setup_res", "im_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res","idle_timeout_res"],          properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
-            email_client_res: email_client_js,
             email_setup_res: email_setup_js,
             im_client_res: im_client_js,
             file_browser_res: file_browser_js,
