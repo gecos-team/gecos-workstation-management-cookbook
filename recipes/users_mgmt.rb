@@ -73,12 +73,6 @@ gecos_ws_mgmt_shutdown_options 'shutdown options' do
   support_os node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os]
   action :setup
 end
-gecos_ws_mgmt_desktop_menu 'desktop menu' do
-  users node[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:users]
-  job_ids node[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:support_os]
-  action :setup
-end
 
 gecos_ws_mgmt_file_browser 'file browser' do
   users node[:gecos_ws_mgmt][:users_mgmt][:file_browser_res][:users]
