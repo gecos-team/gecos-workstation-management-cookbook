@@ -27,13 +27,6 @@ default[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:job_ids] = []
 default[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:connections] = []
 default[:gecos_ws_mgmt][:network_mgmt][:mobile_broadband_res][:support_os] = ["GECOS V3", "GECOS V2","Gecos V2 Lite", "GECOS V3 Lite"]
 
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:auth_type] = ''
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:enabled] = false
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:job_ids] = []
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:updated_by] = {}
-default[:gecos_ws_mgmt][:network_mgmt][:sssd_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
-
-
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:repo_list] = []
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:software_sources_res][:updated_by] = {}

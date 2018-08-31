@@ -22,7 +22,6 @@ $required_pkgs = {
   'folder_sharing' => ['samba'],
   'mimetypes' => ['xdg-utils'],
   'power_conf' => ['cpufrequtils','powernap'],
-  'sssd' => ['sssd'],
   'web_browser' => ['ruby-sqlite3','libsqlite3-dev', 'unzip','xmlstarlet'],
   'shutdown_options' => ['dconf-tools'],
   'user_alerts' => ['libnotify-bin'],
