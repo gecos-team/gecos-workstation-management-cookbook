@@ -52,15 +52,6 @@ default[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:job_ids] = []
 default[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:updated_by] = {}
 default[:gecos_ws_mgmt][:software_mgmt][:package_profile_res][:support_os] = ["GECOS V3", "GECOS V2","Gecos V2 Lite", "GECOS V3 Lite", "Ubuntu 14.04.1 LTS"]
 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:citrix_config] = {}  
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:java_config] = {} 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:firefox_config] = {} 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:loffice_config] = {} 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:thunderbird_config] = {} 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:job_ids] = [] 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:updated_by] = {} 
-default[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:support_os] = ["GECOS V3", "GECOS V2", "Gecos V2 Lite", "GECOS V3 Lite"]
-
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:config_libreoffice] = {} 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:job_ids] = [] 
 default[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:updated_by] = {} 

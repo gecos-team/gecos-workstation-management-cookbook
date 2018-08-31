@@ -31,17 +31,6 @@ gecos_ws_mgmt_package_profile 'install packages prfile' do
   action :setup
 end
 
-gecos_ws_mgmt_app_config 'applications config' do
-  java_config node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:java_config]
-  firefox_config node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:firefox_config]
-  thunderbird_config node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:thunderbird_config]
-  citrix_config node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:citrix_config]
-  loffice_config node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:loffice_config]
-  job_ids node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:software_mgmt][:app_config_res][:support_os]
-  action :setup
-end
-
 gecos_ws_mgmt_appconfig_libreoffice 'libreoffice config' do
   config_libreoffice node[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:config_libreoffice]
   job_ids node[:gecos_ws_mgmt][:software_mgmt][:appconfig_libreoffice_res][:job_ids]
