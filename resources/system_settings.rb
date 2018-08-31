@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gecos-ws-mgmt
-# Resource:: desktop_settings
+# Resource:: system_settings
 #
 # Copyright 2013, Junta de Andalucia
 # http://www.juntadeandalucia.es/
