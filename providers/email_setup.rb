@@ -172,8 +172,6 @@ action :setup do
               template = template + expanded_line + "\n"
           end
 
-          # Chef::Log.info("template = #{template}")          
-           
           # Check if there are configuration changes by 
           # comparing the current template signature and the 
           # previous template signature
@@ -183,8 +181,6 @@ action :setup do
           if ::File.exist?("#{homedir}/.thunderbird/gecos/digest")
             previous_hash = ::File.read("#{homedir}/.thunderbird/gecos/digest")
           end
-           
-          # Chef::Log.info("current_hash = #{current_hash} previous_hash = #{previous_hash}")   
            
           file "#{homedir}/.thunderbird/gecos/prefs.js" do
             content template

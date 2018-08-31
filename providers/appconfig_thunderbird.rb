@@ -16,7 +16,6 @@ action :setup do
   begin
     alternatives_cmd = 'update-alternatives'
     if new_resource.support_os.include?($gecos_os)
-#      if not new_resource.loffice_config.empty?
       if not new_resource.config_thunderbird.empty?
 
         Chef::Log.debug("appconfig_thunderbird.rb - config_thunderbird: #{new_resource.config_thunderbird}")
@@ -24,7 +23,6 @@ action :setup do
         installdir = shell_out("dpkg -L thunderbird | grep -E 'defaults/pref$'").stdout.chomp
         Chef::Log.debug("appconfig_thunderbird - installdir: #{installdir}")
         
-        #app_update = new_resource.loffice_config['app_update']
         app_update = new_resource.config_thunderbird['app_update']
 
         unless Kernel::test('d', '/etc/thunderbird')

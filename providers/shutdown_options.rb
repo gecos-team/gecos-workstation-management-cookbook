@@ -13,9 +13,6 @@ GRP_POWER = 'power'
 
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
 
       $required_pkgs['shutdown_options'].each do |pkg|
@@ -30,16 +27,6 @@ action :setup do
       users = new_resource.users
 
       lite = ($gecos_os == "Gecos V2 Lite" or $gecos_os == "GECOS V3 Lite")
-      # System-level lock settings
-      #system = gecos_ws_mgmt_system_settings "disable-log-out" do
-      #    provider "gecos_ws_mgmt_system_settings"
-      #    schema "org.cinnamon.desktop.lockdown"
-      #    type "boolean"
-      #    value "#{systemset}"
-      #    action :nothing
-      #end
-      #system.run_action(:lock) if systemlock
-      #system.run_action(:unlock) if !systemlock
       
       if lite 
         powermgmt_pkla = "/var/lib/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla"

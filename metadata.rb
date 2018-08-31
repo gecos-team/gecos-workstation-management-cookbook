@@ -344,24 +344,6 @@ user_launchers_js = {
   }
 }
 
-#desktop_background_js = {
-#  title: "Desktop Background",
-# title_es: "Fondo de escritorio",
-#  type: "object",
-#  required: ["desktop_file"],
-#  properties: {
-#    desktop_file: {type: "string", title: "Desktop File", title_es: "Archivo de escritorio"},
-#    job_ids: {
-#      type: "array",
-#      minItems: 0,
-#      uniqueItems: true,
-#      items: {
-#        type: "string"
-#      }
-#    }, 
-#    updated_by: updated_js
-#  }
-#}
 desktop_background_js = {
   type: "object",
   title: "Desktop Background",
@@ -576,25 +558,6 @@ web_browser_js = {
 
                 }
               }
-            #},
-            #certs: {
-            # type: "array",
-            # title: "Certificates",
-            # title_es: "Certificados",
-            # minItems: 0,
-            # uniqueItems: true,
-            # items: {
-            #   type: "object",
-            #   required: [ "name", "uri"],
-            #   properties: {
-            #     name: {title: "Name", title_es: "Nombre", type: "string"},
-            #     uri: {title: "Uri", 
-            #           title_es: "Uri", 
-            #           type: "string", 
-            #           description: "Only accept CRT and PEM certificate", 
-            #           description_es: "Solo acepta certificados CRT y PEM"}
-            #   }
-            # }
             }, 
             updated_by: updated_js
           }
@@ -1466,7 +1429,6 @@ network_resource_js = {
                 title_es: "Dirección IP",
                 items: {
                   type: "object",
-                  #required: [ "ip_addr","netmask"],
                   properties:{
                     ip_addr: {
                       type: "string",
@@ -1998,7 +1960,6 @@ power_conf_js = {
   title: "Power management",
   title_es: "Administración de energía",
   type: "object",
-#  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
   order: ["cpu_freq_gov", "usb_autosuspend", "auto_shutdown"],
   is_mergeable: false,
   autoreverse: false,
@@ -2525,7 +2486,6 @@ complete_js = {
             scripts_launch_res: scripts_launch_js,
             local_users_res: local_users_js,
             local_file_res: local_file_js,
-           # desktop_background_res: desktop_background_js,
             auto_updates_res: auto_updates_js,
             boot_lock_res: boot_lock_js,
             local_groups_res: local_groups_js,

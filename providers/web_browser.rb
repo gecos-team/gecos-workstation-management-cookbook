@@ -14,10 +14,6 @@ include Chef::Mixin::ShellOut
 action :setup do
 
   begin
-    # OS identification moved to recipes/default.rb
-    #    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    #    if new_resource.support_os.include?(os)
-    
     ffx = shell_out("apt-cache policy firefox").exitstatus
     if new_resource.support_os.include?($gecos_os) and ffx
 
@@ -311,26 +307,7 @@ action :setup do
               end
             end
           end  
-                    ## CERTS STUFF
-          #profile_dirs.each do |prof|
-          #  user.certs.each do |cert|
-          #
-          #    certfile = "/var/tmp/#{cert.name}.pem"
-          #
-          #    remote_file certfile do
-          #      source cert.uri
-          #      action :nothing
-          #    end.run_action(:create_if_missing)
-          #
-          #    bash "Installing #{cert.name} cert to user #{username}" do
-          #      action :nothing
-          #      user username
-          #      code <<-EOH
-          #        certutil -A -d #{prof} -n #{cert.name} -i #{certfile} -t C,C,C
-          #      EOH
-          #    end.run_action(:run)
-          #  end
-          #end
+
         end
       end
     else

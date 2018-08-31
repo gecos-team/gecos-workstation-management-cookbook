@@ -89,8 +89,6 @@ action :setup do
               template = template + expanded_line + "\n"
           end
 
-          # Chef::Log.info("template = #{template}")       
-
           # Check if there are configuration changes by 
           # comparing the current template signature and the 
           # previous template signature
@@ -101,8 +99,6 @@ action :setup do
             previous_hash = ::File.read("#{homedir}/.purple/digest")
           end
            
-          #Chef::Log.info("current_hash = #{current_hash} previous_hash = #{previous_hash}")   
-          
 	        if ::File.exist?("#{homedir}/.purple") and (previous_hash != current_hash or user.base.overwrite)
             if user.base.overwrite or not ::File.exist?("#{homedir}/.purple/accounts.xml")
                 # If overwrite flag is active the accounts.xml must be overwritten if the content of the file 

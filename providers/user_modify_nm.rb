@@ -11,9 +11,6 @@
 
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
       udisk_policy = "/var/lib/polkit-1/localauthority/50-local.d/org.freedesktop.NetworkManager.pkla"
       cookbook_file udisk_policy do

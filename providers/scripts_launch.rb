@@ -11,9 +11,6 @@
 
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
       on_startup  = new_resource.on_startup.select  { |script| ::File.exists?(script) and ::File.executable?(script) }
       on_shutdown = new_resource.on_shutdown.select { |script| ::File.exists?(script) and ::File.executable?(script) }

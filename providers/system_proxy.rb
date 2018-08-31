@@ -15,7 +15,6 @@ require 'fileutils'
 include Chef::Mixin::ShellOut
 
 # Constants
-#DATE = DateTime.now.strftime("%Y-%m-%d")
 DATE = DateTime.now.to_time.to_i.to_s
 ROOT = '/var/lib/gecos-agent/network/proxy/'
 CHANGED_FILES_OR_DIRECTORIES = [

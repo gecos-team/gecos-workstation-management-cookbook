@@ -86,7 +86,6 @@ action :setup do
         file ETC_DISPLAY_MANAGER do
           content "#{BIN}\n"
           action :create
-          #notifies :stop, "service[#{CURRENT_DISPLAY_MANAGER}]", :delayed
           notifies :disable, "service[#{CURRENT_DISPLAY_MANAGER}]", :delayed
         end
 
@@ -100,7 +99,6 @@ action :setup do
         service NEW_DISPLAY_MANAGER do
           provider PROVIDER
           action :enable
-          #action [:enable, :start]
           only_if "dpkg-query -W #{NEW_DISPLAY_MANAGER}"
         end
 
@@ -113,7 +111,6 @@ action :setup do
             :autologin_timeout => new_resource.autologin_options['timeout']
           })
           not_if "#{new_resource.autologin} && ! getent passwd #{new_resource.autologin_options['username']}"
-          #notifies :restart, "service[#{NEW_DISPLAY_MANAGER}]", :delayed
         end
 
     else

@@ -16,9 +16,7 @@ action :setup do
   begin
     alternatives_cmd = 'update-alternatives'
      if new_resource.support_os.include?($gecos_os)
-#      if not new_resource.loffice_config.empty?
        if not new_resource.config_libreoffice.empty?
-#        app_update = new_resource.loffice_config['app_update']
          app_update = new_resource.config_libreoffice['app_update']
 
         if app_update

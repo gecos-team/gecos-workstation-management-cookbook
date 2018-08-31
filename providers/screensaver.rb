@@ -11,11 +11,7 @@
 
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
-  #  users = node[:gecos_ws_mgmt][:users_mgmt][:screensaver_res][:users] #if new_resource.users.nil?
       users = new_resource.users
       users.each_key do |user_key|
         nameuser = user_key 
@@ -30,7 +26,6 @@ action :setup do
   ## Sacar el tipo de sesion con el plugin de ohai x-session-manager.rb (amunoz)
   ## Distinguir entre sesion Cinnamon y LXDE
 
-  #     session = node["desktop_session"] 
         desktop_gsettings "idle-activation-enabled" do
           schema "org.cinnamon.desktop.screensaver"
           key "idle-activation-enabled"
