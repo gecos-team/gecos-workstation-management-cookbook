@@ -11,7 +11,6 @@
 
 actions :setup
 
-attribute :localfiles, :kind_of => Array
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
-
+attribute :localfiles, kind_of: Array
+attribute :job_ids, kind_of: Array
+attribute :support_os, kind_of: Array

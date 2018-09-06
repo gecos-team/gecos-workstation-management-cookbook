@@ -11,8 +11,8 @@
 
 actions :setup
 
-attribute :lock_boot, :kind_of => [NilClass, TrueClass, FalseClass]
-attribute :unlock_user, :kind_of => String
-attribute :unlock_pass, :kind_of => String
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
+attribute :lock_boot, kind_of: [NilClass, TrueClass, FalseClass]
+attribute :unlock_user, kind_of: String
+attribute :unlock_pass, kind_of: String
+attribute :job_ids, kind_of: Array
+attribute :support_os, kind_of: Array

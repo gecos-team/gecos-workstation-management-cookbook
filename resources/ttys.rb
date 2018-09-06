@@ -11,6 +11,6 @@
 
 actions :setup
 
-attribute :disable_ttys, :kind_of => [TrueClass, FalseClass]
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
+attribute :disable_ttys, kind_of: [TrueClass, FalseClass]
+attribute :job_ids, kind_of: Array
+attribute :support_os, kind_of: Array

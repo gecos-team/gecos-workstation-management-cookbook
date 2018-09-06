@@ -16,40 +16,27 @@ $required_pkgs = {
   'folder_sync' => ['owncloud-client'],
   'chef' => ['chef'],
   'tz_date' => ['ntpdate'],
-  'idle_timeout' => ['zenity','xautolock'],
+  'idle_timeout' => %w[zenity xautolock],
   'desktop_background' => ['dconf-tools'],
-  'printers' => ['printer-driver-gutenprint', 'foomatic-db', 'foomatic-db-engine', 'foomatic-db-gutenprint', 'smbclient'],
+  'printers' => %w[printer-driver-gutenprint foomatic-db foomatic-db-engine
+                   foomatic-db-gutenprint smbclient],
   'folder_sharing' => ['samba'],
   'mimetypes' => ['xdg-utils'],
-  'power_conf' => ['cpufrequtils','powernap'],
-  'web_browser' => ['ruby-sqlite3','libsqlite3-dev', 'unzip','xmlstarlet'],
+  'power_conf' => %w[cpufrequtils powernap],
+  'web_browser' => %w[ruby-sqlite3 libsqlite3-dev unzip xmlstarlet],
   'shutdown_options' => ['dconf-tools'],
   'user_alerts' => ['libnotify-bin'],
   'local_users' => ['libshadow-ruby1.8'],
-  'email_setup' => ['thunderbird-locale-'+($locale.sub! '_', '-'), 'xvfb'],
+  'email_setup' => ['thunderbird-locale-' + ($locale.sub! '_', '-'), 'xvfb'],
   'im_client' => ['pidgin']
 }
 
 # Platform dependencies
 case $gecos_os
-  when "GECOS V2"
-    $required_pkgs['folder_sharing'].push('nemo-share')
+when 'GECOS V2'
+  $required_pkgs['folder_sharing'].push('nemo-share')
 
-  when "Gecos V2 Lite"
+when 'GECOS V3'
+  $required_pkgs['folder_sharing'].push('nemo-share')
 
-  when "GECOS Kiosk"
-
-  when "GECOS V3" 
-    $required_pkgs['folder_sharing'].push('nemo-share')
-
-  when "GECOS V3 Lite"
-
-  when "Ubuntu 14.04.1 LTS"
-
-  when "GECOS V4"
-
-  when "GECOS V4 Lite"
- 
-  else
-    Chef::Log.info("This resource is not support into your OS")
 end
