@@ -118,7 +118,7 @@ class VariableManager
     ret
   end
 
-  private_class_method :add_userdata_to_environ
+  private_class_method :add_user_email_to_environ
   private_class_method :add_user_firstname_to_environ
   private_class_method :add_user_lastname_to_environ
   private_class_method :normalize_variables

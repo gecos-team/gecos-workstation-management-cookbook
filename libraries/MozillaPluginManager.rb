@@ -24,7 +24,7 @@ class MozillaPluginManager
   # Checks if a extension is installed
   # by checking if is contained in a sqlite database
   #
-  def extension_instaled_in_sqlitedb?(xid, sqlitedb)
+  def self.extension_instaled_in_sqlitedb?(xid, sqlitedb)
     db = SQLite3::Database.open(sqlitedb)
     addons = db.get_first_value('SELECT locale.name, '\
         'locale.description, addon.version, addon.active, addon.id '\
@@ -39,7 +39,7 @@ class MozillaPluginManager
   # Checks if a extension is installed
   # by checking if is contained in a json file
   #
-  def extension_instaled_in_json?(xid, jsonfile)
+  def self.extension_instaled_in_json?(xid, jsonfile)
     require 'json'
     jfile = ::File.read(jsonfile)
     addons = JSON.parse(jfile)['addons']
@@ -51,7 +51,7 @@ class MozillaPluginManager
   # Checks if a extension is installed
   # by checking if is contained in xfile
   #
-  def extension_instaled_in_file?(xid, xfile, filepath)
+  def self.extension_instaled_in_file?(xid, xfile, filepath)
     case xfile
     when /\.json$/i
       extension_instaled_in_json?(xid, filepath)
@@ -66,7 +66,7 @@ class MozillaPluginManager
   #
   # Creates a temporal directory
   #
-  def create_temp_dir(plugin_file, username)
+  def self.create_temp_dir(plugin_file, username)
     plugin_dir_temp = "#{plugin_file}_temp"
     gid = Etc.getpwnam(username).gid
     directory plugin_dir_temp do
@@ -81,7 +81,7 @@ class MozillaPluginManager
   #
   # Extracts a Firefox plugin in a temporal directory
   #
-  def extract_plugin_to_temp_dir(plugin_file, username)
+  def self.extract_plugin_to_temp_dir(plugin_file, username)
     plugin_dir_temp = create_temp_dir(plugin_dir_temp, username)
 
     bash "extract plugin #{plugin_file}" do
@@ -112,7 +112,7 @@ class MozillaPluginManager
   #
   # Checks if a extension is installed
   #
-  def extension_instaled?(xid, expath)
+  def self.extension_instaled?(xid, expath)
     xfiles = %w[extensions.json extensions.sqlite extensions.rdf]
     installed = false
     # Checking if extension is already installed for this profile
@@ -132,7 +132,9 @@ class MozillaPluginManager
   # Installs a plugin.
   # If version > 4 then the new installation procedure will be used.
   #
-  def install_plugin_on_version(version, plugin_file, exdir, xid, username)
+  def self.install_plugin_on_version(
+    version, plugin_file, exdir, xid, username
+  )
     if version.to_i >= FIREFOX_VERSION_LIMIT
       # NEW installation procedure
       # https://developer.mozilla.org/en-US/Add-ons/Installing_extensions
