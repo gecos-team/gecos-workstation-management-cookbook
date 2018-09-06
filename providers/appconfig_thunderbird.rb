@@ -9,18 +9,14 @@
 # http://www.osor.eu/eupl
 #
 
-require 'chef/mixin/shell_out'
-
 action :setup do
-  include Chef::Mixin::ShellOut
-
   begin
     if new_resource.support_os.include?($gecos_os) &&
        !new_resource.config_thunderbird.empty?
       Chef::Log.debug('appconfig_thunderbird.rb - config_thunderbird:'\
           " #{new_resource.config_thunderbird}")
       # Detecting installation directory
-      installdir = shell_out(
+      installdir = ShellUtil.shell(
         'dpkg -L thunderbird | grep -E \'defaults/pref$\''
       ).stdout.chomp
       Chef::Log.debug('appconfig_thunderbird - installdir: '\

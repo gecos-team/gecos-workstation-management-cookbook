@@ -8,11 +8,7 @@
 # http://www.osor.eu/eupl
 #
 
-require 'chef/mixin/shell_out'
-
 action :setup do
-  include Chef::Mixin::ShellOut
-
   begin
     alternatives_cmd = 'update-alternatives'
     if new_resource.support_os.include?($gecos_os) &&
@@ -37,12 +33,12 @@ action :setup do
       end.run_action(:create_if_missing)
 
       # Setting java version
-      alternative_exists = shell_out("#{alternatives_cmd} --display "\
+      alternative_exists = ShellUtil.shell("#{alternatives_cmd} --display "\
           "java| grep #{version}").exitstatus.zero?
       if alternative_exists
         Chef::Log.info('Setting alternative for java with value '\
             "#{version}/jre/bin/java")
-        set_cmd = shell_out("#{alternatives_cmd} --set java "\
+        set_cmd = ShellUtil.shell("#{alternatives_cmd} --set java "\
             "#{version}/jre/bin/java")
         unless set_cmd.exitstatus.zero?
           Chef::Log.error('set alternative failed')
@@ -50,14 +46,14 @@ action :setup do
       end
 
       # Setting java plugin version
-      alternative_exists = shell_out(
+      alternative_exists = ShellUtil.shell(
         "#{alternatives_cmd} "\
           "--display mozilla-javaplugin.so| grep #{plug_version}"
       ).exitstatus.zero?
       if alternative_exists
         Chef::Log.info('Setting alternative for mozilla-javaplugin.so'\
             " with value #{plug_version}/jre/lib/#{$arch}/libnpjp2.so")
-        set_cmd = shell_out("#{alternatives_cmd} --set "\
+        set_cmd = ShellUtil.shell("#{alternatives_cmd} --set "\
             "mozilla-javaplugin.so #{plug_version}/jre/lib/"\
             "#{$arch}/libnpjp2.so")
         unless set_cmd.exitstatus.zero?

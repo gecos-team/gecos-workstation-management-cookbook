@@ -9,11 +9,7 @@
 # http://www.osor.eu/eupl
 #
 
-require 'chef/mixin/shell_out'
-
 action :setup do
-  include Chef::Mixin::ShellOut
-
   begin
     if new_resource.support_os.include?($gecos_os)
       unless new_resource.config_firefox.empty?
@@ -21,7 +17,7 @@ action :setup do
             "#{new_resource.config_firefox}")
 
         # Detecting installation directory
-        installdir = shell_out(
+        installdir = ShellUtil.shell(
           'dpkg -L firefox | grep -E \'defaults/pref$\''
         ).stdout.chomp
         Chef::Log.debug("appconfig_firefox - installdir: #{installdir}")

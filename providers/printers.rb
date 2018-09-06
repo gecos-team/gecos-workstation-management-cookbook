@@ -47,9 +47,8 @@ end
 # Set printer PPD file URI.
 #
 def set_printer_options(prt_name, prt_ppd_uri)
-  lpopt_comm = Mixlib::ShellOut.new("/usr/bin/lpoptions -p #{prt_name} -o "\
+  lpopt_comm = ShellUtil.shell("/usr/bin/lpoptions -p #{prt_name} -o "\
       "managed-by-GCC=true -o external-ppd-uri=#{prt_ppd_uri}")
-  lpopt_comm.run_command
   if lpopt_comm.exitstatus.zero?
     Chef::Log.info(' - installed successfully')
   else
@@ -62,10 +61,9 @@ end
 #
 def install_or_update_printer(prt_name, prt_uri, prt_policy, prt_ppd_uri)
   Chef::Log.info("Installing or updating printer #{prt_name}... ")
-  lpadm_comm = Mixlib::ShellOut.new("/usr/sbin/lpadmin  -p #{prt_name} -E "\
+  lpadm_comm = ShellUtil.shell("/usr/sbin/lpadmin  -p #{prt_name} -E "\
       "-m #{prt_name}.ppd -v #{prt_uri} -o printer-op-policy=#{prt_policy}"\
       ' -o auth-info-required=none')
-  lpadm_comm.run_command
   if lpadm_comm.exitstatus.zero?
     set_printer_options(prt_name, prt_ppd_uri)
   else
@@ -78,10 +76,8 @@ end
 #
 def delete_printer(prt_name)
   Chef::Log.info("Deleting printer #{prt_name}... ")
-  lpadm_dele = Mixlib::ShellOut.new("/usr/sbin/lpadmin -x #{prt_name}")
-  lpadm_dele.run_command
-  ppd_dele = Mixlib::ShellOut.new("rm /usr/share/cups/model/#{prt_name}.ppd")
-  ppd_dele.run_command
+  lpadm_dele = ShellUtil.shell("/usr/sbin/lpadmin -x #{prt_name}")
+  ppd_dele = ShellUtil.shell("rm /usr/share/cups/model/#{prt_name}.ppd")
   if lpadm_dele.exitstatus.zero? && ppd_dele.exitstatus.zero?
     Chef::Log.info(' - deleted successfully')
   else
@@ -105,8 +101,8 @@ end
 #
 def download_ppd_file(ppd_uri, curr_ptr_name)
   FileUtils.mkdir_p('/usr/share/cups/model')
-  ppd_uri_dw = Mixlib::ShellOut.new('/usr/bin/wget --no-check-certificate -O'\
-      " /usr/share/cups/model/#{curr_ptr_name}.ppd #{ppd_uri}").run_command
+  ppd_uri_dw = ShellUtil.shell('/usr/bin/wget --no-check-certificate -O'\
+      " /usr/share/cups/model/#{curr_ptr_name}.ppd #{ppd_uri}")
   if ppd_uri_dw.exitstatus.zero?
     setup_permissions_to_ppd_file(curr_ptr_name)
     return true
@@ -115,8 +111,6 @@ def download_ppd_file(ppd_uri, curr_ptr_name)
     return false
   end
 end
-
-require 'chef/shell_out'
 
 action :setup do
   begin
@@ -148,8 +142,7 @@ action :setup do
         inst_prt_uri = inst_prt_uri.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
         inst_prt_uri = [[]] if inst_prt_uri.empty?
 
-        is_prt_in_cups = Mixlib::ShellOut.new("lpstat -p #{curr_ptr_name}")
-        is_prt_in_cups.run_command
+        is_prt_in_cups = ShellUtil.shell("lpstat -p #{curr_ptr_name}")
         is_prt_installed = is_prt_in_cups.exitstatus.zero?
 
         create_ppd_with_ppd_uri = false
@@ -171,9 +164,8 @@ action :setup do
           curr_ptr_name, printer.uri, oppolicy, ppd_uri
         )
 
-        cups_ptr_list = Mixlib::ShellOut.new('lpstat -a | egrep \'^\\S\' |'\
+        cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
             ' awk \'{print $1}\'')
-        cups_ptr_list.run_command
         cups_list = cups_ptr_list.stdout.split(/\r?\n/)
 
         cups_list.each do |cups_printer|
@@ -194,9 +186,8 @@ action :setup do
         end
       end
     else
-      cups_ptr_list = Mixlib::ShellOut.new('lpstat -a | egrep \'^\\S\' |'\
+      cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
           ' awk \'{print $1}\'')
-      cups_ptr_list.run_command
       cups_list = cups_ptr_list.stdout.split(/\r?\n/)
       cups_list.each do |cups_printer|
         lpopt = `/usr/bin/lpoptions -p #{cups_printer}`

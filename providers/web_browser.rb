@@ -8,13 +8,10 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
-require 'chef/mixin/shell_out'
 
 action :setup do
-  include Chef::Mixin::ShellOut
-
   begin
-    ffx = shell_out('apt-cache policy firefox').exitstatus
+    ffx = ShellUtil.shell('apt-cache policy firefox').exitstatus
     if new_resource.support_os.include?($gecos_os) && ffx
 
       $required_pkgs['web_browser'].each do |pkg|
@@ -40,7 +37,7 @@ action :setup do
       #
       def install_plugin(plugin_file, exdir, xid, username)
         # Getting Firefox version
-        firefox = shell_out('firefox -v')
+        firefox = ShellUtil.shell('firefox -v')
         Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
 
         /(?<version>\d+)\.(?<release>\d+)(\.(?<minor>\d+))?/ =~ firefox.stdout
