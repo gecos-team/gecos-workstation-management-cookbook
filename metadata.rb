@@ -766,8 +766,8 @@ email_setup_js = {
                   type: 'string',
                   enum: %w[Plain Secure]
                 }
-              } # properties
-            }, # base
+              }
+            },
             identity: {
               title: 'Identity of the user',
               title_es: 'Identidad del usuario',
@@ -789,13 +789,13 @@ email_setup_js = {
                   title_es: 'Dirección de correo electrónico',
                   type: 'string'
                 }
-              } # properties
-            }, # identity
+              }
+            },
             updated_by: updated_js
-          } # properties
-        } # pattern
-      } # patternProperties
-    }, # users
+          }
+        }
+      }
+    },
     support_os: support_os_js.clone,
     job_ids: {
       type: 'array',
@@ -853,8 +853,8 @@ im_client_js = {
                   type: 'boolean',
                   default: false
                 }
-              } # properties
-            }, # base
+              }
+            },
             identity: {
               title: 'Identity of the user',
               title_es: 'Identidad del usuario',
@@ -876,13 +876,13 @@ im_client_js = {
                   title_es: 'Dirección de correo electrónico',
                   type: 'string'
                 }
-              } # properties
-            }, # identity
+              }
+            },
             updated_by: updated_js
-          } # properties
-        } # pattern
-      } # patternProperties
-    }, # users
+          }
+        }
+      }
+    },
     support_os: support_os_js.clone,
     job_ids: {
       type: 'array',
