@@ -49,6 +49,8 @@ action :setup do
     end
   rescue StandardError => e
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace)
+
     # just save current job ids as "failed"
     # save_failed_job_ids
     job_ids = new_resource.job_ids

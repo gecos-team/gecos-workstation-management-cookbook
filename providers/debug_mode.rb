@@ -31,7 +31,7 @@ action :setup do
         variables var_hash
       end
     else
-      Chef::Log.info('This resource is not support into your OS')
+      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

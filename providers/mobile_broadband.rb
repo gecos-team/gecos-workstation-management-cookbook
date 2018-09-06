@@ -111,7 +111,9 @@ action :setup do
   rescue StandardError => e
     # just save current job ids as "failed"
     # save_failed_job_ids
-    Chef::Log.error(e)
+    Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace)
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
