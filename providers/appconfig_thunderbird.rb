@@ -23,7 +23,7 @@ action :setup do
           "#{installdir}")
 
       app_update = new_resource.config_thunderbird['app_update']
-      unless ::File.directory('/etc/thunderbird')
+      unless ::File.directory?('/etc/thunderbird')
         FileUtils.mkdir_p '/etc/thunderbird'
       end
 
@@ -67,7 +67,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

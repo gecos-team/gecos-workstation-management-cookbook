@@ -47,7 +47,7 @@ action :setup do
       if onstart_update
         bash 'enable on start auto_update script' do
           action :nothing
-          code 'update-rc.d auto_updates start 60 2 .\n'
+          code "update-rc.d auto_updates start 60 2 .\n"
         end.run_action(:run)
       else
         link '/etc/rc2.d/S60auto_updates' do
@@ -59,7 +59,7 @@ action :setup do
       if onstop_update
         bash 'enable on stop auto_update script' do
           action :nothing
-          code 'update-rc.d auto_updates start 60 6 0 .\n'
+          code "update-rc.d auto_updates start 60 6 0 .\n"
         end.run_action(:run)
       else
         link '/etc/rc6.d/S60auto_updates' do
@@ -118,7 +118,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

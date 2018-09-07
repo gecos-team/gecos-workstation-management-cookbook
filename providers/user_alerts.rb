@@ -30,7 +30,7 @@ action :setup do
         nameuser = user_key
         username = nameuser.gsub('###', '.')
         usernames << username
-        homedir = `eval echo ~#{username}`.gsub('\n', '')
+        homedir = `eval echo ~#{username}`.delete("\n")
         last_pid = `ps -u #{username} h -o pid| tail -n1`.strip
         grepcmd = "grep -z DBUS_SESSION_BUS_ADDRESS /proc/#{last_pid}/environ"
         dbus_address = `#{grepcmd} | cut -d= -f2-`.chop
@@ -91,7 +91,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1

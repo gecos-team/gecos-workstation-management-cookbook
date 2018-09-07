@@ -49,7 +49,7 @@ action :setup do
     end
   rescue StandardError => e
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     # just save current job ids as "failed"
     # save_failed_job_ids

@@ -9,6 +9,8 @@
 # http://www.osor.eu/eupl
 #
 
+require 'sqlite3'
+
 action :setup do
   begin
     ffx = ShellUtil.shell('apt-cache policy firefox').exitstatus
@@ -64,7 +66,7 @@ action :setup do
         ::FileUtils.rm(plugin_file)
       end
 
-      def download_plugin(username, plugin)
+      def download_plugin(username, exdir, plugin)
         # vars
         plugin_file = "#{exdir}/#{plugin.name.tr(' ', '_')}.xpi"
         groupname = Etc.getpwnam(username).gid
@@ -85,7 +87,7 @@ action :setup do
       #
       def plugin_manager(username, exdir, plugin)
         expath = Pathname.new(exdir)
-        plugin_file = download_plugin(username, expath, plugin)
+        plugin_file = download_plugin(username, exdir, plugin)
         xid = MozillaPluginManager.get_extension_id(plugin_file)
         installed = MozillaPluginManager.extension_installed?(xid, expath)
         Chef::Log.debug("web_browser.rb - Installed plugin? #{installed}")
@@ -167,7 +169,7 @@ action :setup do
         username = nameuser.gsub('###', '.')
         user = users[user_key]
 
-        homedir = `eval echo ~#{username}`.delete('\n')
+        homedir = `eval echo ~#{username}`.delete("\n")
         plugins = user.plugins
         bookmarks = user.bookmarks
         profile_dirs = []
@@ -299,7 +301,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

@@ -80,7 +80,7 @@ action :presetup do
     end
   rescue StandardError => e
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
@@ -165,7 +165,7 @@ action :setup do
           conn_file = nm_conn_production_dir.to_s + '/' + connection[:name].to_s
           uuid = if ::File.file?(conn_file)
                    # extraer el uuid
-                   ::File.read(conn_file).grep(/uuid/)[0].gsub('\n', '')
+                   ::File.read(conn_file).grep(/uuid/)[0].delete("\n")
                          .split('=')[1]
                  else
                    # generar uno nuevo
@@ -229,7 +229,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

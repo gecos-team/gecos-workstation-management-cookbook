@@ -20,7 +20,7 @@ action :setup do
         username = nameuser.gsub('###', '.')
         user = users[user_key]
 
-        homedir = `eval echo ~#{username}`.gsub('\n', '')
+        homedir = `eval echo ~#{username}`.delete("\n")
         gid = Etc.getpwnam(username).gid
         gtkbookmark_files = [
           "#{homedir}/.config/gtk-3.0/bookmarks",
@@ -92,7 +92,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

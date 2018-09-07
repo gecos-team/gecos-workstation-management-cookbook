@@ -23,7 +23,7 @@ action :setup do
       mix_code = new_resource.config_java['mix_code']
       array_attrs = new_resource.config_java['array_attrs']
 
-      unless ::File.directory('/etc/.java/deployment/')
+      unless ::File.directory?('/etc/.java/deployment/')
         FileUtils.mkdir_p '/etc/.java/deployment/'
       end
 
@@ -89,7 +89,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

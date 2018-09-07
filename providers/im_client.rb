@@ -133,7 +133,7 @@ action :setup do
           ' must be configured')
         next unless user.base.im_setup
 
-        homedir = `eval echo ~#{username}`.gsub('\n', '')
+        homedir = `eval echo ~#{username}`.delete("\n")
 
         # Create purple directory if doesn't exists
         directory "#{homedir}/.purple" do
@@ -259,7 +259,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

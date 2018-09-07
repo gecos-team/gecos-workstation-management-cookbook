@@ -34,7 +34,7 @@ action :setup do
 
         bash 'enable on start scripts' do
           action :nothing
-          code 'update-rc.d scripts-onstartup start 60 2 .\n'
+          code "update-rc.d scripts-onstartup start 60 2 .\n"
         end.run_action(:run)
       else
         file '/etc/init.d/scripts-onstartup' do
@@ -59,7 +59,7 @@ action :setup do
 
         bash 'enable on shutdown scripts' do
           action :nothing
-          code 'update-rc.d scripts-onshutdown stop 15 6 0 .\n'
+          code "update-rc.d scripts-onshutdown stop 15 6 0 .\n"
         end.run_action(:run)
       else
         file '/etc/init.d/scripts-onshutdown' do
@@ -84,7 +84,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

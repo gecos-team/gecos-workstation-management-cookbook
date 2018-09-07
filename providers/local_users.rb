@@ -47,8 +47,8 @@ action :setup do
 
           bash "copy skel to #{username}" do
             user username.to_s
-            code 'export LC_ALL=$LANG\n'\
-              '/usr/bin/xdg-user-dirs-update --force\n'
+            code "export LC_ALL=$LANG\n"\
+              "/usr/bin/xdg-user-dirs-update --force\n"
             action :nothing
           end.run_action(:run)
         end
@@ -66,7 +66,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|

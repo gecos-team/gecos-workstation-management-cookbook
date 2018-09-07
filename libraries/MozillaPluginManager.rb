@@ -9,9 +9,10 @@
 # http://www.osor.eu/eupl
 #
 
-require 'chef/mixin/shell_out'
+require 'chef/shell_out'
 require 'sqlite3'
 require 'pathname'
+require 'fileutils'
 
 FIREFOX_VERSION_LIMIT = 4
 
@@ -24,7 +25,7 @@ class MozillaPluginManager
   # Checks if a extension is installed
   # by checking if is contained in a sqlite database
   #
-  def self.extension_instaled_in_sqlitedb?(xid, sqlitedb)
+  def self.extension_installed_in_sqlitedb?(xid, sqlitedb)
     db = SQLite3::Database.open(sqlitedb)
     addons = db.get_first_value('SELECT locale.name, '\
         'locale.description, addon.version, addon.active, addon.id '\
@@ -39,7 +40,7 @@ class MozillaPluginManager
   # Checks if a extension is installed
   # by checking if is contained in a json file
   #
-  def self.extension_instaled_in_json?(xid, jsonfile)
+  def self.extension_installed_in_json?(xid, jsonfile)
     require 'json'
     jfile = ::File.read(jsonfile)
     addons = JSON.parse(jfile)['addons']
@@ -51,12 +52,12 @@ class MozillaPluginManager
   # Checks if a extension is installed
   # by checking if is contained in xfile
   #
-  def self.extension_instaled_in_file?(xid, xfile, filepath)
+  def self.extension_installed_in_file?(xid, xfile, filepath)
     case xfile
     when /\.json$/i
-      extension_instaled_in_json?(xid, filepath)
+      extension_installed_in_json?(xid, filepath)
     when /\.sqlite$/
-      extension_instaled_in_sqlitedb?(xid, filepath)
+      extension_installed_in_sqlitedb?(xid, filepath)
     else
       !::File.open(filepath).read.match(xid).nil?
       # operator !! forces true/false returned
@@ -68,12 +69,14 @@ class MozillaPluginManager
   #
   def self.create_temp_dir(plugin_file, username)
     plugin_dir_temp = "#{plugin_file}_temp"
+    uid = Etc.getpwnam(username).uid
     gid = Etc.getpwnam(username).gid
-    directory plugin_dir_temp do
-      owner username
-      group gid
-      action :nothing
-    end.run_action(:create)
+    FileUtils.mkdir_p plugin_dir_temp
+
+    if ::File.stat(plugin_dir_temp).uid != uid ||
+       ::File.stat(plugin_dir_temp).gid != gid
+      ::File.new(plugin_dir_temp).chown(uid, gid)
+    end
 
     plugin_dir_temp
   end
@@ -84,13 +87,12 @@ class MozillaPluginManager
   def self.extract_plugin_to_temp_dir(plugin_file, username)
     plugin_dir_temp = create_temp_dir(plugin_dir_temp, username)
 
-    bash "extract plugin #{plugin_file}" do
-      action :nothing
-      user username
-      code "rm -rf #{plugin_dir_temp}\n"\
-        "mkdir -p #{plugin_dir_temp}\n"\
-        "unzip -o #{plugin_file} -d #{plugin_dir_temp}"
-    end.run_action(:run)
+    FileUtils.rm_rf([plugin_dir_temp])
+    FileUtils.mkdir(plugin_dir_temp)
+
+    command = "unzip -o #{plugin_file} -d #{plugin_dir_temp}"
+    cmd = Mixlib::ShellOut.new(command)
+    cmd.run_command
 
     plugin_dir_temp
   end
@@ -99,12 +101,14 @@ class MozillaPluginManager
   # Get extension ID
   #
   def self.get_extension_id(plugin_file)
-    xid = shell_out("unzip -qc #{plugin_file} install.rdf "\
-        '|  xmlstarlet sel -N rdf=http://www.w3.org/1999/02/22-rdf'\
-        '-syntax-ns# -N em=http://www.mozilla.org/2004/em-rdf# -t -v '\
-        '"//rdf:Description[@about=\'urn:mozilla:install-manifest\']'\
-        '/em:id\"').stdout
-
+    command = "unzip -qc #{plugin_file} install.rdf "\
+      '|  xmlstarlet sel -N rdf=http://www.w3.org/1999/02/22-rdf'\
+      '-syntax-ns# -N em=http://www.mozilla.org/2004/em-rdf# -t -v '\
+      '"//rdf:Description[@about=\'urn:mozilla:install-manifest\']'\
+      '/em:id\"'
+    cmd = Mixlib::ShellOut.new(command)
+    cmd.run_command
+    xid = cmd.stdout
     Chef::Log.debug("MozillaPluginManager - Extension ID = #{xid}")
     xid
   end
@@ -112,7 +116,7 @@ class MozillaPluginManager
   #
   # Checks if a extension is installed
   #
-  def self.extension_instaled?(xid, expath)
+  def self.extension_installed?(xid, expath)
     xfiles = %w[extensions.json extensions.sqlite extensions.rdf]
     installed = false
     # Checking if extension is already installed for this profile
@@ -122,7 +126,7 @@ class MozillaPluginManager
       Chef::Log.debug("MozillaPluginManager - Extension file = #{xf}")
       next unless ::File.exist?(xf)
 
-      installed = extension_instaled_in_file?(xid, xfile, xf)
+      installed = extension_installed_in_file?(xid, xfile, xf)
       break if installed
     end
     installed
@@ -153,9 +157,9 @@ class MozillaPluginManager
     ::FileUtils.mv(source, destination)
   end
 
-  private_class_method :extension_instaled_in_sqlitedb?
-  private_class_method :extension_instaled_in_json?
-  private_class_method :extension_instaled_in_file?
+  private_class_method :extension_installed_in_sqlitedb?
+  private_class_method :extension_installed_in_json?
+  private_class_method :extension_installed_in_file?
   private_class_method :extract_plugin_to_temp_dir
   private_class_method :create_temp_dir
 end

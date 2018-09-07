@@ -88,7 +88,7 @@ action :setup do
         end
 
         # Create GECOS profile if doesn't exists
-        homedir = `eval echo ~#{username}`.gsub('\n', '')
+        homedir = `eval echo ~#{username}`.delete("\n")
         thunderbird_profiles = "#{homedir}/.thunderbird/profiles.ini"
 
         directory "#{homedir}/.thunderbird" do
@@ -258,7 +258,7 @@ action :setup do
 
           # Check if the extension is already installed
           expath = Pathname.new("#{homedir}/.thunderbird/gecos/")
-          installed = MozillaPluginManager.extension_instaled?(xid, expath)
+          installed = MozillaPluginManager.extension_installed?(xid, expath)
           Chef::Log.info("email_setup.rb - Installed plugin? #{installed}")
 
           next if installed
@@ -286,7 +286,7 @@ action :setup do
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
-    Chef::Log.error(e.backtrace)
+    Chef::Log.error(e.backtrace.join("\n"))
 
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
