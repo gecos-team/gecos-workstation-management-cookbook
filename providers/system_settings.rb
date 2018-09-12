@@ -119,6 +119,16 @@ action :clear do
   schema = new_resource.schema
   regex = "#{schema.tr('/', '-')}*"
 
+  # If /etc/dconf/db doesn't exist
+  # "dconf update" command fails
+  directory '/etc/dconf/db' do
+    owner 'root'
+    group 'root'
+    mode '0755'
+    recursive true
+    action :nothing
+  end.run_action(:create)
+
   # Delete all files of schema
   Dir["/etc/dconf/db/#{dconfdb}.d/#{regex}"].each do |fe|
     Chef::Log.debug("system_settings.rb - fe:#{fe}")

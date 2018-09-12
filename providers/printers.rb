@@ -155,6 +155,10 @@ action :setup do
           ppd_uri = ''
         end
 
+        Chef::Log.info("comprobacion: create_ppd_with_ppd_uri #{create_ppd_with_ppd_uri}")
+        Chef::Log.info("comprobacion: is_prt_installed #{is_prt_installed}")
+        Chef::Log.info("comprobacion: inst_prt_uri #{inst_prt_uri[0][0]}")
+        Chef::Log.info("comprobacion: printer.uri #{printer.uri}")
         if !create_ppd_with_ppd_uri &&
            (!is_prt_installed || !(inst_prt_uri[0][0].eql? printer.uri))
           create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
@@ -167,6 +171,7 @@ action :setup do
         cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
             ' awk \'{print $1}\'')
         cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+        Chef::Log.info(" cups_list: #{cups_list}")
 
         cups_list.each do |cups_printer|
           ptr_found = false
@@ -177,9 +182,11 @@ action :setup do
             end
           end
 
+          Chef::Log.info(" printer: #{cups_printer} found: #{ptr_found}")
           next if ptr_found
 
           lpoptions = `/usr/bin/lpoptions -p #{cups_printer}`
+          Chef::Log.info(" lpoptions: #{lpoptions}")
           if lpoptions.include? 'managed-by-GCC=true'
             delete_printer(cups_printer)
           end
@@ -189,6 +196,7 @@ action :setup do
       cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
           ' awk \'{print $1}\'')
       cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+      Chef::Log.info(" cups_list: #{cups_list}")
       cups_list.each do |cups_printer|
         lpopt = `/usr/bin/lpoptions -p #{cups_printer}`
 

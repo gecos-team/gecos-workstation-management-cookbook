@@ -35,8 +35,9 @@ action :setup do
 
         # In 5 mins from now
         shutdown_time = now + (5 * 60)
+        Chef::Log.info("now = #{now} shutdown_time=#{shutdown_time}")
         cron 'remote shutdown' do
-          minute shutdown_time.minute.to_s
+          minute shutdown_time.min.to_s
           hour shutdown_time.hour.to_s
           day shutdown_time.day.to_s
           month shutdown_time.month.to_s

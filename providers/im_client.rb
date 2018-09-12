@@ -105,7 +105,7 @@ def add_or_modify_xml_entry(template, homedir)
     accounts_xml_doc = add_or_modify_xml_node(node, accounts_xml_doc)
   end
 
-  XMLUtil.saveFile(accounts_xml_doc, "#{homedir}/.purple/accounts.xml")
+  XMLUtil.save_file(accounts_xml_doc, "#{homedir}/.purple/accounts.xml")
 end
 
 action :setup do

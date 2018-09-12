@@ -124,7 +124,7 @@ action :setup do
       properties[:encapsulation] == 'Ethernet'
     end
 
-    ethernet_interfaces.each do |_interface, properties|
+    ethernet_interfaces.each do |interface, properties|
       lladdr_family = properties[:addresses].select do |_mac_addr, addr_data|
         addr_data[:family] == 'lladdr'
       end
@@ -210,7 +210,7 @@ action :setup do
     # network-manager
     service 'network-manager' do
       case $gecos_os
-      when 'GECOS V2","Gecos V2 Lite'
+      when 'GECOS V2', 'Gecos V2 Lite'
         provider Chef::Provider::Service::Upstart
       else
         provider Chef::Provider::Service::Systemd

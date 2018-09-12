@@ -48,7 +48,7 @@ action :setup do
         end
         Dir['/home/*/.mozilla/firefox/*default'].each do |profile|
           begin
-            ffox_certs = node.ohai_gecos.ffox_certs
+            ffox_certs = node['ohai_gecos']['ffox_certs']
             if ffox_certs.key?(profile.to_s) &&
                ffox_certss[profile.to_s].key?(cert[:name].to_s) &&
                ffox_certs[profile.to_s][cert[:name].to_s] == 'CT,C,C'

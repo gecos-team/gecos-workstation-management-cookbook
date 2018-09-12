@@ -43,9 +43,8 @@ action :setup do
         Chef::Log.debug("web_browser.rb - FF command out: #{firefox.stdout}")
 
         /(?<version>\d+)\.(?<release>\d+)(\.(?<minor>\d+))?/ =~ firefox.stdout
-        Chef::Log.debug("web_browser.rb - FF version: #{version}")
-        Chef::Log.debug("web_browser.rb - FF release: #{release}")
-        Chef::Log.debug("web_browser.rb - FF minor: #{minor}")
+        Chef::Log.debug("web_browser.rb - FF version: #{version}."\
+            " #{release}. #{minor}")
 
         MozillaPluginManager.install_plugin_on_version(
           version, plugin_file, exdir, xid, username
@@ -79,24 +78,31 @@ action :setup do
           group groupname
           action :nothing
         end.run_action(:create_if_missing)
+
         plugin_file
       end
 
       #
       # Plugin Manager: install/uninstall plugin
       #
-      def plugin_manager(username, exdir, plugin)
+      def add_or_remove_plugin(username, exdir, plugin, xid)
         expath = Pathname.new(exdir)
-        plugin_file = download_plugin(username, exdir, plugin)
-        xid = MozillaPluginManager.get_extension_id(plugin_file)
         installed = MozillaPluginManager.extension_installed?(xid, expath)
-        Chef::Log.debug("web_browser.rb - Installed plugin? #{installed}")
 
         if !installed && plugin.action == 'add'
           install_plugin(plugin_file, exdir, xid, username)
         elsif installed && plugin.action == 'remove'
           remove_plugin(plugin_file, exdir, xid, expath)
         end
+      end
+
+      #
+      # Plugin Manager: install/uninstall plugin
+      #
+      def plugin_manager(username, exdir, plugin)
+        plugin_file = download_plugin(username, exdir, plugin)
+        xid = MozillaPluginManager.get_extension_id(plugin_file)
+        add_or_remove_plugin(username, exdir, plugin, xid) unless xid.empty?
       end
 
       #
@@ -116,6 +122,17 @@ action :setup do
       end
 
       #
+      # Returns a (key, value) pair
+      #
+      def to_key_and_value(key, value)
+        config = {}
+        config['key'] = key
+        config['value'] = value
+
+        config
+      end
+
+      #
       # Transform a configuration to a (key, value) pair
       #
       def configuration_to_key_and_value(conf)
@@ -130,7 +147,7 @@ action :setup do
               'Please check it')
         end
 
-        { 'key': key, 'value': value }
+        to_key_and_value(key, value)
       end
 
       #

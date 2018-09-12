@@ -34,6 +34,19 @@ action :setup do
         last_pid = `ps -u #{username} h -o pid| tail -n1`.strip
         grepcmd = "grep -z DBUS_SESSION_BUS_ADDRESS /proc/#{last_pid}/environ"
         dbus_address = `#{grepcmd} | cut -d= -f2-`.chop
+        # See String#encode documentation
+        encoding_options = {
+          invalid: :replace,        # Replace invalid byte sequences
+          undef: :replace,          # Replace anything not defined in ASCII
+          replace: '',              # Use a blank for those replacements
+          universal_newline: true   # Always break lines with \n
+        }
+
+        # Remove non-ascii characters
+        dbus_address = dbus_address.encode(
+          Encoding.find('ASCII'), encoding_options
+        )
+        dbus_address = dbus_address.chop
 
         icon = ''
         icon = user.icon if user.attribute?('icon')

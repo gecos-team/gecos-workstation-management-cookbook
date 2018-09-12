@@ -85,7 +85,7 @@ class MozillaPluginManager
   # Extracts a Firefox plugin in a temporal directory
   #
   def self.extract_plugin_to_temp_dir(plugin_file, username)
-    plugin_dir_temp = create_temp_dir(plugin_dir_temp, username)
+    plugin_dir_temp = create_temp_dir(plugin_file, username)
 
     FileUtils.rm_rf([plugin_dir_temp])
     FileUtils.mkdir(plugin_dir_temp)
@@ -105,11 +105,11 @@ class MozillaPluginManager
       '|  xmlstarlet sel -N rdf=http://www.w3.org/1999/02/22-rdf'\
       '-syntax-ns# -N em=http://www.mozilla.org/2004/em-rdf# -t -v '\
       '"//rdf:Description[@about=\'urn:mozilla:install-manifest\']'\
-      '/em:id\"'
+      '/em:id"'
     cmd = Mixlib::ShellOut.new(command)
     cmd.run_command
     xid = cmd.stdout
-    Chef::Log.debug("MozillaPluginManager - Extension ID = #{xid}")
+    Chef::Log.error("Can't get xid for #{plugin_file}!") if xid.empty?
     xid
   end
 
@@ -122,7 +122,7 @@ class MozillaPluginManager
     # Checking if extension is already installed for this profile
     # Querying firefox extensions databases
     xfiles.each do |xfile|
-      xf = "#{expath.parent}/#{xfile}"
+      xf = "#{expath}/#{xfile}"
       Chef::Log.debug("MozillaPluginManager - Extension file = #{xf}")
       next unless ::File.exist?(xf)
 

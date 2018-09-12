@@ -82,7 +82,7 @@ mobile_broadband_js = {
         title: 'Provider',
         title_es: 'Proveedor',
         required: %w[country provider],
-        order: %w[country provider'],
+        order: %w[country provider],
         properties: {
           provider: {
             type: 'string',
@@ -117,7 +117,7 @@ forticlientvpn_js = {
   required: ['connections'],
   is_mergeable: false,
   autoreverse: false,
-  order: %w[connections proxyserver proxyport proxyuser autostart keepalive'],
+  order: %w[connections proxyserver proxyport proxyuser autostart keepalive],
   properties: {
     connections: {
       title: 'Connections',
@@ -691,7 +691,7 @@ web_browser_js = {
                     title: 'Value type',
                     title_es: 'Tipo de valor',
                     type: 'string',
-                    enum: %w[string number boolean']
+                    enum: %w[string number boolean]
                   }
                 }
               }
@@ -2625,7 +2625,7 @@ system_proxy_js = {
           type: 'string',
           title: 'Configuration Mode',
           title_es: 'Forma de Configurarlo',
-          enum: %w[NO PROXY AUTODETECT SYSTEM MANUAL AUTOMATIC]
+          enum: ['NO PROXY', 'AUTODETECT', 'SYSTEM', 'MANUAL', 'AUTOMATIC']
         },
         http_proxy: {
           title: 'HTTP Proxy',

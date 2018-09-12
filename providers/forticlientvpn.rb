@@ -35,7 +35,7 @@ action :setup do
 
       Dir['/home/*'].each do |homedir|
         user_fctlsslvpnhistory = homedir + '/.fctsslvpnhistory'
-        if File.directory?(user_fctlsslvpnhistory)
+        if ::File.directory?(user_fctlsslvpnhistory)
           # parse current conf file for already existant
           # (pass saved) connections
           current_conns = {}
