@@ -70,7 +70,7 @@ action :setup do
         end
 
         var_hash = {
-          username: username,
+          username: owncloud_authuser,
           owncloud_url: user.owncloud_url,
           owncloud_notifications: user.owncloud_notifications,
           owncloud_ask: user.owncloud_ask,
