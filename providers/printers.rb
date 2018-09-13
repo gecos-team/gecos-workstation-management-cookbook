@@ -52,7 +52,8 @@ def set_printer_options(prt_name, prt_ppd_uri)
   if lpopt_comm.exitstatus.zero?
     Chef::Log.info(' - installed successfully')
   else
-    Chef::Log.info(" - error setting policies to #{prt_name}")
+    Chef::Log.info(' - error setting policies to '\
+        "#{prt_name}: #{lpopt_comm.stderr}")
   end
 end
 
@@ -67,7 +68,8 @@ def install_or_update_printer(prt_name, prt_uri, prt_policy, prt_ppd_uri)
   if lpadm_comm.exitstatus.zero?
     set_printer_options(prt_name, prt_ppd_uri)
   else
-    Chef::Log.info(" - error creating printer #{prt_name}")
+    Chef::Log.info(' - error creating printer '\
+        "#{prt_name}: #{lpadm_comm.stderr}")
   end
 end
 
@@ -81,7 +83,7 @@ def delete_printer(prt_name)
   if lpadm_dele.exitstatus.zero? && ppd_dele.exitstatus.zero?
     Chef::Log.info(' - deleted successfully')
   else
-    Chef::Log.info(" - error deleting #{prt_name}")
+    Chef::Log.info(" - error deleting #{prt_name}: #{lpadm_dele.stderr}")
   end
 end
 
@@ -155,10 +157,6 @@ action :setup do
           ppd_uri = ''
         end
 
-        Chef::Log.info("comprobacion: create_ppd_with_ppd_uri #{create_ppd_with_ppd_uri}")
-        Chef::Log.info("comprobacion: is_prt_installed #{is_prt_installed}")
-        Chef::Log.info("comprobacion: inst_prt_uri #{inst_prt_uri[0][0]}")
-        Chef::Log.info("comprobacion: printer.uri #{printer.uri}")
         if !create_ppd_with_ppd_uri &&
            (!is_prt_installed || !(inst_prt_uri[0][0].eql? printer.uri))
           create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
@@ -171,7 +169,6 @@ action :setup do
         cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
             ' awk \'{print $1}\'')
         cups_list = cups_ptr_list.stdout.split(/\r?\n/)
-        Chef::Log.info(" cups_list: #{cups_list}")
 
         cups_list.each do |cups_printer|
           ptr_found = false
@@ -182,7 +179,6 @@ action :setup do
             end
           end
 
-          Chef::Log.info(" printer: #{cups_printer} found: #{ptr_found}")
           next if ptr_found
 
           lpoptions = `/usr/bin/lpoptions -p #{cups_printer}`
@@ -196,7 +192,6 @@ action :setup do
       cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
           ' awk \'{print $1}\'')
       cups_list = cups_ptr_list.stdout.split(/\r?\n/)
-      Chef::Log.info(" cups_list: #{cups_list}")
       cups_list.each do |cups_printer|
         lpopt = `/usr/bin/lpoptions -p #{cups_printer}`
 
