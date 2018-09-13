@@ -34,7 +34,7 @@ load_current_value do |desired|
       'kill $DBUS_SESSION_BUS_PID', opts)
   Chef::Log.debug("desktop_gsettings.rb: cmd_out= #{cmd_out.stdout}")
 
-  if cmd_out.exitstatus.zero? && !cmd_out.stdout.nil?
+  unless cmd_out.exitstatus.zero? && !cmd_out.stdout.nil?
     current_value_does_not_exist!
   end
 
