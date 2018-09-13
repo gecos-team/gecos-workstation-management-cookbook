@@ -38,12 +38,12 @@ load_current_value do |desired|
     current_value_does_not_exist!
   end
 
-  value = if cmd_out.stdout =~ /uint/
+  result = if cmd_out.stdout =~ /uint/
             cmd_out.stdout.chomp.split.pop
           else
             cmd_out.stdout.chomp
           end
-  value
+  value result
 end
 
 ###############
