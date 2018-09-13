@@ -10,7 +10,6 @@
 #
 
 require 'chef/shell_out'
-require 'sqlite3'
 require 'pathname'
 require 'fileutils'
 
@@ -26,6 +25,7 @@ class MozillaPluginManager
   # by checking if is contained in a sqlite database
   #
   def self.extension_installed_in_sqlitedb?(xid, sqlitedb)
+    require 'sqlite3'
     db = SQLite3::Database.open(sqlitedb)
     addons = db.get_first_value('SELECT locale.name, '\
         'locale.description, addon.version, addon.active, addon.id '\
@@ -145,15 +145,14 @@ class MozillaPluginManager
       # In Firefox 4 you may also just copy the extension's XPI to the
       # directory && name it <ID>.xpi as long as the extension does not
       # require extraction to work correctly
-      Chef::Log.debug('MozillaPluginManager - New installation procedure ')
       source = plugin_file
       destination = "#{exdir}/#{xid}.xpi"
     else
       # OLD installation procedure
-      Chef::Log.debug('MozillaPluginManager - OLD installation procedure')
       source = extract_plugin_to_temp_dir(plugin_file, username)
       destination = "#{exdir}/#{xid}"
     end
+    ::FileUtils.rm_rf([destination])
     ::FileUtils.mv(source, destination)
   end
 

@@ -9,8 +9,6 @@
 # http://www.osor.eu/eupl
 #
 
-require 'sqlite3'
-
 action :setup do
   begin
     ffx = ShellUtil.shell('apt-cache policy firefox').exitstatus
@@ -33,6 +31,8 @@ action :setup do
       end
 
       Gem.clear_paths
+
+      require 'sqlite3'
 
       #
       # Installs a Firefox plugin

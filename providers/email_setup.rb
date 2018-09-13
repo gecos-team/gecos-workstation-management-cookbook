@@ -113,7 +113,7 @@ action :setup do
           only_if { ::File.exist?('/tmp/.X99-lock') }
         end.run_action(:delete)
 
-        env_hash = { 'HOME': homedir, 'USER': username }
+        env_hash = { 'HOME' => homedir, 'USER' => username }
         execute 'Create GECOS Profile' do
           command 'Xvfb :99.0 -ac & sleep 1; thunderbird -CreateProfile '\
             "'gecos #{homedir}/.thunderbird/gecos' "\

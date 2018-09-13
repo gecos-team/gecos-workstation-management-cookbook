@@ -19,9 +19,11 @@ action :setup do
         user = users[user_key]
 
         idle_enabled = user.idle_enabled
-        idle_delay = user.idle_delay
+        idle_delay = '0'
+        idle_delay = user.idle_delay if user.attribute?('idle_delay')
         lock_enabled = user.lock_enabled
-        lock_delay = user.lock_delay
+        lock_delay = '0'
+        lock_delay = user.lock_delay if user.attribute?('lock_delay')
 
         # TO-DO:
         # Sacar el tipo de sesion con el plugin de ohai x-session-manager.rb

@@ -82,7 +82,7 @@ action :setup do
           end
           Chef::Log.debug("mimetypes.rb - mimes: #{mimes}")
 
-          env_hash = { 'HOME': "/home/#{username}", 'USER': username.to_s }
+          env_hash = { 'HOME' => "/home/#{username}", 'USER' => username.to_s }
           execute 'xdg-mime execution commmand' do
             action :run
             user username
