@@ -177,7 +177,7 @@ action :setup do
         VariableManager.add_key_to_environ('EMAILDOMAIN', email.split('@')[1])
 
         # Get the appropiate template
-        data = data_bag_item('pidgin_template', 'pidgin')
+        data = data_bag_item('pidgin_templates', 'pidgin')
 
         template = ''
         data['accounts_xml'].each do |line|
