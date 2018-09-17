@@ -82,9 +82,14 @@ end
 #    action [:disable, :stop]
 #end
 
-if node['chef_packages']['chef']['version'] < '12.5' 
+include_recipe "apt"
+
+Chef::Log.info("Chef client version check")
+if node['chef_packages']['chef']['version'] < '12.5'
+    Chef::Log.info("Chef client upgrade required")
     package 'chef' do
       action :upgrade
+      notifies :run, 'execute[apt-get update]', :immediately
     end
 else
     include_recipe "gecos_ws_mgmt::required_packages"
