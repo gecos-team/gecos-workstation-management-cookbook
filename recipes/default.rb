@@ -82,14 +82,19 @@ end
 #    action [:disable, :stop]
 #end
 
-include_recipe "gecos_ws_mgmt::required_packages"
-include_recipe "gecos_ws_mgmt::software_mgmt"
-include_recipe "gecos_ws_mgmt::misc_mgmt"
-include_recipe "gecos_ws_mgmt::network_mgmt"
-include_recipe "gecos_ws_mgmt::users_mgmt"
-include_recipe "gecos_ws_mgmt::printers_mgmt"
-include_recipe "gecos_ws_mgmt::single_node"                                           
-
+if node['chef_packages']['chef']['version'] < '12.5' 
+    package 'chef' do
+      action :upgrade
+    end
+else
+    include_recipe "gecos_ws_mgmt::required_packages"
+    include_recipe "gecos_ws_mgmt::software_mgmt"
+    include_recipe "gecos_ws_mgmt::misc_mgmt"
+    include_recipe "gecos_ws_mgmt::network_mgmt"
+    include_recipe "gecos_ws_mgmt::users_mgmt"
+    include_recipe "gecos_ws_mgmt::printers_mgmt"
+    include_recipe "gecos_ws_mgmt::single_node"                                           
+end
 
 node.normal['use_node']= {}
 node.override['gcc_link'] = true
