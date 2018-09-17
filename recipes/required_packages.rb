@@ -28,7 +28,8 @@ $required_pkgs = {
   'user_alerts' => ['libnotify-bin'],
   'local_users' => ['libshadow-ruby1.8'],
   'email_setup' => ['thunderbird-locale-'+($locale.sub! '_', '-'), 'xvfb'],
-  'im_client' => ['pidgin']
+  'im_client' => ['pidgin'],
+  'auto_updates' => ['moreutils']
 }
 
 # Platform dependencies
