@@ -39,10 +39,10 @@ load_current_value do |desired|
   end
 
   result = if cmd_out.stdout =~ /uint/
-            cmd_out.stdout.chomp.split.pop
-          else
-            cmd_out.stdout.chomp
-          end
+             cmd_out.stdout.chomp.split.pop
+           else
+             cmd_out.stdout.chomp
+           end
   value result
 end
 
