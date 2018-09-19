@@ -85,7 +85,13 @@ end
 include_recipe "apt"
 
 Chef::Log.info("Chef client version check")
-if node['chef_packages']['chef']['version'] < '12.5'
+
+
+current_client_version = node['chef_packages']['chef']['version']
+power=1000000
+integer_current_client_version=current_client_version.split('.').inject(0){|sum, val| power=power/100; sum + val.to_i*power}
+
+if integer_current_client_version < 120500
     Chef::Log.info("Chef client upgrade required")
     package 'chef' do
       action :upgrade
