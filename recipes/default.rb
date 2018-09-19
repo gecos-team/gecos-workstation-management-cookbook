@@ -65,6 +65,12 @@ end.run_action(:create_if_missing)
 
 Chef::Log.info('Enabling GECOS Agent in cron')
 
+cron 'GECOS Agent' do
+  minute '30'
+  command '/usr/bin/gecos-chef-client-wrapper'
+  action :create
+end
+
 include_recipe 'apt'
 
 Chef::Log.info('Chef client version check')
