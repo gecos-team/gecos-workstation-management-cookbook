@@ -11,7 +11,7 @@
 
 actions :setup
 
-attribute :expire_datetime, :kind_of => String
-attribute :enable_debug, :kind_of => [TrueClass, FalseClass], :required => false
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
+attribute :expire_datetime, kind_of: String
+attribute :enable_debug, kind_of: [TrueClass, FalseClass], required: false
+attribute :job_ids, kind_of: Array
+attribute :support_os, kind_of: Array
