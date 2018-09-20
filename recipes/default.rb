@@ -52,17 +52,6 @@ $locale = ENV['LANG'].downcase
 $locale = $locale.split('.')[0] if $locale.include? '.'
 Chef::Log.info("Locale is #{$locale}")
 
-# This should not be necessary, as wrapper is in new GECOS-Agent package.
-# It is a transitional solution.
-Chef::Log.info('Installing wrapper')
-cookbook_file 'gecos-chef-client-wrapper' do
-  path '/usr/bin/gecos-chef-client-wrapper'
-  owner 'root'
-  mode '0700'
-  group 'root'
-  action :nothing
-end.run_action(:create_if_missing)
-
 Chef::Log.info('Enabling GECOS Agent in cron')
 
 cron 'GECOS Agent' do
