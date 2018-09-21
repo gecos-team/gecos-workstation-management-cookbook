@@ -11,6 +11,6 @@
 
 actions :setup
 
-attribute :config_thunderbird, :kind_of => Object
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
+attribute :config_thunderbird, kind_of: Object
+attribute :job_ids, kind_of: Array
+attribute :support_os, kind_of: Array

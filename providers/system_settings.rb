@@ -15,14 +15,15 @@ action :set do
   schema = new_resource.schema
   key = new_resource.name
   value = if new_resource.value.is_a? String
-    then %{'#{new_resource.value}'}
-    else new_resource.value
-  end
+          then %('#{new_resource.value}')
+          else new_resource.value
+          end
 
   Chef::Log.debug("system_settings.rb - value:#{value}")
 
-  if !key.nil? and !key.empty?
-    ["/etc/dconf/profile", "/etc/dconf/db/#{dconfdb}.d/locks"].each do |dir|
+  if !key.nil? && !key.empty?
+    dirs = ['/etc/dconf/profile', "/etc/dconf/db/#{dconfdb}.d/locks"]
+    dirs.each do |dir|
       directory dir do
         recursive true
         action :nothing
@@ -30,27 +31,22 @@ action :set do
     end
   end
 
-  file "/etc/dconf/profile/user" do
+  file '/etc/dconf/profile/user' do
     backup false
-    content <<-eof
-user-db:user
-system-db:#{dconfdb}
-    eof
+    content "user-db:user\nsystem-db:#{dconfdb}\n"
     action :nothing
   end.run_action(:create)
 
-  file "/etc/dconf/db/#{dconfdb}.d/#{schema.gsub('/','-')}-#{key}.key" do
+  schema_s = schema.tr('/', '-')
+  file "/etc/dconf/db/#{dconfdb}.d/#{schema_s}-#{key}.key" do
     backup false
-    content <<-eof
-[#{schema}]
-#{key}=#{value}
-    eof
+    content "[#{schema}]\n#{key}=#{value}\n"
     action :nothing
   end.run_action(:create)
 
-  execute "update-dconf" do
+  execute 'update-dconf' do
     action :nothing
-    command "dconf update"
+    command 'dconf update'
   end.run_action(:run)
 end
 
@@ -59,15 +55,15 @@ action :unset do
   dconfdb = 'gecos'
   schema = new_resource.schema
   key = new_resource.name
-  value = new_resource.value
 
-  file "/etc/dconf/db/#{dconfdb}.d/#{schema.gsub('/','-')}-#{key}.key" do
+  schema_s = schema.tr('/', '-')
+  file "/etc/dconf/db/#{dconfdb}.d/#{schema_s}-#{key}.key" do
     action :nothing
   end.run_action(:delete)
 
-  execute "update-dconf" do
+  execute 'update-dconf' do
     action :nothing
-    command "dconf update"
+    command 'dconf update'
   end.run_action(:run)
 end
 
@@ -76,71 +72,74 @@ action :lock do
   dconfdb = 'gecos'
   schema = new_resource.schema
   key = new_resource.name
-  value = new_resource.value
 
-  if !key.nil? and !key.empty?
-    ["/etc/dconf/profile", "/etc/dconf/db/#{dconfdb}.d/locks"].each do |dir|
+  if !key.nil? && !key.empty?
+    dirs = ['/etc/dconf/profile', "/etc/dconf/db/#{dconfdb}.d/locks"]
+    dirs.each do |dir|
       directory dir do
         recursive true
       end.run_action(:create)
     end
   end
 
-  file "/etc/dconf/profile/user" do
+  file '/etc/dconf/profile/user' do
     backup false
-    content <<-eof
-system-db:#{dconfdb}
-user-db:user
-    eof
+    content "system-db:#{dconfdb}\nuser-db:user\n"
   end.run_action(:create)
 
-  key_path = '/' + schema.gsub('.','/') + '/' + key
+  key_path = '/' + schema.tr('.', '/') + '/' + key
   file "/etc/dconf/db/#{dconfdb}.d/locks/#{key}.lock" do
     backup false
-    content <<-eof
-#{key_path}
-    eof
+    content "#{key_path}\n"
   end.run_action(:create)
 
-  execute "update-dconf" do
+  execute 'update-dconf' do
     action :nothing
-    command "dconf update"
+    command 'dconf update'
   end.run_action(:run)
 end
 
 # It removes the dconf key system-level locking
 action :unlock do
   dconfdb = 'gecos'
-  schema = new_resource.schema
   key = new_resource.name
 
-  key_path = '/' + schema.gsub('.','/') + '/' + key
   file "/etc/dconf/db/#{dconfdb}.d/locks/#{key}.lock" do
     action :nothing
   end.run_action(:delete)
 
-  execute "update-dconf" do
+  execute 'update-dconf' do
     action :nothing
-    command "dconf update"
+    command 'dconf update'
   end.run_action(:run)
 end
 
 action :clear do
   dconfdb = 'gecos'
   schema = new_resource.schema
-  regex = "#{schema.gsub('/','-')}*"
+  regex = "#{schema.tr('/', '-')}*"
+
+  # If /etc/dconf/db doesn't exist
+  # "dconf update" command fails
+  directory '/etc/dconf/db' do
+    owner 'root'
+    group 'root'
+    mode '0755'
+    recursive true
+    action :nothing
+  end.run_action(:create)
 
   # Delete all files of schema
   Dir["/etc/dconf/db/#{dconfdb}.d/#{regex}"].each do |fe|
     Chef::Log.debug("system_settings.rb - fe:#{fe}")
-    file "#{fe}" do
+    file fe.to_s do
       backup false
       action :nothing
     end.run_action(:delete)
   end
 
-  execute "update-dconf" do
+  execute 'update-dconf' do
     action :nothing
-    command "dconf update"
+    command 'dconf update'
   end.run_action(:run)
 end

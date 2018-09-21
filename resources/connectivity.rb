@@ -11,5 +11,5 @@
 
 actions :test, :backup, :recovery
 
-attribute :target, :kind_of => String
-attribute :port, :kind_of => Integer
+attribute :target, kind_of: String
+attribute :port, kind_of: Integer

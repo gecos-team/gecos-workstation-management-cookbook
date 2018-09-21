@@ -1,0 +1,19 @@
+# This is the configuration used to check the rubocop source code.
+
+AllCops:
+  Include:
+    - '**/*.rb'
+  TargetRubyVersion: 2.2
+  Exclude:
+    - 'examples/**/*'
+    - 'files/**/*'
+    - 'templates/**/*'
+    - '.git/**/*'
+
+# Built-in global variables are allowed by default.
+Style/GlobalVars:
+  AllowedVariables: ['$node', '$gecos_environ', '$gecos_os', '$arch', '$gem_path', '$snitch_binary', '$locale', '$required_pkgs']
+
+Metrics/BlockLength:
+  Max: 350
+

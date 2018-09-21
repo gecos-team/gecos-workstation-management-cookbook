@@ -8,98 +8,87 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
-require 'chef/mixin/shell_out'
 require 'date'
-include Chef::Mixin::ShellOut
 
 action :setup do
-
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
+      if !new_resource.shutdown_mode.empty?
+        shutdown_command = if new_resource.shutdown_mode == 'halt'
+                             '/sbin/shutdown -r now'
+                           else
+                             '/sbin/reboot'
+                           end
 
-      if not new_resource.shutdown_mode.empty?
+        now = Time.now
 
-        if new_resource.shutdown_mode == "halt"
-          shutdown_command = "/sbin/shutdown -r now"
-        else 
-          shutdown_command = "/sbin/reboot"
+        change = false
+
+        sc_hash = {}
+        sc_hash['shutdown_command'] = shutdown_command
+
+        if ::File.exist?('/etc/cron.shutdown')
+          file = ::File.read('/etc/cron.shutdown')
+          json_file = JSON.parse(file)
+          change = (json_file != sc_hash)
         end
-  
-          now = DateTime.now
 
-          change = false
-  
-          sc_hash = {}
-          sc_hash['shutdown_command'] = shutdown_command
+        # In 5 mins from now
+        shutdown_time = now + (5 * 60)
+        Chef::Log.info("now = #{now} shutdown_time=#{shutdown_time}")
+        cron 'remote shutdown' do
+          minute shutdown_time.min.to_s
+          hour shutdown_time.hour.to_s
+          day shutdown_time.day.to_s
+          month shutdown_time.month.to_s
+          command shutdown_command
+          action :nothing
+          only_if { !::File.exist?('/etc/cron.shutdown') || change }
+        end.run_action(:create)
 
-          if ::File.exist?("/etc/cron.shutdown")
-            file = ::File.read("/etc/cron.shutdown")
-            json_file = JSON.parse(file)
-            if not json_file == sc_hash
-              change = true
-            end
-          end
-    
-          
-          cron "remote shutdown" do
-            minute "#{now.minute + 5}" # In 5 mins from now
-            hour "#{now.hour}"
-            day "#{now.day}"
-            month "#{now.month}"
-            command "#{shutdown_command}"
-            action :nothing
-            only_if do not ::File.exist?("/etc/cron.shutdown") or change end
-          end.run_action(:create)
-          
-    
-          ::File.open("/etc/cron.shutdown","w") do |f|
-            f.write(sc_hash.to_json)
-          end
-
+        ::File.open('/etc/cron.shutdown', 'w') do |f|
+          f.write(sc_hash.to_json)
+        end
       else
-        cron "remote shutdown" do
+        cron 'remote shutdown' do
           action :nothing
         end.run_action(:delete)
-        
-        file "/etc/cron.shutdown" do
+
+        file '/etc/cron.shutdown' do
           owner 'root'
           group 'root'
           mode '0755'
           action :nothing
         end.run_action(:delete)
-
       end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info('This resource is not supported in your OS')
     end
-   
+
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
+  rescue StandardError => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace.join("\n"))
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if !e.message.frozen?
+        node.normal['job_status'][jid]['message'] =
+          e.message.force_encoding('utf-8')
       else
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
-    
-    gecos_ws_mgmt_jobids "remote_shutdown_res" do
-       recipe "misc_mgmt"
-    end.run_action(:reset) 
-    
+    gecos_ws_mgmt_jobids 'remote_shutdown_res' do
+      recipe 'misc_mgmt'
+    end.run_action(:reset)
   end
 end
