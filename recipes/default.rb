@@ -72,7 +72,7 @@ integer_current_client_version = cclient_version.inject(0) do |sum, val|
   sum + val.to_i * power
 end
 
-if integer_current_client_version < 120_500
+if integer_current_client_version < 120_300
   Chef::Log.info('Chef client upgrade required')
   package 'chef' do
     action :upgrade

@@ -14,6 +14,7 @@ license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
 version           '0.7.1'
 
+depends 'apt'
 depends 'compat_resource'
 depends 'apt'
 
