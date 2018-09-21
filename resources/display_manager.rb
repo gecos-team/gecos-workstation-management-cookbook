@@ -12,6 +12,7 @@
 actions :setup
 
 attribute :dm, kind_of: String
+attribute :session_script, kind_of: String
 attribute :autologin, kind_of: [TrueClass, FalseClass], default: false
 attribute :autologin_options, kind_of: Hash
 attribute :job_ids, kind_of: Array

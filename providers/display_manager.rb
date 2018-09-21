@@ -9,7 +9,6 @@
 # http://www.osor.eu/eupl
 #
 
-V2 = ['GECOS V2', 'Gecos V2 Lite'].freeze
 ETC_DISPLAY_MANAGER = '/etc/X11/default-display-manager'.freeze
 CURRENT_DISPLAY_MANAGER = ::File.basename(
   ::File.read(ETC_DISPLAY_MANAGER).chomp
@@ -17,16 +16,15 @@ CURRENT_DISPLAY_MANAGER = ::File.basename(
 
 action :setup do
   begin
-    # Constants
-    Chef::Log.debug("display_manager.rb ::: $gecos_os = #{$gecos_os}")
-    PROVIDER = case $gecos_os
-               when *V2
-                 Chef::Provider::Service::Upstart
-               else
-                 Chef::Provider::Service::Systemd
-               end
-
     if new_resource.support_os.include?($gecos_os) && !new_resource.dm.empty?
+
+      # Template variables
+      var_hash = {
+        autologin: new_resource.autologin,
+        autologin_user: new_resource.autologin_options['username'],
+        autologin_timeout: new_resource.autologin_options['timeout']
+      }
+
       case new_resource.dm
       when 'MDM'
         PACKAGES = %w[mdm gecosws-mdm-theme].freeze
@@ -46,6 +44,9 @@ action :setup do
         TEMPLATE = 'lightdm.conf.erb'.freeze
         CONFIGFILE = '/etc/lightdm/lightdm.conf'.freeze
         BIN = '/usr/sbin/lightdm'.freeze
+
+        # user-session lightdm ootion with LXDE
+        var_hash[:lxde] = $gecos_os.include?('Lite')
       end
 
       Chef::Log.debug('display_manager.rb ::: ETC_DISPLAY_MANAGER = '\
@@ -99,22 +100,45 @@ action :setup do
 
       # Stops current display manager
       service CURRENT_DISPLAY_MANAGER do
-        provider PROVIDER
+        provider Chef::Provider::Service::Systemd
         action :nothing
       end
 
-      # Enables and starts new DM
+      # Enables new DM
       service NEW_DISPLAY_MANAGER do
-        provider PROVIDER
+        provider Chef::Provider::Service::Systemd
         action :enable
         only_if "dpkg-query -W #{NEW_DISPLAY_MANAGER}"
       end
 
-      var_hash = {
-        autologin: new_resource.autologin,
-        autologin_user: new_resource.autologin_options['username'],
-        autologin_timeout: new_resource.autologin_options['timeout']
-      }
+      # Presession script
+      if new_resource.session_script && \
+         ::File.file?(new_resource.session_script) && \
+         ::File.executable?(new_resource.session_script)
+
+        if NEW_DISPLAY_MANAGER == 'lightdm'
+          var_hash[:session_script] = new_resource.session_script
+        else # MDM
+          file '/etc/mdm/PreSession/Default' do
+            action :nothing
+            not_if 'test -h /etc/mdm/PreSession/Default'
+          end.run_action(:delete)
+
+          link '/etc/mdm/PreSession/Default' do
+            to new_resource.session_script
+          end.run_action(:create)
+        end
+
+      else
+
+        link '/etc/mdm/PreSession/Default' do
+          action :nothing
+          only_if 'test -h /etc/mdm/PreSession/Default'
+        end.run_action(:delete)
+      end
+
+      Chef::Log.debug("display_manager.rb ::: var_hash = #{var_hash}")
+
       # Configures DM
       template CONFIGFILE do
         source TEMPLATE

@@ -2695,7 +2695,8 @@ display_manager_js = {
         {
           key: 'autologin_options.timeout',
           value: 0
-        }
+        },
+        'session_script'
       ]
     ]
   },
@@ -2735,6 +2736,12 @@ display_manager_js = {
           default: 15
         }
       }
+    },
+    session_script: {
+      type: 'string',
+      title: 'Script will run before a user session starts.',
+      title_es: 'Script que se ejecutará antes de que arranque'\
+        'la sesión de usuario'
     },
     support_os: support_os_js.clone,
     updated_by: updated_js

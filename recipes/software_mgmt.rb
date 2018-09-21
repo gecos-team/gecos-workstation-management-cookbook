@@ -68,6 +68,8 @@ end
 
 gecos_ws_mgmt_display_manager 'display manager' do
   dm node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][:dm]
+  session_script node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][
+    :session_script]
   autologin node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][
     :autologin]
   autologin_options node[:gecos_ws_mgmt][:software_mgmt][:display_manager_res][
