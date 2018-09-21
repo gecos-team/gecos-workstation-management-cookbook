@@ -16,7 +16,6 @@ version           '0.7.1'
 
 depends 'apt'
 depends 'compat_resource'
-depends 'apt'
 
 supports 'ubuntu'
 supports 'debian'
