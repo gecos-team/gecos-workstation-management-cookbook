@@ -16,11 +16,22 @@ action :setup do
         Chef::Log.debug('appconfig_firefox - config_firefox: '\
             "#{new_resource.config_firefox}")
 
-        # Detecting installation directory
-        installdir = ShellUtil.shell(
+        # Detecting default prefs directory
+        defaults_prefs = ShellUtil.shell(
           'dpkg -L firefox | grep -E \'defaults/pref$\''
         ).stdout.chomp
-        Chef::Log.debug("appconfig_firefox - installdir: #{installdir}")
+        Chef::Log.debug("appconfig_firefox - defaults_prefs: #{defaults_prefs}")
+
+        # Detecting system prefs directory
+        system_prefs = ShellUtil.shell(
+          'dpkg -L firefox | grep -E \'defaults/preferences$\''
+        ).stdout.chomp
+        if system_prefs.empty?
+          firefox_dir = ::File.dirname(::File.dirname(defaults_prefs))
+          system_prefs = "#{firefox_dir}/browser/defaults/preferences"
+          ::FileUtils.mkdir_p system_prefs
+        end
+        Chef::Log.debug("appconfig_firefox - system_prefs: #{system_prefs}")
 
         # vars
         app_update = new_resource.config_firefox['app_update']
@@ -47,17 +58,17 @@ action :setup do
           source 'mozilla_proxy.erb'
           action :nothing
           variables var_hash
-          not_if { installdir.empty? }
+          not_if { defaults_prefs.empty? }
           not_if { new_resource.config_firefox['mode'].nil? }
           action :nothing
         end.run_action(:create)
 
-        link "#{installdir}/update.js" do
+        link "#{system_prefs}/update.js" do
           to '/etc/firefox/update.js'
           only_if 'test -f /etc/firefox/update.js'
         end
 
-        link "#{installdir}/proxy-prefs.js" do
+        link "#{defaults_prefs}/proxy-prefs.js" do
           to '/etc/firefox/proxy-prefs.js'
           only_if 'test -f /etc/firefox/proxy-prefs.js'
         end
