@@ -272,7 +272,7 @@ action :setup do
 
             id_toolbar_bookmarks = db.get_first_value('SELECT id '\
                 'FROM moz_bookmarks '\
-                'WHERE title=\'Barra de herramientas de marcadores\'')
+                'WHERE guid = \'toolbar_____\'')
             last_pos_toolbar = db.get_first_value('SELECT MAX(position) '\
                 'FROM moz_bookmarks '\
                 "WHERE parent=#{id_toolbar_bookmarks}")
