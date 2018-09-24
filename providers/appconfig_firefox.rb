@@ -24,7 +24,7 @@ action :setup do
 
         # Detecting system prefs directory
         system_prefs = ShellUtil.shell(
-          'dpkg -L firefox | grep -E \'defaults/preferences$\''
+          'dpkg -L firefox | grep -E \'defaults/preferences$\' | head -n 1'
         ).stdout.chomp
         if system_prefs.empty?
           firefox_dir = ::File.dirname(::File.dirname(defaults_prefs))
