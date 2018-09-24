@@ -85,7 +85,7 @@ action :setup do
       #
       # Plugin Manager: install/uninstall plugin
       #
-      def add_or_remove_plugin(username, exdir, plugin, xid)
+      def add_or_remove_plugin(username, exdir, plugin, xid, plugin_file)
         expath = Pathname.new(exdir)
         installed = MozillaPluginManager.extension_installed?(xid, expath)
 
@@ -102,7 +102,8 @@ action :setup do
       def plugin_manager(username, exdir, plugin)
         plugin_file = download_plugin(username, exdir, plugin)
         xid = MozillaPluginManager.get_extension_id(plugin_file)
-        add_or_remove_plugin(username, exdir, plugin, xid) unless xid.empty?
+        p = plugin_file
+        add_or_remove_plugin(username, exdir, plugin, xid, p) unless xid.empty?
       end
 
       #
