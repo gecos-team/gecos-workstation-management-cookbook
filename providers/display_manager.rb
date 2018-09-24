@@ -53,7 +53,6 @@ action :setup do
           "#{ETC_DISPLAY_MANAGER}")
       Chef::Log.debug('display_manager.rb ::: CURRENT_DISPLAY_MANAGER = '\
           "#{CURRENT_DISPLAY_MANAGER}")
-      Chef::Log.debug("display_manager.rb ::: PROVIDER = #{PROVIDER}")
       Chef::Log.debug('display_manager.rb ::: NEW_DISPLAY_MANAGER  = '\
           "#{NEW_DISPLAY_MANAGER}")
       Chef::Log.debug("display_manager.rb ::: PACKAGES = #{PACKAGES}")
@@ -95,7 +94,8 @@ action :setup do
       file ETC_DISPLAY_MANAGER do
         content "#{BIN}\n"
         action :create
-        notifies :disable, "service[#{CURRENT_DISPLAY_MANAGER}]", :delayed
+        notifies :disable, "service[#{CURRENT_DISPLAY_MANAGER}]", :immediately
+        notifies :enable, "service[#{NEW_DISPLAY_MANAGER}]", :immediately
       end
 
       # Stops current display manager
@@ -107,7 +107,7 @@ action :setup do
       # Enables new DM
       service NEW_DISPLAY_MANAGER do
         provider Chef::Provider::Service::Systemd
-        action :enable
+        action :nothing
         only_if "dpkg-query -W #{NEW_DISPLAY_MANAGER}"
       end
 
