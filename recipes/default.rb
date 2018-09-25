@@ -60,8 +60,6 @@ cron 'GECOS Agent' do
   action :create
 end
 
-include_recipe 'apt'
-
 Chef::Log.info('Chef client version check')
 
 current_client_version = node['chef_packages']['chef']['version']
@@ -72,11 +70,18 @@ integer_current_client_version = cclient_version.inject(0) do |sum, val|
   sum + val.to_i * power
 end
 
-if integer_current_client_version < 120_300
+
+execute "apt-get-update" do
+  command "apt-get update"
+  ignore_failure true
+  action :nothing
+end
+
+if integer_current_client_version < 122_000
   Chef::Log.info('Chef client upgrade required')
   package 'chef' do
     action :upgrade
-    notifies :run, 'execute[apt-get update]', :immediately
+    notifies :run, resources(:execute => "apt-get update"), :immediately
   end
 else
   include_recipe 'gecos_ws_mgmt::required_packages'
