@@ -81,7 +81,7 @@ if integer_current_client_version < 122_000
   Chef::Log.info('Chef client upgrade required')
   package 'chef' do
     action :upgrade
-    notifies :run, resources(:execute => "apt-get update"), :immediately
+    notifies :run, resources(:execute => "apt-get-update"), :immediately
   end
 else
   include_recipe 'gecos_ws_mgmt::required_packages'
