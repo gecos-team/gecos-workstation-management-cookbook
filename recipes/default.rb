@@ -81,6 +81,7 @@ if integer_current_client_version < 122_000
   package 'chef' do
     action :upgrade
   end
+end
 
 include_recipe 'gecos_ws_mgmt::required_packages'
 include_recipe 'gecos_ws_mgmt::software_mgmt'
