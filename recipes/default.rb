@@ -71,27 +71,24 @@ integer_current_client_version = cclient_version.inject(0) do |sum, val|
 end
 
 
-execute "apt-get-update" do
-  command "apt-get update"
-  ignore_failure true
-  action :nothing
-end
 
 if integer_current_client_version < 122_000
   Chef::Log.info('Chef client upgrade required')
+  execute "apt-get-update" do
+    command "apt-get update"
+    ignore_failure true
+  end
   package 'chef' do
     action :upgrade
-    notifies :run, resources(:execute => "apt-get-update"), :immediately
   end
-else
-  include_recipe 'gecos_ws_mgmt::required_packages'
-  include_recipe 'gecos_ws_mgmt::software_mgmt'
-  include_recipe 'gecos_ws_mgmt::misc_mgmt'
-  include_recipe 'gecos_ws_mgmt::network_mgmt'
-  include_recipe 'gecos_ws_mgmt::users_mgmt'
-  include_recipe 'gecos_ws_mgmt::printers_mgmt'
-  include_recipe 'gecos_ws_mgmt::single_node'
-end
+
+include_recipe 'gecos_ws_mgmt::required_packages'
+include_recipe 'gecos_ws_mgmt::software_mgmt'
+include_recipe 'gecos_ws_mgmt::misc_mgmt'
+include_recipe 'gecos_ws_mgmt::network_mgmt'
+include_recipe 'gecos_ws_mgmt::users_mgmt'
+include_recipe 'gecos_ws_mgmt::printers_mgmt'
+include_recipe 'gecos_ws_mgmt::single_node'
 
 node.normal['use_node'] = {}
 node.override['gcc_link'] = true
