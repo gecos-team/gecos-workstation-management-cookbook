@@ -60,8 +60,6 @@ cron 'GECOS Agent' do
   action :create
 end
 
-include_recipe 'apt'
-
 Chef::Log.info('Chef client version check')
 
 current_client_version = node['chef_packages']['chef']['version']
@@ -72,20 +70,27 @@ integer_current_client_version = cclient_version.inject(0) do |sum, val|
   sum + val.to_i * power
 end
 
-if integer_current_client_version < 120_300
+
+
+if integer_current_client_version < 122_000
   Chef::Log.info('Chef client upgrade required')
+  execute "apt-get-update" do
+    command "apt-get update"
+    ignore_failure true
+  end
   package 'chef' do
     action :upgrade
-    notifies :run, 'execute[apt-get update]', :immediately
   end
 else
-  include_recipe 'gecos_ws_mgmt::required_packages'
-  include_recipe 'gecos_ws_mgmt::software_mgmt'
-  include_recipe 'gecos_ws_mgmt::misc_mgmt'
-  include_recipe 'gecos_ws_mgmt::network_mgmt'
-  include_recipe 'gecos_ws_mgmt::users_mgmt'
-  include_recipe 'gecos_ws_mgmt::printers_mgmt'
-  include_recipe 'gecos_ws_mgmt::single_node'
+
+include_recipe 'gecos_ws_mgmt::required_packages'
+include_recipe 'gecos_ws_mgmt::software_mgmt'
+include_recipe 'gecos_ws_mgmt::misc_mgmt'
+include_recipe 'gecos_ws_mgmt::network_mgmt'
+include_recipe 'gecos_ws_mgmt::users_mgmt'
+include_recipe 'gecos_ws_mgmt::printers_mgmt'
+include_recipe 'gecos_ws_mgmt::single_node'
+
 end
 
 node.normal['use_node'] = {}
