@@ -71,22 +71,14 @@ integer_current_client_version = cclient_version.inject(0) do |sum, val|
 end
 
 
-# Force GECOS Agent update when chef-client version is older than 12.20. Agent will update chef client then.
+# Force chef-client update if version is older than 12.20.
 if integer_current_client_version < 122_000
   Chef::Log.info('Chef client upgrade required')
-  execute "apt-get-update" do
-    command "apt-get update"
-    ignore_failure true
-  end
-  package 'gecos-agent' do
-    action :upgrade
-  end
-  file '/tmp/gecos-agent-restart.tmp' do
-    content '1'
-    mode '0755'
-    action :create
-  end
-else
+  $update_cmd = `apt-get update`
+  $upgrade_agent =  `apt-get install chef`
+# Relaunch itself right now
+  exec( '/usr/bin/chef-client' )
+end
 
 include_recipe 'gecos_ws_mgmt::required_packages'
 include_recipe 'gecos_ws_mgmt::software_mgmt'
@@ -95,8 +87,6 @@ include_recipe 'gecos_ws_mgmt::network_mgmt'
 include_recipe 'gecos_ws_mgmt::users_mgmt'
 include_recipe 'gecos_ws_mgmt::printers_mgmt'
 include_recipe 'gecos_ws_mgmt::single_node'
-
-end
 
 node.normal['use_node'] = {}
 node.override['gcc_link'] = true
