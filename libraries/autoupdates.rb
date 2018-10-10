@@ -14,7 +14,7 @@ if !new_version.empty?
   $update_cmd = `apt-get update`
   $upgrade_agent =  `apt-get install chef`
 # Configure embedded gemrc as system gemrc
-  if File.exists?('/opt/chef/embedded)
+  if File.exists?('/opt/chef/embedded')
     FileUtils.mkdir_p('/opt/chef/embedded/etc/')
     FileUtils.install('/etc/gemrc','/opt/chef/embedded/etc/gemrc')
 # Install required gems
