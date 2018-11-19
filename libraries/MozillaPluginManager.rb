@@ -101,6 +101,16 @@ class MozillaPluginManager
   # Get extension ID
   #
   def self.get_extension_id(plugin_file)
+    xid = get_extension_id_from_install_rdf(plugin_file)
+    xid = get_extension_id_from_manifest_son(plugin_file) if xid.empty?
+    Chef::Log.error("Can't get xid for #{plugin_file}!") if xid.empty?
+    xid
+  end
+
+  #
+  # Get extension ID from install.rdf file.
+  #
+  def self.get_extension_id_from_install_rdf(plugin_file)
     command = "unzip -qc #{plugin_file} install.rdf "\
       '|  xmlstarlet sel -N rdf=http://www.w3.org/1999/02/22-rdf'\
       '-syntax-ns# -N em=http://www.mozilla.org/2004/em-rdf# -t -v '\
@@ -108,9 +118,19 @@ class MozillaPluginManager
       '/em:id"'
     cmd = Mixlib::ShellOut.new(command)
     cmd.run_command
-    xid = cmd.stdout
-    Chef::Log.error("Can't get xid for #{plugin_file}!") if xid.empty?
-    xid
+    cmd.stdout
+  end
+
+  #
+  # Get extension ID from manifest.json file.
+  #
+  def self.get_extension_id_from_manifest_son(plugin_file)
+    command = "unzip -qc #{plugin_file} manifest.json | python -c "\
+      '"import sys, json; print(json.load(sys.stdin)[\'applications\']'\
+      '[\'gecko\'][\'id\'])"'
+    cmd = Mixlib::ShellOut.new(command)
+    cmd.run_command
+    cmd.stdout.strip
   end
 
   #

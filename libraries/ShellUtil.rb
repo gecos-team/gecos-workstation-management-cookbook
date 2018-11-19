@@ -19,8 +19,15 @@ class ShellUtil
   # Invokes shell_out function
   #
   def self.shell(command)
+    Chef::Log.debug("shell('#{command}')")
     cmd = Mixlib::ShellOut.new(command)
+    cmd.environment = { 'HOME' => '/root', 'XAUTHORITY' => '' }
     cmd.run_command
+    unless cmd.exitstatus.zero?
+      Chef::Log.warn("Error #{cmd.exitstatus} "\
+          "running command: #{command}\n"\
+          "Stderr: #{cmd.stderr}")
+    end
     cmd
   end
 end

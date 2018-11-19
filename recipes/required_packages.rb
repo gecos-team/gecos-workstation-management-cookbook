@@ -11,7 +11,7 @@
 
 # Commons
 $required_pkgs = {
-  'cert' => ['libnss3-tools'],
+  'cert' => ['p11-kit'],
   'software_sources' => ['gecosws-repository-compatibility'],
   'folder_sync' => ['owncloud-client'],
   'chef' => ['chef'],

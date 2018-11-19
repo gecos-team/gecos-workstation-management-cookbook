@@ -19,7 +19,42 @@ action :setup do
         end.run_action(:install)
       end
 
+      # Install PK11 kit if needeed by overwritting Firefox's
+      # libnssckbi.so file. By doing this Firefox will trust
+      # system certificates
+      libnssckbi = ShellUtil.shell(
+        'dpkg -L firefox | grep libnssckbi.so | head -n 1'
+      ).stdout.chomp
+
+      p11_kit_trust = ShellUtil.shell(
+        'dpkg -L p11-kit-modules | grep p11-kit-trust.so | head -n 1'
+      ).stdout.chomp
+
+      if ::File.exist?(libnssckbi) && ::File.exist?(p11_kit_trust) &&
+         !::File.symlink?(libnssckbi)
+        Chef::Log.info('Divert libnssckbi.so file')
+        ShellUtil.shell(
+          "dpkg-divert --add --rename --divert #{libnssckbi}.original #{libnssckbi}"
+        )
+        # Create a symbolic link
+        ::FileUtils.ln_s p11_kit_trust, libnssckbi
+      end
+
       require 'fileutils'
+
+      #
+      # Converts a certificate from DER to PEM if
+      # necessary
+      #
+      def convert_to_pem(src, dst)
+        # Try to convert from DER to PEM
+        cmd = ShellUtil.shell('openssl x509 -inform DER -in '\
+            "#{src} > #{dst}")
+
+        # if the conversion fails its probably the certificate
+        # was a PEM file and no conversion is needed
+        ::FileUtils.ln_s src, dst unless cmd.exitstatus.zero?
+      end
 
       res_ca_root_certs = new_resource.ca_root_certs ||
                           node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][
@@ -37,33 +72,44 @@ action :setup do
         action :nothing
       end.run_action(:create)
 
-      # TODO: improve poor performance of idempotenly execute this
-      # A bit better: ohai-certs stores installed certs and permisions in node,
-      # and it is looked up before installing, avoiding useless reinstalls
-      # TODO: Allow permisions to be set by a GECOS administrator
-      res_ca_root_certs.each do |cert|
-        cert_file = certs_path + cert[:name].tr(' ', '_')
-        remote_file cert_file do
-          source cert[:uri]
-        end
-        Dir['/home/*/.mozilla/firefox/*default'].each do |profile|
-          begin
-            ffox_certs = node['ohai_gecos']['ffox_certs']
-            if ffox_certs.key?(profile.to_s) &&
-               ffox_certss[profile.to_s].key?(cert[:name].to_s) &&
-               ffox_certs[profile.to_s][cert[:name].to_s] == 'CT,C,C'
-            else
-              execute "install root cert #{cert[:name]} for profile "\
-                "'#{profile}'" do
-                command "certutil -A -n '#{cert[:name]}' -t 'CT,C,C' -i "\
-                    "'#{cert_file}' -d '#{profile}' &>/dev/null"
-                action :nothing
-              end.run_action(:run)
-            end
-          rescue StandardError
-            next
+      if ::File.exist?('/etc/ca-certificates.conf')
+        ca_certificates_file = ::File.readlines('/etc/ca-certificates.conf')
+
+        update = false
+        # Download and install certificates
+        res_ca_root_certs.each do |cert|
+          # Download certificate file
+          cert_name = cert[:name].tr(' ', '_') + '.crt'
+          cert_file_dst = certs_path + cert_name
+          cert_file = certs_path + cert[:name].tr(' ', '_') + '.cer'
+          remote_file cert_file do
+            source cert[:uri]
+            action :nothing
+          end.run_action(:create)
+
+          if !::File.exist?(cert_file_dst) ||
+             ::File.mtime(cert_file) > ::File.mtime(cert_file_dst)
+            convert_to_pem(cert_file, cert_file_dst)
+          end
+
+          # Check if the certificate is installed
+          next unless ca_certificates_file.grep(
+            /#{Regexp.quote('gecos/' + cert_name)}/
+          ).empty?
+
+          # Add the certificate file to /etc/ca-certificates.conf
+          update = true
+          ::File.open('/etc/ca-certificates.conf', 'a') do |file|
+            file.puts 'gecos/' + cert_name
           end
         end
+
+        if update
+          # Update certificate list
+          ShellUtil.shell('update-ca-certificates')
+        end
+      else
+        Chef::Log.error('Can\'t find /etc/ca-certificates.conf file!')
       end
     else
       Chef::Log.info('This resource is not supported in your OS')
