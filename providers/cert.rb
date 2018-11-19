@@ -31,9 +31,13 @@ action :setup do
       ).stdout.chomp
 
       if ::File.exist?(libnssckbi) && ::File.exist?(p11_kit_trust) &&
-         ::File.stat(libnssckbi).size != ::File.stat(p11_kit_trust).size
-        Chef::Log.info('Overwrite libnssckbi.so file')
-        ::FileUtils.cp p11_kit_trust, libnssckbi
+         !::File.symlink?(libnssckbi)
+        Chef::Log.info('Divert libnssckbi.so file')
+        ShellUtil.shell(
+          "dpkg-divert --add --rename --divert #{libnssckbi}.original #{libnssckbi}"
+        )
+        # Create a symbolic link
+        ::FileUtils.ln_s p11_kit_trust, libnssckbi
       end
 
       require 'fileutils'
