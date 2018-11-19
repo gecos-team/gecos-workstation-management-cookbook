@@ -68,7 +68,7 @@ action :setup do
           (1..6).to_a.each do |num|
             service "getty@tty#{num}.service" do
               provider Chef::Provider::Service::Systemd
-              action %i[stop disable]
+              action [:stop,:disable] 
             end
           end
         end
@@ -116,7 +116,7 @@ action :setup do
 
           service 'getty@tty1.service' do
             provider Chef::Provider::Service::Systemd
-            action %i[enable start]
+            action [:enable,:start] 
           end
         end
       end

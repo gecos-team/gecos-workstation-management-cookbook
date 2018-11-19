@@ -10,3 +10,7 @@ allow-user-switching=true
 greeter-hide-users=true
 greeter-show-manual-login=true
 <% end %>
+
+<% if @session_script %>
+session-setup-script=<%= @session_script %>
+<% end %>
