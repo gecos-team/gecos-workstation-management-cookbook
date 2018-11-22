@@ -8,30 +8,62 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 
-
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
-
-      
       # install depends
       $required_pkgs['cert'].each do |pkg|
-        Chef::Log.debug("cert.rb - REQUIRED PACKAGE = %s" % pkg)
+        Chef::Log.debug("cert.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do
           action :nothing
         end.run_action(:install)
       end
 
+      # Install PK11 kit if needeed by overwritting Firefox's
+      # libnssckbi.so file. By doing this Firefox will trust
+      # system certificates
+      libnssckbi = ShellUtil.shell(
+        'dpkg -L firefox | grep libnssckbi.so | head -n 1'
+      ).stdout.chomp
+
+      p11_kit_trust = ShellUtil.shell(
+        'dpkg -L p11-kit-modules | grep p11-kit-trust.so | head -n 1'
+      ).stdout.chomp
+
+      if ::File.exist?(libnssckbi) && ::File.exist?(p11_kit_trust) &&
+         !::File.symlink?(libnssckbi)
+        Chef::Log.info('Divert libnssckbi.so file')
+        ShellUtil.shell(
+          "dpkg-divert --add --rename --divert #{libnssckbi}.original #{libnssckbi}"
+        )
+        # Create a symbolic link
+        ::FileUtils.ln_s p11_kit_trust, libnssckbi
+      end
+
       require 'fileutils'
 
-      res_ca_root_certs = new_resource.ca_root_certs || node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][:ca_root_certs]
+      #
+      # Converts a certificate from DER to PEM if
+      # necessary
+      #
+      def convert_to_pem(src, dst)
+        # Try to convert from DER to PEM
+        cmd = ShellUtil.shell('openssl x509 -inform DER -in '\
+            "#{src} > #{dst}")
 
-# When java is only used for runnig apps from the web, there's no need for loading CA root certificates directly in Java;
-# browser keystores are used instead.
-      # import gecos custom certs into every mozilla profile 
+        # if the conversion fails its probably the certificate
+        # was a PEM file and no conversion is needed
+        ::FileUtils.ln_s src, dst unless cmd.exitstatus.zero?
+      end
+
+      res_ca_root_certs = new_resource.ca_root_certs ||
+                          node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][
+                            :ca_root_certs]
+
+      # When java is only used for runnig apps from the web, there's no need
+      # for loading CA root certificates directly in Java;
+      # browser keystores are used instead.
+      # import gecos custom certs into every mozilla profile
       certs_path = '/usr/share/ca-certificates/gecos/'
       directory certs_path do
         owner 'root'
@@ -40,31 +72,47 @@ action :setup do
         action :nothing
       end.run_action(:create)
 
-      # TODO: improve poor performance of idempotenly execute this
-      # A bit better: ohai-certs stores installed certs and permisions in node, and it is looked up 
-      # before installing, avoiding useless reinstalls
-      # TODO: Allow permisions to be set by a GECOS administrator
-      res_ca_root_certs.each do |cert|
-        cert_file = certs_path + cert[:name].gsub(" ", "_")
-        remote_file cert_file do
-          source cert[:uri]
-        end
-        Dir["/home/*/.mozilla/firefox/*default"].each do |profile|
-          begin
-            if node.ohai_gecos.ffox_certs.key?("#{profile}") and node.ohai_gecos.ffox_certs["#{profile}"].key?("#{cert[:name]}") and  node.ohai_gecos.ffox_certs["#{profile}"]["#{cert[:name]}"] == "CT,C,C"
-            else
-              execute "install root cert #{cert[:name]} for profile '#{profile}'" do
-                command "certutil -A -n '#{cert[:name]}' -t 'CT,C,C' -i '#{cert_file}' -d '#{profile}' &>/dev/null"
-                action :nothing
-              end.run_action(:run)
-            end
-          rescue
-            next
+      if ::File.exist?('/etc/ca-certificates.conf')
+        ca_certificates_file = ::File.readlines('/etc/ca-certificates.conf')
+
+        update = false
+        # Download and install certificates
+        res_ca_root_certs.each do |cert|
+          # Download certificate file
+          cert_name = cert[:name].tr(' ', '_') + '.crt'
+          cert_file_dst = certs_path + cert_name
+          cert_file = certs_path + cert[:name].tr(' ', '_') + '.cer'
+          remote_file cert_file do
+            source cert[:uri]
+            action :nothing
+          end.run_action(:create)
+
+          if !::File.exist?(cert_file_dst) ||
+             ::File.mtime(cert_file) > ::File.mtime(cert_file_dst)
+            convert_to_pem(cert_file, cert_file_dst)
+          end
+
+          # Check if the certificate is installed
+          next unless ca_certificates_file.grep(
+            /#{Regexp.quote('gecos/' + cert_name)}/
+          ).empty?
+
+          # Add the certificate file to /etc/ca-certificates.conf
+          update = true
+          ::File.open('/etc/ca-certificates.conf', 'a') do |file|
+            file.puts 'gecos/' + cert_name
           end
         end
-      end      
+
+        if update
+          # Update certificate list
+          ShellUtil.shell('update-ca-certificates')
+        end
+      else
+        Chef::Log.error('Can\'t find /etc/ca-certificates.conf file!')
+      end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
@@ -72,25 +120,25 @@ action :setup do
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
+  rescue StandardError => e
     # just save current job ids as "failed"
     # save_failed_job_ids
-    Chef::Log.error("Error installing certificate: "+e.message)
+    Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace.join("\n"))
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if !e.message.frozen?
+        node.normal['job_status'][jid]['message'] =
+          e.message.force_encoding('utf-8')
       else
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
-    
-    gecos_ws_mgmt_jobids "cert_res" do
-       recipe "misc_mgmt"
-    end.run_action(:reset) 
-    
+    gecos_ws_mgmt_jobids 'cert_res' do
+      recipe 'misc_mgmt'
+    end.run_action(:reset)
   end
 end

@@ -9,57 +9,53 @@
 # http://www.osor.eu/eupl
 #
 
-require 'chef/mixin/shell_out'
-include Chef::Mixin::ShellOut
-
 action :setup do
   begin
-    alternatives_cmd = 'update-alternatives'
-    if new_resource.support_os.include?($gecos_os)
-#      if not new_resource.loffice_config.empty?
-      if not new_resource.config_thunderbird.empty?
+    if new_resource.support_os.include?($gecos_os) &&
+       !new_resource.config_thunderbird.empty?
+      Chef::Log.debug('appconfig_thunderbird.rb - config_thunderbird:'\
+          " #{new_resource.config_thunderbird}")
+      # Detecting installation directory
+      installdir = ShellUtil.shell(
+        'dpkg -L thunderbird | grep -E \'defaults/pref$\''
+      ).stdout.chomp
+      Chef::Log.debug('appconfig_thunderbird - installdir: '\
+          "#{installdir}")
 
-        Chef::Log.debug("appconfig_thunderbird.rb - config_thunderbird: #{new_resource.config_thunderbird}")
-        #Detecting installation directory
-        installdir = shell_out("dpkg -L thunderbird | grep -E 'defaults/pref$'").stdout.chomp
-        Chef::Log.debug("appconfig_thunderbird - installdir: #{installdir}")
-        
-        #app_update = new_resource.loffice_config['app_update']
-        app_update = new_resource.config_thunderbird['app_update']
+      app_update = new_resource.config_thunderbird['app_update']
+      unless ::File.directory?('/etc/thunderbird')
+        FileUtils.mkdir_p '/etc/thunderbird'
+      end
 
-        unless Kernel::test('d', '/etc/thunderbird')
-          FileUtils.mkdir_p '/etc/thunderbird'
-        end
-
-        if app_update
-          execute "enable thunderbird upgrades" do
-            command "apt-mark unhold thunderbird thunderbird*"
-            action :nothing
-          end.run_action(:run)
-        else
-          execute "disable thunderbird upgrades" do
-            command "apt-mark hold thunderbird thunderbird*"
-            action :nothing
-          end.run_action(:run)
-        end
-
-        template "/etc/thunderbird/proxy-prefs.js" do
-          source "mozilla_proxy.erb"
+      if app_update
+        execute 'enable thunderbird upgrades' do
+          command 'apt-mark unhold thunderbird thunderbird*'
           action :nothing
-          variables(
-            :settings => new_resource.config_thunderbird
-          )
-          not_if {installdir.empty?}
-          not_if {new_resource.config_thunderbird['mode'].nil?}
-        end.run_action(:create)
+        end.run_action(:run)
+      else
+        execute 'disable thunderbird upgrades' do
+          command 'apt-mark hold thunderbird thunderbird*'
+          action :nothing
+        end.run_action(:run)
+      end
 
-        link "#{installdir}/proxy-prefs.js" do
-          to "/etc/thunderbird/proxy-prefs.js"
-          only_if 'test -f /etc/thunderbird/proxy-prefs.js'
-        end
+      var_hash = {
+        settings: new_resource.config_thunderbird
+      }
+      template '/etc/thunderbird/proxy-prefs.js' do
+        source 'mozilla_proxy.erb'
+        action :nothing
+        variables var_hash
+        not_if { installdir.empty? }
+        not_if { new_resource.config_thunderbird['mode'].nil? }
+      end.run_action(:create)
+
+      link "#{installdir}/proxy-prefs.js" do
+        to '/etc/thunderbird/proxy-prefs.js'
+        only_if 'test -f /etc/thunderbird/proxy-prefs.js'
       end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
@@ -67,25 +63,25 @@ action :setup do
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
+  rescue StandardError => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace.join("\n"))
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if !e.message.frozen?
+        node.normal['job_status'][jid]['message'] =
+          e.message.force_encoding('utf-8')
       else
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
-    
-    gecos_ws_mgmt_jobids "appconfig_thunderbird_res" do
-       recipe "software_mgmt"
+    gecos_ws_mgmt_jobids 'appconfig_thunderbird_res' do
+      recipe 'software_mgmt'
     end.run_action(:reset)
-    
   end
 end

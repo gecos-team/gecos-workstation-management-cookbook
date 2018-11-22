@@ -11,6 +11,6 @@
 
 actions :presetup, :setup, :warn
 
-attribute :connections, :kind_of => Array
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
+attribute :connections, kind_of: Array
+attribute :job_ids, kind_of: Array
+attribute :support_os, kind_of: Array

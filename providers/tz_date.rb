@@ -11,38 +11,35 @@
 
 action :setup do
   begin
-# We moved OS identification to recipes/default.rb
-# But this recipe launches alone, and default.rb is not executed
-    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-    if new_resource.support_os.include?(os)
-#    if new_resource.support_os.include?($gecos_os)
+    if new_resource.support_os.include?($gecos_os)
       $required_pkgs['tz_date'].each do |pkg|
-        Chef::Log.debug("tz_date.rb - REQUIRED PACKAGE = %s" % pkg)
+        Chef::Log.debug("tz_date.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do
           action :nothing
         end.run_action(:install)
-      end    
+      end
 
-      ntp_server = new_resource.server 
-
-      unless ntp_server.nil? or ntp_server.empty?
-        execute "ntpdate" do
+      ntp_server = new_resource.server
+      unless ntp_server.nil? || ntp_server.empty?
+        execute 'ntpdate' do
           command "ntpdate-debian -u #{ntp_server}"
           action :nothing
         end.run_action(:run)
+
+        var_hash = {
+          ntp_server: new_resource.server
+        }
         template '/etc/default/ntpdate' do
           action :nothing
           source 'ntpdate.erb'
           owner 'root'
           group 'root'
-          mode 00644
-          variables ({
-            :ntp_server => new_resource.server
-          })
+          mode '0644'
+          variables var_hash
         end.run_action(:create)
       end
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
@@ -50,26 +47,25 @@ action :setup do
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
+  rescue StandardError => e
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace.join("\n"))
+
     # just save current job ids as "failed"
     # save_failed_job_ids
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if !e.message.frozen?
+        node.normal['job_status'][jid]['message'] =
+          e.message.force_encoding('utf-8')
       else
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
-  
-    gecos_ws_mgmt_jobids "tz_date_res" do
-       recipe "misc_mgmt"
+    gecos_ws_mgmt_jobids 'tz_date_res' do
+      recipe 'misc_mgmt'
     end.run_action(:reset)
-    
   end
 end
-
