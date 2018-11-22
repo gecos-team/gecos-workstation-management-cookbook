@@ -16,7 +16,17 @@ action :setup do
     days = new_resource.days || []
     date = new_resource.date || {}
     if new_resource.support_os.include?($gecos_os)
-      Chef::Log.info('Setting automatic updates')
+ 
+      # Install required packages
+      $required_pkgs['auto_updates'].each do |pkg|
+         Chef::Log.debug("auto_updates.rb - REQUIRED PACKAGES = %s" % pkg)
+         package pkg do
+           action :nothing
+         end.run_action(:install)
+      end
+
+      Chef::Log.info("Setting automatic updates")
+
       log_file = '/var/log/automatic-updates.log'
       err_file = '/var/log/automatic-updates.err'
 
