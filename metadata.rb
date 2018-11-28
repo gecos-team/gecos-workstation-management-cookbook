@@ -12,7 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.7.2'
+version           '0.7.3'
 
 depends 'apt'
 #depends 'compat_resource'
@@ -2885,6 +2885,83 @@ ttys_js = {
   }
 }
 
+remote_control_js = {
+  title: 'Remote Control (HelpChannel)',
+  title_es: 'Control remoto (HelpChannel)',
+  type: 'object',
+  is_mergeable: false,
+  autoreversible: false,
+  form: {
+    type: 'section',
+    items: [
+      {
+        type: 'fieldset',
+        title: 'Basics',
+        title_es: 'Básicos',
+        items: [ 
+	  'enable_helpchannel',
+	  'enable_ssh'
+	]
+      },
+      {
+        type: 'fieldset',
+        title: 'Advanced (only experts)',
+        title_es: 'Avanzados (sólo para expertos)',
+        items: [
+	  'tunnel_url',
+	  {
+            key: 'ssl_verify',
+	    value: true
+	  }
+	]
+      }
+    ]
+  },
+  properties: {
+    enable_helpchannel: {
+      type: 'boolean',
+      title: 'Enable HelpChannel',
+      title_es: 'Habilitar HelpChannel',
+      description: 'Checking the box will enable remote control',
+      description_es: 'Si activa la casilla, habilitará HelpChannel',
+      default: false
+    },
+    enable_ssh: {
+      type: 'boolean',
+      title: 'Enable SSH',
+      title_es: 'Habilitar SSH',
+      description: 'Checking the box will enable SSH',
+      description_es: 'Si activa la casilla, habilitará SSH',
+      default: false
+    },
+    tunnel_url: {
+      type: 'string',
+      title: 'Tunnel URL',
+      title_es: 'URL del túnel',
+      description: 'Tunnel server URL',
+      description_es: 'URL del servidor de túneles'
+    },
+    ssl_verify: {
+      type: 'boolean',
+      title: 'SSL verification',
+      title_es: 'Verificación SSL',
+      description: 'Verify server certificate',
+      description_es: 'Verificar certificado de servidor',
+      default: true
+    },
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
 ALL_GECOS_VERS = ['GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
                   'Gecos V2 Lite'].freeze
 UBUNTU_BASED = ['GECOS V3', 'GECOS V2', 'GECOS V3 Lite', 'Gecos V2 Lite',
@@ -2932,6 +3009,7 @@ system_proxy_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 display_manager_js[:properties][:support_os][:default] = ['GECOS Kiosk']
 idle_timeout_js[:properties][:support_os][:default] = ['GECOS Kiosk']
 ttys_js[:properties][:support_os][:default] = ['GECOS Kiosk']
+remote_control_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 
 complete_js = {
   description: 'GECOS workstation management LWRPs json-schema',
@@ -2960,7 +3038,8 @@ complete_js = {
           required: %w[network_res debug_mode_res],
           properties: {
             network_res: network_resource_js,
-            debug_mode_res: debug_mode_js
+            debug_mode_res: debug_mode_js,
+	    remote_control_res: remote_control_js
           }
         },
         misc_mgmt: {
