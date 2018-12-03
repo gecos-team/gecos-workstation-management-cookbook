@@ -2886,8 +2886,8 @@ ttys_js = {
 }
 
 remote_control_js = {
-  title: 'Remote Control (HelpChannel)',
-  title_es: 'Control remoto (HelpChannel)',
+  title: 'Remote Control',
+  title_es: 'Control Remoto',
   type: 'object',
   is_mergeable: false,
   autoreversible: false,
@@ -3038,8 +3038,7 @@ complete_js = {
           required: %w[network_res debug_mode_res],
           properties: {
             network_res: network_resource_js,
-            debug_mode_res: debug_mode_js,
-	    remote_control_res: remote_control_js
+            debug_mode_res: debug_mode_js
           }
         },
         misc_mgmt: {
@@ -3060,7 +3059,8 @@ complete_js = {
             local_admin_users_res: local_admin_users_js,
             remote_shutdown_res: remote_shutdown_js,
             cert_res: cert_js,
-            ttys_res: ttys_js
+            ttys_res: ttys_js,
+	    remote_control_res: remote_control_js
           }
         },
         software_mgmt: {
