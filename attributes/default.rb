@@ -24,6 +24,16 @@ default[:gecos_ws_mgmt][:single_node][:debug_mode_res][
 default[:gecos_ws_mgmt][:single_node][:debug_mode_res][:enable_debug] = false
 default[:gecos_ws_mgmt][:single_node][:debug_mode_res][:expire_datetime] = ''
 
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][:job_ids] = []
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][
+  :support_os] = ALL_GECOS_VERS
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][:enable_helpchannel] = false
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][:enable_ssh] = false
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][:tunnel_url] = ''
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][:ssl_verify] = true
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][:known_message] = 'Lorem ipsum dolor sit amet,'\
+' consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+
 default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:global_config] = {}
 default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:mozilla_config] = {}
 default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:job_ids] = []

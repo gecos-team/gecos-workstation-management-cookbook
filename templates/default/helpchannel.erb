@@ -1,0 +1,25 @@
+[ServerConfig]
+ssl_verify=<% if @ssl_verify %>True<% else %>False<% end %>
+known_message = <%= @known_message %>
+
+# proxy_host = <host>
+# proxy_port = <port>
+# proxy_username = <username>
+# proxy_password = <password>
+
+
+[TunnelConfig]
+command_full_path: /usr/bin/hctunnel.py
+tunnel_url: <%= @tunnel_url %>
+local_port=6000
+ssl_verify=<% if @ssl_verify %>True<% else %>False<% end %>
+
+[x11vncConfig]
+command_full_path: /usr/bin/x11vnc
+timeout: 10
+polling_interval: 5
+remote_repeater: 127.0.0.1
+remote_port: 6000
+
+[i18nConfig]
+language: es
