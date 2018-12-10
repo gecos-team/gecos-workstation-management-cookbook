@@ -1,263 +1,219 @@
-#encoding:UTF-8
-name              "gecos_ws_mgmt"
-maintainer        "GECOS Team"
-maintainer_email  "gecos@guadalinex.org"
-license           "Apache 2.0"
-description       "Cookbook for GECOS Workstations management"
-version           "0.6.0"
+#
+# Cookbook Name:: gecos-ws-mgmt
+#
+# Copyright 2018, Junta de Andalucia
+# http://www.juntadeandalucia.es/
+#
+# All rights reserved - EUPL License V 1.1
+# http://www.osor.eu/eupl
+#
+name              'gecos_ws_mgmt'
+maintainer        'GECOS Team'
+maintainer_email  'gecos@guadalinex.org'
+license           'Apache 2.0'
+description       'Cookbook for GECOS Workstations management'
+version           '0.7.3'
 
-depends "apt"
-depends "chef-client"
+depends 'apt'
+#depends 'compat_resource'
 
-%w{ ubuntu debian }.each do |os|
-  supports os
-end
+supports 'ubuntu'
+supports 'debian'
 
 # better fields definition via json-schemas:
 
 updated_js = {
-  title: "Updated by",
-  title_es: "Actualizado por",
-  type: "object",
+  title: 'Updated by',
+  title_es: 'Actualizado por',
+  type: 'object',
   properties: {
-    group: {title: "Groups", title_es: "Grupos", type: "array", items: {type:"string"}},
-    user: {type:"string"},
-    computer: {type:"string"},
-    ou: {title: "Ous", title_es: "Ous", type: "array", items: {type:"string"}}
+    group: {
+      title: 'Groups',
+      title_es: 'Grupos',
+      type: 'array',
+      items: {
+        type: 'string'
+      }
+    },
+    user: {
+      type: 'string'
+    },
+    computer: {
+      type: 'string'
+    },
+    ou: {
+      title: 'Ous',
+      title_es: 'Ous',
+      type: 'array',
+      items: {
+        type: 'string'
+      }
+    }
   }
 }
 
 support_os_js = {
-  title: "Supported OS",
-  title_es: "Sistemas operativos compatibles",
-  type: "array",
+  title: 'Supported OS',
+  title_es: 'Sistemas operativos compatibles',
+  type: 'array',
   minItems: 0,
   uniqueItems: true,
   items: {
-    type: "string"
+    type: 'string'
   }
 
 }
 
 mobile_broadband_js = {
-  title: "Mobile broadband connections",
-  title_es: "Conexiones de banda ancha móvil",
-  type: "object",
-  required: ["connections"],
-  is_mergeable: true,
+  title: 'Mobile broadband connections',
+  title_es: 'Conexiones de banda ancha móvil',
+  type: 'object',
+  required: ['connections'],
+  is_mergeable: false,
   autoreverse: false,
   properties: {
     connections: {
-      title: "Connections",
-      title_es: "Conexiones",
-      type: "array",
+      title: 'Connections',
+      title_es: 'Conexiones',
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        title: "Provider",
-        title_es: "Proveedor",
-        required: ["provider", "country"],
-        order: ["provider","country"],
-        properties: { 
+        type: 'object',
+        title: 'Provider',
+        title_es: 'Proveedor',
+        required: %w[country provider],
+        order: %w[country provider],
+        properties: {
           provider: {
-            type: "string",
-            title: "Provider",
-            title_es: "Proveedor",
-            enum: ['Euskaltel','Másmovil','móbil R (Mundo-R)','moviData','ONO','Pepephone','Orange','Simyo/Blau','Telecable','Movistar (Telefónica)','Vodafone (Airtel)','Yoigo','Jazztel','Carrefour Móvil','Eroski Móvil'], 
+            type: 'string',
+            title: 'Provider',
+            title_es: 'Proveedor'
           },
           country: {
-            type: "string",
-            title: "Country code",
-            title_es: "Código de país",
-            enum: ["es"]
+            type: 'string',
+            title: 'Country code',
+            title_es: 'Código de país'
           }
-            
         }
       }
     },
     updated_by: updated_js,
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
-    
+
 forticlientvpn_js = {
-  title: "FortiClient VPN connections",
-  title_es: "Conexiones VPN de FortiClient",
-  type: "object",
-  required: ["connections"],
+  title: 'FortiClient VPN connections',
+  title_es: 'Conexiones VPN de FortiClient',
+  type: 'object',
+  required: ['connections'],
   is_mergeable: false,
   autoreverse: false,
-  order: ["connections", "proxyserver", "proxyport", "proxyuser", "autostart", "keepalive"],
+  order: %w[connections proxyserver proxyport proxyuser autostart keepalive],
   properties: {
     connections: {
-      title: "Connections",
-      title_es: "Conexiones",
-      type: "array",
+      title: 'Connections',
+      title_es: 'Conexiones',
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["name", "server", "port"],
-        order: ["name", "server", "port"],
+        type: 'object',
+        required: %w[name server port],
+        order: %w[name server port],
         properties: {
           server: {
-            type: "string",
-            title: "Server",
-            title_es: "Servidor"
+            type: 'string',
+            title: 'Server',
+            title_es: 'Servidor'
           },
           port: {
-            type: "string",
-            title: "Port",
-            title_es: "Puerto"
+            type: 'string',
+            title: 'Port',
+            title_es: 'Puerto'
           },
           name: {
-            type: "string",
-            title: "Name",
-            title_es: "Nombre"
+            type: 'string',
+            title: 'Name',
+            title_es: 'Nombre'
           }
         }
       }
     },
-    proxyserver:{ 
-      type: "string",
-      title: "Proxy Server",
-      title_es: "Servidor Proxy"
+    proxyserver: {
+      type: 'string',
+      title: 'Proxy Server',
+      title_es: 'Servidor Proxy'
     },
     proxyport: {
-      type: "string",
-      title: "Proxy Port",
-      title_es: "Puerto del Proxy"
+      type: 'string',
+      title: 'Proxy Port',
+      title_es: 'Puerto del Proxy'
     },
     proxyuser: {
-      type: "string",
-      title: "Proxy user",
-      title_es: "Usuario del Proxy"
+      type: 'string',
+      title: 'Proxy user',
+      title_es: 'Usuario del Proxy'
     },
     autostart: {
-      type: "boolean",
-      title: "Proxy user",
+      type: 'boolean',
+      title: 'Proxy user',
       default: false,
-      title_es: "Arranque automatico"
+      title_es: 'Arranque automatico'
     },
-    keepalive:{ 
-      title: "Keepalive frequency",
-      title_es: "Frecuencia del keepalive",
-      type: "integer"
+    keepalive: {
+      title: 'Keepalive frequency',
+      title_es: 'Frecuencia del keepalive',
+      type: 'integer'
     },
     updated_by: updated_js,
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }
-  }
-}
-
-
-sssd_js = {
-  title: "Authenticate System",
-  title_es: "Sistema de Autenticación",
-  type: "object",
-  required: ["auth_type", "enabled"],
-  is_mergeable: false,
-  autoreverse: false,
-  properties: {
-    krb_url: { type: "string" , title: "Url of Kerberos file configuration", title_es: "Archivo de configuración Url Kerberos"},
-    smb_url: { type: "string" , title: "Url of Samba file configuration", title_es: "Archivo de configuración Url Samba"},
-    sssd_url: { type: "string" , title: "Url of SSSD file configuration", title_es: "Archivo de configuración Url SSSD"},
-    domain_list: {
-      type:"array",
-      items: {
-        type:"object",
-        required: ["domain_name"],
-        properties: {
-          domain_name: {pattern: "(?=^.{1,254}$)(^(?:(?!\\d+\\.)[a-zA-Z0-9_\\-]{1,63}\\.?)+(?:[a-zA-Z]{2,})$)", type: "string", title: "Domain name", title_es: "Nombre de dominio"}
-        }
-      }
-    },
-    workgroup: {
-        title: "Workgroup",
-        title_es: "Grupo de trabajo",
-        type: "string"
-    },
-    enabled: {
-      title: "Enabled",
-      title_es: "Habilitado",
-      type: "boolean", default: false
-    },
-    auth_type:{
-      title: "Authenticate type",
-      title_es: "Tipo de Autenticación",
-      type: "string"
-    },
-    uri:{
-      title: "LDAP Uri",
-      title_es: "Uri LDAP",
-      type: "string"
-    },
-    basegroup:{
-      title: "Base Group",
-      title_es: "Grupo de base",
-      type: "string"
-    },
-    base:{
-      title: "Search Base",
-      title_es: "Grupo de búsqueda",
-      type: "string"
-    },
-    binddn:{
-      title: "BindDN",
-      title_es: "BindDN",
-      type: "string"
-    },
-    bindpwd:{
-      title: "Bin Password",
-      title_es: "Bin contraseña",
-      type: "string"
-    },
-    job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
-    }, 
-    support_os: support_os_js.clone,
-    updated_by: updated_js
+    }
   }
 }
 
 user_mount_js = {
-  title: "User mount external units",
-  title_es: "Montaje de unidades externas",
-  type: "object",
-  required: ["users"],
+  title: 'User mount external units',
+  title_es: 'Montaje de unidades externas',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["can_mount"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: ['can_mount'],
           properties: {
-            can_mount: {type: "boolean", title: "Can Mount?", title_es: "¿Puede montar?", description: "User can mount external units", description_es: "El usuario podra montar unidades externas"}, 
+            can_mount: {
+              type: 'boolean',
+              title: 'Can Mount?',
+              title_es: '¿Puede montar?',
+              description: 'User can mount external units',
+              description_es: 'El usuario podra montar unidades externas'
+            },
             updated_by: updated_js
           }
         }
@@ -265,57 +221,61 @@ user_mount_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     }
   }
 }
 
 screensaver_js = {
-  title: "Screensaver",
-  title_es: "Salvapantallas",
-  type: "object",
-  required: ["users"],
+  title: 'Screensaver',
+  title_es: 'Salvapantallas',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["idle_enabled", "lock_enabled"],
-          order: ["lock_enabled", "lock_delay", "idle_enabled", "idle_delay"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[idle_enabled lock_enabled],
+          order: %w[lock_enabled lock_delay idle_enabled idle_delay],
           properties: {
             idle_enabled: {
-              type: "boolean",
-              title: "Dim screen",
-              title_es: "Oscurecer pantalla"
+              type: 'boolean',
+              title: 'Dim screen',
+              title_es: 'Oscurecer pantalla'
             },
             idle_delay: {
-              type: "string",
-              description: "Time to dim screen in seconds",
-              description_es: "Tiempo hasta el oscurecimiento en segundos",
-              title: "Idle delay",
-              title_es: "Retraso de inactividad"              
+              type: 'string',
+              description: 'Time to dim screen in seconds',
+              description_es: 'Tiempo hasta el oscurecimiento en segundos',
+              title: 'Idle delay',
+              title_es: 'Retraso de inactividad'
             },
             lock_enabled: {
-              type: "boolean",
-              title: "Allow screen lock",
-              title_es: "Permitir bloqueo de pantalla"
+              type: 'boolean',
+              title: 'Allow screen lock',
+              title_es: 'Permitir bloqueo de pantalla'
             },
             lock_delay: {
-              type: "string",
-              description: "Time to lock the screen in seconds",
-              description_es: " Tiempo hasta el bloqueo de la pantalla en segundos",
-              title: "Time to lock",
-              title_es: "Tiempo hasta el bloqueo"              
-            }, 
+              type: 'string',
+              description: 'Time to lock the screen in seconds',
+              description_es: ' Tiempo hasta el bloqueo de la pantalla '\
+                'en segundos',
+              title: 'Time to lock',
+              title_es: 'Tiempo hasta el bloqueo'
+            },
             updated_by: updated_js
           }
         }
@@ -323,132 +283,43 @@ screensaver_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     }
   }
 }
 
 folder_sharing_js = {
-  title: "Sharing permissions",
-  title_es: "Permisos para compartir",
-  type: "object",
-  required: ["users"],
+  title: 'Sharing permissions',
+  title_es: 'Permisos para compartir',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["can_share"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[can_share],
           properties: {
-            can_share: {title: "Can Share?", title_es: "¿Puede compartir?", description: "User can share folders", description_es: "El usuario tendrá permisos para compartir carpetas", type: "boolean"}, 
-            updated_by: updated_js
-          }
-        }
-      }
-    },
-    support_os: support_os_js.clone,
-    job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }
-  }
-}
-
-desktop_control_js = {
-  title: "Control panel",
-  title_es: "Panel de control",
-  type: "object",
-  required: ["users"],
-  is_mergeable: true,
-  autoreverse: false,
-  properties: {
-    users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
-      patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["desktop_files"],
-          properties: {
-            desktop_files: {
-              type: "array",
-              title: "Categories",
-              title_es: "Categorias",
-              description: "Deletes the control panel category",
-              description_es: "Elimina la categoría del panel de control",
-              minItems: 0,
-              uniqueItems: true,
-              items: {
-                type: "string"
-              }
-            }, 
-            updated_by: updated_js
-          }
-        }
-      }
-    },
-    support_os: support_os_js.clone,
-    job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }
-  }
-}
-
-
-desktop_menu_js = {
-  title: "Application Menu",
-  title_es: "Menú de aplicaciones",
-  type: "object",
-  required: ["users"],
-  is_mergeable: true,
-  autoreverse: false,
-  properties: {
-    users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
-      patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario", 
-          required: ["desktop_files_include", "desktop_files_exclude"],
-          properties: {
-            desktop_files_include: {
-              type: "array",
-              title: "Add application menu",
-              title_es: "Añadir aplicación al menú",
-              minItems: 0,
-              uniqueItems: true,
-              items: {
-                type: "string"
-              }
+            can_share: {
+              title: 'Can Share?',
+              title_es: '¿Puede compartir?',
+              description: 'User can share folders',
+              description_es: 'El usuario tendrá permisos para '\
+                'compartir carpetas',
+              type: 'boolean'
             },
-            desktop_files_exclude: {
-              type: "array",
-              title: "Remove application menu",
-              title_es: "Quitar aplicación del menú",
-              minItems: 0,
-              uniqueItems: true,
-              items: {
-                type: "string"
-              }
-            }, 
             updated_by: updated_js
           }
         }
@@ -456,53 +327,66 @@ desktop_menu_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
 
-                         
 user_launchers_js = {
-  title: "User Launchers",
-  title_es: "Acceso directo en el escritorio",
-  type: "object",
-  required: ["users"],
+  title: 'User Launchers',
+  title_es: 'Acceso directo en el escritorio',
+  type: 'object',
+  required: ['users'],
   is_mergeable: true,
   autoreverse: false,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["launchers"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[launchers],
           properties: {
             launchers: {
-              type: "array",
-              title: "Shortcut",
-              title_es: "Acceso directo",
-              description: "Enter the name of a .desktop file describing the application", 
-              description_es: "Introduzca el nombre del fichero .desktop que describe la aplicación",
+              type: 'array',
+              title: 'Shortcut',
+              title_es: 'Acceso directo',
+              description: 'Enter the name of a .desktop '\
+                'file describing the application',
+              description_es: 'Introduzca el nombre del fichero '\
+                '.desktop que describe la aplicación',
               minItems: 0,
               uniqueItems: true,
               items: {
-                type: "object",
-                required: ["name", "action"],
-                order: ["name", "action"],
-                mergeIdField: ["name"],
-                mergeActionField: "action",
+                type: 'object',
+                required: %w[name action],
+                order: %w[name action],
+                mergeIdField: %w[name],
+                mergeActionField: 'action',
                 properties: {
-                  name: {title: "Name", title_es: "Nombre", type: "string"},
-                  action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+                  name: {
+                    title: 'Name',
+                    title_es: 'Nombre',
+                    type: 'string'
+                  },
+                  action: {
+                    title: 'Action',
+                    title_es: 'Acción',
+                    type: 'string',
+                    enum: %w[add remove]
+                  }
                 }
               }
-            }, 
+            },
             updated_by: updated_js
           }
         }
@@ -510,51 +394,42 @@ user_launchers_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
 
-#desktop_background_js = {
-#  title: "Desktop Background",
-# title_es: "Fondo de escritorio",
-#  type: "object",
-#  required: ["desktop_file"],
-#  properties: {
-#    desktop_file: {type: "string", title: "Desktop File", title_es: "Archivo de escritorio"},
-#    job_ids: {
-#      type: "array",
-#      minItems: 0,
-#      uniqueItems: true,
-#      items: {
-#        type: "string"
-#      }
-#    }, 
-#    updated_by: updated_js
-#  }
-#}
 desktop_background_js = {
-  type: "object",
-  title: "Desktop Background",
-  title_es: "Fondo de escritorio",
-  required: ["users"],
+  type: 'object',
+  title: 'Desktop Background',
+  title_es: 'Fondo de escritorio',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["desktop_file"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[desktop_file],
           properties: {
-            desktop_file: {type: "string", title: "Image", title_es: "Imagen", description: "Fill with the absolute path to the image file", description_es: "Introduzca la ruta absoluta al archivo de imagen"},
+            desktop_file: {
+              type: 'string',
+              title: 'Image',
+              title_es: 'Imagen',
+              description: 'Fill with the absolute path to the image file',
+              description_es: 'Introduzca la ruta absoluta al archivo de imagen'
+            },
             updated_by: updated_js
           }
         }
@@ -562,39 +437,74 @@ desktop_background_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string",
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
-
 
 file_browser_js = {
-  title: "File Browser",
-  title_es: "Explorador de archivos",
-  type: "object",
-  required: ["users"],
+  title: 'File Browser',
+  title_es: 'Explorador de archivos',
+  type: 'object',
+  required: %w[users],
   is_mergeable: false,
   autoreverse: false,
-  properties:{
+  properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["default_folder_viewer", "show_hidden_files", "show_search_icon_toolbar", "click_policy", "confirm_trash"],
-          order: ["click_policy", "show_hidden_files", "default_folder_viewer", "show_search_icon_toolbar", "confirm_trash"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[default_folder_viewer show_hidden_files
+                       show_search_icon_toolbar click_policy confirm_trash],
+          order: %w[click_policy show_hidden_files default_folder_viewer
+                    show_search_icon_toolbar confirm_trash],
           properties: {
-            default_folder_viewer: {type: "string", title: "files viewer", title_es: "Visualización de archivos", enum: ["icon-view", "compact-view", "list-view"], default: "icon-view"},
-            show_hidden_files: {type: "string", title: "Show hidden files?", title_es: "Mostrar archivos ocultos", enum: ["true","false"], default: "false"},
-            show_search_icon_toolbar: {type: "string", title: "Show search icon on toolbar?", title_es: "Mostrar el icono de búsqueda en la barra de herramientas", enum: ["true", "false"], default: "true"},
-            confirm_trash: {type: "string", title: "Confirm trash?", title_es: "Confirmar al vaciar la papelera", enum: ["true","false"], default: "true"},
-            click_policy: {type: "string", title: "Click policy", title_es: "Política de click", enum: ["single", "double"], default: "double"}, 
+            default_folder_viewer: {
+              type: 'string',
+              title: 'files viewer',
+              title_es: 'Visualización de archivos',
+              enum: ['icon-view', 'compact-view', 'list-view'],
+              default: 'icon-view'
+            },
+            show_hidden_files: {
+              type: 'string',
+              title: 'Show hidden files?',
+              title_es: 'Mostrar archivos ocultos',
+              enum: %w[true false],
+              default: 'false'
+            },
+            show_search_icon_toolbar: {
+              type: 'string',
+              title: 'Show search icon on toolbar?',
+              title_es: 'Mostrar el icono de búsqueda en la barra de'\
+                ' herramientas',
+              enum: %w[true false],
+              default: 'true'
+            },
+            confirm_trash: {
+              type: 'string',
+              title: 'Confirm trash?',
+              title_es: 'Confirmar al vaciar la papelera',
+              enum: %w[true false],
+              default: 'true'
+            },
+            click_policy: {
+              type: 'string',
+              title: 'Click policy',
+              title_es: 'Política de click',
+              enum: %w[single double],
+              default: 'double'
+            },
             updated_by: updated_js
           }
         }
@@ -602,54 +512,53 @@ file_browser_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
 
-
 cert_js = {
-  title: "Certificate Management",
-  title_es: "Gestion de Certificados",
-  type: "object",
+  title: 'Certificate Management',
+  title_es: 'Gestion de Certificados',
+  type: 'object',
   is_mergeable: true,
   autoreverse: false,
-  properties:{
+  properties: {
     java_keystores: {
-      title: "Java Keystores",
-      title_es: "Almacenes de claves de Java",
-      description: "Path of java keystore: e.g. /etc/java/cacerts-gcj",
-      description_es: "Ruta del almacén de claves: p.ej. /etc/java/cacerts-gcj",
-      type: "array",
+      title: 'Java Keystores',
+      title_es: 'Almacenes de claves de Java',
+      description: 'Path of java keystore: e.g. /etc/java/cacerts-gcj',
+      description_es: 'Ruta del almacén de claves: p.ej. /etc/java/cacerts-gcj',
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     },
-    ca_root_certs:{
-      title: "CA root certificates",
-      title_es: "Certificados raices de Autoridades de Certificación (CA)",
-      type:"array",
+    ca_root_certs: {
+      title: 'CA root certificates',
+      title_es: 'Certificados raices de Autoridades de Certificación (CA)',
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        properties:{
+        type: 'object',
+        properties: {
           name: {
-            title: "Name",
-            title_es: "Nombre",
-            type: "string"
+            title: 'Name',
+            title_es: 'Nombre',
+            type: 'string'
           },
           uri: {
-            title: "Uri certificate",
-            title_es: "Uri del certificado",
-            type: "string"
+            title: 'Uri certificate',
+            title_es: 'Uri del certificado',
+            type: 'string'
           }
         }
       }
@@ -657,121 +566,137 @@ cert_js = {
     support_os: support_os_js.clone,
     updated_by: updated_js,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 
 }
 
-
-
 web_browser_js = {
-  title: "Web Browser",
-  title_es: "Navegador Web",
-  type: "object",
-  required: ["users"],
+  title: 'Web Browser',
+  title_es: 'Navegador Web',
+  type: 'object',
+  required: ['users'],
   is_mergeable: true,
   autoreverse: false,
   properties: {
     users: {
-      type: "object",
-      title: "Users",
-      title_es: "Usuarios",
+      type: 'object',
+      title: 'Users',
+      title_es: 'Usuarios',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
           properties: {
             plugins: {
-              type: "array",
-              title: "Plugins",
-              title_es: "Plugins", 
+              type: 'array',
+              title: 'Plugins',
+              title_es: 'Plugins',
               minItems: 0,
               uniqueItems: true,
               items: {
-                type: "object",
-                required: ["name", "uri", "action"],
-                order: ["name", "uri", "action"],
+                type: 'object',
+                required: %w[name uri action],
+                order: %w[name uri action],
                 properties: {
-                  name: {title: "Name", title_es: "Nombre", type: "string"},
-                  uri: {title: "Uri", title_es: "Uri", type: "string"},
-                  action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+                  name: {
+                    title: 'Name',
+                    title_es: 'Nombre',
+                    type: 'string'
+                  },
+                  uri: {
+                    title: 'Uri',
+                    title_es: 'Uri',
+                    type: 'string'
+                  },
+                  action: {
+                    title: 'Action',
+                    title_es: 'Acción',
+                    type: 'string',
+                    enum: %w[add remove]
+                  }
                 }
               }
             },
             bookmarks: {
-              type: "array",
-              title: "Bookmarks",
-              title_es: "Marcadores",
+              type: 'array',
+              title: 'Bookmarks',
+              title_es: 'Marcadores',
               minItems: 0,
               uniqueItems: true,
               items: {
-                type: "object",
-                required: ["name", "uri"],
-                order: ["name", "uri"],
+                type: 'object',
+                required: %w[name uri],
+                order: %w[name uri],
                 properties: {
-                  name: {title: "Name", title_es: "Nombre", type: "string"},
-                  uri: {title: "Uri", title_es: "Uri", type: "string"}
+                  name: {
+                    title: 'Name',
+                    title_es: 'Nombre',
+                    type: 'string'
+                  },
+                  uri: {
+                    title: 'Uri',
+                    title_es: 'Uri',
+                    type: 'string'
+                  }
                 }
               }
             },
             config: {
-              type: "array",
-              title: "Configs",
-              title_es: "Configuraciones",
+              type: 'array',
+              title: 'Configs',
+              title_es: 'Configuraciones',
               minItems: 0,
               uniqueItems: true,
               items: {
-                type: "object",
-                required: ["key"],
-                order: ["key", "value_type", "value_str", "value_num", "value_bool"],
+                type: 'object',
+                required: ['key'],
+                order: %w[key value_type value_str value_num value_bool],
                 properties: {
-                  key: {type: "string", title: "Key", title_es: "Clave", description: "Enter a key to about:config", description_es: "Introduzca una clave de about:config"},
-                  value_str: {type: "string",
-                              description: "Only if Value Type is string",
-                              description_es: "Solo si el tipo de valor es una cadena",
-                              title: "Value",
-                              title_es: "Valor"                              
-                              },
-                  value_num: {type: "number", 
-                              description: "Only if Value Type is number",
-                              description_es: "Solo si el tipo de valor es un numero",
-                              title: "Value",
-                              title_es: "Valor"                              
-                              },
-                  value_bool: {type: "boolean", 
-                               description: "Only if Value Type is boolean",
-                               description_es: "Solo si el tipo de valor es booleano",
-                               title: "Value",
-                               title_es: "Valor"                               
-                               },
-                  value_type: {title: "Value type", title_es: "Tipo de valor", type: "string", enum: ["string", "number", "boolean"]}
-
+                  key: {
+                    type: 'string',
+                    title: 'Key',
+                    title_es: 'Clave',
+                    description: 'Enter a key to about:config',
+                    description_es: 'Introduzca una clave de about:config'
+                  },
+                  value_str: {
+                    type: 'string',
+                    description: 'Only if Value Type is string',
+                    description_es: 'Sólo si el tipo de valor es una cadena',
+                    title: 'Value',
+                    title_es: 'Valor'
+                  },
+                  value_num: {
+                    type: 'number',
+                    description: 'Only if Value Type is number',
+                    description_es: 'Sólo si el tipo de valor es un numero',
+                    title: 'Value',
+                    title_es: 'Valor'
+                  },
+                  value_bool: {
+                    type: 'boolean',
+                    description: 'Only if Value Type is boolean',
+                    description_es: 'Sólo si el tipo de valor es booleano',
+                    title: 'Value',
+                    title_es: 'Valor'
+                  },
+                  value_type: {
+                    title: 'Value type',
+                    title_es: 'Tipo de valor',
+                    type: 'string',
+                    enum: %w[string number boolean]
+                  }
                 }
               }
-            #},
-            #certs: {
-            # type: "array",
-            # title: "Certificates",
-            # title_es: "Certificados",
-            # minItems: 0,
-            # uniqueItems: true,
-            # items: {
-            #   type: "object",
-            #   required: [ "name", "uri"],
-            #   properties: {
-            #     name: {title: "Name", title_es: "Nombre", type: "string"},
-            #     uri: {title: "Uri", 
-            #           title_es: "Uri", 
-            #           type: "string", 
-            #           description: "Only accept CRT and PEM certificate", 
-            #           description_es: "Solo acepta certificados CRT y PEM"}
-            #   }
-            # }
-            }, 
+            },
             updated_by: updated_js
           }
         }
@@ -779,100 +704,89 @@ web_browser_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
 
-email_client_js = {
-  title: "Email Configuration",
-  title_es: "Configuración de email",
-  type: "object",
+email_setup_js = {
+  title: 'Email Configuration',
+  title_es: 'Configuración de email',
+  type: 'object',
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      type: "object",
-      title: "Users",
-      title_es: "Usuarios",
+      type: 'object',
+      title: 'Users',
+      title_es: 'Usuarios',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["identity", "imap", "smtp"],
-          order: ["identity", "imap", "smtp"],
-          properties: {  
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[base identity],
+          order: %w[base identity],
+          properties: {
+            base: {
+              title: 'Base setup',
+              title_es: 'Configuración base',
+              type: 'object',
+              order: %w[email_setup default_email email_template],
+              properties: {
+                email_setup: {
+                  title: 'Perform email setup?',
+                  title_es: '¿Configurar correo?',
+                  description: 'If this box is not checked the email setup '\
+                    'will not be applied',
+                  description_es: 'Si no se marca esta casilla no se '\
+                    'configurará el correo',
+                  type: 'boolean',
+                  default: false
+                },
+                default_email: {
+                  title: 'Default profile?',
+                  title_es: '¿Perfil por defecto?',
+                  description: 'If this box is checked the email will be '\
+                    'configured as the default email profile',
+                  description_es: 'Si se marca esta casilla se configurará el '\
+                    'email como perfil por defecto',
+                  type: 'boolean',
+                  default: false
+                },
+                email_template: {
+                  title: 'Configuration template',
+                  title_es: 'Plantilla de configuración',
+                  type: 'string',
+                  enum: %w[Plain Secure]
+                }
+              }
+            },
             identity: {
-              title: "Identity of the user",
-              title_es: "Identidad del usuario",
-              type: "object",
-              order: ["name", "email"],
+              title: 'Identity of the user',
+              title_es: 'Identidad del usuario',
+              type: 'object',
+              order: %w[name surname email],
               properties: {
                 name: {
-                  title: "Name",
-                  title_es: "Nombre",
-                  type: "string"
+                  title: 'Name',
+                  title_es: 'Nombre',
+                  type: 'string'
+                },
+                surname: {
+                  title: 'Surname',
+                  title_es: 'Apellidos',
+                  type: 'string'
                 },
                 email: {
-                  title: "Email address",
-                  title_es: "Dirección de correo electrónico",
-                  # pattern: TODO !!!!
-                  type: "string"
-                }
-              }
-            },
-            imap: {
-              title: "IMAP server",
-              title_es: "Servidor IMAP",
-              type: "object",
-              order: ["username", "hostname", "port"],
-              properties: {
-                hostname: {
-                  title: "Hostname",
-                  title_es: "Hostname",
-                  # pattern: TODO !!!!
-                  type: "string"
-                },
-                port: {
-                  title: "Port",
-                  title_es: "Puerto",
-                  default: 143,
-                  # selector: 143 / Libre TODO !!!!
-                  type: "number"
-                },
-                username: {
-                  title: "Username",
-                  title_es: "Nombre de usuario",
-                  type: "string"
-                }
-              }
-            },
-            smtp: {
-              title: "SMTP server",
-              title_es: "Servidor SMTP",
-              type: "object",
-              order: ["username", "hostname", "port"],
-              properties: {
-                hostname: {
-                  title: "Hostname",
-                  title_es: "Hostname",
-                  # pattern: TODO !!!!
-                  type: "string"
-                },
-                port: {
-                  title: "Port",
-                  title_es: "Puerto",
-                  default: 25,
-                  # selector: 25 / 110 / Libre TODO !!!!
-                  type: "number"
-                },
-                username: {
-                  title: "Username",
-                  title_es: "Nombre de usuario",
-                  type: "string"
+                  title: 'Email address',
+                  title_es: 'Dirección de correo electrónico',
+                  type: 'string'
                 }
               }
             },
@@ -883,56 +797,148 @@ email_client_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
+      }
+    }
+  }
+}
+
+im_client_js = {
+  title: 'Instant messaging client configuration',
+  title_es: 'Configuración del cliente de mensajería intantánea',
+  type: 'object',
+  is_mergeable: false,
+  autoreverse: false,
+  properties: {
+    users: {
+      type: 'object',
+      title: 'Users',
+      title_es: 'Usuarios',
+      patternProperties: {
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[base identity],
+          order: %w[base identity],
+          properties: {
+            base: {
+              title: 'Base setup',
+              title_es: 'Configuración base',
+              type: 'object',
+              order: %w[im_setup overwrite],
+              properties: {
+                im_setup: {
+                  title: 'Perform instant messaging client setup?',
+                  title_es: '¿Configurar el cliente de mensajería intantánea?',
+                  description: 'If this box is not checked the instant '\
+                    'messaging client setup will not be applied',
+                  description_es: 'Si no se marca esta casilla no se '\
+                    'configurará el cliente de mensajería intantánea',
+                  type: 'boolean',
+                  default: false
+                },
+                overwrite: {
+                  title: 'Overwrite the whole configuration?',
+                  title_es: '¿Sobreescribir toda la configuración?',
+                  description: 'If this box is checked the whole configuration'\
+                    ' file will be overwriten',
+                  description_es: 'Si se marca esta casilla se sobreescribirá '\
+                    'el fichero de configuración completo',
+                  type: 'boolean',
+                  default: false
+                }
+              }
+            },
+            identity: {
+              title: 'Identity of the user',
+              title_es: 'Identidad del usuario',
+              type: 'object',
+              order: %w[name surname email],
+              properties: {
+                name: {
+                  title: 'Name',
+                  title_es: 'Nombre',
+                  type: 'string'
+                },
+                surname: {
+                  title: 'Surname',
+                  title_es: 'Apellidos',
+                  type: 'string'
+                },
+                email: {
+                  title: 'Email address',
+                  title_es: 'Dirección de correo electrónico',
+                  type: 'string'
+                }
+              }
+            },
+            updated_by: updated_js
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
       }
     }
   }
 }
 
 user_alerts_js = {
-  title: "User alert",
-  title_es: "Alertas de usuario",
-  type: "object",
+  title: 'User alert',
+  title_es: 'Alertas de usuario',
+  type: 'object',
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      type: "object",
-      title: "Users",
-      title_es: "Usuarios",
+      type: 'object',
+      title: 'Users',
+      title_es: 'Usuarios',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["summary", "body"],
-          order: ["summary", "body", "urgency", "icon"],
-          properties: {  
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: %w[summary body],
+          order: %w[summary body urgency icon],
+          properties: {
             summary: {
-              title: "Summary for the alert message",
-              title_es: "Titulo para el mensaje de alerta",
-              type: "string"
-            }, 
+              title: 'Summary for the alert message',
+              title_es: 'Titulo para el mensaje de alerta',
+              type: 'string'
+            },
             body: {
-              title: "Body of the alert message",
-              title_es: "Cuerpo del mensaje de alerta",
-              type: "string"
-            }, 
+              title: 'Body of the alert message',
+              title_es: 'Cuerpo del mensaje de alerta',
+              type: 'string'
+            },
             urgency: {
-              title: "Urgency level for the alert",
-              title_es: "Nivel de urgencia de la alerta",
-              type: "string",
-              enum: ["low", "normal", "critical"],
-              default: "normal"
+              title: 'Urgency level for the alert',
+              title_es: 'Nivel de urgencia de la alerta',
+              type: 'string',
+              enum: %w[low normal critical],
+              default: 'normal'
             },
             icon: {
-              title: "Icon filename or stock icon to display",
-              title_es: "Fichero de icono o icono del stock a mostrar",
-              description: "This policy will apply 5 minutes after synchronization",
-              description_es: "Esta politica se aplicará 5 minutos después de la sincronización",
-              type: "string",
-              default: "info"
+              title: 'Icon filename or stock icon to display',
+              title_es: 'Fichero de icono o icono del stock a mostrar',
+              description: 'This policy will apply 5 minutes after '\
+                'synchronization',
+              description_es: 'Esta politica se aplicará 5 minutos después de '\
+                'la sincronización',
+              type: 'string',
+              default: 'info'
             },
             updated_by: updated_js
           }
@@ -941,76 +947,88 @@ user_alerts_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     }
   }
 }
 
 remote_shutdown_js = {
-  title: "Remote shutdown",
-  title_es: "Apagado remoto",
-  type: "object",
-  required: ["shutdown_mode"],
+  title: 'Remote shutdown',
+  title_es: 'Apagado remoto',
+  type: 'object',
+  required: ['shutdown_mode'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     shutdown_mode: {
-      title: "Shutdown mode",
-      title_es: "Tipo de apagado",
-      description: "This policy will apply 5 minutes after synchronization",
-      description_es: "Esta politica se aplicará 5 minutos después de la sincronización",
-      type: "string",
-      enum: ["halt", "reboot",""],
-      default: "halt"
-    }, 
+      title: 'Shutdown mode',
+      title_es: 'Tipo de apagado',
+      description: 'This policy will apply 5 minutes after synchronization',
+      description_es: 'Esta politica se aplicará 5 minutos después de la '\
+        'sincronización',
+      type: 'string',
+      enum: ['halt', 'reboot', ''],
+      default: 'halt'
+    },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     }
   }
 }
 
 user_shared_folders_js = {
-  title: "Shared Folders",
-  title_es: "Carpetas Compartidas",
-  type: "object",
-  required: ["users"],
+  title: 'Shared Folders',
+  title_es: 'Carpetas Compartidas',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: true,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["gtkbookmarks"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: ['gtkbookmarks'],
           properties: {
             gtkbookmarks: {
-              type: "array",
-              title: "Bookmarks",
-              title_es: "Marcadores", 
+              type: 'array',
+              title: 'Bookmarks',
+              title_es: 'Marcadores',
               minItems: 0,
               uniqueItems: true,
               items: {
-                type: "object",
-                required: ["name", "uri"],
+                type: 'object',
+                required: %w[name uri],
                 properties: {
-                  name: {title: "Name", title_es: "Nombre", type: "string"},
-                  uri: {title: "Uri", title_es: "Uri", type: "string"}
+                  name: {
+                    title: 'Name',
+                    title_es: 'Nombre',
+                    type: 'string'
+                  },
+                  uri: {
+                    title: 'Uri',
+                    title_es: 'Uri',
+                    type: 'string'
+                  }
                 }
               }
-            }, 
+            },
             updated_by: updated_js
           }
         }
@@ -1018,478 +1036,402 @@ user_shared_folders_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
 
-app_config_js = {
-  title: "DEPRECATED: Applications Config",
-  title_es: "OBSOLETA: Configuración de aplicaciones",
-  type: "object",
- # required: ["citrix_config", "java_config", "firefox_config", "thunderbird_config", "loffice_config"],
-  required: ["java_config", "loffice_config"],
-  is_mergeable: false,
-  autoreverse: false,
-  properties: {
-    #citrix_config: {title: "Citrix Configuration", title_es: "Configuración de Citrix", type: "object"},
-    java_config: {
-      title: "Java Configuration",
-      title_es: "Configuración de Java",
-      type: "object",
-      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "array_attrs"],
-      properties: {
-        version: {
-          title: "Java Version",
-          title_es: "Versión de Java",
-          type: "string"
-        },
-        plug_version: {
-          title: "Plugins Java version",
-          title_es: "Plugins versión de Java",
-          type: "string"
-        },
-        sec: {
-          title: "Security Level",
-          title_es: "Nivel de Seguridad",
-          type: "string",
-          enum: ["MEDIUM", "HIGH", "VERY_HIGH"],
-          default: "MEDIUM"
-        },
-        crl: {
-          title: "Use Certificate Revocation List",
-          title_es: "Utilizar lista de revocación de certificados",
-          type: "boolean",
-          enum: [true,false],
-          default: false
-        },
-        ocsp: {
-          title: "Enable or disable Online Certificate Status Protocol",
-          title_es: "Activar o desactivar el protocolo de estado de certificados en linea",
-          type: "boolean",
-          enum: [true,false],
-          default: false
-        },
-        warn_cert: {
-          title: "Show host-mismatch warning for certificate?",
-          title_es: "¿Mostrar advertencia de incompatibilidad de host para el certificado?",
-          type: "boolean",
-          enum: [true,false],
-          default: false
-        },
-        mix_code: {
-          title: "Security verification of mix code",
-          title_es: "Verificación de la seguridad de la combinación de código",
-          type: "string",
-          enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
-          default: "ENABLE"
-        },
-        array_attrs: {
-          type: "array",
-          minItems: 0,
-          title: "Another configuration properties",
-          title_es: "Otras propiedades de configuración",
-          uniqueItems: true,
-          items:{
-            type: "object",
-            required: ["key", "value"],
-            properties: {
-              key: {type: "string", title: "Key", title_es: "Clave"},
-              value: {type: "string", title: "Value", title_es: "Valor"}
-            }
-          }
-        }
-
-      }
-    },
-    firefox_config: {
-      title: "Firefox Configuration",
-      title_es: "Configuración de Firefox",
-      type: "object",
-      properties: {
-        app_update:{
-          title: "Enable/Disable auto update",
-          title_es: "Activar/Desactivar actualizaciones automáticas",
-          type: "boolean",
-          enum: [true,false],
-          default: false
-        }
-      }
-    },
-    thunderbird_config: {
-      title: "Thunderbird Configuration",
-      title_es: "Configuración de Thunderbird",
-      type: "object",
-      properties: {
-        app_update: {
-          title: "Enable/Disable auto update",
-          title_es: "Activar/Desactivar actualizaciones automáticas",
-          type: "boolean",
-          enum: [true,false],
-          default: false
-        }
-      }
-    },
-    loffice_config: {
-      title: "Libre Office Configuration",
-      title_es: "Configuración de Libre Office",
-      type: "object",
-      properties: {
-        app_update: {
-          title: "Enable/Disable auto update",
-          title_es: "Activar/Desactivar actualizaciones automáticas",
-          type: "boolean",
-          enum: [true,false],
-          default: false
-        }
-      }
-    },
-    job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
-    support_os: support_os_js.clone,
-    updated_by: updated_js
-  }
-}
-
 appconfig_libreoffice_js = {
-  title: "LibreOffice Config",
-  title_es: "Configuración de LibreOffice",
-  type: "object",
-  required: ["config_libreoffice"],
+  title: 'LibreOffice Config',
+  title_es: 'Configuración de LibreOffice',
+  type: 'object',
+  required: ['config_libreoffice'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     config_libreoffice: {
-      title: "LibreOffice Configuration",
-      title_es: "Configuración de LibreOffice",
-      type: "object",
+      title: 'LibreOffice Configuration',
+      title_es: 'Configuración de LibreOffice',
+      type: 'object',
       properties: {
         app_update: {
-          title: "Enable/Disable auto update",
-          title_es: "Activar/Desactivar actualizaciones automáticas",
-          type: "boolean",
-          enum: [true,false],
+          title: 'Enable/Disable auto update',
+          title_es: 'Activar/Desactivar actualizaciones automáticas',
+          type: 'boolean',
+          enum: [true, false],
           default: false
         }
       }
     },
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
     support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
 
 appconfig_thunderbird_js = {
-  title: "Thunderbird Config",
-  title_es: "Configuración de Thunderbird",
-  type: "object",
-  required: ["config_thunderbird"],
+  title: 'Thunderbird Config',
+  title_es: 'Configuración de Thunderbird',
+  type: 'object',
+  required: ['config_thunderbird'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     config_thunderbird: {
-      title: "Thunderbird Configuration",
-      title_es: "Configuración de Thunderbird",
-      type: "object",
+      title: 'Thunderbird Configuration',
+      title_es: 'Configuración de Thunderbird',
+      type: 'object',
       properties: {
         app_update: {
-          title: "Enable/Disable auto update",
-          title_es: "Activar/Desactivar actualizaciones automáticas",
-          type: "boolean",
-          enum: [true,false],
+          title: 'Enable/Disable auto update',
+          title_es: 'Activar/Desactivar actualizaciones automáticas',
+          type: 'boolean',
+          enum: [true, false],
           default: false
         }
       }
     },
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
     support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
 
 appconfig_firefox_js = {
-  title: "Firefox Config",
-  title_es: "Configuración de Firefox",
-  type: "object",
-  required: ["config_firefox"],
+  title: 'Firefox Config',
+  title_es: 'Configuración de Firefox',
+  type: 'object',
+  required: ['config_firefox'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     config_firefox: {
-      title: "Firefox Configuration",
-      title_es: "Configuración de Firefox",
-      type: "object",
+      title: 'Firefox Configuration',
+      title_es: 'Configuración de Firefox',
+      type: 'object',
       properties: {
         app_update: {
-          title: "Enable/Disable auto update",
-          title_es: "Activar/Desactivar actualizaciones automáticas",
-          type: "boolean",
-          enum: [true,false],
+          title: 'Enable/Disable auto update',
+          title_es: 'Activar/Desactivar actualizaciones automáticas',
+          type: 'boolean',
+          enum: [true, false],
           default: false
         }
       }
     },
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
     support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
 
 appconfig_java_js = {
-  title: "Java Config",
-  title_es: "Configuración de Java",
-  type: "object",
-  required: ["config_java"],
+  title: 'Java Config',
+  title_es: 'Configuración de Java',
+  type: 'object',
+  required: ['config_java'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
-   config_java: {
-      title: "Java Configuration",
-      title_es: "Configuración de Java",
-      type: "object",
-      order: ["version", "plug_version", "sec", "crl", "warn_cert", "mix_code", "ocsp", "tls", "array_attrs"],
+    config_java: {
+      title: 'Java Configuration',
+      title_es: 'Configuración de Java',
+      type: 'object',
+      order: %w[version plug_version sec crl warn_cert mix_code ocsp tls
+                array_attrs],
       properties: {
         version: {
-          title: "Java Version",
-          title_es: "Versión de Java",
-          description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
-          description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
-          type: "string"
+          title: 'Java Version',
+          title_es: 'Versión de Java',
+          description: 'Path to an installed Java version, example: '\
+            '/usr/lib/jvm/java-7-oracle',
+          description_es: 'Path a una versión instalada de Java, ej.: '\
+            '/usr/lib/jvm/java-7-oracle',
+          type: 'string'
         },
         plug_version: {
-          title: "Plugins Java version",
-          title_es: "Plugins versión de Java",
-          description: "Path to an installed Java version, example: /usr/lib/jvm/java-7-oracle",
-          description_es: "Path a una versión instalada de Java, ej.: /usr/lib/jvm/java-7-oracle",
-          type: "string"
+          title: 'Plugins Java version',
+          title_es: 'Plugins versión de Java',
+          description: 'Path to an installed Java version, example: '\
+            '/usr/lib/jvm/java-7-oracle',
+          description_es: 'Path a una versión instalada de Java, ej.: '\
+            '/usr/lib/jvm/java-7-oracle',
+          type: 'string'
         },
         sec: {
-          title: "Security Level",
-          title_es: "Nivel de Seguridad",
-          type: "string",
-          enum: ["MEDIUM", "HIGH", "VERY_HIGH"],
-          default: "MEDIUM"
+          title: 'Security Level',
+          title_es: 'Nivel de Seguridad',
+          type: 'string',
+          enum: %w[MEDIUM HIGH VERY_HIGH],
+          default: 'MEDIUM'
         },
         crl: {
-          title: "Use Certificate Revocation List",
-          title_es: "Utilizar lista de revocación de certificados",
-          type: "boolean",
-          enum: [true,false],
+          title: 'Use Certificate Revocation List',
+          title_es: 'Utilizar lista de revocación de certificados',
+          type: 'boolean',
+          enum: [true, false],
           default: false
         },
         ocsp: {
-          title: "Enable or disable Online Certificate Status Protocol",
-          title_es: "Activar o desactivar el protocolo de estado de certificados en linea",
-          type: "boolean",
-          enum: [true,false],
+          title: 'Enable or disable Online Certificate Status Protocol',
+          title_es: 'Activar o desactivar el protocolo de estado de '\
+            'certificados en linea',
+          type: 'boolean',
+          enum: [true, false],
           default: false
         },
         warn_cert: {
-          title: "Show host-mismatch warning for certificate?",
-          title_es: "¿Mostrar advertencia de incompatibilidad de host para el certificado?",
-          type: "boolean",
-          enum: [true,false],
+          title: 'Show host-mismatch warning for certificate?',
+          title_es: '¿Mostrar advertencia de incompatibilidad de host para el '\
+            'certificado?',
+          type: 'boolean',
+          enum: [true, false],
           default: false
         },
         mix_code: {
-          title: "Security verification of mix code",
-          title_es: "Verificación de la seguridad de la combinación de código",
-          type: "string",
-          enum: ["ENABLE", "HIDE_RUN", "HIDE_CANCEL", "DISABLED"],
-          default: "ENABLE"
+          title: 'Security verification of mix code',
+          title_es: 'Verificación de la seguridad de la combinación de código',
+          type: 'string',
+          enum: %w[ENABLE HIDE_RUN HIDE_CANCEL DISABLED],
+          default: 'ENABLE'
         },
         tls: {
-          title: "Check validity of TLS certificate",
-          title_es: "Realizar comprobaciones derevocación de certificado TLS",
-          type: "string",
-          enum: ["SERVER_CERTIFICATE_ONLY", "NO_CHECK", ""],
-          default: "" 
+          title: 'Check validity of TLS certificate',
+          title_es: 'Realizar comprobaciones derevocación de certificado TLS',
+          type: 'string',
+          enum: ['SERVER_CERTIFICATE_ONLY', 'NO_CHECK', ''],
+          default: ''
         },
         array_attrs: {
-          type: "array",
+          type: 'array',
           minItems: 0,
-          title: "Another configuration properties",
-          title_es: "Otras propiedades de configuración",
+          title: 'Another configuration properties',
+          title_es: 'Otras propiedades de configuración',
           uniqueItems: true,
-          items:{
-            type: "object",
-            required: ["key", "value"],
+          items: {
+            type: 'object',
+            required: %w[key value],
             properties: {
-              key: {type: "string", title: "Key", title_es: "Clave"},
-              value: {type: "string", title: "Value", title_es: "Valor"}
+              key: {
+                type: 'string',
+                title: 'Key',
+                title_es: 'Clave'
+              },
+              value: {
+                type: 'string',
+                title: 'Value',
+                title_es: 'Valor'
+              }
             }
           }
         }
       }
     },
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
     support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
 
 auto_updates_js = {
-  title: "Automatic Updates Repository",
-  title_es: "Actualizaciones automáticas de repositorios",
-  type: "object",
-  required: ["auto_updates_rules"],
+  title: 'Automatic Updates Repository',
+  title_es: 'Actualizaciones automáticas de repositorios',
+  type: 'object',
+  required: ['auto_updates_rules'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     auto_updates_rules: {
-      type: "object",
-      title: "Auto Updates Rules",
-      title_es: "Reglas de actualizaciones automáticas",
-      required: ["onstop_update", "onstart_update", "days"],
-      order: ["onstart_update", "onstop_update", "days"],
+      type: 'object',
+      title: 'Auto Updates Rules',
+      title_es: 'Reglas de actualizaciones automáticas',
+      required: %w[onstop_update onstart_update days],
+      order: %w[onstart_update onstop_update days],
       properties: {
-        onstop_update: {title: "Update on shutdown?", title_es: "Actualizar al apagado",  type: "boolean"},
-        onstart_update: {title: "Update on start", title_es: "Actualizar al inicio", type: "boolean"},
+        onstop_update: {
+          title: 'Update on shutdown?',
+          title_es: 'Actualizar al apagado',
+          type: 'boolean'
+        },
+        onstart_update: {
+          title: 'Update on start',
+          title_es: 'Actualizar al inicio',
+          type: 'boolean'
+        },
         days: {
-          type: "array",
-          title: "Periodic dates",
-          title_es: "Fechas periódicas",
+          type: 'array',
+          title: 'Periodic dates',
+          title_es: 'Fechas periódicas',
           minItems: 0,
           uniqueItems: true,
           items: {
-            type: "object",
-            required: ["day", "hour", "minute"],
-            order: ["day", "hour", "minute"],
+            type: 'object',
+            required: %w[day hour minute],
+            order: %w[day hour minute],
             properties: {
               day: {
-                title: "Day",
-                title_es: "Día",
-                type: "string",
-                enum: ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]
+                title: 'Day',
+                title_es: 'Día',
+                type: 'string',
+                enum: %w[monday tuesday wednesday thursday friday saturday
+                         sunday]
               },
               hour: {
-                title: "Hour",
-                title_es: "Hora",
-                type: "integer",
+                title: 'Hour',
+                title_es: 'Hora',
+                type: 'integer',
                 maximum: 23
               },
               minute: {
-                title: "Minute",
-                title_es: "Minuto",
-                type: "integer",
+                title: 'Minute',
+                title_es: 'Minuto',
+                type: 'integer',
                 maximum: 59
               }
-
             }
           }
         },
         date: {
-          title: "Specific Date",
-          title_es: "Fecha específica",
-          type: "object",
-          order: ["month", "day", "hour", "minute"],
+          title: 'Specific Date',
+          title_es: 'Fecha específica',
+          type: 'object',
+          order: %w[month day hour minute],
           properties: {
-            day: {title: "Day", title_es: "Día", type: "string", pattern: "^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$"},
-            month: {title: "Month", title_es: "Mes", type: "string",pattern: "^(0?[1-9]|1[0-2]|\\\*)$"},
-            hour: {title: "Hour", title_es: "Hora", type: "string", pattern: "^((([0-1][0-9])|[0-2][0-3])|\\\*)$"},
-            minute: {title: "Minute", title_es: "Minuto", type: "string",pattern: "^([0-5][0-9]|\\\*)$"},
+            day: {
+              title: 'Day',
+              title_es: 'Día',
+              type: 'string',
+              pattern: '^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$'
+            },
+            month: {
+              title: 'Month',
+              title_es: 'Mes',
+              type: 'string',
+              pattern: '^(0?[1-9]|1[0-2]|\\\*)$'
+            },
+            hour: {
+              title: 'Hour',
+              title_es: 'Hora',
+              type: 'string',
+              pattern: '^((([0-1][0-9])|[0-2][0-3])|\\\*)$'
+            },
+            minute: {
+              title: 'Minute',
+              title_es: 'Minuto',
+              type: 'string',
+              pattern: '^([0-5][0-9]|\\\*)$'
+            }
           }
         }
       }
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
     updated_by: updated_js
   }
 }
 
 boot_lock_js = {
-  title: "Lock boot menu",
-  title_es: "Bloqueo del menú de arranque",
-  type: "object",
-  order:["lock_boot","unlock_user","unlock_pass"],
+  title: 'Lock boot menu',
+  title_es: 'Bloqueo del menú de arranque',
+  type: 'object',
+  order: %w[lock_boot unlock_user unlock_pass],
   is_mergeable: false,
   autoreverse: false,
   properties: {
-    lock_boot: {title: "Lock boot menu?", title_es: "¿Bloquear el menú de inicio?",  type: "boolean"},
-    unlock_user: {title: "Unlock user", title_es: "Usuario de desbloqueo", type: "string"},
-    unlock_pass: {title: "Unlock pass", title_es: "Clave de desbloqueo", type: "string"},
+    lock_boot: {
+      title: 'Lock boot menu?',
+      title_es: '¿Bloquear el menú de inicio?',
+      type: 'boolean'
+    },
+    unlock_user: {
+      title: 'Unlock user',
+      title_es: 'Usuario de desbloqueo',
+      type: 'string'
+    },
+    unlock_pass: {
+      title: 'Unlock pass',
+      title_es: 'Clave de desbloqueo',
+      type: 'string'
+    },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
     updated_by: updated_js
   }
 }
 
 user_modify_nm_js = {
-  title: "Give network privileges to user",
-  title_es: "Conceder permisos de red al usuario",
-  type: "object",
-  required: ["users"],
+  title: 'Give network privileges to user',
+  title_es: 'Conceder permisos de red al usuario',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["can_modify"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: ['can_modify'],
           properties: {
             can_modify: {
-              title: "Can modify network?",
-              title_es: "¿Permisos para modificar la red?",
-              type: "boolean",
-              enum: [true,false],
-              default:true
+              title: 'Can modify network?',
+              title_es: '¿Permisos para modificar la red?',
+              type: 'boolean',
+              enum: [true, false],
+              default: true
             },
             updated_by: updated_js
           }
@@ -1498,54 +1440,66 @@ user_modify_nm_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
 
-                             
-                             
 user_apps_autostart_js = {
-  title: "Applications that will run at the start of the system",
-  title_es: "Aplicaciones que se ejecutarán al inicio",
-  type: "object",
-  required: ["users"],
+  title: 'Applications that will run at the start of the system',
+  title_es: 'Aplicaciones que se ejecutarán al inicio',
+  type: 'object',
+  required: ['users'],
   is_mergeable: true,
   autoreverse: false,
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["desktops"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: ['desktops'],
           additionalProperties: false,
           properties: {
             desktops: {
-              title: "Applications",
-              title_es: "Aplicaciones",
-              description: ".desktop file must exist in /usr/share/applications",
-              description_es: "Es necesario que exista el .desktop en /usr/share/applications",
-              type: "array",
+              title: 'Applications',
+              title_es: 'Aplicaciones',
+              description: '.desktop file must exist in '\
+                '/usr/share/applications',
+              description_es: 'Es necesario que exista el .desktop en '\
+                '/usr/share/applications',
+              type: 'array',
               minItems: 0,
               uniqueItems: true,
               items: {
-                type: "object",
-                required: ["name", "action"],
-                order: ["name", "action"],
-                mergeIdField: ["name"],
-                mergeActionField: "action",
+                type: 'object',
+                required: %w[name action],
+                order: %w[name action],
+                mergeIdField: ['name'],
+                mergeActionField: 'action',
                 properties: {
-                  name: {title: "Name", title_es: "Nombre", type: "string"},
-                  action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]},
+                  name: {
+                    title: 'Name',
+                    title_es: 'Nombre',
+                    type: 'string'
+                  },
+                  action: {
+                    title: 'Action',
+                    title_es: 'Acción',
+                    type: 'string',
+                    enum: %w[add remove]
+                  }
                 }
-              },
+              }
             },
             updated_by: updated_js
           }
@@ -1554,239 +1508,301 @@ user_apps_autostart_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     }
   }
 }
 
 tz_date_js = {
-  title: "Administration Date/Time",
-  title_es: "Administración fecha/hora",
-  type: "object",
-  required: ["server"],
+  title: 'Administration Date/Time',
+  title_es: 'Administración fecha/hora',
+  type: 'object',
+  required: ['server'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     server: {
-      type: "string",
-      title: "Server NTP",
-      title_es: "Servidor NTP",
-      description: "Enter the URI of an NTP server",
-      description_es: "Introduzca la URI de un servidor NTP"
+      type: 'string',
+      title: 'Server NTP',
+      title_es: 'Servidor NTP',
+      description: 'Enter the URI of an NTP server',
+      description_es: 'Introduzca la URI de un servidor NTP'
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
-    }, 
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
     updated_by: updated_js
   }
 }
 
 scripts_launch_js = {
-  title: "Scripts Launcher",
-  title_es: "Lanzador de scripts",
-  type: "object",
-  required: ["on_startup","on_shutdown"],
+  title: 'Scripts Launcher',
+  title_es: 'Lanzador de scripts',
+  type: 'object',
+  required: %w[on_startup on_shutdown],
   is_mergeable: true,
   autoreverse: true,
-  order: ["on_startup", "on_shutdown"],
+  order: %w[on_startup on_shutdown],
   properties:
   {
     on_startup: {
-      type: "array",
-      title: "Script to run on startup",
-      title_es: "Script para ejecutar al inicio",
-      description: "Enter the absolute path to the script",
-      description_es: "Introduzca la ruta absoluta al script",
+      type: 'array',
+      title: 'Script to run on startup',
+      title_es: 'Script para ejecutar al inicio',
+      description: 'Enter the absolute path to the script',
+      description_es: 'Introduzca la ruta absoluta al script',
       minItems: 0,
       uniqueItems: false,
       items: {
-        type: "string",
-        }
+        type: 'string'
+      }
     },
     on_shutdown: {
-      type: "array",
-      title: "Script to run on shutdown",
-      title_es: "Script para ejecutar al apagado",
-      description: "Enter the absolute path to the script",
-      description_es: "Introduzca la ruta absoluta al script",
+      type: 'array',
+      title: 'Script to run on shutdown',
+      title_es: 'Script para ejecutar al apagado',
+      description: 'Enter the absolute path to the script',
+      description_es: 'Introduzca la ruta absoluta al script',
       minItems: 0,
       uniqueItems: false,
       items: {
-        type: "string",
-        }
+        type: 'string'
+      }
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
-    }, 
+    },
     updated_by: updated_js
   }
 }
 
-                             
-                          
-               
-                            
+debug_mode_js = {
+  type: 'object',
+  title: 'Debug mode',
+  title_es: 'Modo diagnóstico',
+  required: %w[enable_debug expire_datetime],
+  is_mergeable: false,
+  autoreverse: true,
+  properties:
+  {
+    enable_debug: {
+      title: 'Enable debug mode for this computer?',
+      title_es: '¿Habilitar el modo diagnóstico para este puesto?',
+      description: 'If this box is checked the computer will send logs to '\
+        'the GECOS Control Center.',
+      description_es: 'Si se marca esta casilla el puesto enviará logs al '\
+        'Centro de Control GECOS',
+      type: 'boolean',
+      default: false
+    },
+    expire_datetime: {
+      title: 'Expire date and time',
+      title_es: 'Fecha y hora de expiración',
+      type: 'string'
+    },
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
+
 network_resource_js = {
-  type: "object",
-  title: "Network Manager",
-  title_es: "Administrador de red",
-  required: ["connections"],
+  type: 'object',
+  title: 'Network Manager',
+  title_es: 'Administrador de red',
+  required: ['connections'],
   is_mergeable: false,
   autoreverse: false,
   properties:
   {
     connections: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["name", "mac_address", "use_dhcp", "net_type"],
+        type: 'object',
+        required: %w[name mac_address use_dhcp net_type],
         properties: {
           fixed_con: {
-            title: "DHCP Disabled properties", 
-            title_es: "Propiedades desactivadas de DHCP",
-            description: "Only if DHCP is disabled",
-            description_es: "Solo si el DHCP esta desactivado",
-            type: "object",
-            properties:{
+            title: 'DHCP Disabled properties',
+            title_es: 'Propiedades desactivadas de DHCP',
+            description: 'Only if DHCP is disabled',
+            description_es: 'Solo si el DHCP esta desactivado',
+            type: 'object',
+            properties: {
               addresses: {
-                type: "array",
+                type: 'array',
                 uniqueItems: true,
                 minItems: 0,
-                description: "This field is only used if DHCP is disabled",
-                description_es: "Este campo solo se usará si el DHCP está desactivado",
-                title: "IP addresses",
-                title_es: "Dirección IP",
+                description: 'This field is only used if DHCP is disabled',
+                description_es: 'Este campo solo se usará si el DHCP está '\
+                  'desactivado',
+                title: 'IP addresses',
+                title_es: 'Dirección IP',
                 items: {
-                  type: "object",
-                  #required: [ "ip_addr","netmask"],
-                  properties:{
+                  type: 'object',
+                  properties: {
                     ip_addr: {
-                      type: "string",
-                      title: "IP address",
-                      title_es: "Dirección IP",
-                      description: "ipv4 format",
-                      description_es: "Formato IPV4",
-                      format: "ipv4"
+                      type: 'string',
+                      title: 'IP address',
+                      title_es: 'Dirección IP',
+                      description: 'ipv4 format',
+                      description_es: 'Formato IPV4',
+                      format: 'ipv4'
                     },
                     netmask: {
-                      type: "string",
-                      title: "Netmask",
-                      title_es: "Máscara de red",
-                      description: "ipv4 format",
-                      description_es: "Formato IPV4",
-                      format: "ipv4"
+                      type: 'string',
+                      title: 'Netmask',
+                      title_es: 'Máscara de red',
+                      description: 'ipv4 format',
+                      description_es: 'Formato IPV4',
+                      format: 'ipv4'
                     }
                   }
-                } 
+                }
               },
               gateway: {
-                type: "string",
-                title: "Gateway",
-                title_es: "Puerta de enlace",
-                description: "ipv4 format",
-                description_es: "Formato ipv4",
-                format: "ipv4"
+                type: 'string',
+                title: 'Gateway',
+                title_es: 'Puerta de enlace',
+                description: 'ipv4 format',
+                description_es: 'Formato ipv4',
+                format: 'ipv4'
               },
               dns_servers: {
-                type: "array",
-                title: "DNS Servers",
-                title_es: "Servidor DNS",
-                description: "With DHCP disable",
-                description_es: "Con DHCP desactivado",
+                type: 'array',
+                title: 'DNS Servers',
+                title_es: 'Servidor DNS',
+                description: 'With DHCP disable',
+                description_es: 'Con DHCP desactivado',
                 minItems: 0,
                 uniqueItems: true,
                 items: {
-                  type: "string",
-                  title: "DNS",
-                  title_es: "DNS",
-                  description: "ipv4 format",
-                  description_es: "Formato ipv4",
-                  format: "ipv4"
+                  type: 'string',
+                  title: 'DNS',
+                  title_es: 'DNS',
+                  description: 'ipv4 format',
+                  description_es: 'Formato ipv4',
+                  format: 'ipv4'
                 }
               }
             }
           },
-          name: {type: "string", title: "Network name", title_es: "Nombre de la red"},
-          mac_address: {pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$", type: "string", title: "MAC address", title_es: "Dirección MAC"},
-          use_dhcp: {type: "boolean", enum: [true,false], default:true, title: "DHCP", title_es: "DHCP"},
-          net_type:{
-            enum: ["wired", "wireless"], title: "Connection type", title_es: "Tipo de conexión", type: "string"
+          name: {
+            type: 'string',
+            title: 'Network name',
+            title_es: 'Nombre de la red'
           },
-          wireless_conn:{
-            type:"object",
-            title: "Wireless Configuration",
-            title_es: "Configuración Wireless",
-            properties:{
-              essid: { type: "string", title: "ESSID", title_es: "ESSID" },
-              security: { 
-                type: "object", 
-                title: "Security Configuration",
-                title_es: "Configuración de Seguridad",
-                required: ["sec_type"],
-                order: ["sec_type", "auth_type", "enc_pass", "auth_user", "auth_password"],
-                properties:{
-                  sec_type: { enum: [ "none", "WEP", "Leap", "WPA_PSK"], default:"none", title: "Security type", title_es: "Tipo de seguridad", type:"string"},
-                  enc_pass: { type: "string", 
-                              description: "WEP, WPA_PSK security",
-                              description_es: "WEP, seguridad WPA_PSK ",
-                              title: "Password",
-                              title_es: "Contraseña"                   
-                            },
-                  auth_type: { enum: ["OpenSystem", "SharedKey"], 
-                               title: "Authentication type",
-                               title_es: "Tipo de autenticación",
-                               description: "WEP security",
-                               description_es: "Seguridad WEP",
-                               type: "string", 
-                               default: "OpenSystem"},
-                  auth_user: { type: "string",
-                               description: "Leap security",
-                               description_es: "Seguridad Leap",
-                               title: "Username",
-                               title_es: "Nombre de usuario"                                
-                               },
-                  auth_password: { type: "string",
-                                   description: "Leap security",
-                                   description_es: "Seguridad Leap",
-                                   title: "Password",
-                                   title_es: "Contraseña"
-                                 }
-
+          mac_address: {
+            pattern: '^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$',
+            type: 'string',
+            title: 'MAC address',
+            title_es: 'Dirección MAC'
+          },
+          use_dhcp: {
+            type: 'boolean',
+            enum: [true, false],
+            default: true,
+            title: 'DHCP',
+            title_es: 'DHCP'
+          },
+          net_type: {
+            enum: %w[wired wireless],
+            title: 'Connection type',
+            title_es: 'Tipo de conexión',
+            type: 'string'
+          },
+          wireless_conn: {
+            type: 'object',
+            title: 'Wireless Configuration',
+            title_es: 'Configuración Wireless',
+            properties: {
+              essid: {
+                type: 'string',
+                title: 'ESSID',
+                title_es: 'ESSID'
+              },
+              security: {
+                type: 'object',
+                title: 'Security Configuration',
+                title_es: 'Configuración de Seguridad',
+                required: ['sec_type'],
+                order: %w[sec_type auth_type enc_pass auth_user auth_password],
+                properties: {
+                  sec_type: {
+                    enum: %w[none WEP Leap WPA_PSK],
+                    default: 'none',
+                    title: 'Security type',
+                    title_es: 'Tipo de seguridad',
+                    type: 'string'
+                  },
+                  enc_pass: {
+                    type: 'string',
+                    description: 'WEP, WPA_PSK security',
+                    description_es: 'WEP, seguridad WPA_PSK ',
+                    title: 'Password',
+                    title_es: 'Contraseña'
+                  },
+                  auth_type: {
+                    enum: %w[OpenSystem SharedKey],
+                    title: 'Authentication type',
+                    title_es: 'Tipo de autenticación',
+                    description: 'WEP security',
+                    description_es: 'Seguridad WEP',
+                    type: 'string',
+                    default: 'OpenSystem'
+                  },
+                  auth_user: {
+                    type: 'string',
+                    description: 'Leap security',
+                    description_es: 'Seguridad Leap',
+                    title: 'Username',
+                    title_es: 'Nombre de usuario'
+                  },
+                  auth_password: {
+                    type: 'string',
+                    description: 'Leap security',
+                    description_es: 'Seguridad Leap',
+                    title: 'Password',
+                    title_es: 'Contraseña'
+                  }
                 }
               }
             }
-
           }
-          
-
         }
       }
     },
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     },
     support_os: support_os_js.clone,
@@ -1795,65 +1811,68 @@ network_resource_js = {
 }
 
 software_sources_js = {
-  title: "Software Sources",
-  title_es: "Fuentes de software",
-  type: "object",
-  required: ["repo_list"],
+  title: 'Software Sources',
+  title_es: 'Fuentes de software',
+  type: 'object',
+  required: ['repo_list'],
   is_mergeable: true,
   autoreverse: true,
-  properties:{
+  properties: {
     repo_list: {
-      type:"array",
+      type: 'array',
       items: {
-        type:"object",
-        required: ["repo_name","uri","deb_src","repo_key","key_server"],
-        properties:{
-          components: { title: "Components", title_es: "Componentes", type: "array",items: { type: "string" } },
-          deb_src: { title: "Sources", title_es: "Fuentes", type: "boolean", default: false },
-          repo_key: { title: "Repository key", title_es: "Clave del repositorio", type: "string", default: ""},
-          key_server: { title: "Server key", title_es: "Clave del servidor", type: "string", default: ""},
-          distribution: { title: "Distribution", title_es: "Distribución", type: "string"},
-          repo_name: { title: "Repository name", title_es: "Nombre del repositorio", type: "string"},
-          uri: { title: "Uri", title_es: "Uri", type: "string" }
+        type: 'object',
+        required: %w[repo_name uri deb_src repo_key key_server],
+        properties: {
+          components: {
+            title: 'Components',
+            title_es: 'Componentes',
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          },
+          deb_src: {
+            title: 'Sources',
+            title_es: 'Fuentes',
+            type: 'boolean',
+            default: false
+          },
+          repo_key: {
+            title: 'Repository key',
+            title_es: 'Clave del repositorio',
+            type: 'string',
+            default: ''
+          },
+          key_server: {
+            title: 'Server key',
+            title_es: 'Clave del servidor',
+            type: 'string', default: ''
+          },
+          distribution: {
+            title: 'Distribution',
+            title_es: 'Distribución',
+            type: 'string'
+          },
+          repo_name: {
+            title: 'Repository name',
+            title_es: 'Nombre del repositorio',
+            type: 'string'
+          },
+          uri: {
+            title: 'Uri',
+            title_es: 'Uri',
+            type: 'string'
+          }
         }
       }
     },
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
-      }
-    }, 
-    support_os: support_os_js.clone,
-    updated_by: updated_js
-   }
-}
-
-package_profile_js = {
-  title: "Packages Profile management",
-  title_es: "Administración de perfiles de software",
-  type: "object",
-  order:["package_list"],
-  is_mergeable: true,
-  autoreverse: false,
-  properties:
-  {
-    package_list: {
-      type:"array",
-      title: "Package list to install",
-      title_es: "Lista de paquetes para instalar",
-      minItems: 0,
-      uniqueItems: true,
-      items: {type: "string"}
-    },
-    job_ids: {
-      type: "array",
-      minItems: 0,
-      uniqueItems: true,
-      items: {
-        type: "string"
+        type: 'string'
       }
     },
     support_os: support_os_js.clone,
@@ -1862,39 +1881,52 @@ package_profile_js = {
 }
 
 package_js = {
-  title: "Packages management",
-  title_es: "Administración de paquetes",
-  type: "object",
-  order:["package_list"],
+  title: 'Packages management',
+  title_es: 'Administración de paquetes',
+  type: 'object',
+  order: ['package_list'],
   is_mergeable: true,
   autoreverse: false,
   properties:
   {
     package_list: {
-      type:"array",
-      title: "Package list",
-      title_es: "Lista de paquetes",
+      type: 'array',
+      title: 'Package list',
+      title_es: 'Lista de paquetes',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "object",
-        required: ["name", "version", "action"],
-        order: ["name", "version", "action"],
-        mergeIdField: ["name"],
-        mergeActionField: "action",
+        type: 'object',
+        required: %w[name version action],
+        order: %w[name version action],
+        mergeIdField: ['name'],
+        mergeActionField: 'action',
         properties: {
-          name: {title: "Name", title_es: "Nombre", type: "string"},
-          version: {title: "Version", title_es: "Versión", type: "string"},
-          action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+          name: {
+            title: 'Name',
+            title_es: 'Nombre',
+            type: 'string'
+          },
+          version: {
+            title: 'Version',
+            title_es: 'Versión',
+            type: 'string'
+          },
+          action: {
+            title: 'Action',
+            title_es: 'Acción',
+            type: 'string',
+            enum: %w[add remove]
+          }
         }
-    }
+      }
     },
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     },
     support_os: support_os_js.clone,
@@ -1903,365 +1935,458 @@ package_js = {
 }
 
 printers_js = {
-  title: "Printers",
-  title_es: "Impresoras",
-  type: "object",
-  required: ["printers_list"],
+  title: 'Printers',
+  title_es: 'Impresoras',
+  type: 'object',
+  required: ['printers_list'],
   is_mergeable: true,
   autoreverse: true,
   properties:
   {
     printers_list: {
-      type:"array",
-      title: "Printer list to enable",
-      title_es: "Lista de impresoras para activar",
+      type: 'array',
+      title: 'Printer list to enable',
+      title_es: 'Lista de impresoras para activar',
       items: {
-        type:"object",
-        required: [ "name", "manufacturer", "model", "uri"],
-        properties:{
-          name: { type: "string", title: "Name", title_es: "Nombre"},
-          manufacturer: { type: "string", title: "Manufacturer", title_es: "Manufactura" },
-          model: { type: "string" , title: "Model", title_es: "Modelo"},
-          uri: { type: "string", title: "Uri", title_es: "Uri"},
-          ppd_uri: { type: "string", title: "Uri PPD", title_es: "Uri PPD", default: "", pattern: "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"},
-          ppd: { type: "string", title: "PPD Name", title_es: "Nombre PPD"},
-          oppolicy: {enum: ["default","authenticated","kerberos-ad"], default:"default", type: "string", title: "Operation Policy", title_es: "Politica de Autenticación"}
+        type: 'object',
+        required: %w[name manufacturer model uri],
+        properties: {
+          name: {
+            type: 'string',
+            title: 'Name',
+            title_es: 'Nombre'
+          },
+          manufacturer: {
+            type: 'string',
+            title: 'Manufacturer',
+            title_es: 'Manufactura'
+          },
+          model: {
+            type: 'string',
+            title: 'Model',
+            title_es: 'Modelo'
+          },
+          uri: {
+            type: 'string',
+            title: 'Uri',
+            title_es: 'Uri'
+          },
+          ppd_uri: {
+            type: 'string',
+            title: 'Uri PPD',
+            title_es: 'Uri PPD',
+            default: '',
+            pattern: '(https?|ftp|file)://'\
+              '[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
+          },
+          ppd: {
+            type: 'string',
+            title: 'PPD Name',
+            title_es: 'Nombre PPD'
+          },
+          oppolicy: {
+            enum: %w[default authenticated kerberos-ad],
+            default: 'default',
+            type: 'string',
+            title: 'Operation Policy',
+            title_es: 'Politica de Autenticación'
+          }
         }
       }
     },
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
-    }, 
+    },
     support_os: support_os_js.clone,
     updated_by: updated_js
   }
 }
 
 local_users_js = {
-  title: "Users",
-  title_es: "Usuarios",
-  type: "object",
-  required: ["users_list"],
+  title: 'Users',
+  title_es: 'Usuarios',
+  type: 'object',
+  required: ['users_list'],
   is_mergeable: true,
   autoreverse: false,
-  properties:
-  {users_list: {
-      type:"array",
-      title: "User list to manage",
-      title_es: "Lista de usuarios para gestionar",
+  properties: {
+    users_list: {
+      type: 'array',
+      title: 'User list to manage',
+      title_es: 'Lista de usuarios para gestionar',
       items: {
-        type:"object",
-        required: ["user","actiontorun"],
-        order:["actiontorun", "user", "password", "name"],
+        type: 'object',
+        required: %w[user actiontorun password],
+        order: %w[actiontorun user password name],
         mergeIdField: ['user'],
         mergeActionField: 'actiontorun',
         additionalProperties: false,
-        properties:{
-          actiontorun: {enum: ["add","remove"],type: "string", title: "Action", title_es: "Acción"},
-          user: { title: "User", title_es: "Usuario", type: "string" },
-          name: { title: "Full Name", title_es: "Nombre Completo", type: "string" },
-          password: { title: "Password", title_es: "Contraseña", type: "string"}
+        properties: {
+          actiontorun: {
+            enum: %w[add remove],
+            type: 'string',
+            title: 'Action',
+            title_es: 'Acción'
+          },
+          user: {
+            title: 'User',
+            title_es: 'Usuario',
+            type: 'string'
+          },
+          name: {
+            title: 'Full Name',
+            title_es: 'Nombre Completo',
+            type: 'string'
+          },
+          password: {
+            title: 'Password',
+            title_es: 'Contraseña',
+            type: 'string'
+          }
         }
-     }
-  },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-  }, 
-  support_os: support_os_js.clone,
-  updated_by: updated_js
- }
+      }
+    },
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
 }
 
 local_groups_js = {
-  title: "Local groups",
-  title_es: "Grupos locales",
-  type: "object",
-  required: ["groups_list"],
+  title: 'Local groups',
+  title_es: 'Grupos locales',
+  type: 'object',
+  required: ['groups_list'],
   is_mergeable: true,
   autoreverse: false,
-  properties:
-  {groups_list: {
-      type:"array",
-      title: "Group to manage",
-      title_es: "Grupos para gestionar",
+  properties: {
+    groups_list: {
+      type: 'array',
+      title: 'Group to manage',
+      title_es: 'Grupos para gestionar',
       uniqueItems: true,
       items: {
-        type:"object",
-        required: ["group","user","action"],
-        order:["group", "user", "action"],
-        mergeIdField: ["group", "user"],
-        mergeActionField: "action",
+        type: 'object',
+        required: %w[group user action],
+        order: %w[group user action],
+        mergeIdField: %w[group user],
+        mergeActionField: 'action',
         additionalProperties: false,
-        properties:{
-          group: { type: "string", title: "Group", title_es: "Grupo" },
-          user: { type: "string",title: "User", title_es: "Usuario" },
-          action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+        properties: {
+          group: {
+            type: 'string',
+            title: 'Group',
+            title_es: 'Grupo'
+          },
+          user: {
+            type: 'string',
+            title: 'User',
+            title_es: 'Usuario'
+          },
+          action: {
+            title: 'Action',
+            title_es: 'Acción',
+            type: 'string',
+            enum: %w[add remove]
+          }
         }
-     }
-  },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-  }, 
-  support_os: support_os_js.clone,
-  updated_by: updated_js
- }
+      }
+    },
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
 }
 
 local_file_js = {
-  title: "Local files",
-  title_es: "Archivos locales",
-  type: "object",
-  required: ["localfiles"],
-                                        
+  title: 'Local files',
+  title_es: 'Archivos locales',
+  type: 'object',
+  required: ['localfiles'],
   is_mergeable: true,
   autoreverse: false,
   additionalProperties: false,
   form: {
-    type: "array",            
-    title: "Files list",              
-    title_es: "Lista de archivos",
-    items: {  
-      type: "section",
+    type: 'array',
+    title: 'Files list',
+    title_es: 'Lista de archivos',
+    items: {
+      type: 'section',
       items: [
-         "localfiles[].file_dest",
-         {
-          type: "selectfieldset",
-          title: "Select an action",
-          title_es: "Seleccione una acción",
-          key: "localfiles[].action",
+        'localfiles[].file_dest',
+        {
+          type: 'selectfieldset',
+          title: 'Select an action',
+          title_es: 'Seleccione una acción',
+          key: 'localfiles[].action',
           items: [
             {
-              type:"section",
+              type: 'section',
               items: [
-                "localfiles[].file",
-                "localfiles[].user",
-                "localfiles[].group",
-                "localfiles[].mode",
-                "localfiles[].overwrite"
+                'localfiles[].file',
+                'localfiles[].user',
+                'localfiles[].group',
+                'localfiles[].mode',
+                'localfiles[].overwrite'
               ]
             },
             {
-              type:"section",
+              type: 'section',
               items: [
-                "localfiles[].backup"
+                'localfiles[].backup'
               ]
             }
           ]
-         }
+        }
       ]
     }
   },
   properties:
   {
     localfiles: {
-      type:"array",
-      title: "Files list",
-      title_es: "Lista de archivos",
+      type: 'array',
+      title: 'Files list',
+      title_es: 'Lista de archivos',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type:"object",
-        required: ["action","file_dest"],
-        order:["action","file_dest"],
-        mergeIdField: ["file_dest"],
-        mergeActionField: "action",
-        properties:{
-          action:{title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]},
-          file_dest: {type: "string", title: "File Path", title_es: "Ruta del archivo", description: "Enter the absolute path where the file is saved", description_es: "Introduzca la ruta absoluta donde se guardará el archivo"},
-          user: {type: "string", title:"User", title_es: "Usuario"},
-          group: {type: "string", title: "Group", title_es: "Grupo"},
-          mode: {type: "string", title: "Mode", title_es: "Permisos"},
-          overwrite: {type: "boolean", title: "Overwrite?", title_es: "Sobrescribir"},
-          backup: { type: "boolean", title: "Create backup?", title_es: "¿Crear copia de seguridad?" },
-          file: {type: "string", title: "File URL", title_es: "URL del archivo", description: "Enter the URL where the file was downloaded", description_es: "Introduzca la URL donde se descargará el archivo"},
-
+        type: 'object',
+        required: %w[action file_dest],
+        order: %w[action file_dest],
+        mergeIdField: ['file_dest'],
+        mergeActionField: 'action',
+        properties: {
+          action: {
+            title: 'Action',
+            title_es: 'Acción',
+            type: 'string',
+            enum: %w[add remove]
+          },
+          file_dest: {
+            type: 'string',
+            title: 'File Path',
+            title_es: 'Ruta del archivo',
+            description: 'Enter the absolute path where the file is saved',
+            description_es: 'Introduzca la ruta absoluta donde se guardará el'\
+              ' archivo'
+          },
+          user: {
+            type: 'string',
+            title: 'User',
+            title_es: 'Usuario'
+          },
+          group: {
+            type: 'string',
+            title: 'Group',
+            title_es: 'Grupo'
+          },
+          mode: {
+            type: 'string',
+            title: 'Mode',
+            title_es: 'Permisos'
+          },
+          overwrite: {
+            type: 'boolean',
+            title: 'Overwrite?',
+            title_es: 'Sobrescribir'
+          },
+          backup: {
+            type: 'boolean',
+            title: 'Create backup?',
+            title_es: '¿Crear copia de seguridad?'
+          },
+          file: {
+            type: 'string',
+            title: 'File URL',
+            title_es: 'URL del archivo',
+            description: 'Enter the URL where the file was downloaded',
+            description_es: 'Introduzca la URL donde se descargará el archivo'
+          }
         }
       }
-  },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-  }, 
-  support_os: support_os_js.clone,
-  updated_by: updated_js
- }
+    },
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
 }
 
 local_admin_users_js = {
-  title: "Local Administrators",
-  title_es: "Administradores locales",
-  type: "object",
-  required: ["local_admin_list"],
-  order: ["local_admin_list"],
+  title: 'Local Administrators',
+  title_es: 'Administradores locales',
+  type: 'object',
+  required: ['local_admin_list'],
+  order: ['local_admin_list'],
   is_mergeable: true,
   autoreverse: false,
-  properties:
-   
-  {local_admin_list: {
-      type:"array",
-      title: "users",
-      title_es: "Usuarios", 
-      description: "Enter a local user to grant administrator rights",
-      description_es: "Escriba un usuario local para concederle permisos de administrador",
+  properties: {
+    local_admin_list: {
+      type: 'array',
+      title: 'users',
+      title_es: 'Usuarios',
+      description: 'Enter a local user to grant administrator rights',
+      description_es: 'Escriba un usuario local para concederle permisos de'\
+        ' administrador',
       items: {
-        type: "object",
-        required: ["name", "action"],
-        order: ["name", "action"],
-        mergeIdField: ["name"],
-        mergeActionField: "action",
+        type: 'object',
+        required: %w[name action],
+        order: %w[name action],
+        mergeIdField: ['name'],
+        mergeActionField: 'action',
         properties: {
-          name: {title: "Name", title_es: "Nombre", type: "string"},
-          action: {title: "Action", title_es: "Acción", type: "string", enum: ["add", "remove"]}
+          name: {
+            title: 'Name',
+            title_es: 'Nombre',
+            type: 'string'
+          },
+          action: {
+            title: 'Action',
+            title_es: 'Acción',
+            type: 'string',
+            enum: %w[add remove]
+          }
         }
       }
-  },
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-  }, 
-  support_os: support_os_js.clone,
-  updated_by: updated_js
- }
+    },
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
 }
 
 folder_sync_js = {
-  title: "Folder to sync",
-  title_es: "Carpeta para sincronizar",
-  type: "object",
-  required: ["users"],
+  title: 'Folder to sync',
+  title_es: 'Carpeta para sincronizar',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
-  properties:
-  {users: {
-    title: "Users", 
-    title_es: "Usuarios",
-    type: "object",
-    patternProperties: {
-      ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-        properties: {
-          owncloud_url: {title: "Owncloud URL", title_es: "URL de Owncloud", type: "string"},
-          updated_by: updated_js
-        }
-      }
-    }
-  },
-  support_os: support_os_js.clone,
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-  }
- }
-}
-
-power_conf_js = {
-  title: "Power management",
-  title_es: "Administración de energía",
-  type: "object",
-#  required: ["cpu_freq_gov","auto_shutdown","usb_autosuspend"],
-  order: ["cpu_freq_gov", "usb_autosuspend", "auto_shutdown"],
-  is_mergeable: false,
-  autoreverse: false,
-  properties:
-    {cpu_freq_gov: {
-       title: "CPU frequency governor",
-       title_es: "Control de la frecuencia de la CPU", 
-       type: "string",
-       enum: ["userspace","powersave","conservative","ondemand","performance",""]
-       },
-    usb_autosuspend: 
+  form: {
+    type: 'section',
+    items: [
+      'owncloud_url',
+      'owncloud_authuser',
+      'owncloud_notifications',
       {
-       title: "USB autosuspend",
-       title_es: "Suspensión automática de USB",
-       type: "string",  
-       enum: ["enable","disable", ""]
-       },
-     auto_shutdown: {
-       type: "object",
-       order: ["hour", "minute"],
-       properties: {
-         hour: {
-           title: "Hour",
-           title_es: "Hora",
-           description:"Time when the computer is shutdown",
-           description_es: "Hora en que se apagará el equipo",
-           type: "integer",
-           maximum: 23
-           },
-         minute: {
-           title: "Minute",
-           title_es: "Minuto",
-           description:"Minute the computer will shutdown",
-           description_es: "Minuto en que se apagará el equipo",
-           type: "integer",
-           maximum: 59
-         }
-       }  
+        key: 'owncloud_ask',
+        value: 0
+      },
+      {
+        key: 'owncloud_upload_bandwith',
+        type: 'range',
+        value: 50
+      },
+      {
+        key: 'owncloud_download_bandwith',
+        type: 'range',
+        value: 100
+      },
+      'owncloud_folders'
+    ]
   },
-  support_os: support_os_js.clone,
-  job_ids: {
-    type: "array",
-    minItems: 0,
-    uniqueItems: true,
-    items: {
-      type: "string"
-    }
-  }, 
-  updated_by: updated_js
- }
-}
-
-shutdown_options_js = {
-  title: "Shutdown Options",
-  title_es: "Opciones de apagado",
-  type: "object",
-  required: ["users"],
-  is_mergeable: false,
-  autoreverse: false,
-  properties: { 
-    systemlock: { type: "boolean", title: "System-wide lockdown of the key", title_es: "Bloqueo para todo el sistema de la llave"},
+  properties: {
     users: {
-      type: "object", 
-      title: "Users",
-      title_es: "Usuarios",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { type: "object", title: "Username", title_es: "Nombre de usuario",
-          required: ["disable_log_out"],
-          properties:{
-            disable_log_out: {
-              title: "Disable log out?",
-              title_es: "¿Desactivar apagado?",
-              description: "Checking the box will not allow the computer turns off",
-              description_es: "Si activa la casilla no permitira el apagado del equipo",
-              type: "boolean",
-              default: false
-            }, 
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          order: %w[
+            owncloud_url
+            owncloud_authuser
+            owncloud_notifications
+            owncloud_ask
+            owncloud_upload_bandwith
+            owncloud_download_bandwith
+            owncloud_folders
+          ],
+          properties: {
+            owncloud_url: {
+              title: 'Owncloud URL',
+              title_es: 'URL de Owncloud',
+              type: 'string'
+            },
+            owncloud_authuser: {
+              title: 'User',
+              title_es: 'Usuario',
+              type: 'string'
+            },
+            owncloud_notifications: {
+              title: 'Desktop Notifications',
+              title_es: 'Notificaciones de Escritorio',
+              type: 'boolean'
+            },
+            owncloud_ask: {
+              title: 'Ask confirmation before downloading folders larger than',
+              title_es: 'Preguntar antes de descargar carpetas de más de',
+              type: 'integer'
+            },
+            owncloud_upload_bandwith: {
+              title: 'Upload Bandwith',
+              title_es: 'Ancho de banda de subida',
+              type: 'integer',
+              minimum: 0,
+              maximum: 500,
+              exclusiveMinimum: false,
+              exclusiveMaximum: false,
+              description: 'Between 0 and 500 KB/s'
+            },
+            owncloud_download_bandwith: {
+              title: 'Download Bandwith',
+              title_es: 'Ancho de banda de bajada',
+              type: 'integer',
+              minimum: 0,
+              maximum: 500,
+              exclusiveMinimum: false,
+              exclusiveMaximum: false,
+              description: 'Between 0 and 500 KB/s'
+            },
+            owncloud_folders: {
+              title: 'Sync folders',
+              title_es: 'Carpetas a sincronizar',
+              minItems: 0,
+              uniqueItems: true,
+              type: 'array',
+              items: {
+                type: 'string'
+              }
+            },
             updated_by: updated_js
           }
         }
@@ -2269,51 +2394,153 @@ shutdown_options_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     }
- }
+  }
 }
 
-mimetypes_js = {
-  title: "Default aplications per (MIME) type",
-  title_es: "Aplicaciones preferidas por tipo (MIME)",
-  type: "object",
+power_conf_js = {
+  title: 'Power management',
+  title_es: 'Administración de energía',
+  type: 'object',
+  order: %w[cpu_freq_gov usb_autosuspend auto_shutdown],
+  is_mergeable: false,
+  autoreverse: false,
+  properties: {
+    cpu_freq_gov: {
+      title: 'CPU frequency governor',
+      title_es: 'Control de la frecuencia de la CPU',
+      type: 'string',
+      enum: ['userspace', 'powersave', 'conservative', 'ondemand',
+             'performance', '']
+    },
+    usb_autosuspend: {
+      title: 'USB autosuspend',
+      title_es: 'Suspensión automática de USB',
+      type: 'string',
+      enum: ['enable', 'disable', '']
+    },
+    auto_shutdown: {
+      type: 'object',
+      order: %w[hour minute],
+      properties: {
+        hour: {
+          title: 'Hour',
+          title_es: 'Hora',
+          description: 'Time when the computer is shutdown',
+          description_es: 'Hora en que se apagará el equipo',
+          type: 'integer',
+          maximum: 23
+        },
+        minute: {
+          title: 'Minute',
+          title_es: 'Minuto',
+          description: 'Minute the computer will shutdown',
+          description_es: 'Minuto en que se apagará el equipo',
+          type: 'integer',
+          maximum: 59
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    updated_by: updated_js
+  }
+}
+
+shutdown_options_js = {
+  title: 'Shutdown Options',
+  title_es: 'Opciones de apagado',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     users: {
-      type: "object",
-      title: "Users",
-      title_es: "Usuarios",
+      type: 'object',
+      title: 'Users',
+      title_es: 'Usuarios',
       patternProperties: {
-        ".*" => {
-          type: "object",
-          title: "Username",
-          title_es: "Nombre de usuario",
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: ['disable_log_out'],
+          properties: {
+            disable_log_out: {
+              title: 'Disable log out?',
+              title_es: '¿Desactivar apagado?',
+              description: 'Checking the box will not allow the computer '\
+                'turns off',
+              description_es: 'Si activa la casilla no permitira el apagado '\
+                'del equipo',
+              type: 'boolean',
+              default: false
+            },
+            updated_by: updated_js
+          }
+        }
+      }
+    },
+    support_os: support_os_js.clone,
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    }
+  }
+}
+
+mimetypes_js = {
+  title: 'Default aplications per (MIME) type',
+  title_es: 'Aplicaciones preferidas por tipo (MIME)',
+  type: 'object',
+  is_mergeable: false,
+  autoreverse: false,
+  properties: {
+    users: {
+      type: 'object',
+      title: 'Users',
+      title_es: 'Usuarios',
+      patternProperties: {
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
           properties: {
             mimetyperelationship: {
-              type: "array",
+              type: 'array',
               items: {
-                type: "object",
-                required: ["desktop_entry","mimetypes"],
-                order: ["desktop_entry","mimetypes"],
+                type: 'object',
+                required: %w[desktop_entry mimetypes],
+                order: %w[desktop_entry mimetypes],
                 properties: {
                   desktop_entry: {
-                    title: "Default Program",
-                    title_es: "Programa por defecto",
-                    type:"string"
+                    title: 'Default Program',
+                    title_es: 'Programa por defecto',
+                    type: 'string'
                   },
                   mimetypes: {
-                    title: "Mimetypes",
-                    title_es: "Tipos MIME",
-                    type: "array",
+                    title: 'Mimetypes',
+                    title_es: 'Tipos MIME',
+                    type: 'array',
                     items: {
-                      type: "string"
+                      type: 'string'
                     }
                   }
                 }
@@ -2325,119 +2552,122 @@ mimetypes_js = {
     },
     support_os: support_os_js.clone,
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     }
   }
 }
 
 system_proxy_js = {
-  title: "Proxy Configuration",
-  title_es: "Configuración de Proxy",
-  type: "object",
-  required: ["global_config","mozilla_config"],
-  order: ["global_config","mozilla_config"],
+  title: 'Proxy Configuration',
+  title_es: 'Configuración de Proxy',
+  type: 'object',
+  required: %w[global_config mozilla_config],
+  order: %w[global_config mozilla_config],
   is_mergeable: false,
   autoreverse: false,
   properties: {
     global_config: {
-      title: "Global Proxy Configuration",
-      title_es: "Configuración General del Proxy",
-      type: "object",
-      order: ["http_proxy","http_proxy_port","https_proxy","https_proxy_port","proxy_autoconfig_url","disable_proxy"],
-      properties: {  
+      title: 'Global Proxy Configuration',
+      title_es: 'Configuración General del Proxy',
+      type: 'object',
+      order: %w[http_proxy http_proxy_port https_proxy https_proxy_port
+                proxy_autoconfig_url disable_proxy],
+      properties: {
         http_proxy: {
-          title: "HTTP Proxy",
-          title_es: "Proxy HTTP",
-          type: "string"
+          title: 'HTTP Proxy',
+          title_es: 'Proxy HTTP',
+          type: 'string'
         },
         http_proxy_port: {
-          title: "HTTP Proxy Port",
-          title_es: "Puerto del Proxy HTTP",
-           type: "number",
+          title: 'HTTP Proxy Port',
+          title_es: 'Puerto del Proxy HTTP',
+          type: 'number',
           default: 80
         },
         https_proxy: {
-          title: "HTTPS Proxy",
-          title_es: "Proxy HTTPS",
-          type: "string"
+          title: 'HTTPS Proxy',
+          title_es: 'Proxy HTTPS',
+          type: 'string'
         },
         https_proxy_port: {
-          title: "HTTPS Proxy Port",
-          title_es: "Puerto del Proxy HTTPS",
-           type: "number",
+          title: 'HTTPS Proxy Port',
+          title_es: 'Puerto del Proxy HTTPS',
+          type: 'number',
           default: 443
         },
         proxy_autoconfig_url: {
-          title: "Proxy Autoconfiguration URL",
-          title_es: "Url de Autoconfiguración del Proxy",
-           type: "string"
+          title: 'Proxy Autoconfiguration URL',
+          title_es: 'Url de Autoconfiguración del Proxy',
+          type: 'string'
         },
         disable_proxy: {
-          title: "Disable proxy configuration?",
-          title_es: "¿Desactivar proxy?",
-          description_es: "Si activa la casilla, desactiva la configuración del proxy",
-          type: "boolean",
+          title: 'Disable proxy configuration?',
+          title_es: '¿Desactivar proxy?',
+          description_es: 'Si activa la casilla, desactiva la configuración '\
+            'del proxy',
+          type: 'boolean',
           default: false
         }
       }
     },
     mozilla_config: {
-      title:"Mozilla Proxy Configuration (Firefox/Thunderbird)",
-      title_es:"Configuración del Proxy en Mozilla (Firefox/Thunderbird)",
-      type: "object",
-      order: ["mode","http_proxy","http_proxy_port","https_proxy","https_proxy_port","proxy_autoconfig_url","no_proxies_on"],
+      title: 'Mozilla Proxy Configuration (Firefox/Thunderbird)',
+      title_es: 'Configuración del Proxy en Mozilla (Firefox/Thunderbird)',
+      type: 'object',
+      order: %w[mode http_proxy http_proxy_port https_proxy https_proxy_port
+                proxy_autoconfig_url no_proxies_on],
       properties: {
         mode: {
-          type: "string",
-          title: "Configuration Mode",  
-          title_es:"Forma de Configurarlo",
-          enum: [ "NO PROXY", "AUTODETECT", "SYSTEM", "MANUAL","AUTOMATIC" ]
+          type: 'string',
+          title: 'Configuration Mode',
+          title_es: 'Forma de Configurarlo',
+          enum: ['NO PROXY', 'AUTODETECT', 'SYSTEM', 'MANUAL', 'AUTOMATIC']
         },
         http_proxy: {
-          title: "HTTP Proxy",
-          title_es: "Proxy HTTP",
-          type:"string"
+          title: 'HTTP Proxy',
+          title_es: 'Proxy HTTP',
+          type: 'string'
         },
         http_proxy_port: {
-          title: "HTTP Proxy Port",
-          title_es: "Puerto del Proxy HTTP",
-          type:"number",
+          title: 'HTTP Proxy Port',
+          title_es: 'Puerto del Proxy HTTP',
+          type: 'number',
           default: 80
         },
         https_proxy: {
-          title: "HTTPS Proxy",
-          title_es: "Proxy HTTPS",
-          type:"string"
+          title: 'HTTPS Proxy',
+          title_es: 'Proxy HTTPS',
+          type: 'string'
         },
         https_proxy_port: {
-          title: "HTTPS Proxy Port",
-          title_es: "Puerto del Proxy HTTPS",
-          type:"number",
+          title: 'HTTPS Proxy Port',
+          title_es: 'Puerto del Proxy HTTPS',
+          type: 'number',
           default: 443
         },
         proxy_autoconfig_url: {
-          title: "Proxy Autoconfiguration URL",
-          title_es: "URL de Autoconfiguración Proxy",
-          type:"string"
+          title: 'Proxy Autoconfiguration URL',
+          title_es: 'URL de Autoconfiguración Proxy',
+          type: 'string'
         },
         no_proxies_on: {
-          title: "Ignore proxy for",
-          title_es: "No usar proxy para",
-          type:"string"
+          title: 'Ignore proxy for',
+          title_es: 'No usar proxy para',
+          type: 'string'
         }
       }
     },
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     },
     support_os: support_os_js.clone,
@@ -2446,158 +2676,208 @@ system_proxy_js = {
 }
 
 display_manager_js = {
-  title: "Display Manager",
-  title_es: "Gestor de inicio de sesión",
-  type: "object",
+  title: 'Display Manager',
+  title_es: 'Gestor de inicio de sesión',
+  type: 'object',
   is_mergeable: false,
   autoreversible: false,
+  form: {
+    type: 'section',
+    items: [
+      'dm',
+      'autologin',
+      type: 'section',
+      items: [
+        {
+          key: 'autologin_options.username',
+          value: ' '
+        },
+        {
+          key: 'autologin_options.timeout',
+          value: 0
+        },
+        'session_script'
+      ]
+    ]
+  },
   properties:
   {
     dm: {
-      type: "string",
-      title: "Select a Display Manager",
-      title_es: "Seleccione un Display Manager",
-      enum: ["MDM", "LightDM"],
-      description: "Autologin timeout in MDM can not be less than 5 seconds. For a kiosk workstation LightDM is recommended because it has got no minimum timeout",
-      description_es: "MDM tiene un tiempo de espera de login automático no inferior a 5 segundos. Para un kiosco se recomienda LightDM al no tener tiempo de espera mínimo"
+      type: 'string',
+      title: 'Select a Display Manager',
+      title_es: 'Seleccione un Display Manager',
+      enum: %w[MDM LightDM],
+      description: 'Autologin timeout in MDM can not be less than 5 seconds.'\
+        ' For a kiosk workstation LightDM is recommended because it has got no'\
+        ' minimum timeout',
+      description_es: 'MDM tiene un tiempo de espera de login automático no '\
+        'inferior a 5 segundos. Para un kiosco se recomienda LightDM al no '\
+        'tener tiempo de espera mínimo'
     },
     autologin: {
-      type:"boolean",
-      title: "Check this box to enable automatic login",
-      title_es: "Si activa la casilla, habilitará el login automático"
+      type: 'boolean',
+      title: 'Check this box to enable automatic login',
+      title_es: 'Si activa la casilla, habilitará el login automático'
     },
     autologin_options: {
-        type: "object",
-        required: ["username","timeout"],
-        properties: {
-           username: {
-             title: "Username",
-             title_es: "Usuario",
-             type: "string",
-             default: ""
-           },
-           timeout: {
-             title: "Autologin user timeout ",
-             title_es: "Timeout de autologin",
-             type: "integer",
-             default: 15
-           }
+      type: 'object',
+      required: %w[username timeout],
+      properties: {
+        username: {
+          title: 'Username',
+          title_es: 'Usuario',
+          type: 'string',
+          default: ''
+        },
+        timeout: {
+          title: 'Autologin user timeout ',
+          title_es: 'Timeout de autologin',
+          type: 'integer',
+          default: 15
         }
+      }
+    },
+    session_script: {
+      type: 'string',
+      title: 'Script will run before a user session starts.',
+      title_es: 'Script que se ejecutará antes de que arranque'\
+        'la sesión de usuario'
     },
     support_os: support_os_js.clone,
     updated_by: updated_js
   },
   dependencies: {
-    autologin: ["autologin_options"]
+    autologin: ['autologin_options']
   },
   customFormItems: {
     autologin: {
-      inlinetitle: "Si activa la casilla, habilitará el login automático",
+      inlinetitle: 'Si activa la casilla, habilitará el login automático',
       toggleNext: 1
     }
   }
 }
 
 idle_timeout_js = {
-  title: "Idle session timeout",
-  title_es: "Control de inactividad de sesión",
-  type: "object",
-  required: ["users"],
+  title: 'Idle session timeout',
+  title_es: 'Control de inactividad de sesión',
+  type: 'object',
+  required: ['users'],
   is_mergeable: false,
   autoreverse: false,
   form: {
-      type:"section",
+    type: 'section',
+    items: [
+      'idle_enabled',
+      type: 'section',
       items: [
-        "idle_enabled",
-        type:"section",
-        items: [
-          "idle_options.timeout",
-          "idle_options.command",
-          {
-            key:"idle_options.notification",
-            type:"textarea"
-          }
-        ]
-     ]
+        {
+          key: 'idle_options.timeout',
+          value: 0
+        },
+        {
+          key: 'idle_options.command',
+          value: ' '
+        },
+        {
+          key: 'idle_options.notification',
+          type: 'textarea',
+          value: ' '
+        }
+      ]
+    ]
   },
   properties: {
     users: {
-      title: "Users",
-      title_es: "Usuarios",
-      type: "object",
+      title: 'Users',
+      title_es: 'Usuarios',
+      type: 'object',
       patternProperties: {
-        ".*" => { 
-          type: "object",
-          title: "Username",
-          title_es: "Nombre de usuario",
-          required: ["idle_enabled"],
+        '.*' => {
+          type: 'object',
+          title: 'Username',
+          title_es: 'Nombre de usuario',
+          required: ['idle_enabled'],
           properties: {
             idle_enabled: {
-              title: "Idle session enabled?",
-              title_es: "¿Control de inactividad habilitado?",
-              type: "boolean",
-              enum: [true,false],
-              default:true
+              title: 'Idle session enabled?',
+              title_es: '¿Control de inactividad habilitado?',
+              type: 'boolean',
+              enum: [true, false],
+              default: true
             },
             idle_options: {
-              type: "object",
-              title: "Idle options",
-              title_es: "Opciones de configuración",
+              type: 'object',
+              title: 'Idle options',
+              title_es: 'Opciones de configuración',
+              required: %w[timeout command],
               properties: {
-                timeout: {title:"Idle time", title_es: "Tiempo de inactividad", type:"integer",description:"(mins)"},
-                command: {title:"Command", title_es:"Comando", type:"string"},
-                notification: {title:"Notification", title_es:"Notificacion", type:"string"},
-              },
+                timeout: {
+                  title: 'Idle time',
+                  title_es: 'Tiempo de inactividad',
+                  type: 'integer',
+                  description: '(mins)'
+                },
+                command: {
+                  title: 'Command',
+                  title_es: 'Comando',
+                  type: 'string'
+                },
+                notification: {
+                  title: 'Notification',
+                  title_es: 'Notificacion',
+                  type: 'string'
+                }
+              }
             },
             updated_by: updated_js
           },
           dependencies: {
-            idle_enabled: ["idle_options"]
+            idle_enabled: ['idle_options']
           },
           customFormItems: {
             idle_enabled: {
-              inlinetitle: "Si activa la casilla, habilitará el control de sesión",
+              inlinetitle: 'Si activa la casilla, habilitará el control de '\
+                'sesión',
               toggleNext: 1
             }
-          },
+          }
         }
       }
     },
     support_os: support_os_js.clone,
     job_ids: {
-        type: "array",
-        minItems: 0,
-        uniqueItems: true,
-        items: {
-          type: "string"
-        }
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
     }
   }
 }
 
-
 ttys_js = {
-  title: "TTYs Configuration",
-  title_es: "Configuración de Consolas Virtuales",
-  type: "object",
+  title: 'TTYs Configuration',
+  title_es: 'Configuración de Consolas Virtuales',
+  type: 'object',
   is_mergeable: false,
   autoreversible: false,
-  properties:
-  {
+  properties: {
     disable_ttys: {
-      type:"boolean",
-      title: "Disable ttys",
-      title_es: "Deshabilitar consolas virtuales",
-      description: "Checking the box will disable all ttys",
-      description_es: "Si activa la casilla, deshabilitará todas las consolas virtuales del equipo",
+      type: 'boolean',
+      title: 'Disable ttys',
+      title_es: 'Deshabilitar consolas virtuales',
+      description: 'Checking the box will disable all ttys',
+      description_es: 'Si activa la casilla, deshabilitará todas las consolas'\
+        ' virtuales del equipo',
       default: false
     },
     job_ids: {
-      type: "array",
+      type: 'array',
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: "string"
+        type: 'string'
       }
     },
     support_os: support_os_js.clone,
@@ -2605,107 +2885,193 @@ ttys_js = {
   }
 }
 
-network_resource_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-tz_date_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-scripts_launch_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-local_users_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-local_file_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-auto_updates_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-boot_lock_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS",  "GECOS V3 Lite", "Gecos V2 Lite"]
-local_groups_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-power_conf_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-local_admin_users_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-software_sources_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-package_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS",  "GECOS V3 Lite", "Gecos V2 Lite"]
-package_profile_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2","Ubuntu 14.04.1 LTS",  "GECOS V3 Lite", "Gecos V2 Lite"]
-app_config_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-appconfig_libreoffice_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-appconfig_thunderbird_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-appconfig_firefox_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-appconfig_java_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-printers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-user_shared_folders_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
-web_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-email_client_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-file_browser_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
-user_launchers_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-desktop_background_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
-desktop_menu_js[:properties][:support_os][:default]=[]
-desktop_control_js[:properties][:support_os][:default]=[]
-user_apps_autostart_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-folder_sharing_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
-screensaver_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
-folder_sync_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2"]
-user_mount_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-user_alerts_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-remote_shutdown_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-forticlientvpn_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-user_modify_nm_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-shutdown_options_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-cert_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-mobile_broadband_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-mimetypes_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-system_proxy_js[:properties][:support_os][:default]=["GECOS V3", "GECOS V2",  "GECOS V3 Lite", "Gecos V2 Lite"]
-display_manager_js[:properties][:support_os][:default]=["GECOS Kiosk"]
-idle_timeout_js[:properties][:support_os][:default]=["GECOS Kiosk"]
-ttys_js[:properties][:support_os][:default]=["GECOS Kiosk"]
+remote_control_js = {
+  title: 'Remote Control',
+  title_es: 'Control Remoto',
+  type: 'object',
+  is_mergeable: false,
+  autoreversible: false,
+  form: {
+    type: 'section',
+    items: [
+      {
+        type: 'fieldset',
+        title: 'Basics',
+        title_es: 'Básicos',
+        items: [ 
+	  'enable_helpchannel',
+	  'enable_ssh'
+	]
+      },
+      {
+        type: 'fieldset',
+        title: 'Advanced (only experts)',
+        title_es: 'Avanzados (sólo para expertos)',
+        items: [
+	  'tunnel_url',
+	  {
+            key: 'ssl_verify',
+	    value: true
+	  }
+	]
+      }
+    ]
+  },
+  properties: {
+    enable_helpchannel: {
+      type: 'boolean',
+      title: 'Enable HelpChannel',
+      title_es: 'Habilitar HelpChannel',
+      description: 'Checking the box will enable remote control',
+      description_es: 'Si activa la casilla, habilitará HelpChannel',
+      default: false
+    },
+    enable_ssh: {
+      type: 'boolean',
+      title: 'Enable SSH',
+      title_es: 'Habilitar SSH',
+      description: 'Checking the box will enable SSH',
+      description_es: 'Si activa la casilla, habilitará SSH',
+      default: false
+    },
+    tunnel_url: {
+      type: 'string',
+      title: 'Tunnel URL',
+      title_es: 'URL del túnel',
+      description: 'Tunnel server URL',
+      description_es: 'URL del servidor de túneles'
+    },
+    ssl_verify: {
+      type: 'boolean',
+      title: 'SSL verification',
+      title_es: 'Verificación SSL',
+      description: 'Verify server certificate',
+      description_es: 'Verificar certificado de servidor',
+      default: true
+    },
+    job_ids: {
+      type: 'array',
+      minItems: 0,
+      uniqueItems: true,
+      items: {
+        type: 'string'
+      }
+    },
+    support_os: support_os_js.clone,
+    updated_by: updated_js
+  }
+}
 
+ALL_GECOS_VERS = ['GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
+                  'Gecos V2 Lite'].freeze
+UBUNTU_BASED = ['GECOS V3', 'GECOS V2', 'GECOS V3 Lite', 'Gecos V2 Lite',
+                'Ubuntu 14.04.1 LTS'].freeze
+GECOS_FULL = ['GECOS V3', 'GECOS V2'].freeze
+debug_mode_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+network_resource_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+tz_date_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+scripts_launch_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+local_users_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+local_file_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+auto_updates_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+boot_lock_js[:properties][:support_os][:default] = UBUNTU_BASED
+local_groups_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+power_conf_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+local_admin_users_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+software_sources_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+package_js[:properties][:support_os][:default] = UBUNTU_BASED
+appconfig_libreoffice_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+appconfig_thunderbird_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+appconfig_firefox_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+appconfig_java_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+printers_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+user_shared_folders_js[:properties][:support_os][:default] = GECOS_FULL
+web_browser_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+email_setup_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+im_client_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+file_browser_js[:properties][:support_os][:default] = GECOS_FULL
+user_launchers_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+desktop_background_js[:properties][:support_os][:default] = GECOS_FULL
+user_apps_autostart_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+folder_sharing_js[:properties][:support_os][:default] = GECOS_FULL
+screensaver_js[:properties][:support_os][:default] = GECOS_FULL
+folder_sync_js[:properties][:support_os][:default] = GECOS_FULL
+user_mount_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+user_alerts_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+remote_shutdown_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+forticlientvpn_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+user_modify_nm_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+shutdown_options_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+cert_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+mobile_broadband_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+mimetypes_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+system_proxy_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+display_manager_js[:properties][:support_os][:default] = ['GECOS Kiosk']
+idle_timeout_js[:properties][:support_os][:default] = ['GECOS Kiosk']
+ttys_js[:properties][:support_os][:default] = ['GECOS Kiosk']
+remote_control_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 
 complete_js = {
-  description: "GECOS workstation management LWRPs json-schema",
-  description_es: "Estación de trabajo de gestión GECOS LWRPs json-schema",
+  description: 'GECOS workstation management LWRPs json-schema',
+  description_es: 'Estación de trabajo de gestión GECOS LWRPs json-schema',
   id: "http://gecos-server/cookbooks/#{name}/#{version}/network-schema#",
-  required: ["gecos_ws_mgmt"],
-  type: "object",
+  required: ['gecos_ws_mgmt'],
+  type: 'object',
   properties: {
     gecos_ws_mgmt: {
-      type: "object",
-      required: ["network_mgmt","software_mgmt", "printers_mgmt", "misc_mgmt", "users_mgmt","single_node"],
+      type: 'object',
+      required: %w[network_mgmt software_mgmt printers_mgmt misc_mgmt
+                   users_mgmt single_node],
       properties: {
         network_mgmt: {
-          type: "object",
-          required: ["forticlientvpn_res","mobile_broadband_res","system_proxy_res"],
+          type: 'object',
+          required: %w[forticlientvpn_res mobile_broadband_res
+                       system_proxy_res],
           properties: {
             forticlientvpn_res: forticlientvpn_js,
             mobile_broadband_res: mobile_broadband_js,
             system_proxy_res: system_proxy_js
-            #sssd_res: sssd_js
           }
         },
         single_node: {
-          type: "object",
-          required: ["network_res"],
+          type: 'object',
+          required: %w[network_res debug_mode_res],
           properties: {
-            network_res: network_resource_js
+            network_res: network_resource_js,
+            debug_mode_res: debug_mode_js
           }
         },
         misc_mgmt: {
-          type: "object",
-          required: ["tz_date_res", "scripts_launch_res", "local_users_res", "local_groups_res", "local_file_res", "local_admin_users_res", "auto_updates_res","power_conf_res","remote_shutdown_res","cert_res","boot_lock_res"],
+          type: 'object',
+          required: %w[tz_date_res scripts_launch_res local_users_res
+                       local_groups_res local_file_res local_admin_users_res
+                       auto_updates_res power_conf_res remote_shutdown_res
+                       cert_res boot_lock_res ttys_res],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
             local_users_res: local_users_js,
             local_file_res: local_file_js,
-           # desktop_background_res: desktop_background_js,
             auto_updates_res: auto_updates_js,
             boot_lock_res: boot_lock_js,
             local_groups_res: local_groups_js,
             power_conf_res: power_conf_js,
             local_admin_users_res: local_admin_users_js,
             remote_shutdown_res: remote_shutdown_js,
-            cert_res: cert_js
-#            ttys_res: ttys_js,
+            cert_res: cert_js,
+            ttys_res: ttys_js,
+	    remote_control_res: remote_control_js
           }
         },
         software_mgmt: {
-          type: "object",
-          required: ["software_sources_res","package_res", "app_config_res","appconfig_libreoffice_res","appconfig_thunderbird_res","appconfig_firefox_res","appconfig_java_res","package_profile_res"],
+          type: 'object',
+          required: %w[software_sources_res package_res
+                       appconfig_libreoffice_res appconfig_thunderbird_res
+                       appconfig_firefox_res appconfig_java_res
+                       display_manager_res],
           properties: {
             software_sources_res: software_sources_js,
             package_res: package_js,
-            package_profile_res: package_profile_js,
-            app_config_res: app_config_js,
             appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
@@ -2714,25 +3080,30 @@ complete_js = {
           }
         },
         printers_mgmt: {
-          type: "object",
-          required: ["printers_res"],
+          type: 'object',
+          required: ['printers_res'],
           properties: {
             printers_res: printers_js
           }
         },
         users_mgmt: {
-          type: "object",
-          required: ["user_apps_autostart_res", "user_shared_folders_res", "web_browser_res", "email_client_res", "file_browser_res", "user_launchers_res", "desktop_menu_res", "desktop_control_res", "folder_sharing_res", "screensaver_res","folder_sync_res", "user_mount_res","shutdown_options_res","desktop_background_res","user_alerts_res","mimetypes_res"],
+          type: 'object',
+          required: %w[user_apps_autostart_res
+                       user_shared_folders_res web_browser_res
+                       email_setup_res im_client_res file_browser_res
+                       user_launchers_res folder_sharing_res screensaver_res
+                       folder_sync_res user_mount_res shutdown_options_res
+                       desktop_background_res user_alerts_res mimetypes_res
+                       idle_timeout_res],
           properties: {
             user_shared_folders_res: user_shared_folders_js,
             web_browser_res: web_browser_js,
-            email_client_res: email_client_js,
+            email_setup_res: email_setup_js,
+            im_client_res: im_client_js,
             file_browser_res: file_browser_js,
             user_alerts_res: user_alerts_js,
             user_launchers_res: user_launchers_js,
             desktop_background_res: desktop_background_js,
-            desktop_menu_res: desktop_menu_js,
-            desktop_control_res: desktop_control_js,
             user_apps_autostart_res: user_apps_autostart_js,
             folder_sharing_res: folder_sharing_js,
             screensaver_res: screensaver_js,
@@ -2750,8 +3121,8 @@ complete_js = {
 }
 
 attribute 'json_schema',
-  :display_name => "json-schema",
-  :description  => "Special attribute to include json-schema for defining cookbook's input",
-  :type         => "hash",
-  :object       => complete_js
-
+          display_name: 'json-schema',
+          description: 'Special attribute to include json-schema for defining'\
+            ' cookbook\'s input',
+          type: 'hash',
+          object: complete_js

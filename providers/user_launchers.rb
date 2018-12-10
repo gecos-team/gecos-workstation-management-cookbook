@@ -11,26 +11,19 @@
 
 action :setup do
   begin
-# OS identification moved to recipes/default.rb
-#    os = `lsb_release -d`.split(":")[1].chomp().lstrip()
-#    if new_resource.support_os.include?(os)
     if new_resource.support_os.include?($gecos_os)
-      users = new_resource.users 
+      users = new_resource.users
 
       case node['platform']
-        when 'debian', 'ubuntu', 'redhat', 'centos', 'fedora'
-          applications_path = "/usr/share/applications/"
-          subdirs = %w(Escritorio/)
-          file_ext  = '.desktop'
-        when 'windows'
-          # TODO
-        when 'mac_os_x'
-          # TODO
+      when 'debian', 'ubuntu', 'redhat', 'centos', 'fedora'
+        applications_path = '/usr/share/applications/'
+        subdirs = %w[Escritorio/]
+        file_ext = '.desktop'
       end
 
       users.each_key do |user_key|
-        nameuser = user_key 
-        username = nameuser.gsub('###','.')
+        nameuser = user_key
+        username = nameuser.gsub('###', '.')
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
 
@@ -45,41 +38,41 @@ action :setup do
             action :nothing
           end.run_action(:create)
         end
-        Chef::Log.debug("user_launchers ::: setup - desktop_path = #{desktop_path}")
+        Chef::Log.debug('user_launchers ::: setup - desktop_path = '\
+            "#{desktop_path}")
 
         user.launchers.each do |launcher|
-
-          if !launcher.name.end_with?(file_ext)
+          unless launcher.name.end_with?(file_ext)
             launcher.name.concat(file_ext)
           end
 
           src = applications_path + launcher.name
           dst = desktop_path + launcher.name
- 
+
           case launcher.action
-            when "add"
-              if ::File.file?(src)
-                FileUtils.cp src, dst
-                FileUtils.chown(username, gid, dst)
-                FileUtils.chmod 0755, dst
-                Chef::Log.info("Launcher created in #{dst}")
-              else
-                Chef::Log.warn("Desktop file #{src} not found")
-              end
-            when "remove"
-              if ::File.file?(dst)
-                FileUtils.rm dst
-                Chef::Log.info("Launcher removed from #{dst}")
-              else
-                Chef::Log.warn("Desktop file #{dst} not found")
-              end
+          when 'add'
+            if ::File.file?(src)
+              FileUtils.cp src, dst
+              FileUtils.chown(username, gid, dst)
+              FileUtils.chmod 0o0755, dst
+              Chef::Log.info("Launcher created in #{dst}")
             else
-              Chef::Log.warn("No action found")
+              Chef::Log.warn("Desktop file #{src} not found")
+            end
+          when 'remove'
+            if ::File.file?(dst)
+              FileUtils.rm dst
+              Chef::Log.info("Launcher removed from #{dst}")
+            else
+              Chef::Log.warn("Desktop file #{dst} not found")
+            end
+          else
+            Chef::Log.warn('No action found')
           end
         end
       end
     else
-      Chef::Log.info("Policy is not compatible with this operative system")
+      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
@@ -87,25 +80,25 @@ action :setup do
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
+  rescue StandardError => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace.join("\n"))
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if !e.message.frozen?
+        node.normal['job_status'][jid]['message'] =
+          e.message.force_encoding('utf-8')
       else
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
-    
-    gecos_ws_mgmt_jobids "user_launchers_res" do
-       recipe "users_mgmt"
+    gecos_ws_mgmt_jobids 'user_launchers_res' do
+      recipe 'users_mgmt'
     end.run_action(:reset)
-    
   end
 end

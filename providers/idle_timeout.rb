@@ -9,21 +9,15 @@
 # http://www.osor.eu/eupl
 #
 
-
-
 action :setup do
-
   begin
-
     if new_resource.support_os.include?($gecos_os)
-
-      package "zenity" do
-        action :nothing
-      end.run_action(:install)
-     
-      package 'xautolock' do
-        action :nothing
-      end.run_action(:install)
+      $required_pkgs['idle_timeout'].each do |pkg|
+        Chef::Log.debug("idle_timeout.rb - REQUIRED PACKAGE = #{pkg}")
+        package pkg do
+          action :nothing
+        end.run_action(:nothing)
+      end
 
       cookbook_file '/usr/bin/autolock.sh' do
         source 'autolock.sh'
@@ -34,7 +28,7 @@ action :setup do
 
       users.each_key do |user_key|
         nameuser = user_key
-        username = nameuser.gsub('###','.')
+        username = nameuser.gsub('###', '.')
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
 
@@ -44,8 +38,7 @@ action :setup do
         Chef::Log.debug("idle_timeout ::: home = #{home}")
 
         if user.idle_enabled
-
-          directory "#{autostart}" do
+          directory autostart.to_s do
             owner username
             group gid
             recursive true
@@ -54,7 +47,7 @@ action :setup do
           end.run_action(:create)
 
           cookbook_file "#{username}_autolock.desktop" do
-            source "autolock.desktop"
+            source 'autolock.desktop'
             path "#{autostart}/autolock.desktop"
             owner username
             group gid
@@ -62,59 +55,57 @@ action :setup do
             action :nothing
           end
 
+          var_hash = {
+            timeout: user.idle_options['timeout'],
+            command: user.idle_options['command'],
+            notification: user.idle_options['notification']
+          }
           template "#{home}/.autolock" do
             source 'autolock.erb'
             mode '0644'
-            variables ({
-              :timeout => user.idle_options['timeout'],
-              :command => user.idle_options['command'],
-              :notification => user.idle_options['notification']
-            })
-            notifies :create, "cookbook_file[#{username}_autolock.desktop]", :immediately
+            variables var_hash
+            notifies :create, "cookbook_file[#{username}_autolock.desktop]",
+                     :immediately
           end
 
         else
 
-          %W(#{autostart}/autolock.desktop #{home}/.autolock).each do |f|
+          %W[#{autostart}/autolock.desktop #{home}/.autolock].each do |f|
             file f do
               action :delete
-              only_if { ::File.exists?(f) }
+              only_if { ::File.exist?(f) }
             end
           end
-
         end
-
       end
-
     else
-      Chef::Log.info("This resource is not support into your OS")
+      Chef::Log.info('This resource is not supported in your OS')
     end
-    
+
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
+  rescue StandardError => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace.join("\n"))
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if !e.message.frozen?
+        node.normal['job_status'][jid]['message'] =
+          e.message.force_encoding('utf-8')
       else
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
   ensure
-    
-    gecos_ws_mgmt_jobids "idle_timeout_res" do
-       recipe "users_mgmt"
-    end.run_action(:reset) 
-    
+    gecos_ws_mgmt_jobids 'idle_timeout_res' do
+      recipe 'users_mgmt'
+    end.run_action(:reset)
   end
 end
-

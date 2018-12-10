@@ -12,7 +12,8 @@
 gecos_ws_mgmt_user_apps_autostart 'user apps autostart' do
   users node[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:users]
   job_ids node[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][:support_os]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:user_apps_autostart_res][
+    :support_os]
   action :setup
 end
 
@@ -26,15 +27,17 @@ end
 gecos_ws_mgmt_user_shared_folders 'user shared folders' do
   users node[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:users]
   job_ids node[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][:support_os]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:user_shared_folders_res][
+    :support_os]
   action :setup
 end
 
 gecos_ws_mgmt_desktop_background 'desktop background' do
   users node[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:users]
   job_ids node[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][:support_os]
-  action  :setup
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:desktop_background_res][
+    :support_os]
+  action :setup
 end
 
 gecos_ws_mgmt_screensaver 'localhost screensaver' do
@@ -51,25 +54,25 @@ gecos_ws_mgmt_web_browser 'web browser' do
   action :setup
 end
 
-gecos_ws_mgmt_email_client 'email client' do
-  users node[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:users]
-  job_ids node[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:users_mgmt][:email_client_res][:support_os]
+gecos_ws_mgmt_email_setup 'email setup' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:email_setup_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:email_setup_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:email_setup_res][:support_os]
+  action :setup
+end
+
+gecos_ws_mgmt_im_client 'im client setup' do
+  users node[:gecos_ws_mgmt][:users_mgmt][:im_client_res][:users]
+  job_ids node[:gecos_ws_mgmt][:users_mgmt][:im_client_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:im_client_res][:support_os]
   action :setup
 end
 
 gecos_ws_mgmt_shutdown_options 'shutdown options' do
   users node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:users]
-  systemset node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemset]
-  systemlock node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:systemlock]
   job_ids node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][:support_os]
-  action :setup
-end
-gecos_ws_mgmt_desktop_menu 'desktop menu' do
-  users node[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:users]
-  job_ids node[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:job_ids]
-  support_os node[:gecos_ws_mgmt][:users_mgmt][:desktop_menu_res][:support_os]
+  support_os node[:gecos_ws_mgmt][:users_mgmt][:shutdown_options_res][
+    :support_os]
   action :setup
 end
 

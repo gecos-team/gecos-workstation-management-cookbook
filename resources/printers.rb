@@ -11,6 +11,6 @@
 
 actions :setup
 
-attribute :printers_list, :kind_of => Array
-attribute :job_ids, :kind_of => Array
-attribute :support_os, :kind_of => Array
+attribute :printers_list, kind_of: Array
+attribute :job_ids, kind_of: Array
+attribute :support_os, kind_of: Array

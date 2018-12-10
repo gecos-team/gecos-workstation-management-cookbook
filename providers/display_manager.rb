@@ -9,49 +9,52 @@
 # http://www.osor.eu/eupl
 #
 
-
-V2 = ["GECOS V2","Gecos V2 Lite"]
-
+ETC_DISPLAY_MANAGER = '/etc/X11/default-display-manager'.freeze
+CURRENT_DISPLAY_MANAGER = ::File.basename(
+  ::File.read(ETC_DISPLAY_MANAGER).chomp
+)
 
 action :setup do
-
   begin
+    if new_resource.support_os.include?($gecos_os) && !new_resource.dm.empty?
 
-    # Constants
-    Chef::Log.debug("display_manager.rb ::: $gecos_os = #{$gecos_os}")
-    PROVIDER = case $gecos_os
-      when *V2
-        Chef::Provider::Service::Upstart
-      else 
-        Chef::Provider::Service::Systemd
-    end
- 
-    if new_resource.support_os.include?($gecos_os) and not new_resource.dm.empty?
-
+      # Template variables
+      var_hash = {
+        autologin: new_resource.autologin,
+        autologin_user: new_resource.autologin_options['username'],
+        autologin_timeout: new_resource.autologin_options['timeout']
+      }
 
       case new_resource.dm
-        when 'MDM'
-          PACKAGES = %w(mdm gecosws-mdm-theme)
-          SERVICE = 'mdm'
-          TEMPLATE = 'mdm.conf.erb'
-          CONFIGFILE = '/etc/mdm/mdm.conf'
-          BIN = '/usr/sbin/mdm'
-          OTHER = 'lightdm'
-        when 'LightDM'
-          PACKAGES = if new_resource.autologin
-            %w(gir1.2-lightdm-1 python-gobject lightdm gecosws-lightdm-autologin)
-          else
-            %w(gir1.2-lightdm-1 python-gobject lightdm lightdm-gtk-greeter)
-          end
-          SERVICE = 'lightdm'
-          TEMPLATE = 'lightdm.conf.erb'
-          CONFIGFILE = '/etc/lightdm/lightdm.conf'
-          BIN = '/usr/sbin/lightdm'
-          OTHER = 'mdm'
+      when 'MDM'
+        PACKAGES = %w[mdm gecosws-mdm-theme].freeze
+        NEW_DISPLAY_MANAGER = 'mdm'.freeze
+        TEMPLATE = 'mdm.conf.erb'.freeze
+        CONFIGFILE = '/etc/mdm/mdm.conf'.freeze
+        BIN = '/usr/sbin/mdm'.freeze
+      when 'LightDM'
+        PACKAGES = if new_resource.autologin
+                     %w[gir1.2-lightdm-1 python-gobject lightdm
+                        lightdm-gtk-greeter gecosws-lightdm-autologin].freeze
+                   else
+                     %w[gir1.2-lightdm-1 python-gobject lightdm
+                        lightdm-gtk-greeter].freeze
+                   end
+        NEW_DISPLAY_MANAGER = 'lightdm'.freeze
+        TEMPLATE = 'lightdm.conf.erb'.freeze
+        CONFIGFILE = '/etc/lightdm/lightdm.conf'.freeze
+        BIN = '/usr/sbin/lightdm'.freeze
+
+        # user-session lightdm ootion with LXDE
+        var_hash[:lxde] = $gecos_os.include?('Lite')
       end
 
-      Chef::Log.debug("display_manager.rb ::: PROVIDER = #{PROVIDER}")
-      Chef::Log.debug("display_manager.rb ::: SERVICE  = #{SERVICE}")
+      Chef::Log.debug('display_manager.rb ::: ETC_DISPLAY_MANAGER = '\
+          "#{ETC_DISPLAY_MANAGER}")
+      Chef::Log.debug('display_manager.rb ::: CURRENT_DISPLAY_MANAGER = '\
+          "#{CURRENT_DISPLAY_MANAGER}")
+      Chef::Log.debug('display_manager.rb ::: NEW_DISPLAY_MANAGER  = '\
+          "#{NEW_DISPLAY_MANAGER}")
       Chef::Log.debug("display_manager.rb ::: PACKAGES = #{PACKAGES}")
       Chef::Log.debug("display_manager.rb ::: TEMPLATE = #{TEMPLATE}")
       Chef::Log.debug("display_manager.rb ::: CONFIGFILE = #{CONFIGFILE}")
@@ -59,6 +62,7 @@ action :setup do
       # Packages installation
       PACKAGES.each do |pkg|
         package pkg do
+          ignore_failure true
           action :install
         end
       end
@@ -66,71 +70,110 @@ action :setup do
       # Removes extra package (only for lightdm)
       package 'gecosws-lightdm-autologin' do
         action :remove
-        only_if { !new_resource.autologin and SERVICE=='lightdm' }
+        only_if { !new_resource.autologin && NEW_DISPLAY_MANAGER == 'lightdm' }
       end
 
-      # Stops current DM
-      service OTHER do
-        provider PROVIDER
+      # Bugfix ligthdm package (Ubuntu 16.04 Xenial)
+      # systemctl enable lightdm command no create symlink in
+      # /etc/systemd/system
+      #
+      # Must be:
+      # /etc/systemd/system/display-manager.service
+      #   -> /lib/systemd/system/lightdm.service
+      #
+      # WORKAROUND
+      # Ubuntu 18.04 resolved:
+      #  https://bugs.launchpad.net/ubuntu/+source/lightdm/+bug/1757091
+      cookbook_file '/lib/systemd/system/lightdm.service' do
+        source 'lightdm.service'
+        action :nothing
+        only_if { NEW_DISPLAY_MANAGER == 'lightdm' }
+      end.run_action(:create)
+
+      # Sets default display manager
+      file ETC_DISPLAY_MANAGER do
+        content "#{BIN}\n"
+        action :create
+        notifies :disable, "service[#{CURRENT_DISPLAY_MANAGER}]", :immediately
+        notifies :enable, "service[#{NEW_DISPLAY_MANAGER}]", :immediately
+      end
+
+      # Stops current display manager
+      service CURRENT_DISPLAY_MANAGER do
+        provider Chef::Provider::Service::Systemd
         action :nothing
       end
 
-      # Enables and starts new DM
-      service SERVICE do
-        provider PROVIDER
-        action [:enable]
-#        action [:enable, :start]
+      # Enables new DM
+      service NEW_DISPLAY_MANAGER do
+        provider Chef::Provider::Service::Systemd
+        action :nothing
+        only_if "dpkg-query -W #{NEW_DISPLAY_MANAGER}"
       end
 
-      # Sets default display manager
-      file '/etc/X11/default-display-manager' do
-        content "#{BIN}\n"
-        action :create
-#        notifies :stop, "service[#{OTHER}]", :immediately
-        notifies :disable, "service[#{OTHER}]", :immediately
-      end          
+      # Presession script
+      if new_resource.session_script && \
+         ::File.file?(new_resource.session_script) && \
+         ::File.executable?(new_resource.session_script)
+
+        if NEW_DISPLAY_MANAGER == 'lightdm'
+          var_hash[:session_script] = new_resource.session_script
+        else # MDM
+          file '/etc/mdm/PreSession/Default' do
+            action :nothing
+            not_if 'test -h /etc/mdm/PreSession/Default'
+          end.run_action(:delete)
+
+          link '/etc/mdm/PreSession/Default' do
+            to new_resource.session_script
+          end.run_action(:create)
+        end
+
+      else
+
+        link '/etc/mdm/PreSession/Default' do
+          action :nothing
+          only_if 'test -h /etc/mdm/PreSession/Default'
+        end.run_action(:delete)
+      end
+
+      Chef::Log.debug("display_manager.rb ::: var_hash = #{var_hash}")
 
       # Configures DM
       template CONFIGFILE do
         source TEMPLATE
-        variables ({
-          :autologin => new_resource.autologin,
-          :autologin_user => new_resource.autologin_options['username'],
-          :autologin_timeout => new_resource.autologin_options['timeout']
-        })
-        notifies :restart, "service[#{SERVICE}]", :delayed
+        variables var_hash
+        not_if "#{new_resource.autologin} && "\
+          "! getent passwd #{new_resource.autologin_options['username']}"
       end
-
     else
-      Chef::Log.info("Policy is not compatible with this operative system")
+      Chef::Log.info('Policy is not compatible with this operative system')
     end
-    
+
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 0
     end
-
-  rescue Exception => e
+  rescue StandardError => e
     # just save current job ids as "failed"
     # save_failed_job_ids
     Chef::Log.error(e.message)
+    Chef::Log.error(e.backtrace.join("\n"))
+
     job_ids = new_resource.job_ids
     job_ids.each do |jid|
       node.normal['job_status'][jid]['status'] = 1
-      if not e.message.frozen?
-        node.normal['job_status'][jid]['message'] = e.message.force_encoding("utf-8")
+      if !e.message.frozen?
+        node.normal['job_status'][jid]['message'] =
+          e.message.force_encoding('utf-8')
       else
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
-
   ensure
-    
-    gecos_ws_mgmt_jobids "display_manager_res" do
-       recipe "software_mgmt"
-    end.run_action(:reset) 
-    
+    gecos_ws_mgmt_jobids 'display_manager_res' do
+      recipe 'software_mgmt'
+    end.run_action(:reset)
   end
 end
-
