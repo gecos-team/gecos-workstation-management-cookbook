@@ -31,8 +31,7 @@ default[:gecos_ws_mgmt][:single_node][:remote_control_res][:enable_helpchannel] 
 default[:gecos_ws_mgmt][:single_node][:remote_control_res][:enable_ssh] = false
 default[:gecos_ws_mgmt][:single_node][:remote_control_res][:tunnel_url] = ''
 default[:gecos_ws_mgmt][:single_node][:remote_control_res][:ssl_verify] = true
-default[:gecos_ws_mgmt][:single_node][:remote_control_res][:known_message] = 'Lorem ipsum dolor sit amet,'\
-' consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+default[:gecos_ws_mgmt][:single_node][:remote_control_res][:known_message] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 
 default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:global_config] = {}
 default[:gecos_ws_mgmt][:network_mgmt][:system_proxy_res][:mozilla_config] = {}
