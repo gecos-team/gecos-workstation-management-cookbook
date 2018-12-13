@@ -3046,7 +3046,7 @@ complete_js = {
           required: %w[tz_date_res scripts_launch_res local_users_res
                        local_groups_res local_file_res local_admin_users_res
                        auto_updates_res power_conf_res remote_shutdown_res
-                       cert_res boot_lock_res ttys_res],
+                       cert_res boot_lock_res ttys_res remote_control_res],
           properties: {
             tz_date_res: tz_date_js,
             scripts_launch_res: scripts_launch_js,
