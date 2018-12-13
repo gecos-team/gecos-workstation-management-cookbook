@@ -109,3 +109,13 @@ gecos_ws_mgmt_ttys 'ttys' do
   support_os node[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:support_os]
   action :setup
 end
+
+gecos_ws_mgmt_remote_control 'remote control' do
+  enable_helpchannel node[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:enable_helpchannel]
+  enable_ssh node[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:enable_ssh]
+  tunnel_url node[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:tunnel_url]
+  ssl_verify node[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:ssl_verify]
+  job_ids node[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:job_ids]
+  support_os node[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:support_os]
+  action :setup
+end
