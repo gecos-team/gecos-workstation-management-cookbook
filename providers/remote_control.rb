@@ -22,10 +22,10 @@ action :setup do
       tunnel_url = new_resource.tunnel_url 
       # Default url
       tunnel_url ||= node[:gecos_ws_mgmt][
-        :single_node][:remote_control_res][:tunnel_url]
+        :misc_mgmt][:remote_control_res][:tunnel_url]
       # Default secret
       known_message = node[:gecos_ws_mgmt][
-        :single_node][:remote_control_res][:known_message]
+        :misc_mgmt][:remote_control_res][:known_message]
 
       # Read-only perms to all users
       file '/etc/chef/client.pem' do
@@ -93,7 +93,7 @@ action :setup do
     end
   ensure
     gecos_ws_mgmt_jobids 'remote_control_res' do
-      recipe 'single_node'
+      recipe 'misc_mgmt'
     end.run_action(:reset)
   end
 end
