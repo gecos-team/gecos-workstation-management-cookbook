@@ -16,7 +16,28 @@ if !new_version.empty?
 # Configure embedded gemrc as system gemrc
   if File.exists?('/opt/chef/embedded')
     FileUtils.mkdir_p('/opt/chef/embedded/etc/')
-    FileUtils.install('/etc/gemrc','/opt/chef/embedded/etc/gemrc')
+    if File.exists?('/etc/gemrc')
+      FileUtils.install('/etc/gemrc','/opt/chef/embedded/etc/gemrc')
+    else
+      Chef::Log.info('/etc/gemrc not found!')
+      # Finding .gemrc in homes. First ocurrence
+      # Back compatibility: V2 with GCA1.x
+      gemrc = Dir.glob('/home/*/.gemrc').first(1).pop()
+      if !gemrc.nil?
+        FileUtils.install(gemrc, '/opt/chef/embedded/etc/gemrc')
+      else
+        # System defaults
+        Chef::Log.info('/home/<user>/.gemrc not found!')
+        sources = `/usr/bin/gem source list`.split("\n")
+        # Deleting http://rubygems.org/ to avoid asking y/n
+        sources.delete_if { |x| x =~ /http:\/\/rubygems.org\/?/ }
+        sources.each do |source|
+          if source =~ /^http(s)?/
+            `/opt/chef/embedded/bin/gem source -a #{source} --config-file '/opt/chef/embedded/etc/gemrc'`
+          end
+        end
+      end
+    end
 # Install required gems
     $gems_installation=`/opt/chef/embedded/bin/gem install rest-client json activesupport netaddr`
   end
