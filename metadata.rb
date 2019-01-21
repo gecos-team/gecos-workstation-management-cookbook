@@ -12,7 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.7.5'
+version           '0.7.6'
 
 depends 'apt'
 #depends 'compat_resource'
@@ -3112,7 +3112,7 @@ complete_js = {
             user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js,
             mimetypes_res: mimetypes_js
-#            idle_timeout_res: idle_timeout_js
+            idle_timeout_res: idle_timeout_js
           }
         }
       }
