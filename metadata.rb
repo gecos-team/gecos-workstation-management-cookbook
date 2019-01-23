@@ -12,7 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.7.5'
+version           '0.7.7'
 
 depends 'apt'
 #depends 'compat_resource'
@@ -1597,7 +1597,7 @@ debug_mode_js = {
   type: 'object',
   title: 'Debug mode',
   title_es: 'Modo diagnóstico',
-  required: %w[enable_debug expire_datetime],
+  required: %w[expire_datetime],
   is_mergeable: false,
   autoreverse: true,
   properties:
@@ -3111,8 +3111,8 @@ complete_js = {
             user_mount_res: user_mount_js,
             user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js,
-            mimetypes_res: mimetypes_js
-#            idle_timeout_res: idle_timeout_js
+            mimetypes_res: mimetypes_js,
+            idle_timeout_res: idle_timeout_js
           }
         }
       }
