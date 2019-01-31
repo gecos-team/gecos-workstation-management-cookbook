@@ -103,8 +103,8 @@ end
 #
 def download_ppd_file(ppd_uri, curr_ptr_name)
   FileUtils.mkdir_p('/usr/share/cups/model')
-  ppd_uri_dw = ShellUtil.shell('/usr/bin/wget --no-check-certificate -O'\
-      " /usr/share/cups/model/#{curr_ptr_name}.ppd #{ppd_uri}")
+  ppd_uri_dw = ShellUtil.shell("/usr/bin/wget --no-check-certificate -O"\
+      " /usr/share/cups/model/#{curr_ptr_name}.ppd '#{ppd_uri}'")
   if ppd_uri_dw.exitstatus.zero?
     setup_permissions_to_ppd_file(curr_ptr_name)
     return true
@@ -152,6 +152,7 @@ action :setup do
           unless ::File.exist?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
             Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
             download_ppd_file(printer.ppd_uri, curr_ptr_name)
+            create_ppd_with_ppd_uri = true
           end
         else
           ppd_uri = ''
