@@ -13,7 +13,6 @@ require 'json'
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
     if !is_supported?
       Chef::Log.info('This resource is not supported in your OS')
     elsif has_applied_policy?('users_mgmt','user_alerts_res') || \
