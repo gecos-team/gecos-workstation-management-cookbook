@@ -77,7 +77,10 @@ action :presetup do
   begin
     Chef::Log.info('system_proxy.rb ::: Starting PRESETUP ...')
 
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('network_mgmt','system_proxy_res') || \
+          is_autoreversible?('network_mgmt','system_proxy_res')
       Chef::Log.info('system_proxy.rb ::: new_resource.global_config :'\
           "#{new_resource.global_config}")
       Chef::Log.info('system_proxy.rb ::: new_resource.mozilla_config:'\
@@ -267,8 +270,6 @@ action :presetup do
         Chef::Log.info('system_proxy.rb ::: Changes applied!')
       end
 
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
   rescue StandardError => e
     # just save current job ids as "failed"

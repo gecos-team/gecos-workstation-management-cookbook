@@ -14,7 +14,10 @@ require 'time'
 action :setup do
   begin
     # Checking OS
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('single_node','debug_mode_res') || \
+          is_autoreversible?('single_node','debug_mode_res')
       enable_debug = new_resource.enable_debug
       if new_resource.expire_datetime == '' ||
          Time.parse(new_resource.expire_datetime) < Time.now
@@ -30,8 +33,6 @@ action :setup do
         mode '0644'
         variables var_hash
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

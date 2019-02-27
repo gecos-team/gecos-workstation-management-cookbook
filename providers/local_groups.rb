@@ -11,7 +11,10 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('misc_mgmt','local_groups_res') || \
+          is_autoreversible?('misc_mgmt','local_groups_res')
       groups_list = new_resource.groups_list
 
       groups_list.each do |item|
@@ -32,8 +35,6 @@ action :setup do
           end.run_action(:modify)
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

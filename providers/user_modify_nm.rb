@@ -11,7 +11,10 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','user_modify_nm_res') || \
+          is_autoreversible?('users_mgmt','user_modify_nm_res')
       udisk_policy = '/var/lib/polkit-1/localauthority/50-local.d/'\
         '.freedesktop.NetworkManager.pkla'
 
@@ -42,8 +45,6 @@ action :setup do
           end.run_action(:modify)
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

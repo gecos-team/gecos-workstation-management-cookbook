@@ -12,7 +12,10 @@
 action :setup do
   begin
     # setup resource depends
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('network_mgmt','mobile_broadband_res') || \
+          is_autoreversible?('network_mgmt','mobile_broadband_res')
       gem_depends = %w[activesupport json]
       gem_depends.each do |gem|
         r = gem_package gem do
@@ -105,8 +108,6 @@ action :setup do
       job_ids.each do |jid|
         node.normal['job_status'][jid]['status'] = 0
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
   rescue StandardError => e
     # just save current job ids as "failed"

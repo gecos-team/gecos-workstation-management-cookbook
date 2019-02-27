@@ -14,7 +14,10 @@ require 'time'
 action :setup do
   begin
     # Checking OS
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('misc_mgmt','remote_control_res') || \
+          is_autoreversible?('misc_mgmt','remote_control_res')
 
       enable_helpchannel = new_resource.enable_helpchannel
       enable_ssh = new_resource.enable_ssh
@@ -66,8 +69,6 @@ action :setup do
         variables var_hash
 	only_if { enable_helpchannel && !tunnel_url.empty? }
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

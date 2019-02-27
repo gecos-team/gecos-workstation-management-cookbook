@@ -116,87 +116,92 @@ end
 
 action :setup do
   begin
-    printers_list = new_resource.printers_list
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('printers_mgmt','printers_res') || \
+          is_autoreversible?('printers_mgmt','printers_res')
+      printers_list = new_resource.printers_list
 
-    if printers_list.any?
-      service 'cups' do
-        action :nothing
-      end.run_action(:restart)
-
-      $required_pkgs['printers'].each do |pkg|
-        Chef::Log.debug("printers.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+      if printers_list.any?
+        service 'cups' do
           action :nothing
-        end.run_action(:install)
-      end
+        end.run_action(:restart)
 
-      printers_list.each do |printer|
-        Chef::Log.info("Processing printer: #{printer.name}")
+        $required_pkgs['printers'].each do |pkg|
+          Chef::Log.debug("printers.rb - REQUIRED PACKAGE = #{pkg}")
+          package pkg do
+            action :nothing
+          end.run_action(:install)
+        end
 
-        curr_ptr_name  = printer.name.tr(' ', '+')
-        curr_ptr_id    = printer.manufacturer.tr(' ', '_') + '-' +
-                         printer.model.tr(' ', '_')
+        printers_list.each do |printer|
+          Chef::Log.info("Processing printer: #{printer.name}")
 
-        oppolicy = 'default'
-        oppolicy = printer.oppolicy if printer.attribute?('oppolicy')
+          curr_ptr_name  = printer.name.tr(' ', '+')
+          curr_ptr_id    = printer.manufacturer.tr(' ', '_') + '-' +
+                           printer.model.tr(' ', '_')
+  
+          oppolicy = 'default'
+          oppolicy = printer.oppolicy if printer.attribute?('oppolicy')
 
-        inst_prt_uri = `lpoptions -p #{curr_ptr_name}`
-        inst_prt_uri = inst_prt_uri.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
-        inst_prt_uri = [[]] if inst_prt_uri.empty?
+          inst_prt_uri = `lpoptions -p #{curr_ptr_name}`
+          inst_prt_uri = inst_prt_uri.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
+          inst_prt_uri = [[]] if inst_prt_uri.empty?
 
-        is_prt_in_cups = ShellUtil.shell("lpstat -p #{curr_ptr_name}")
-        is_prt_installed = is_prt_in_cups.exitstatus.zero?
+          is_prt_in_cups = ShellUtil.shell("lpstat -p #{curr_ptr_name}")
+          is_prt_installed = is_prt_in_cups.exitstatus.zero?
 
-        create_ppd_with_ppd_uri = false
-        if printer.attribute?('ppd_uri')
-          unless ::File.exist?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
-            Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
-            download_ppd_file(printer.ppd_uri, curr_ptr_name)
-            create_ppd_with_ppd_uri = true
+          create_ppd_with_ppd_uri = false
+          if printer.attribute?('ppd_uri')
+            unless ::File.exist?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
+              Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
+              download_ppd_file(printer.ppd_uri, curr_ptr_name)
+              create_ppd_with_ppd_uri = true
+            end
+          else
+            ppd_uri = ''
           end
-        else
-          ppd_uri = ''
-        end
 
-        if !create_ppd_with_ppd_uri &&
-           (!is_prt_installed || !(inst_prt_uri[0][0].eql? printer.uri))
-          create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
-        end
+          if !create_ppd_with_ppd_uri &&
+             (!is_prt_installed || !(inst_prt_uri[0][0].eql? printer.uri))
+            create_ppd(curr_ptr_name, printer.model, curr_ptr_id)
+          end
 
-        install_or_update_printer(
-          curr_ptr_name, printer.uri, oppolicy, ppd_uri
-        )
+          install_or_update_printer(
+            curr_ptr_name, printer.uri, oppolicy, ppd_uri
+          )
 
+          cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
+              ' awk \'{print $1}\'')
+          cups_list = cups_ptr_list.stdout.split(/\r?\n/)
+
+          cups_list.each do |cups_printer|
+            ptr_found = false
+            printers_list.each do |prntr|
+              if cups_printer.eql? prntr.name.tr(' ', '+')
+                ptr_found = true
+                break
+              end
+            end
+
+            next if ptr_found
+
+            lpoptions = `/usr/bin/lpoptions -p #{cups_printer}`
+            Chef::Log.info(" lpoptions: #{lpoptions}")
+            if lpoptions.include? 'managed-by-GCC=true'
+              delete_printer(cups_printer)
+            end
+          end
+	end
+      else
         cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
             ' awk \'{print $1}\'')
         cups_list = cups_ptr_list.stdout.split(/\r?\n/)
-
         cups_list.each do |cups_printer|
-          ptr_found = false
-          printers_list.each do |prntr|
-            if cups_printer.eql? prntr.name.tr(' ', '+')
-              ptr_found = true
-              break
-            end
-          end
+          lpopt = `/usr/bin/lpoptions -p #{cups_printer}`
 
-          next if ptr_found
-
-          lpoptions = `/usr/bin/lpoptions -p #{cups_printer}`
-          Chef::Log.info(" lpoptions: #{lpoptions}")
-          if lpoptions.include? 'managed-by-GCC=true'
-            delete_printer(cups_printer)
-          end
+          delete_printer(cups_printer) if lpopt.include? 'managed-by-GCC=true'
         end
-      end
-    else
-      cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
-          ' awk \'{print $1}\'')
-      cups_list = cups_ptr_list.stdout.split(/\r?\n/)
-      cups_list.each do |cups_printer|
-        lpopt = `/usr/bin/lpoptions -p #{cups_printer}`
-
-        delete_printer(cups_printer) if lpopt.include? 'managed-by-GCC=true'
       end
     end
 

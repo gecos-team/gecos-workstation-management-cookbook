@@ -11,7 +11,10 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','user_shared_folders_res') || \
+          is_autoreversible?('users_mgmt','user_shared_folders_res')
       pattern = '(smb|nfs|ftp|sftp|dav)(:\/\/)([\S]*\/.*)'
       users = new_resource.users
       users.each_key do |user_key|
@@ -79,8 +82,6 @@ action :setup do
           tmp_file.write_file
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

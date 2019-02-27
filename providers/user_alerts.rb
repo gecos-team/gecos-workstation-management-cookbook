@@ -14,6 +14,10 @@ require 'json'
 action :setup do
   begin
     if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','user_alerts_res') || \
+          is_autoreversible?('users_mgmt','user_alerts_res')
       # Installs the notify-send command
       $required_pkgs['user_alerts'].each do |pkg|
         Chef::Log.debug("user_alerts.rb - REQUIRED PACKAGE = #{pkg}")
@@ -78,8 +82,6 @@ action :setup do
           action :nothing
         end.run_action(:delete)
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

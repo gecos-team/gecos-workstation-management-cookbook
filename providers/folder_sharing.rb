@@ -10,7 +10,10 @@
 #
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','folder_sharing_res') || \
+          is_autoreversible?('users_mgmt','folder_sharing_res')
       require 'etc'
 
       users = new_resource.users
@@ -56,8 +59,6 @@ action :setup do
       job_ids.each do |jid|
         node.normal['job_status'][jid]['status'] = 0
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
   rescue StandardError => e
     # just save current job ids as "failed"

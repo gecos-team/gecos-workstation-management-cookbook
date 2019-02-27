@@ -21,7 +21,10 @@ nochanges = true
 action :presetup do
   begin
     Chef::Log.info('network.rb ::: Starting PRESETUP ...')
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('network_mgmt','network_res') || \
+          is_autoreversible?('network_mgmt','network_res')
       connections = new_resource.connections
       interfaces = node[:network][:interfaces]
 
@@ -75,8 +78,6 @@ action :presetup do
         end.run_action(:backup)
         action_setup
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
   rescue StandardError => e
     Chef::Log.error(e.message)

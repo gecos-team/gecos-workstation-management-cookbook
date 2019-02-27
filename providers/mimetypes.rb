@@ -16,7 +16,10 @@ DEFAULT_SECTION = 'Default Applications'.freeze
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','mimetypes_res') || \
+          is_autoreversible?('users_mgmt','mimetypes_res')
       $required_pkgs['mimetypes'].each do |pkg|
         Chef::Log.debug("mimetypes.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do
@@ -103,8 +106,6 @@ action :setup do
           end
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     job_ids = new_resource.job_ids

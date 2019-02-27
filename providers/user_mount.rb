@@ -11,7 +11,10 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','user_mount_res') || \
+          is_autoreversible?('users_mgmt','user_mount_res')
       userslist = new_resource.users
 
       udisk_policy = '/usr/share/polkit-1/actions/org.freedesktop.'\
@@ -59,8 +62,6 @@ action :setup do
         variables user_mount: usersm
         action :nothing
       end.run_action(:create)
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

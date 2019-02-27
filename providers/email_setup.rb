@@ -67,7 +67,10 @@ end
 action :setup do
   begin
     # Checking OS and Thunderbird
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','email_setup_res') || \
+          is_autoreversible?('users_mgmt','email_setup_res')
       # Setup email for users
       users = new_resource.users
       users.each_key do |user_key|
@@ -273,8 +276,6 @@ action :setup do
           action :nothing
         end.run_action(:run)
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

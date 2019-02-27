@@ -111,7 +111,10 @@ end
 action :setup do
   begin
     # Checking OS and Pidgin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('users_mgmt','im_client_res') || \
+          is_autoreversible?('users_mgmt','im_client_res')
       # Install required packages
       $required_pkgs['im_client'].each do |pkg|
         Chef::Log.debug("im_client.rb - REQUIRED PACKAGES = #{pkg}")
@@ -246,8 +249,6 @@ action :setup do
           end
         end.run_action(:create)
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

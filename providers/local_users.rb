@@ -10,7 +10,10 @@
 #
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if !is_supported?
+      Chef::Log.info('This resource is not supported in your OS')
+    elsif has_applied_policy?('misc_mgmt','local_users_res') || \
+          is_autoreversible?('misc_mgmt','local_users_res')
       require 'etc'
 
       $required_pkgs['local_users'].each do |pkg|
@@ -53,8 +56,6 @@ action :setup do
           end.run_action(:run)
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
