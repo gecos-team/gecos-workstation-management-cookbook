@@ -116,10 +116,9 @@ end
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('printers_mgmt','printers_res') || \
-          is_autoreversible?('printers_mgmt','printers_res')
+    if is_os_supported? &&
+      (is_policy_active?('printers_mgmt','printers_res') || \
+       is_policy_autoreversible?('printers_mgmt','printers_res'))
       printers_list = new_resource.printers_list
 
       if printers_list.any?

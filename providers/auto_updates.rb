@@ -15,10 +15,9 @@ action :setup do
     onstop_update = new_resource.onstop_update
     days = new_resource.days || []
     date = new_resource.date || {}
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('misc_mgmt','auto_updates_res') || \
-          is_autoreversible?('misc_mgmt','auto_updates_res')
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','auto_updates_res') ||
+       is_policy_autoreversible?('misc_mgmt','auto_updates_res'))
  
       # Install required packages
       $required_pkgs['auto_updates'].each do |pkg|

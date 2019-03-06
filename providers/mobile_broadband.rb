@@ -12,10 +12,9 @@
 action :setup do
   begin
     # setup resource depends
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('network_mgmt','mobile_broadband_res') || \
-          is_autoreversible?('network_mgmt','mobile_broadband_res')
+    if is_os_supported? &&
+      (is_policy_active?('network_mgmt','mobile_broadband_res') ||
+       is_policy_autoreversible?('network_mgmt','mobile_broadband_res'))
       gem_depends = %w[activesupport json]
       gem_depends.each do |gem|
         r = gem_package gem do

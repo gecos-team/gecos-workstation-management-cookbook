@@ -11,10 +11,9 @@
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('misc_mgmt','local_groups_res') || \
-          is_autoreversible?('misc_mgmt','local_groups_res')
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','local_groups_res') ||
+       is_policy_autoreversible?('misc_mgmt','local_groups_res'))
       groups_list = new_resource.groups_list
 
       groups_list.each do |item|

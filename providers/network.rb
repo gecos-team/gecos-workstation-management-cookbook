@@ -21,10 +21,9 @@ nochanges = true
 action :presetup do
   begin
     Chef::Log.info('network.rb ::: Starting PRESETUP ...')
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('network_mgmt','network_res') || \
-          is_autoreversible?('network_mgmt','network_res')
+    if is_os_supported? &&
+      (is_policy_active?('network_mgmt','network_res') ||
+       is_policy_autoreversible?('network_mgmt','network_res'))
       connections = new_resource.connections
       interfaces = node[:network][:interfaces]
 

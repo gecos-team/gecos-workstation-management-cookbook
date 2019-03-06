@@ -11,10 +11,9 @@
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('misc_mgmt','local_admin_users_res') || \
-          is_autoreversible?('misc_mgmt','local_admin_users_res')
+    if is_os_supported? &&
+       (is_policy_active?('misc_mgmt','local_admin_users_res') ||
+        is_policy_autoreversible?('misc_mgmt','local_admin_users_res'))
       local_admin_list = new_resource.local_admin_list
       local_admin_list.each do |admin|
         case admin.action

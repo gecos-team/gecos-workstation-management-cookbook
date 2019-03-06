@@ -11,10 +11,9 @@
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('users_mgmt','user_modify_nm_res') || \
-          is_autoreversible?('users_mgmt','user_modify_nm_res')
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','user_modify_nm_res') ||
+       is_policy_autoreversible?('users_mgmt','user_modify_nm_res'))
       udisk_policy = '/var/lib/polkit-1/localauthority/50-local.d/'\
         '.freedesktop.NetworkManager.pkla'
 

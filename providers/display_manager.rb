@@ -16,11 +16,10 @@ CURRENT_DISPLAY_MANAGER = ::File.basename(
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif (!new_resource.dm.empty? && \
-          has_applied_policy?('software_mgmt','display_manager_res')) || \
-          is_autoreversible?('software_mgmt','display_manager_res')
+    if is_os_supported? &&
+      ((!new_resource.dm.empty? &&
+        is_policy_active?('software_mgmt','display_manager_res')) ||
+        is_policy_autoreversible?('software_mgmt','display_manager_res'))
 
       # Template variables
       var_hash = {

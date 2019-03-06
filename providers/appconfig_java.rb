@@ -11,11 +11,10 @@
 action :setup do
   begin
     alternatives_cmd = 'update-alternatives'
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif (!new_resource.config_java.empty? && \
-          has_applied_policy?('software_mgmt','appconfig_java_res')) || \
-          is_autoreversible?('software_mgmt','appconfig_java_res')
+    if is_os_supported? &&
+      ((!new_resource.config_java.empty? &&
+        is_policy_active?('software_mgmt','appconfig_java_res')) ||
+        is_policy_autoreversible?('software_mgmt','appconfig_java_res'))
 
       version = new_resource.config_java['version']
       plug_version = new_resource.config_java['plug_version']

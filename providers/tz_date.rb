@@ -13,10 +13,9 @@ V2 = ['GECOS V2', 'Gecos V2 Lite'].freeze
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('misc_mgmt','tz_date_res') || \
-          is_autoreversible?('misc_mgmt','tz_date_res')
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','tz_date_res') ||
+       is_policy_autoreversible?('misc_mgmt','tz_date_res'))
 
       ntp_server = new_resource.server
 

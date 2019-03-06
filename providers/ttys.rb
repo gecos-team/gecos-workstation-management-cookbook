@@ -18,10 +18,9 @@ logind_conf = '/etc/systemd/logind.conf'
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('misc_mgmt','ttys_res') || \
-          is_autoreversible?('misc_mgmt','ttys_res')
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','ttys_res') ||
+       is_policy_autoreversible?('misc_mgmt','ttys_res'))
       Chef::Log.debug("disable_ttys: #{new_resource.disable_ttys}")
 
       if new_resource.disable_ttys # DISABLE TTYs

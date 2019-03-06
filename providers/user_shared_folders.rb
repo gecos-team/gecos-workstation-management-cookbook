@@ -11,10 +11,9 @@
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('users_mgmt','user_shared_folders_res') || \
-          is_autoreversible?('users_mgmt','user_shared_folders_res')
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','user_shared_folders_res') ||
+       is_policy_autoreversible?('users_mgmt','user_shared_folders_res'))
       pattern = '(smb|nfs|ftp|sftp|dav)(:\/\/)([\S]*\/.*)'
       users = new_resource.users
       users.each_key do |user_key|

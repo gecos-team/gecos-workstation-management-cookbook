@@ -11,11 +11,10 @@
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif (!new_resource.config_thunderbird.empty? && \
-          has_applied_policy?('software_mgmt','appconfig_thunderbird_res')) || \
-          is_autoreversible?('software_mgmt','appconfig_thunderbird_res')
+    if is_os_supported? &&
+      ((!new_resource.config_thunderbird.empty? && 
+       is_policy_active?('software_mgmt','appconfig_thunderbird_res')) ||
+       is_policy_autoreversible?('software_mgmt','appconfig_thunderbird_res'))
 	    
       Chef::Log.debug('appconfig_thunderbird.rb - config_thunderbird:'\
           " #{new_resource.config_thunderbird}")

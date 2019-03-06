@@ -12,11 +12,10 @@
 action :setup do
   begin
     ffx = ShellUtil.shell('apt-cache policy firefox').exitstatus
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif (ffx && \
-          has_applied_policy?('users_mgmt','web_browser_res')) || \
-          is_autoreversible?('users_mgmt','web_browser_res')
+    if is_os_supported? &&
+      ((ffx &&
+        is_policy_active?('users_mgmt','web_browser_res')) ||
+        is_policy_autoreversible?('users_mgmt','web_browser_res'))
 
       $required_pkgs['web_browser'].each do |pkg|
         Chef::Log.debug("web_browser.rb - REQUIRED PACKAGES = #{pkg}")

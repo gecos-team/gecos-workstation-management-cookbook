@@ -35,16 +35,21 @@ module Runnable
       end
     end
 
-    def has_applied_policy?(recipe, policy)
+    def is_policy_active?(recipe, policy)
       !node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][UPDATED.to_sym].empty? rescue false
     end
 
-    def is_autoreversible?(recipe, policy)
+    def is_policy_autoreversible?(recipe, policy)
       $schema[recipe.to_sym][:properties][policy.to_sym][AUTOREVERSE.to_sym] rescue false
     end
 
-    def is_supported?
-      new_resource.support_os.include?($gecos_os)
+    def is_os_supported?
+      if new_resource.support_os.include?($gecos_os)
+        true
+      else
+	Chef::Log.info('This resource is not supported in your OS')
+	false
+      end
     end
   end
 end

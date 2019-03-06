@@ -15,10 +15,9 @@ action :setup do
     unlock_user = new_resource.unlock_user
     unlock_pass = new_resource.unlock_pass
     grub_conf = '/boot/grub/grub.cfg'
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('misc_mgmt','boot_lock_res') || \
-          is_autoreversible?('misc_mgmt','boot_lock_res')
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','boot_lock_res') ||
+       is_policy_autoreversible?('misc_mgmt','boot_lock_res'))
     
       if ::File.file?(grub_conf)
         is_boot_locked = ::File.read(grub_conf).include? 'superusers'

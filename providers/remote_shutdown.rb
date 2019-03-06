@@ -12,10 +12,9 @@ require 'date'
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('misc_mgmt','remote_shutdown_res') || \
-          is_autoreversible?('misc_mgmt','remote_shutdown_res')
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','remote_shutdown_res') || \
+       is_policy_autoreversible?('misc_mgmt','remote_shutdown_res'))
       if !new_resource.shutdown_mode.empty?
         shutdown_command = if new_resource.shutdown_mode == 'halt'
                              '/sbin/shutdown -r now'

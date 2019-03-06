@@ -10,10 +10,9 @@
 #
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('users_mgmt','folder_sync_res') || \
-          is_autoreversible?('users_mgmt','folder_sync_res')
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','folder_sync_res') || \
+       is_policy_autoreversible?('users_mgmt','folder_sync_res'))
       users = new_resource.users
 
       $required_pkgs['folder_sync'].each do |pkg|

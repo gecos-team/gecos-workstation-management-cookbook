@@ -11,10 +11,9 @@
 
 action :setup do
   begin
-    if !is_supported?
-      Chef::Log.info('This resource is not supported in your OS')
-    elsif has_applied_policy?('users_mgmt','user_mount_res') || \
-          is_autoreversible?('users_mgmt','user_mount_res')
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','user_mount_res') ||
+       is_policy_autoreversible?('users_mgmt','user_mount_res'))
       userslist = new_resource.users
 
       udisk_policy = '/usr/share/polkit-1/actions/org.freedesktop.'\
