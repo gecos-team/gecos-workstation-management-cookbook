@@ -11,8 +11,11 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os) &&
-       !new_resource.config_thunderbird.empty?
+    if is_os_supported? &&
+      ((!new_resource.config_thunderbird.empty? && 
+       is_policy_active?('software_mgmt','appconfig_thunderbird_res')) ||
+       is_policy_autoreversible?('software_mgmt','appconfig_thunderbird_res'))
+	    
       Chef::Log.debug('appconfig_thunderbird.rb - config_thunderbird:'\
           " #{new_resource.config_thunderbird}")
       # Detecting installation directory
@@ -54,8 +57,6 @@ action :setup do
         to '/etc/thunderbird/proxy-prefs.js'
         only_if 'test -f /etc/thunderbird/proxy-prefs.js'
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

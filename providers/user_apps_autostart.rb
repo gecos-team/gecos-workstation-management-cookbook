@@ -10,7 +10,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','user_apps_autostart_res') ||
+       is_policy_autoreversible?('users_mgmt','user_apps_autostart_res'))
       users = new_resource.users
 
       case node['platform']
@@ -68,8 +70,6 @@ action :setup do
           end
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

@@ -12,7 +12,9 @@ require 'date'
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','remote_shutdown_res') || \
+       is_policy_autoreversible?('misc_mgmt','remote_shutdown_res'))
       if !new_resource.shutdown_mode.empty?
         shutdown_command = if new_resource.shutdown_mode == 'halt'
                              '/sbin/shutdown -r now'
@@ -61,8 +63,6 @@ action :setup do
           action :nothing
         end.run_action(:delete)
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

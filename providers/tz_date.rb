@@ -13,7 +13,9 @@ V2 = ['GECOS V2', 'Gecos V2 Lite'].freeze
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','tz_date_res') ||
+       is_policy_autoreversible?('misc_mgmt','tz_date_res'))
 
       ntp_server = new_resource.server
 
@@ -74,9 +76,6 @@ action :setup do
         end
 
       end # END CASE
-
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

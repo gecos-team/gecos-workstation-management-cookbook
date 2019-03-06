@@ -11,14 +11,15 @@
 
 action :setup do
   begin
-    $required_pkgs['desktop_background'].each do |pkg|
-      Chef::Log.debug("desktop_background.rb - REQUIRED PACKAGE = #{pkg}")
-      package pkg do
-        action :nothing
-      end.run_action(:install)
-    end
-
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','desktop_background_res') ||
+       is_policy_autoreversible?('users_mgmt','desktop_background_res'))
+      $required_pkgs['desktop_background'].each do |pkg|
+        Chef::Log.debug("desktop_background.rb - REQUIRED PACKAGE = #{pkg}")
+        package pkg do
+          action :nothing
+        end.run_action(:install)
+      end
 
       if !new_resource.users.nil? && !new_resource.users.empty?
         users = new_resource.users
@@ -44,8 +45,6 @@ action :setup do
           end.run_action(:set)
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

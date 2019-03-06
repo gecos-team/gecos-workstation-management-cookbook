@@ -11,7 +11,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','local_file_res') ||
+       is_policy_autoreversible?('misc_mgmt','local_file_res'))
       localfiles = new_resource.localfiles
 
       Chef::Log.debug("local_file.rb ::: localfiles = #{localfiles}")
@@ -76,8 +78,6 @@ action :setup do
           end.run_action(:delete)
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

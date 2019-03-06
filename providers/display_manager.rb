@@ -16,7 +16,10 @@ CURRENT_DISPLAY_MANAGER = ::File.basename(
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os) && !new_resource.dm.empty?
+    if is_os_supported? &&
+      ((!new_resource.dm.empty? &&
+        is_policy_active?('software_mgmt','display_manager_res')) ||
+        is_policy_autoreversible?('software_mgmt','display_manager_res'))
 
       # Template variables
       var_hash = {
@@ -146,8 +149,6 @@ action :setup do
         not_if "#{new_resource.autologin} && "\
           "! getent passwd #{new_resource.autologin_options['username']}"
       end
-    else
-      Chef::Log.info('Policy is not compatible with this operative system')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

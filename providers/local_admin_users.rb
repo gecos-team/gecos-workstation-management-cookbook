@@ -11,7 +11,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+       (is_policy_active?('misc_mgmt','local_admin_users_res') ||
+        is_policy_autoreversible?('misc_mgmt','local_admin_users_res'))
       local_admin_list = new_resource.local_admin_list
       local_admin_list.each do |admin|
         case admin.action
@@ -34,8 +36,6 @@ action :setup do
           "(#{admin.action})"
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

@@ -11,7 +11,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('software_mgmt','appconfig_libreoffice_res') ||
+       is_policy_autoreversible?('software_mgmt','appconfig_libreoffice_res'))
       unless new_resource.config_libreoffice.empty?
         app_update = new_resource.config_libreoffice['app_update']
 
@@ -27,8 +29,6 @@ action :setup do
           end.run_action(:run)
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

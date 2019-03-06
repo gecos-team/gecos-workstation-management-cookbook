@@ -11,7 +11,10 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('software_mgmt','appconfig_firefox_res') ||
+       is_policy_autoreversible?('software_mgmt','appconfig_firefox_res'))
+	    
       unless new_resource.config_firefox.empty?
         Chef::Log.debug('appconfig_firefox - config_firefox: '\
             "#{new_resource.config_firefox}")
@@ -73,8 +76,6 @@ action :setup do
           only_if 'test -f /etc/firefox/proxy-prefs.js'
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

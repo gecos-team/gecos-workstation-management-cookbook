@@ -11,7 +11,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','idle_timeout_res') ||
+       is_policy_autoreversible?('users_mgmt','idle_timeout_res'))
       $required_pkgs['idle_timeout'].each do |pkg|
         Chef::Log.debug("idle_timeout.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do
@@ -78,8 +80,6 @@ action :setup do
           end
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

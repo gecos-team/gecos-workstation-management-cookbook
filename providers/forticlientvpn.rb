@@ -13,8 +13,11 @@ HISTORY_FILTER = /^profile|^p12passwd|^path|^password|^user|^port|^server/
 action :setup do
   begin
     # Added check to avoid execution if no connections defined
-    if new_resource.support_os.include?($gecos_os) &&
-       !new_resource.connections.nil? && !new_resource.connections.empty?
+    if is_os_supported? &&
+      ((!new_resource.connections.nil? &&
+        !new_resource.connections.empty? &&
+        is_policy_active?('network_mgmt','forticlientvpn_res')) ||
+        is_policy_autoreversible?('network_mgmt','forticlientvpn_res'))
 
       res_proxyserver = new_resource.proxyserver || node[:gecos_ws_mgmt][
         :network_mgmt][:forticlientvpn_res][:proxyserver]
@@ -101,8 +104,6 @@ action :setup do
           variables var_hash
         end
       end
-    elsif !new_resource.support_os.include?($gecos_os)
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

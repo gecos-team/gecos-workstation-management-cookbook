@@ -10,7 +10,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','cert_res') ||
+       is_policy_autoreversible?('misc_mgmt','cert_res'))
       # install depends
       $required_pkgs['cert'].each do |pkg|
         Chef::Log.debug("cert.rb - REQUIRED PACKAGE = #{pkg}")
@@ -111,8 +113,6 @@ action :setup do
       else
         Chef::Log.error('Can\'t find /etc/ca-certificates.conf file!')
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"
