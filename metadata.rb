@@ -1597,7 +1597,7 @@ debug_mode_js = {
   type: 'object',
   title: 'Debug mode',
   title_es: 'Modo diagnóstico',
-  required: %w[enable_debug expire_datetime],
+  required: %w[expire_datetime],
   is_mergeable: false,
   autoreverse: true,
   properties:
