@@ -36,7 +36,17 @@ module Runnable
     end
 
     def is_policy_active?(recipe, policy)
-      !node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][UPDATED.to_sym].empty? rescue false
+      begin
+        if recipe.include?("users_mgmt") # User policy
+          users = node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][:users]
+          users.select{ |username, values| !values[UPDATED].empty? } != {}
+        else # Workstation policy
+          !node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][UPDATED.to_sym].empty?
+        end
+      rescue => e
+        Chef::Log.error("Runnable Helper ::: Oooops! Has ocurred an error: #{e}")
+        false
+      end
     end
 
     def is_policy_autoreversible?(recipe, policy)
