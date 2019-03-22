@@ -28,6 +28,12 @@ action :setup do
       require 'json'
       require 'active_support/core_ext/hash'
 
+      directory '/usr/share/mobile-broadband-provider-info' do
+        owner 'root'
+        group 'root'
+        mode '0755'
+      end.run_action(:create)
+
       # Please, keep this file updated with the latest package
       cookbook_file '/usr/share/mobile-broadband-provider-info'\
         '/serviceproviders.xml' do
