@@ -12,7 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.8.1'
+version           '0.8.2'
 
 depends 'apt'
 #depends 'compat_resource'
@@ -2905,10 +2905,9 @@ remote_control_js = {
       },
       {
         type: 'fieldset',
-        title: 'Advanced (only experts)',
+        title: 'Advanced (experts only)',
         title_es: 'Avanzados (sólo para expertos)',
         items: [
-	  'tunnel_url',
 	  {
             key: 'ssl_verify',
 	    value: true

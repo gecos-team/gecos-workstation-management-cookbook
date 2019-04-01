@@ -273,6 +273,7 @@ default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][
   :support_os] = ALL_GECOS_VERS
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:enable_helpchannel] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:enable_ssh] = false
-default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:tunnel_url] = ''
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:ssl_verify] = true
-default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:known_message] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+# tunnel_url and known_message moved to remote_control data_bag
+#default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:tunnel_url] = ''
+#default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:known_message] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
