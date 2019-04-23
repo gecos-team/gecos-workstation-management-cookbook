@@ -42,5 +42,6 @@ when 'GECOS V3'
 
 when 'GECOS V4'
   $required_pkgs['local_users'] = ['ruby-shadow']
+  $required_pkgs['printers'].delete('foomatic-db-gutenprint')
 
 end
