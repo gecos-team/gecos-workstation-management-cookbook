@@ -14,9 +14,6 @@ license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
 version           '0.8.2'
 
-depends 'apt'
-#depends 'compat_resource'
-
 supports 'ubuntu'
 supports 'debian'
 

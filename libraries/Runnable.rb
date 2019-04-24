@@ -39,8 +39,9 @@ module Runnable
       begin
         if recipe.include?("users_mgmt") # User policy
           users = node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][:users]
-          users.select{ |username, values| !values[UPDATED].empty? } != {}
+          users.select{ |username, values|  values.key?(UPDATED) and !values[UPDATED].empty? } != {}
         else # Workstation policy
+          node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym].key?(UPDATED.to_sym) and
           !node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][UPDATED.to_sym].empty?
         end
       rescue => e
