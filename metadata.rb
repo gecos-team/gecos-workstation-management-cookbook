@@ -12,7 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.8.2'
+version           '0.9.0'
 
 supports 'ubuntu'
 supports 'debian'

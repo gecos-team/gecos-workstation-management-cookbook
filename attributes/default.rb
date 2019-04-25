@@ -276,4 +276,4 @@ default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:enable_ssh] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:ssl_verify] = true
 # tunnel_url and known_message moved to remote_control data_bag
 #default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:tunnel_url] = ''
-#default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:known_message] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+#default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:known_message] = 'COMMON SECRET '
