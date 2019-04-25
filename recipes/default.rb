@@ -71,3 +71,6 @@ include_recipe 'gecos_ws_mgmt::single_node'
 
 node.normal['use_node'] = {}
 node.override['gcc_link'] = true
+
+# Loading metadata (json-schema)
+load_metadata

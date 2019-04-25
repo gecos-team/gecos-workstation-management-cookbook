@@ -12,10 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.7.5'
-
-depends 'apt'
-#depends 'compat_resource'
+version           '0.9.0'
 
 supports 'ubuntu'
 supports 'debian'
@@ -1597,7 +1594,7 @@ debug_mode_js = {
   type: 'object',
   title: 'Debug mode',
   title_es: 'Modo diagnóstico',
-  required: %w[enable_debug expire_datetime],
+  required: %w[expire_datetime],
   is_mergeable: false,
   autoreverse: true,
   properties:
@@ -2905,10 +2902,9 @@ remote_control_js = {
       },
       {
         type: 'fieldset',
-        title: 'Advanced (only experts)',
+        title: 'Advanced (experts only)',
         title_es: 'Avanzados (sólo para expertos)',
         items: [
-	  'tunnel_url',
 	  {
             key: 'ssl_verify',
 	    value: true
@@ -2962,11 +2958,11 @@ remote_control_js = {
   }
 }
 
-ALL_GECOS_VERS = ['GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
+ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
                   'Gecos V2 Lite'].freeze
-UBUNTU_BASED = ['GECOS V3', 'GECOS V2', 'GECOS V3 Lite', 'Gecos V2 Lite',
+UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite', 'Gecos V2 Lite',
                 'Ubuntu 14.04.1 LTS'].freeze
-GECOS_FULL = ['GECOS V3', 'GECOS V2'].freeze
+GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V2'].freeze
 debug_mode_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 network_resource_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 tz_date_js[:properties][:support_os][:default] = ALL_GECOS_VERS

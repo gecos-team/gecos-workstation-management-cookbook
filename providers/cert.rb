@@ -10,7 +10,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','cert_res') ||
+       is_policy_autoreversible?('misc_mgmt','cert_res'))
       # install depends
       $required_pkgs['cert'].each do |pkg|
         Chef::Log.debug("cert.rb - REQUIRED PACKAGE = #{pkg}")
@@ -41,20 +43,6 @@ action :setup do
       end
 
       require 'fileutils'
-
-      #
-      # Converts a certificate from DER to PEM if
-      # necessary
-      #
-      def convert_to_pem(src, dst)
-        # Try to convert from DER to PEM
-        cmd = ShellUtil.shell('openssl x509 -inform DER -in '\
-            "#{src} > #{dst}")
-
-        # if the conversion fails its probably the certificate
-        # was a PEM file and no conversion is needed
-        ::FileUtils.ln_s src, dst unless cmd.exitstatus.zero?
-      end
 
       res_ca_root_certs = new_resource.ca_root_certs ||
                           node[:gecos_ws_mgmt][:misc_mgmt][:cert_res][
@@ -87,9 +75,15 @@ action :setup do
             action :nothing
           end.run_action(:create)
 
-          if !::File.exist?(cert_file_dst) ||
-             ::File.mtime(cert_file) > ::File.mtime(cert_file_dst)
-            convert_to_pem(cert_file, cert_file_dst)
+	  execute "convert to PEM #{cert_file}" do
+            command "openssl x509 -inform DER -in #{cert_file} > #{cert_file_dst}"
+            only_if {!::File.exist?(cert_file_dst) || ::File.mtime(cert_file) > ::File.mtime(cert_file_dst)}
+	    not_if "file #{cert_file} | grep PEM"
+	  end
+
+	  link cert_file_dst  do
+            to cert_file
+            only_if "file #{cert_file} | grep PEM "
           end
 
           # Check if the certificate is installed
@@ -111,8 +105,6 @@ action :setup do
       else
         Chef::Log.error('Can\'t find /etc/ca-certificates.conf file!')
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

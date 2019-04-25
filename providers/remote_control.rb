@@ -13,20 +13,29 @@ require 'time'
 
 action :setup do
   begin
-    # Checking OS
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','remote_control_res') ||
+       is_policy_autoreversible?('misc_mgmt','remote_control_res'))
 
       enable_helpchannel = new_resource.enable_helpchannel
       enable_ssh = new_resource.enable_ssh
       ssl_verify = new_resource.ssl_verify
-      tunnel_url = new_resource.tunnel_url 
-      # Default url
-      tunnel_url ||= node[:gecos_ws_mgmt][
-        :misc_mgmt][:remote_control_res][:tunnel_url]
-      # Default secret
-      known_message = node[:gecos_ws_mgmt][
-        :misc_mgmt][:remote_control_res][:known_message]
+#      tunnel_url = new_resource.tunnel_url 
 
+      data =  begin
+                data_bag_item('remote_control','defaults')
+              rescue Net::HTTPServerException, Chef::Exceptions::InvalidDataBagPath
+                nil
+              end
+      
+      if data
+      # Default url
+        tunnel_url = data['tunnel_url']
+      # Default secret
+        known_message = data['known_message']
+      end
+      
+      
       # Read-only perms to all users
       file '/etc/chef/client.pem' do
         mode '644'
@@ -64,10 +73,8 @@ action :setup do
         group 'root'
         mode '0644'
         variables var_hash
-	only_if { enable_helpchannel && !tunnel_url.empty? }
+	only_if { enable_helpchannel && data }
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

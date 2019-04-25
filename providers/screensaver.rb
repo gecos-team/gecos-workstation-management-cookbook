@@ -11,7 +11,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('users_mgmt','screensaver_res') ||
+       is_policy_autoreversible?('users_mgmt','screensaver_res'))
       users = new_resource.users
       users.each_key do |user_key|
         nameuser = user_key
@@ -62,8 +64,6 @@ action :setup do
           action :nothing
         end.run_action(:set)
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as 'ok'

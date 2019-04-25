@@ -15,7 +15,10 @@ action :setup do
     unlock_user = new_resource.unlock_user
     unlock_pass = new_resource.unlock_pass
     grub_conf = '/boot/grub/grub.cfg'
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','boot_lock_res') ||
+       is_policy_autoreversible?('misc_mgmt','boot_lock_res'))
+    
       if ::File.file?(grub_conf)
         is_boot_locked = ::File.read(grub_conf).include? 'superusers'
         execute_update = (lock_boot != is_boot_locked)
@@ -64,8 +67,6 @@ action :setup do
       else
         Chef::Log.info('Boot lock status: change not needed')
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     job_ids = new_resource.job_ids

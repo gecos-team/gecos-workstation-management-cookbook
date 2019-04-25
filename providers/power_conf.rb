@@ -11,7 +11,9 @@
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','power_conf_res') ||
+       is_policy_autoreversible?('misc_mgmt','power_conf_res'))
       require 'time'
 
       $required_pkgs['power_conf'].each do |pkg|
@@ -94,8 +96,6 @@ action :setup do
           end.run_action(:run)
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

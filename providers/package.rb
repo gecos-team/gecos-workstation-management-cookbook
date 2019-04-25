@@ -75,7 +75,9 @@ end
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('software_mgmt','package_res') ||
+       is_policy_autoreversible?('software_mgmt','package_res'))
       if new_resource.package_list.any?
         Chef::Log.info('Installing package list')
         new_resource.package_list.each do |pkg|
@@ -113,8 +115,6 @@ action :setup do
           end
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

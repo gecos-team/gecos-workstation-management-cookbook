@@ -9,37 +9,73 @@
 # http://www.osor.eu/eupl
 #
 
+V2 = ['GECOS V2', 'Gecos V2 Lite'].freeze
+
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
-      $required_pkgs['tz_date'].each do |pkg|
-        Chef::Log.debug("tz_date.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
-          action :nothing
-        end.run_action(:install)
-      end
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','tz_date_res') ||
+       is_policy_autoreversible?('misc_mgmt','tz_date_res'))
 
       ntp_server = new_resource.server
-      unless ntp_server.nil? || ntp_server.empty?
+
+      case $gecos_os
+      when *V2 # DISTROS BASED ON UPSTART: NTPDATE
+
+        $required_pkgs['tz_date'].each do |pkg|
+          Chef::Log.debug("tz_date.rb - REQUIRED PACKAGE = #{pkg}")
+          package pkg do
+            action :nothing
+          end.run_action(:install)
+        end
+
         execute 'ntpdate' do
           command "ntpdate-debian -u #{ntp_server}"
           action :nothing
-        end.run_action(:run)
+        end
 
-        var_hash = {
-          ntp_server: new_resource.server
-        }
         template '/etc/default/ntpdate' do
-          action :nothing
           source 'ntpdate.erb'
           owner 'root'
           group 'root'
           mode '0644'
-          variables var_hash
-        end.run_action(:create)
-      end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
+          variables(:ntp_server => ntp_server)
+          not_if {ntp_server.nil? || ntp_server.empty?}
+          notifies :run, 'execute[ntpdate]', :immediately
+        end
+
+      else # DISTROS BASED ON SYSTEMD: TIMESYNCD
+
+        # Incompatibles
+        ['chrony', 'ntp'].each do |pkg|
+          package pkg do
+            action :nothing
+          end.run_action(:purge)
+        end
+
+        service 'systemd-timesyncd' do
+          supports :start => true, :stop => true, :restart => true, :reload => true, :status => true
+          action [:enable, :start]
+        end
+
+        bash 'timedatectl' do
+          code <<-EOH
+          timedatectl set-local-rtc 0
+          timedatectl set-ntp true
+          EOH
+        end
+ 
+        template '/etc/systemd/timesyncd.conf' do
+          source 'timesyncd.conf.erb'
+          owner 'root'
+          group 'root'
+          mode '0644'
+          variables(:ntp_server => ntp_server)
+          not_if {ntp_server.nil? || ntp_server.empty?}
+          notifies :restart, 'service[systemd-timesyncd]', :immediately
+        end
+
+      end # END CASE
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

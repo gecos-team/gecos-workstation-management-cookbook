@@ -11,8 +11,11 @@
 action :setup do
   begin
     alternatives_cmd = 'update-alternatives'
-    if new_resource.support_os.include?($gecos_os) &&
-       !new_resource.config_java.empty?
+    if is_os_supported? &&
+      ((!new_resource.config_java.empty? &&
+        is_policy_active?('software_mgmt','appconfig_java_res')) ||
+        is_policy_autoreversible?('software_mgmt','appconfig_java_res'))
+
       version = new_resource.config_java['version']
       plug_version = new_resource.config_java['plug_version']
       sec = new_resource.config_java['sec']
@@ -76,8 +79,6 @@ action :setup do
         action :nothing
         variables var_hash
       end.run_action(:create)
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

@@ -18,7 +18,9 @@ logind_conf = '/etc/systemd/logind.conf'
 
 action :setup do
   begin
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('misc_mgmt','ttys_res') ||
+       is_policy_autoreversible?('misc_mgmt','ttys_res'))
       Chef::Log.debug("disable_ttys: #{new_resource.disable_ttys}")
 
       if new_resource.disable_ttys # DISABLE TTYs
@@ -120,8 +122,6 @@ action :setup do
           end
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
   rescue StandardError => e
     # just save current job ids as "failed"

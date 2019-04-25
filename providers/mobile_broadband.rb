@@ -12,7 +12,9 @@
 action :setup do
   begin
     # setup resource depends
-    if new_resource.support_os.include?($gecos_os)
+    if is_os_supported? &&
+      (is_policy_active?('network_mgmt','mobile_broadband_res') ||
+       is_policy_autoreversible?('network_mgmt','mobile_broadband_res'))
       gem_depends = %w[activesupport json]
       gem_depends.each do |gem|
         r = gem_package gem do
@@ -25,6 +27,12 @@ action :setup do
       require 'securerandom'
       require 'json'
       require 'active_support/core_ext/hash'
+
+      directory '/usr/share/mobile-broadband-provider-info' do
+        owner 'root'
+        group 'root'
+        mode '0755'
+      end.run_action(:create)
 
       # Please, keep this file updated with the latest package
       cookbook_file '/usr/share/mobile-broadband-provider-info'\
@@ -105,8 +113,6 @@ action :setup do
       job_ids.each do |jid|
         node.normal['job_status'][jid]['status'] = 0
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
   rescue StandardError => e
     # just save current job ids as "failed"

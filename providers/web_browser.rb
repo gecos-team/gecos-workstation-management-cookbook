@@ -12,7 +12,10 @@
 action :setup do
   begin
     ffx = ShellUtil.shell('apt-cache policy firefox').exitstatus
-    if new_resource.support_os.include?($gecos_os) && ffx
+    if is_os_supported? &&
+      ((ffx &&
+        is_policy_active?('users_mgmt','web_browser_res')) ||
+        is_policy_autoreversible?('users_mgmt','web_browser_res'))
 
       $required_pkgs['web_browser'].each do |pkg|
         Chef::Log.debug("web_browser.rb - REQUIRED PACKAGES = #{pkg}")
@@ -307,8 +310,6 @@ action :setup do
           end
         end
       end
-    else
-      Chef::Log.info('This resource is not supported in your OS')
     end
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

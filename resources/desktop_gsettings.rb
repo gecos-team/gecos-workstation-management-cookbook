@@ -16,23 +16,26 @@ property :schema, String, name_property: true, required: true
 property :user, String, required: true
 property :key, String, required: true
 property :value, String
+property :dbus_command, String
 
 # dbus-1.8.0: dbus-run-session (better option than dbus-launch because
 # dbus-daemon will run for as long as the program does, after which it
 # will terminate.)
 
 load_current_value do |desired|
-  opts = {}
-  opts[:user] = desired.user if desired.user
-  opts[:environment] = {
-    'USER' => opts[:user],
-    'HOME' => "/home/#{opts[:user]}"
-  }
+  Chef::Log.debug("desktop_gsettings.rb: desired.schema = #{desired.schema}")
+  Chef::Log.debug("desktop_gsettings.rb: desired.key = #{desired.key}")
+  Chef::Log.debug("desktop_gsettings.rb: desired.user = #{desired.user}")
+  if ::File.executable?('/usr/bin/dbus-run-session')
+      dbus_command '/usr/bin/dbus-run-session'
+  else
+      dbus_command '/usr/bin/xvfb-run'
+  end
 
-  cmd_out = shell_out('eval `dbus-launch --sh-syntax`; gsettings get '\
-      "#{desired.schema} #{desired.key}; "\
-      'kill $DBUS_SESSION_BUS_PID', opts)
-  Chef::Log.debug("desktop_gsettings.rb: cmd_out= #{cmd_out.stdout}")
+  cmd_out = shell_out("sudo -u #{desired.user} HOME=/home/#{desired.user} "\
+		      "#{dbus_command} gsettings get "\
+		      "#{desired.schema} #{desired.key}")
+  Chef::Log.debug("desktop_gsettings.rb: cmd_out = #{cmd_out.stdout}")
 
   unless cmd_out.exitstatus.zero? && !cmd_out.stdout.nil?
     current_value_does_not_exist!
@@ -54,17 +57,32 @@ action :set do
     action :nothing
   end.run_action(:install)
 
+  package 'xvfb' do
+    action :nothing
+    only_if "#{dbus_command} == 'xvfb-run'"
+  end.run_action(:install)
+
   converge_if_changed :value do
-    bash "set key #{key}" do
-      user new_resource.user.to_s
+    bash "set key #{key} online" do
       code <<-SET_GSETTINGS_SCRIPT
-        eval `dbus-launch --sh-syntax`
+        sudo -u #{new_resource.user.to_s} \
+        DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u #{new_resource.user.to_s})/bus" \
         gsettings set #{new_resource.schema} #{new_resource.key} #{new_resource.value}
-        kill $DBUS_SESSION_BUS_PID
       SET_GSETTINGS_SCRIPT
-      environment 'USER' => new_resource.user.to_s, 'HOME' => '/home/'\
-        "#{new_resource.user}"
+      environment 'HOME' => "/home/#{new_resource.user.to_s}"
       only_if "gsettings list-schemas | grep  #{schema}"
+      only_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
+    end
+
+    bash "set key #{key}" do
+      code <<-SET_GSETTINGS_SCRIPT
+        sudo -u #{new_resource.user.to_s} #{dbus_command} \
+        gsettings set #{new_resource.schema} \
+        #{new_resource.key} #{new_resource.value}
+      SET_GSETTINGS_SCRIPT
+      environment 'HOME' => "/home/#{new_resource.user.to_s}"
+      only_if "gsettings list-schemas | grep  #{schema}"
+      not_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
     end
   end
 end
@@ -77,14 +95,26 @@ action :unset do
     action :nothing
   end.run_action(:install)
 
-  bash 'unset key' do
-    user new_resource.user.to_s
+  bash 'unset key by dbus' do
     code <<-RESET_GSETTINGS_SCRIPT
-      eval `dbus-launch --sh-syntax`
+      sudo -u #{new_resource.user.to_s} \
+      DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u #{new_resource.user.to_s})/bus" \
       gsettings reset #{new_resource.schema} #{new_resource.key}
-      kill $DBUS_SESSION_BUS_PID
     RESET_GSETTINGS_SCRIPT
     environment 'HOME' => "/home/#{new_resource.user}"
     only_if "gsettings list-schemas | grep  #{schema}"
+    only_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
   end
+
+  bash "set key #{key}" do
+    code <<-RESET_GSETTINGS_SCRIPT
+      sudo -u #{new_resource.user.to_s} #{dbus_command} \
+      gsettings reset #{new_resource.schema} \
+      #{new_resource.key} #{new_resource.value}
+    RESET_GSETTINGS_SCRIPT
+    environment 'HOME' => "/home/#{new_resource.user.to_s}"
+    only_if "gsettings list-schemas | grep  #{schema}"
+    not_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
+  end
+
 end
