@@ -3071,8 +3071,8 @@ complete_js = {
             appconfig_libreoffice_res: appconfig_libreoffice_js,
             appconfig_thunderbird_res: appconfig_thunderbird_js,
             appconfig_firefox_res: appconfig_firefox_js,
-            appconfig_java_res: appconfig_java_js
-#            display_manager_res: display_manager_js
+            appconfig_java_res: appconfig_java_js,
+            display_manager_res: display_manager_js
           }
         },
         printers_mgmt: {
@@ -3107,8 +3107,8 @@ complete_js = {
             user_mount_res: user_mount_js,
             user_modify_nm_res: user_modify_nm_js,
             shutdown_options_res: shutdown_options_js,
-            mimetypes_res: mimetypes_js
-#            idle_timeout_res: idle_timeout_js
+            mimetypes_res: mimetypes_js,
+            idle_timeout_res: idle_timeout_js
           }
         }
       }
