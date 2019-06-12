@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','local_groups_res') ||
-       is_policy_autoreversible?('misc_mgmt','local_groups_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'local_groups_res') ||
+        policy_autoreversible?('misc_mgmt', 'local_groups_res'))
       groups_list = new_resource.groups_list
 
       groups_list.each do |item|

@@ -18,9 +18,9 @@ logind_conf = '/etc/systemd/logind.conf'
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','ttys_res') ||
-       is_policy_autoreversible?('misc_mgmt','ttys_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'ttys_res') ||
+        policy_autoreversible?('misc_mgmt', 'ttys_res'))
       Chef::Log.debug("disable_ttys: #{new_resource.disable_ttys}")
 
       if new_resource.disable_ttys # DISABLE TTYs
@@ -70,7 +70,7 @@ action :setup do
           (1..6).to_a.each do |num|
             service "getty@tty#{num}.service" do
               provider Chef::Provider::Service::Systemd
-              action [:stop,:disable] 
+              action %i[stop disable]
             end
           end
         end
@@ -118,7 +118,7 @@ action :setup do
 
           service 'getty@tty1.service' do
             provider Chef::Provider::Service::Systemd
-            action [:enable,:start] 
+            action %i[enable start]
           end
         end
       end

@@ -13,9 +13,9 @@ GRP_POWER = 'power'.freeze
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','shutdown_options_res') ||
-       is_policy_autoreversible?('users_mgmt','shutdown_options_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'shutdown_options_res') ||
+        policy_autoreversible?('users_mgmt', 'shutdown_options_res'))
       $required_pkgs['shutdown_options'].each do |pkg|
         Chef::Log.debug("shutdown_options.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do

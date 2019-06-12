@@ -27,4 +27,3 @@ gecos_ws_mgmt_debug_mode 'debug mode' do
   support_os node[:gecos_ws_mgmt][:single_node][:debug_mode_res][:support_os]
   action :setup
 end
-

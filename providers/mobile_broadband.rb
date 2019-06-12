@@ -12,9 +12,9 @@
 action :setup do
   begin
     # setup resource depends
-    if is_os_supported? &&
-      (is_policy_active?('network_mgmt','mobile_broadband_res') ||
-       is_policy_autoreversible?('network_mgmt','mobile_broadband_res'))
+    if os_supported? &&
+       (policy_active?('network_mgmt', 'mobile_broadband_res') ||
+        policy_autoreversible?('network_mgmt', 'mobile_broadband_res'))
       gem_depends = %w[activesupport json]
       gem_depends.each do |gem|
         r = gem_package gem do

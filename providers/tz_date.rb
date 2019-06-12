@@ -13,9 +13,9 @@ V2 = ['GECOS V2', 'Gecos V2 Lite'].freeze
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','tz_date_res') ||
-       is_policy_autoreversible?('misc_mgmt','tz_date_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'tz_date_res') ||
+        policy_autoreversible?('misc_mgmt', 'tz_date_res'))
 
       ntp_server = new_resource.server
 
@@ -39,43 +39,44 @@ action :setup do
           owner 'root'
           group 'root'
           mode '0644'
-          variables(:ntp_server => ntp_server)
-          not_if {ntp_server.nil? || ntp_server.empty?}
+          variables(ntp_server: ntp_server)
+          not_if { ntp_server.nil? || ntp_server.empty? }
           notifies :run, 'execute[ntpdate]', :immediately
         end
 
       else # DISTROS BASED ON SYSTEMD: TIMESYNCD
 
         # Incompatibles
-        ['chrony', 'ntp'].each do |pkg|
+        %w[chrony ntp].each do |pkg|
           package pkg do
             action :nothing
           end.run_action(:purge)
         end
 
         service 'systemd-timesyncd' do
-          supports :start => true, :stop => true, :restart => true, :reload => true, :status => true
-          action [:enable, :start]
+          supports(start: true, stop: true, restart: true, reload: true,
+                   status: true)
+          action %i[enable start]
         end
 
         bash 'timedatectl' do
-          code <<-EOH
+          code <<-TIMEDATECTLCODE
           timedatectl set-local-rtc 0
           timedatectl set-ntp true
-          EOH
+          TIMEDATECTLCODE
         end
- 
+
         template '/etc/systemd/timesyncd.conf' do
           source 'timesyncd.conf.erb'
           owner 'root'
           group 'root'
           mode '0644'
-          variables(:ntp_server => ntp_server)
-          not_if {ntp_server.nil? || ntp_server.empty?}
+          variables(ntp_server: ntp_server)
+          not_if { ntp_server.nil? || ntp_server.empty? }
           notifies :restart, 'service[systemd-timesyncd]', :immediately
         end
 
-      end # END CASE
+      end
     end
 
     # save current job ids (new_resource.job_ids) as "ok"

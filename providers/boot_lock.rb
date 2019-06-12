@@ -15,10 +15,10 @@ action :setup do
     unlock_user = new_resource.unlock_user
     unlock_pass = new_resource.unlock_pass
     grub_conf = '/boot/grub/grub.cfg'
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','boot_lock_res') ||
-       is_policy_autoreversible?('misc_mgmt','boot_lock_res'))
-    
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'boot_lock_res') ||
+        policy_autoreversible?('misc_mgmt', 'boot_lock_res'))
+
       if ::File.file?(grub_conf)
         is_boot_locked = ::File.read(grub_conf).include? 'superusers'
         execute_update = (lock_boot != is_boot_locked)

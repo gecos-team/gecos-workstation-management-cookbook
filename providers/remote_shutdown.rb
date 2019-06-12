@@ -12,9 +12,9 @@ require 'date'
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','remote_shutdown_res') || \
-       is_policy_autoreversible?('misc_mgmt','remote_shutdown_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'remote_shutdown_res') || \
+        policy_autoreversible?('misc_mgmt', 'remote_shutdown_res'))
       if !new_resource.shutdown_mode.empty?
         shutdown_command = if new_resource.shutdown_mode == 'halt'
                              '/sbin/shutdown -r now'

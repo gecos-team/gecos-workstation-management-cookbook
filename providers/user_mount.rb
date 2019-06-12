@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','user_mount_res') ||
-       is_policy_autoreversible?('users_mgmt','user_mount_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'user_mount_res') ||
+        policy_autoreversible?('users_mgmt', 'user_mount_res'))
       userslist = new_resource.users
 
       udisk_policy = '/usr/share/polkit-1/actions/org.freedesktop.'\

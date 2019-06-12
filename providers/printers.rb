@@ -103,7 +103,7 @@ end
 #
 def download_ppd_file(ppd_uri, curr_ptr_name)
   FileUtils.mkdir_p('/usr/share/cups/model')
-  ppd_uri_dw = ShellUtil.shell("/usr/bin/wget --no-check-certificate -O"\
+  ppd_uri_dw = ShellUtil.shell('/usr/bin/wget --no-check-certificate -O'\
       " /usr/share/cups/model/#{curr_ptr_name}.ppd '#{ppd_uri}'")
   if ppd_uri_dw.exitstatus.zero?
     setup_permissions_to_ppd_file(curr_ptr_name)
@@ -116,9 +116,9 @@ end
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('printers_mgmt','printers_res') || \
-       is_policy_autoreversible?('printers_mgmt','printers_res'))
+    if os_supported? &&
+       (policy_active?('printers_mgmt', 'printers_res') || \
+        policy_autoreversible?('printers_mgmt', 'printers_res'))
       printers_list = new_resource.printers_list
 
       if printers_list.any?
@@ -136,16 +136,17 @@ action :setup do
         printers_list.each do |printer|
           Chef::Log.info("Processing printer: #{printer.name}")
 
-          if printer.model.casecmp('Other') == 0 && !printer.attribute?('ppd_uri')
-              Chef::Log.warn("Model \"#{printer.model}\" without external PPD "\
-                  " for printer \"#{printer.name}\"")
-              next
+          if printer.model.casecmp('Other').zero? &&
+             !printer.attribute?('ppd_uri')
+            Chef::Log.warn("Model \"#{printer.model}\" without external PPD "\
+              " for printer \"#{printer.name}\"")
+            next
           end
 
           curr_ptr_name  = printer.name.tr(' ', '+')
           curr_ptr_id    = printer.manufacturer.tr(' ', '_') + '-' +
                            printer.model.tr(' ', '_')
-  
+
           oppolicy = 'default'
           oppolicy = printer.oppolicy if printer.attribute?('oppolicy')
 
@@ -157,12 +158,11 @@ action :setup do
           is_prt_installed = is_prt_in_cups.exitstatus.zero?
 
           create_ppd_with_ppd_uri = false
-          if printer.attribute?('ppd_uri')
-            unless ::File.exist?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
-              Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
-              download_ppd_file(printer.ppd_uri, curr_ptr_name)
-              create_ppd_with_ppd_uri = true
-            end
+          if printer.attribute?('ppd_uri') &&
+             !::File.exist?("/usr/share/cups/model/#{curr_ptr_name}.ppd")
+            Chef::Log.info(" - using PPD_URI: #{printer.ppd_uri}")
+            download_ppd_file(printer.ppd_uri, curr_ptr_name)
+            create_ppd_with_ppd_uri = true
           else
             ppd_uri = ''
           end
@@ -197,7 +197,7 @@ action :setup do
               delete_printer(cups_printer)
             end
           end
-	end
+        end
       else
         cups_ptr_list = ShellUtil.shell('lpstat -a | egrep \'^\\S\' |'\
             ' awk \'{print $1}\'')
