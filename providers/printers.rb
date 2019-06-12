@@ -136,6 +136,12 @@ action :setup do
         printers_list.each do |printer|
           Chef::Log.info("Processing printer: #{printer.name}")
 
+          if printer.model.casecmp('Other') == 0 && !printer.attribute?('ppd_uri')
+              Chef::Log.warn("Model \"#{printer.model}\" without external PPD "\
+                  " for printer \"#{printer.name}\"")
+              next
+          end
+
           curr_ptr_name  = printer.name.tr(' ', '+')
           curr_ptr_id    = printer.manufacturer.tr(' ', '_') + '-' +
                            printer.model.tr(' ', '_')
