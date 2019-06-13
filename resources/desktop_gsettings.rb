@@ -27,9 +27,9 @@ load_current_value do |desired|
   Chef::Log.debug("desktop_gsettings.rb: desired.key = #{desired.key}")
   Chef::Log.debug("desktop_gsettings.rb: desired.user = #{desired.user}")
   if ::File.executable?('/usr/bin/dbus-run-session')
-      dbus_command '/usr/bin/dbus-run-session'
+    dbus_command '/usr/bin/dbus-run-session'
   else
-      dbus_command '/usr/bin/xvfb-run'
+    dbus_command '/usr/bin/xvfb-run'
   end
 
   cmd_out = shell_out("sudo -u #{desired.user} HOME=/home/#{desired.user} "\
@@ -65,24 +65,24 @@ action :set do
   converge_if_changed :value do
     bash "set key #{key} online" do
       code <<-SET_GSETTINGS_SCRIPT
-        sudo -u #{new_resource.user.to_s} \
-        DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u #{new_resource.user.to_s})/bus" \
+        sudo -u #{new_resource.user} \
+        DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u #{new_resource.user})/bus" \
         gsettings set #{new_resource.schema} #{new_resource.key} #{new_resource.value}
       SET_GSETTINGS_SCRIPT
-      environment 'HOME' => "/home/#{new_resource.user.to_s}"
+      environment 'HOME' => "/home/#{new_resource.user}"
       only_if "gsettings list-schemas | grep  #{schema}"
-      only_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
+      only_if "test -e /run/user/$(id -u #{new_resource.user})/bus"
     end
 
     bash "set key #{key}" do
       code <<-SET_GSETTINGS_SCRIPT
-        sudo -u #{new_resource.user.to_s} #{dbus_command} \
+        sudo -u #{new_resource.user} #{dbus_command} \
         gsettings set #{new_resource.schema} \
         #{new_resource.key} #{new_resource.value}
       SET_GSETTINGS_SCRIPT
-      environment 'HOME' => "/home/#{new_resource.user.to_s}"
+      environment 'HOME' => "/home/#{new_resource.user}"
       only_if "gsettings list-schemas | grep  #{schema}"
-      not_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
+      not_if "test -e /run/user/$(id -u #{new_resource.user})/bus"
     end
   end
 end
@@ -97,24 +97,23 @@ action :unset do
 
   bash 'unset key by dbus' do
     code <<-RESET_GSETTINGS_SCRIPT
-      sudo -u #{new_resource.user.to_s} \
-      DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u #{new_resource.user.to_s})/bus" \
+      sudo -u #{new_resource.user} \
+      DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u #{new_resource.user})/bus" \
       gsettings reset #{new_resource.schema} #{new_resource.key}
     RESET_GSETTINGS_SCRIPT
     environment 'HOME' => "/home/#{new_resource.user}"
     only_if "gsettings list-schemas | grep  #{schema}"
-    only_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
+    only_if "test -e /run/user/$(id -u #{new_resource.user})/bus"
   end
 
   bash "set key #{key}" do
     code <<-RESET_GSETTINGS_SCRIPT
-      sudo -u #{new_resource.user.to_s} #{dbus_command} \
+      sudo -u #{new_resource.user} #{dbus_command} \
       gsettings reset #{new_resource.schema} \
       #{new_resource.key} #{new_resource.value}
     RESET_GSETTINGS_SCRIPT
-    environment 'HOME' => "/home/#{new_resource.user.to_s}"
+    environment 'HOME' => "/home/#{new_resource.user}"
     only_if "gsettings list-schemas | grep  #{schema}"
-    not_if "test -e /run/user/$(id -u #{new_resource.user.to_s})/bus"
+    not_if "test -e /run/user/$(id -u #{new_resource.user})/bus"
   end
-
 end

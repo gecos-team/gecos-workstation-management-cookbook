@@ -11,11 +11,11 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      ((!new_resource.config_thunderbird.empty? && 
-       is_policy_active?('software_mgmt','appconfig_thunderbird_res')) ||
-       is_policy_autoreversible?('software_mgmt','appconfig_thunderbird_res'))
-	    
+    if os_supported? &&
+       ((!new_resource.config_thunderbird.empty? &&
+         policy_active?('software_mgmt', 'appconfig_thunderbird_res')) ||
+        policy_autoreversible?('software_mgmt', 'appconfig_thunderbird_res'))
+
       Chef::Log.debug('appconfig_thunderbird.rb - config_thunderbird:'\
           " #{new_resource.config_thunderbird}")
       # Detecting installation directory

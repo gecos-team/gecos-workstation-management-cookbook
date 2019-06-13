@@ -10,9 +10,9 @@
 #
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','folder_sharing_res') ||
-       is_policy_autoreversible?('users_mgmt','folder_sharing_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'folder_sharing_res') ||
+        policy_autoreversible?('users_mgmt', 'folder_sharing_res'))
       require 'etc'
 
       users = new_resource.users

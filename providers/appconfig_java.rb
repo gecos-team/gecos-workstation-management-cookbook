@@ -11,10 +11,10 @@
 action :setup do
   begin
     alternatives_cmd = 'update-alternatives'
-    if is_os_supported? &&
-      ((!new_resource.config_java.empty? &&
-        is_policy_active?('software_mgmt','appconfig_java_res')) ||
-        is_policy_autoreversible?('software_mgmt','appconfig_java_res'))
+    if os_supported? &&
+       ((!new_resource.config_java.empty? &&
+         policy_active?('software_mgmt', 'appconfig_java_res')) ||
+         policy_autoreversible?('software_mgmt', 'appconfig_java_res'))
 
       version = new_resource.config_java['version']
       plug_version = new_resource.config_java['plug_version']
@@ -26,6 +26,8 @@ action :setup do
       mix_code = new_resource.config_java['mix_code']
       array_attrs = new_resource.config_java['array_attrs']
 
+      array_attrs = [] if array_attrs.nil?
+
       unless ::File.directory?('/etc/.java/deployment/')
         FileUtils.mkdir_p '/etc/.java/deployment/'
       end
@@ -35,9 +37,14 @@ action :setup do
         action :nothing
       end.run_action(:create_if_missing)
 
+      # Check if this Java version is the default version
+      alternative_exists = false
+      unless version.nil?
+        alternative_exists = ShellUtil.shell("#{alternatives_cmd} --display "\
+            "java| grep #{version}").exitstatus.zero?
+      end
+
       # Setting java version
-      alternative_exists = ShellUtil.shell("#{alternatives_cmd} --display "\
-          "java| grep #{version}").exitstatus.zero?
       if alternative_exists
         Chef::Log.info('Setting alternative for java with value '\
             "#{version}/jre/bin/java")
@@ -49,10 +56,14 @@ action :setup do
       end
 
       # Setting java plugin version
-      alternative_exists = ShellUtil.shell(
-        "#{alternatives_cmd} "\
-          "--display mozilla-javaplugin.so| grep #{plug_version}"
-      ).exitstatus.zero?
+      alternative_exists = false
+      unless version.nil?
+        alternative_exists = ShellUtil.shell(
+          "#{alternatives_cmd} "\
+            "--display mozilla-javaplugin.so| grep #{plug_version}"
+        ).exitstatus.zero?
+      end
+
       if alternative_exists
         Chef::Log.info('Setting alternative for mozilla-javaplugin.so'\
             " with value #{plug_version}/jre/lib/#{$arch}/libnpjp2.so")

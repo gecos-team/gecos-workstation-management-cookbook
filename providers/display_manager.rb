@@ -16,10 +16,10 @@ CURRENT_DISPLAY_MANAGER = ::File.basename(
 
 action :setup do
   begin
-    if is_os_supported? &&
-      ((!new_resource.dm.empty? &&
-        is_policy_active?('software_mgmt','display_manager_res')) ||
-        is_policy_autoreversible?('software_mgmt','display_manager_res'))
+    if os_supported? &&
+       ((!new_resource.dm.empty? &&
+         policy_active?('software_mgmt', 'display_manager_res')) ||
+         policy_autoreversible?('software_mgmt', 'display_manager_res'))
 
       # Template variables
       var_hash = {

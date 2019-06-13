@@ -10,9 +10,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','user_apps_autostart_res') ||
-       is_policy_autoreversible?('users_mgmt','user_apps_autostart_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'user_apps_autostart_res') ||
+        policy_autoreversible?('users_mgmt', 'user_apps_autostart_res'))
       users = new_resource.users
 
       case node['platform']

@@ -10,9 +10,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','cert_res') ||
-       is_policy_autoreversible?('misc_mgmt','cert_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'cert_res') ||
+        policy_autoreversible?('misc_mgmt', 'cert_res'))
       # install depends
       $required_pkgs['cert'].each do |pkg|
         Chef::Log.debug("cert.rb - REQUIRED PACKAGE = #{pkg}")
@@ -36,7 +36,8 @@ action :setup do
          !::File.symlink?(libnssckbi)
         Chef::Log.info('Divert libnssckbi.so file')
         ShellUtil.shell(
-          "dpkg-divert --add --rename --divert #{libnssckbi}.original #{libnssckbi}"
+          "dpkg-divert --add --rename --divert #{libnssckbi}.original "\
+            "#{libnssckbi}"
         )
         # Create a symbolic link
         ::FileUtils.ln_s p11_kit_trust, libnssckbi
@@ -75,13 +76,17 @@ action :setup do
             action :nothing
           end.run_action(:create)
 
-	  execute "convert to PEM #{cert_file}" do
-            command "openssl x509 -inform DER -in #{cert_file} > #{cert_file_dst}"
-            only_if {!::File.exist?(cert_file_dst) || ::File.mtime(cert_file) > ::File.mtime(cert_file_dst)}
-	    not_if "file #{cert_file} | grep PEM"
-	  end
+          mustupdate = (!::File.exist?(cert_file_dst) ||
+            ::File.mtime(cert_file) > ::File.mtime(cert_file_dst))
 
-	  link cert_file_dst  do
+          execute "convert to PEM #{cert_file}" do
+            command "openssl x509 -inform DER -in #{cert_file} > "\
+              "#{cert_file_dst}"
+            only_if mustupdate
+            not_if "file #{cert_file} | grep PEM"
+          end
+
+          link cert_file_dst do
             to cert_file
             only_if "file #{cert_file} | grep PEM "
           end

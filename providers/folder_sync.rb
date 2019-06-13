@@ -10,9 +10,9 @@
 #
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','folder_sync_res') || \
-       is_policy_autoreversible?('users_mgmt','folder_sync_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'folder_sync_res') || \
+        policy_autoreversible?('users_mgmt', 'folder_sync_res'))
       users = new_resource.users
 
       $required_pkgs['folder_sync'].each do |pkg|

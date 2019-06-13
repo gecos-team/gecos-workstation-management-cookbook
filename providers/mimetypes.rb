@@ -16,9 +16,9 @@ DEFAULT_SECTION = 'Default Applications'.freeze
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','mimetypes_res') ||
-       is_policy_autoreversible?('users_mgmt','mimetypes_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'mimetypes_res') ||
+        policy_autoreversible?('users_mgmt', 'mimetypes_res'))
       $required_pkgs['mimetypes'].each do |pkg|
         Chef::Log.debug("mimetypes.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do

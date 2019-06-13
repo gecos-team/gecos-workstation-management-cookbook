@@ -13,29 +13,29 @@ require 'time'
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','remote_control_res') ||
-       is_policy_autoreversible?('misc_mgmt','remote_control_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'remote_control_res') ||
+        policy_autoreversible?('misc_mgmt', 'remote_control_res'))
 
       enable_helpchannel = new_resource.enable_helpchannel
       enable_ssh = new_resource.enable_ssh
       ssl_verify = new_resource.ssl_verify
-#      tunnel_url = new_resource.tunnel_url 
+      # tunnel_url = new_resource.tunnel_url
 
-      data =  begin
-                data_bag_item('remote_control','defaults')
-              rescue Net::HTTPServerException, Chef::Exceptions::InvalidDataBagPath
-                nil
-              end
-      
+      data = begin
+               data_bag_item('remote_control', 'defaults')
+             rescue Net::HTTPServerException, \
+                    Chef::Exceptions::InvalidDataBagPath
+               nil
+             end
+
       if data
-      # Default url
+        # Default url
         tunnel_url = data['tunnel_url']
-      # Default secret
+        # Default secret
         known_message = data['known_message']
       end
-      
-      
+
       # Read-only perms to all users
       file '/etc/chef/client.pem' do
         mode '644'
@@ -44,15 +44,15 @@ action :setup do
       # Un/Install HelpChannel client
       hc_action = enable_helpchannel ? :install : :remove
       package 'gecosws-hc-client' do
-	action hc_action
+        action hc_action
       end
 
       # Un/Install SSH
       ssh_action = enable_ssh ? :install : :remove
-      notify_action = enable_ssh ? :start : :stop 
+      notify_action = enable_ssh ? :start : :stop
       package 'openssh-server' do
-	action ssh_action
-	notifies "#{notify_action}", 'service[ssh]', :immediately
+        action ssh_action
+        notifies notify_action.to_s, 'service[ssh]', :immediately
       end
 
       # Start/Stop ssh service
@@ -61,10 +61,10 @@ action :setup do
       end
 
       # Template /etc/helpchannel.conf
-      var_hash = { 
+      var_hash = {
         tunnel_url: tunnel_url,
-	known_message: known_message,
-	ssl_verify: ssl_verify
+        known_message: known_message,
+        ssl_verify: ssl_verify
       }
 
       template '/etc/helpchannel.conf' do
@@ -73,7 +73,7 @@ action :setup do
         group 'root'
         mode '0644'
         variables var_hash
-	only_if { enable_helpchannel && data }
+        only_if { enable_helpchannel && data }
       end
     end
 

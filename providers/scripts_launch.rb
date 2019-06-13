@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','scripts_launch_res') ||
-       is_policy_autoreversible?('misc_mgmt','scripts_launch_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'scripts_launch_res') ||
+        policy_autoreversible?('misc_mgmt', 'scripts_launch_res'))
       on_startup = new_resource.on_startup.select do |script|
         ::File.exist?(script) && ::File.executable?(script)
       end

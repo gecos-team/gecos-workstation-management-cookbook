@@ -10,56 +10,75 @@
 #
 
 module Runnable
+  # Helper module
   module Helper
-
     require 'chef/cookbook/metadata'
 
-    COOKBOOK_NAME = "gecos_ws_mgmt".freeze
-    UPDATED = "updated_by".freeze
-    AUTOREVERSE = "autoreverse".freeze
+    COOKBOOK_NAME = 'gecos_ws_mgmt'.freeze
+    UPDATED = 'updated_by'.freeze
+    AUTOREVERSE = 'autoreverse'.freeze
 
-    $schema = nil
-    
+    class << self
+      attr_accessor :schema
+    end
+
+    self.schema = nil
+
+    def check_metadata_file
+      cookbook_path = Chef::Config[:cookbook_path] + '/' + COOKBOOK_NAME
+      Chef::Log.debug('Runnable Helper :::  load_metadata - cookbook_path = '\
+        " #{cookbook_path}")
+      metadata_file = File.join(cookbook_path, 'metadata.json')
+      if File.exist?(File.join(cookbook_path, 'metadata.rb'))
+        metadata_file = File.join(cookbook_path, 'metadata.rb')
+      end
+
+      metadata_file
+    end
+
     def load_metadata
-      if $schema.nil?
-        cookbook_path = Chef::Config[:cookbook_path] + '/' + COOKBOOK_NAME
-        Chef::Log.debug("Runnable Helper :::  load_metadata - cookbook_path = #{cookbook_path}")
-        if File.exist?(File.join(cookbook_path, 'metadata.rb'))
-          metadata_file = File.join(cookbook_path, 'metadata.rb')
-        else 
-          metadata_file = File.join(cookbook_path, 'metadata.json')
-        end
-        metadata = Chef::Cookbook::Metadata.new
-        metadata.from_file(metadata_file)
-        $schema = metadata.attributes[:json_schema][:object][:properties][COOKBOOK_NAME.to_sym][:properties]
+      return unless Runnable::Helper.schema.nil?
+      metadata = Chef::Cookbook::Metadata.new
+      metadata.from_file(check_metadata_file)
+      Runnable::Helper.schema = metadata.attributes[:json_schema][:object]\
+        [:properties][COOKBOOK_NAME.to_sym][:properties]
+    end
+
+    def user_policy_active?(policy_data)
+      users = policy_data[:users]
+      updated_users = users.select do |_, values|
+        values.key?(UPDATED) && !values[UPDATED].empty?
       end
+      updated_users != {}
     end
 
-    def is_policy_active?(recipe, policy)
-      begin
-        if recipe.include?("users_mgmt") # User policy
-          users = node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][:users]
-          users.select{ |username, values|  values.key?(UPDATED) and !values[UPDATED].empty? } != {}
-        else # Workstation policy
-          node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym].key?(UPDATED.to_sym) and
-          !node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym][UPDATED.to_sym].empty?
-        end
-      rescue => e
-        Chef::Log.error("Runnable Helper ::: Oooops! Has ocurred an error: #{e}")
-        false
+    def computer_policy_active?(policy_data)
+      policy_data.key?(UPDATED.to_sym) && policy_data[UPDATED.to_sym].empty?
+    end
+
+    def policy_active?(recipe, policy)
+      policy_data = node[COOKBOOK_NAME.to_sym][recipe.to_sym][policy.to_sym]
+      if recipe.include?('users_mgmt') # User policy
+        user_policy_active?(policy_data)
+      else # Workstation policy
+        computer_policy_active?(policy_data)
       end
+    rescue StandardError => e
+      Chef::Log.error("Runnable Helper ::: Oooops! Has ocurred an error: #{e}")
+      false
     end
 
-    def is_policy_autoreversible?(recipe, policy)
-      $schema[recipe.to_sym][:properties][policy.to_sym][AUTOREVERSE.to_sym] rescue false
+    def policy_autoreversible?(recipe, policy)
+      Runnable::Helper.schema[recipe.to_sym][:properties][
+        policy.to_sym].key?(AUTOREVERSE.to_sym)
     end
 
-    def is_os_supported?
+    def os_supported?
       if new_resource.support_os.include?($gecos_os)
         true
       else
-	Chef::Log.info('This resource is not supported in your OS')
-	false
+        Chef::Log.info('This resource is not supported in your OS')
+        false
       end
     end
   end

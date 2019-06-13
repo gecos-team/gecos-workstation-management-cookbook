@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('software_mgmt','appconfig_libreoffice_res') ||
-       is_policy_autoreversible?('software_mgmt','appconfig_libreoffice_res'))
+    if os_supported? &&
+       (policy_active?('software_mgmt', 'appconfig_libreoffice_res') ||
+        policy_autoreversible?('software_mgmt', 'appconfig_libreoffice_res'))
       unless new_resource.config_libreoffice.empty?
         app_update = new_resource.config_libreoffice['app_update']
 
