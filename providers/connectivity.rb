@@ -119,7 +119,7 @@ action :test do
       end
 
       Chef::Log.debug("connectivity.rb ::: response.code #{response.code}")
-      test_ok &&= (response.is_a?(Net::HTTPOK))
+      test_ok &&= response.is_a?(Net::HTTPOK)
     rescue Timeout::Error, EOFError,
            Errno::EINVAL, Errno::ECONNRESET, Errno::EHOSTUNREACH,
            Errno::ECONNREFUSED, Errno::ENETUNREACH, Net::HTTPBadResponse,

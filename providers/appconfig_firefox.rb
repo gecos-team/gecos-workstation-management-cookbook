@@ -11,10 +11,10 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('software_mgmt','appconfig_firefox_res') ||
-       is_policy_autoreversible?('software_mgmt','appconfig_firefox_res'))
-	    
+    if os_supported? &&
+       (policy_active?('software_mgmt', 'appconfig_firefox_res') ||
+        policy_autoreversible?('software_mgmt', 'appconfig_firefox_res'))
+
       unless new_resource.config_firefox.empty?
         Chef::Log.debug('appconfig_firefox - config_firefox: '\
             "#{new_resource.config_firefox}")

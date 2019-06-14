@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','desktop_background_res') ||
-       is_policy_autoreversible?('users_mgmt','desktop_background_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'desktop_background_res') ||
+        policy_autoreversible?('users_mgmt', 'desktop_background_res'))
       $required_pkgs['desktop_background'].each do |pkg|
         Chef::Log.debug("desktop_background.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do

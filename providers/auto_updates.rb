@@ -15,19 +15,19 @@ action :setup do
     onstop_update = new_resource.onstop_update
     days = new_resource.days || []
     date = new_resource.date || {}
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','auto_updates_res') ||
-       is_policy_autoreversible?('misc_mgmt','auto_updates_res'))
- 
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'auto_updates_res') ||
+        policy_autoreversible?('misc_mgmt', 'auto_updates_res'))
+
       # Install required packages
       $required_pkgs['auto_updates'].each do |pkg|
-         Chef::Log.debug("auto_updates.rb - REQUIRED PACKAGES = %s" % pkg)
-         package pkg do
-           action :nothing
-         end.run_action(:install)
+        Chef::Log.debug("auto_updates.rb - REQUIRED PACKAGES = #{pkg}")
+        package pkg do
+          action :nothing
+        end.run_action(:install)
       end
 
-      Chef::Log.info("Setting automatic updates")
+      Chef::Log.info('Setting automatic updates')
 
       log_file = '/var/log/automatic-updates.log'
       err_file = '/var/log/automatic-updates.err'

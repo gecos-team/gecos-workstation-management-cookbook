@@ -10,9 +10,9 @@
 #
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','local_users_res') ||
-       is_policy_autoreversible?('misc_mgmt','local_users_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'local_users_res') ||
+        policy_autoreversible?('misc_mgmt', 'local_users_res'))
       require 'etc'
 
       $required_pkgs['local_users'].each do |pkg|

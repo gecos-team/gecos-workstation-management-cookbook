@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','idle_timeout_res') ||
-       is_policy_autoreversible?('users_mgmt','idle_timeout_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'idle_timeout_res') ||
+        policy_autoreversible?('users_mgmt', 'idle_timeout_res'))
       $required_pkgs['idle_timeout'].each do |pkg|
         Chef::Log.debug("idle_timeout.rb - REQUIRED PACKAGE = #{pkg}")
         package pkg do

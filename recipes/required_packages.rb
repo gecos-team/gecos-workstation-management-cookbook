@@ -27,7 +27,7 @@ $required_pkgs = {
   'shutdown_options' => ['dconf-tools'],
   'user_alerts' => ['libnotify-bin'],
   'local_users' => ['libshadow-ruby1.8'],
-  'email_setup' => ['thunderbird-locale-'+($locale.sub! '_', '-'), 'xvfb'],
+  'email_setup' => ['thunderbird-locale-' + ($locale.sub! '_', '-'), 'xvfb'],
   'im_client' => ['pidgin'],
   'auto_updates' => ['moreutils']
 }

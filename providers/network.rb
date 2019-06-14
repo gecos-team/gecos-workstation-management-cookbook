@@ -21,9 +21,9 @@ nochanges = true
 action :presetup do
   begin
     Chef::Log.info('network.rb ::: Starting PRESETUP ...')
-    if is_os_supported? &&
-      (is_policy_active?('single_node','network_res') ||
-       is_policy_autoreversible?('single_node','network_res'))
+    if os_supported? &&
+       (policy_active?('single_node', 'network_res') ||
+        policy_autoreversible?('single_node', 'network_res'))
       connections = new_resource.connections
       interfaces = node[:network][:interfaces]
 

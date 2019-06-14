@@ -75,9 +75,9 @@ end
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('software_mgmt','package_res') ||
-       is_policy_autoreversible?('software_mgmt','package_res'))
+    if os_supported? &&
+       (policy_active?('software_mgmt', 'package_res') ||
+        policy_autoreversible?('software_mgmt', 'package_res'))
       if new_resource.package_list.any?
         Chef::Log.info('Installing package list')
         new_resource.package_list.each do |pkg|

@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','user_shared_folders_res') ||
-       is_policy_autoreversible?('users_mgmt','user_shared_folders_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'user_shared_folders_res') ||
+        policy_autoreversible?('users_mgmt', 'user_shared_folders_res'))
       pattern = '(smb|nfs|ftp|sftp|dav)(:\/\/)([\S]*\/.*)'
       users = new_resource.users
       users.each_key do |user_key|

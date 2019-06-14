@@ -60,7 +60,6 @@ cron 'GECOS Agent' do
   action :create
 end
 
-
 include_recipe 'gecos_ws_mgmt::required_packages'
 include_recipe 'gecos_ws_mgmt::software_mgmt'
 include_recipe 'gecos_ws_mgmt::misc_mgmt'

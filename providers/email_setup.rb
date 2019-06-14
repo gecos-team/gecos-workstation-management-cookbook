@@ -66,9 +66,9 @@ end
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','email_setup_res') ||
-       is_policy_autoreversible?('users_mgmt','email_setup_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'email_setup_res') ||
+        policy_autoreversible?('users_mgmt', 'email_setup_res'))
       # Setup email for users
       users = new_resource.users
       users.each_key do |user_key|

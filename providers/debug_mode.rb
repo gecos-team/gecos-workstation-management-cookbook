@@ -13,9 +13,9 @@ require 'time'
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('single_node','debug_mode_res') ||
-       is_policy_autoreversible?('single_node','debug_mode_res'))
+    if os_supported? &&
+       (policy_active?('single_node', 'debug_mode_res') ||
+        policy_autoreversible?('single_node', 'debug_mode_res'))
       enable_debug = new_resource.enable_debug
       if new_resource.expire_datetime == '' ||
          Time.parse(new_resource.expire_datetime) < Time.now

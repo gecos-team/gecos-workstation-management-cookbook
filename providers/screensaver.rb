@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','screensaver_res') ||
-       is_policy_autoreversible?('users_mgmt','screensaver_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'screensaver_res') ||
+        policy_autoreversible?('users_mgmt', 'screensaver_res'))
       users = new_resource.users
       users.each_key do |user_key|
         nameuser = user_key
