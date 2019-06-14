@@ -230,6 +230,7 @@ action :setup do
               gem_binary($gem_path)
               action :nothing
             end.run_action(:install)
+            require 'libxml'
           end
 
           add_or_modify_xml_entry(template, homedir) if XMLUtil.loaded?
