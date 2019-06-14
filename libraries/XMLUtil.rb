@@ -12,10 +12,9 @@
 #
 
 begin
-  # Class loading may fail in case that there is no libxml installed in
-  # the system
 
   require 'libxml'
+
 
   # Utility class used to work with XML files
   class XMLUtil
@@ -63,8 +62,22 @@ begin
     end
   end
 rescue LoadError => error
-  Chef::Log.warn("Error creating XMLUtil library: #{error.backtrace}")
-  Chef::Log.warn('Falling back to empty class!')
+#  Chef::Log.warn("Error creating XMLUtil library: #{error.backtrace}")
+  Chef::Log.warn("Error loading XMLUtil library")
+
+  # We need to define a new Context to use Chef resources because it is not available in libraries
+  run_context = Chef::RunContext.new(Chef::Node.new, {}, Chef::EventDispatch::Dispatcher.new)
+  
+  # libxml2-dev needed to compile libxml-ruby gem
+  package = Chef::Resource::AptPackage.new("libxml2-dev", run_context)
+  package.run_action(:install)
+
+  # Then, libxm-ruby must be installed
+  gem = Chef::Resource::ChefGem.new("libxml-ruby", run_context)
+  gem.run_action(:install)
+
+  require 'libxml'
+  Chef::Log.warn('XMLUtil dependencies installed. Reloading libxml.')
 
   # Empty stub
   class XMLUtilStub
