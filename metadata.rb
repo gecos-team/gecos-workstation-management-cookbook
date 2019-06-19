@@ -1310,13 +1310,15 @@ auto_updates_js = {
                 title: 'Hour',
                 title_es: 'Hora',
                 type: 'integer',
-                maximum: 23
+                maximum: 23,
+                minimum: 0
               },
               minute: {
                 title: 'Minute',
                 title_es: 'Minuto',
                 type: 'integer',
-                maximum: 59
+                maximum: 59,
+                minimum: 0
               }
             }
           }
@@ -1331,25 +1333,25 @@ auto_updates_js = {
               title: 'Day',
               title_es: 'Día',
               type: 'string',
-              pattern: '^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$'
+              pattern: '^([0-9]|[0-2][0-9]|3[0-1]|\*)$'
             },
             month: {
               title: 'Month',
               title_es: 'Mes',
               type: 'string',
-              pattern: '^(0?[1-9]|1[0-2]|\\\*)$'
+              pattern: '^(0?[1-9]|1[0-2]|\*)$'
             },
             hour: {
               title: 'Hour',
               title_es: 'Hora',
               type: 'string',
-              pattern: '^((([0-1][0-9])|[0-2][0-3])|\\\*)$'
+              pattern: '^((([0-1][0-9])|[0-2][0-3])|\*)$'
             },
             minute: {
               title: 'Minute',
               title_es: 'Minuto',
               type: 'string',
-              pattern: '^([0-5][0-9]|\\\*)$'
+              pattern: '^([0-5][0-9]|\*)$'
             }
           }
         }
