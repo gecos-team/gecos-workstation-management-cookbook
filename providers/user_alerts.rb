@@ -13,9 +13,9 @@ require 'json'
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','user_alerts_res') ||
-       is_policy_autoreversible?('users_mgmt','user_alerts_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'user_alerts_res') ||
+        policy_autoreversible?('users_mgmt', 'user_alerts_res'))
       # Installs the notify-send command
       $required_pkgs['user_alerts'].each do |pkg|
         Chef::Log.debug("user_alerts.rb - REQUIRED PACKAGE = #{pkg}")

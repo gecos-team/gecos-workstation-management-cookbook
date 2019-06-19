@@ -111,9 +111,9 @@ end
 action :setup do
   begin
     # Checking OS and Pidgin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','im_client_res') ||
-       is_policy_autoreversible?('users_mgmt','im_client_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'im_client_res') ||
+        policy_autoreversible?('users_mgmt', 'im_client_res'))
       # Install required packages
       $required_pkgs['im_client'].each do |pkg|
         Chef::Log.debug("im_client.rb - REQUIRED PACKAGES = #{pkg}")
@@ -230,6 +230,7 @@ action :setup do
               gem_binary($gem_path)
               action :nothing
             end.run_action(:install)
+            require 'libxml'
           end
 
           add_or_modify_xml_entry(template, homedir) if XMLUtil.loaded?

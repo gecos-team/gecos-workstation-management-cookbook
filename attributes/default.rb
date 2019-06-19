@@ -9,8 +9,8 @@
 #
 ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
                   'Gecos V2 Lite'].freeze
-UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite', 'Gecos V2 Lite',
-                'Ubuntu 14.04.1 LTS'].freeze
+UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
+                'Gecos V2 Lite', 'Ubuntu 14.04.1 LTS'].freeze
 GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V2'].freeze
 
 default[:gecos_ws_mgmt][:single_node][:network_res][:job_ids] = []
@@ -270,9 +270,7 @@ default[:gecos_ws_mgmt][:misc_mgmt][:ttys_res][:support_os] = ALL_GECOS_VERS
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:job_ids] = []
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][
   :support_os] = ALL_GECOS_VERS
-default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:enable_helpchannel] = false
+default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][
+  :enable_helpchannel] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:enable_ssh] = false
 default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:ssl_verify] = true
-# tunnel_url and known_message moved to remote_control data_bag
-#default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:tunnel_url] = ''
-#default[:gecos_ws_mgmt][:misc_mgmt][:remote_control_res][:known_message] = 'COMMON SECRET '

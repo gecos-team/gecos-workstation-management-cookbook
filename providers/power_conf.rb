@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('misc_mgmt','power_conf_res') ||
-       is_policy_autoreversible?('misc_mgmt','power_conf_res'))
+    if os_supported? &&
+       (policy_active?('misc_mgmt', 'power_conf_res') ||
+        policy_autoreversible?('misc_mgmt', 'power_conf_res'))
       require 'time'
 
       $required_pkgs['power_conf'].each do |pkg|

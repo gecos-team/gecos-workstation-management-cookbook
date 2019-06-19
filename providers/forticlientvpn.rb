@@ -13,11 +13,11 @@ HISTORY_FILTER = /^profile|^p12passwd|^path|^password|^user|^port|^server/
 action :setup do
   begin
     # Added check to avoid execution if no connections defined
-    if is_os_supported? &&
-      ((!new_resource.connections.nil? &&
-        !new_resource.connections.empty? &&
-        is_policy_active?('network_mgmt','forticlientvpn_res')) ||
-        is_policy_autoreversible?('network_mgmt','forticlientvpn_res'))
+    if os_supported? &&
+       ((!new_resource.connections.nil? &&
+         !new_resource.connections.empty? &&
+         policy_active?('network_mgmt', 'forticlientvpn_res')) ||
+         policy_autoreversible?('network_mgmt', 'forticlientvpn_res'))
 
       res_proxyserver = new_resource.proxyserver || node[:gecos_ws_mgmt][
         :network_mgmt][:forticlientvpn_res][:proxyserver]

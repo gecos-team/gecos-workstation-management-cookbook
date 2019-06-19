@@ -51,9 +51,9 @@ end
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('software_mgmt','software_sources_res') ||
-       is_policy_autoreversible?('software_mgmt','_software_sources_res'))
+    if os_supported? &&
+       (policy_active?('software_mgmt', 'software_sources_res') ||
+        policy_autoreversible?('software_mgmt', 'software_sources_res'))
       repo_list = new_resource.repo_list
 
       current_lists = []

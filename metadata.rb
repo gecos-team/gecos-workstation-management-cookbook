@@ -12,7 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.9.0'
+version           '0.9.1'
 
 supports 'ubuntu'
 supports 'debian'
@@ -2895,21 +2895,13 @@ remote_control_js = {
         type: 'fieldset',
         title: 'Basics',
         title_es: 'Básicos',
-        items: [ 
-	  'enable_helpchannel',
-	  'enable_ssh'
-	]
+        items: %w[enable_helpchannel enable_ssh]
       },
       {
         type: 'fieldset',
         title: 'Advanced (experts only)',
         title_es: 'Avanzados (sólo para expertos)',
-        items: [
-	  {
-            key: 'ssl_verify',
-	    value: true
-	  }
-	]
+        items: [{ key: 'ssl_verify', value: true }]
       }
     ]
   },
@@ -2960,8 +2952,8 @@ remote_control_js = {
 
 ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
                   'Gecos V2 Lite'].freeze
-UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite', 'Gecos V2 Lite',
-                'Ubuntu 14.04.1 LTS'].freeze
+UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
+                'Gecos V2 Lite', 'Ubuntu 14.04.1 LTS'].freeze
 GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V2'].freeze
 debug_mode_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 network_resource_js[:properties][:support_os][:default] = ALL_GECOS_VERS
@@ -3056,7 +3048,7 @@ complete_js = {
             remote_shutdown_res: remote_shutdown_js,
             cert_res: cert_js,
             ttys_res: ttys_js,
-	    remote_control_res: remote_control_js
+            remote_control_res: remote_control_js
           }
         },
         software_mgmt: {

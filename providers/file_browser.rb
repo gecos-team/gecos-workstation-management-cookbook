@@ -11,9 +11,9 @@
 
 action :setup do
   begin
-    if is_os_supported? &&
-      (is_policy_active?('users_mgmt','file_browser_res') ||
-       is_policy_autoreversible?('users_mgmt','file_browser_res'))
+    if os_supported? &&
+       (policy_active?('users_mgmt', 'file_browser_res') ||
+        policy_autoreversible?('users_mgmt', 'file_browser_res'))
       users = new_resource.users
       users.each_key do |user_key|
         nameuser = user_key
