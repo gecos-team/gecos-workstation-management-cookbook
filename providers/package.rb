@@ -16,14 +16,14 @@ def pin_package_version(pkg_name, pkg_version)
     mode '0644'
     owner 'root'
     group 'root'
-    action :create
-  end
+    action :nothing
+  end.run_action(:create)
 end
 
 def remove_package_pinning(pkg_name)
   file '/etc/apt/preferences.d/' + pkg_name + '.pref' do
-    action(:delete)
-  end
+    action :nothing
+  end.run_action(:delete)
 end
 
 def add_package_current_ver(pkg)
@@ -33,8 +33,8 @@ def add_package_current_ver(pkg)
   # Install the current version of the package
   # or ensure that any version of this package is installed
   package pkg.name do
-    action :install
-  end
+    action :nothing
+  end.run_action(:install)
 end
 
 def add_package_latest_ver(pkg)
@@ -44,8 +44,8 @@ def add_package_latest_ver(pkg)
   # Install a package and/or ensure that a package is the
   # latest version.
   package pkg.name do
-    action :upgrade
-  end
+    action :nothing
+  end.run_action(:upgrade)
 end
 
 def add_package_certain_ver(pkg)
@@ -54,8 +54,8 @@ def add_package_certain_ver(pkg)
     version pkg.version
     # Added to support package downgrade
     options '--force-yes'
-    action :install
-  end
+    action :nothing
+  end.run_action(:install)
 
   # Ping this version to prevent updates
   pin_package_version(pkg.name, pkg.version)
@@ -102,13 +102,13 @@ action :setup do
           when 'remove'
             # Remove a package
             package pkg.name do
-              action :purge
-            end
+              action :nothing
+            end.run_action(:purge)
 
             # Remove the version pinning of this package (if exists)
             file '/etc/apt/preferences.d/' + pkg.name + '.pref' do
-              action(:delete)
-            end
+              action :nothing
+            end.run_action(:delete)
           else
             raise "Action for package #{pkg.name}=#{pkg.version} is not"\
               " add nor remove (#{pkg.action})"
