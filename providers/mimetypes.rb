@@ -21,7 +21,8 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'mimetypes_res'))
       $required_pkgs['mimetypes'].each do |pkg|
         Chef::Log.debug("mimetypes.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "mimetypes_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

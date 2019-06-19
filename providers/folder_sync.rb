@@ -17,7 +17,8 @@ action :setup do
 
       $required_pkgs['folder_sync'].each do |pkg|
         Chef::Log.debug("folder_sync.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "folder_sync_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

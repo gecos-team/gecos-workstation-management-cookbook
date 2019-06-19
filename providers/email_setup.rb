@@ -83,7 +83,8 @@ action :setup do
 
         $required_pkgs['email_setup'].each do |pkg|
           Chef::Log.debug("email_setup.rb - REQUIRED PACKAGE = #{pkg}")
-          package pkg do
+          package "email_setup_#{pkg}" do
+            package_name pkg
             action :nothing
           end.run_action(:install)
         end

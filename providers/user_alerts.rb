@@ -19,7 +19,8 @@ action :setup do
       # Installs the notify-send command
       $required_pkgs['user_alerts'].each do |pkg|
         Chef::Log.debug("user_alerts.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "user_alerts_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

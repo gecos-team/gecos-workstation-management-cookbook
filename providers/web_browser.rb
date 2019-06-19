@@ -19,7 +19,8 @@ action :setup do
 
       $required_pkgs['web_browser'].each do |pkg|
         Chef::Log.debug("web_browser.rb - REQUIRED PACKAGES = #{pkg}")
-        package pkg do
+        package "web_browser_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

@@ -62,7 +62,8 @@ action :setup do
       # Install or upgrade gecosws-repository-compatibility package
       $required_pkgs['software_sources'].each do |pkg|
         Chef::Log.debug("software_sources.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "software_sources_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

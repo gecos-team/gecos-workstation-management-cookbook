@@ -18,7 +18,8 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'shutdown_options_res'))
       $required_pkgs['shutdown_options'].each do |pkg|
         Chef::Log.debug("shutdown_options.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "shutdown_options_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

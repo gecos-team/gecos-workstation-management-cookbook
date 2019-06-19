@@ -253,10 +253,6 @@ action :presetup do
           node.normal['job_status'][jid]['status'] = 0
         end
 
-        gecos_ws_mgmt_jobids 'network_res' do
-          recipe 'network_mgmt'
-        end.run_action(:reset)
-
         new_resource.updated_by_last_action(false)
       else
         Chef::Log.info('system_proxy.rb ::: Applying changes!')

@@ -16,7 +16,8 @@ action :setup do
       # install depends
       $required_pkgs['cert'].each do |pkg|
         Chef::Log.debug("cert.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "cert_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

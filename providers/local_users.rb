@@ -17,7 +17,8 @@ action :setup do
 
       $required_pkgs['local_users'].each do |pkg|
         Chef::Log.debug("local_users.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "local_users_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
