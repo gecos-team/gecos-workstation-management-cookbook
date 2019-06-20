@@ -45,6 +45,13 @@ action :presetup do
           addr_data = interfaces.select do |_iface, props|
             props[:addresses].key? mac_addr.upcase
           end.values.shift
+
+          if addr_data.nil?
+            Chef::Log.warn('network.rb ::: presetup action - MAC not found ='\
+              " #{mac_addr.upcase}")
+            next
+          end
+
           Chef::Log.debug('network.rb ::: presetup action - addr_data ='\
             " #{addr_data}")
           nochanges &&= ((addr_data[:addresses].key? ip_addr) &&
@@ -237,10 +244,6 @@ action :setup do
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
-  ensure
-    gecos_ws_mgmt_jobids 'network_res' do
-      recipe 'network_mgmt'
-    end.run_action(:reset)
   end
 end
 
