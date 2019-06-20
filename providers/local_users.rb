@@ -26,7 +26,11 @@ action :setup do
       users = new_resource.users_list
       users.each do |usrdata|
         username = usrdata.user
-        fullname = usrdata.name
+        fullname = if usrdata.attribute?('name')
+                     usrdata.name
+                   else
+                     ''
+                   end
         passwd = usrdata.password
         actiontorun = usrdata.actiontorun
         user_home = "/home/#{username}"
