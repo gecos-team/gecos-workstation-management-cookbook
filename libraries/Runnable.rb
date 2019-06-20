@@ -53,7 +53,7 @@ module Runnable
     end
 
     def computer_policy_active?(policy_data)
-      policy_data.key?(UPDATED.to_sym) && policy_data[UPDATED.to_sym].empty?
+      policy_data.key?(UPDATED.to_sym) && !policy_data[UPDATED.to_sym].empty?
     end
 
     def policy_active?(recipe, policy)
