@@ -2035,7 +2035,8 @@ local_users_js = {
           user: {
             title: 'User',
             title_es: 'Usuario',
-            type: 'string'
+            type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$'
           },
           name: {
             title: 'Full Name',
@@ -2262,7 +2263,8 @@ local_admin_users_js = {
           name: {
             title: 'Name',
             title_es: 'Nombre',
-            type: 'string'
+            type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$'
           },
           action: {
             title: 'Action',
