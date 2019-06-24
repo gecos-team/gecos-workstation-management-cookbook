@@ -2091,11 +2091,13 @@ local_groups_js = {
         properties: {
           group: {
             type: 'string',
+            pattern: '^([^: ]+)$',
             title: 'Group',
             title_es: 'Grupo'
           },
           user: {
             type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$',
             title: 'User',
             title_es: 'Usuario'
           },
