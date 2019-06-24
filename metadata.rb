@@ -134,9 +134,11 @@ forticlientvpn_js = {
             title_es: 'Servidor'
           },
           port: {
-            type: 'string',
+            type: 'integer',
             title: 'Port',
-            title_es: 'Puerto'
+            title_es: 'Puerto',
+            maximum: 65535,
+            minimum: 0
           },
           name: {
             type: 'string',
@@ -152,9 +154,11 @@ forticlientvpn_js = {
       title_es: 'Servidor Proxy'
     },
     proxyport: {
-      type: 'string',
+      type: 'integer',
       title: 'Proxy Port',
-      title_es: 'Puerto del Proxy'
+      title_es: 'Puerto del Proxy',
+      maximum: 65535,
+      minimum: 0
     },
     proxyuser: {
       type: 'string',
@@ -2587,8 +2591,10 @@ system_proxy_js = {
         http_proxy_port: {
           title: 'HTTP Proxy Port',
           title_es: 'Puerto del Proxy HTTP',
-          type: 'number',
-          default: 80
+          type: 'integer',
+          default: 80,
+          maximum: 65535,
+          minimum: 0
         },
         https_proxy: {
           title: 'HTTPS Proxy',
@@ -2598,8 +2604,10 @@ system_proxy_js = {
         https_proxy_port: {
           title: 'HTTPS Proxy Port',
           title_es: 'Puerto del Proxy HTTPS',
-          type: 'number',
-          default: 443
+          type: 'integer',
+          default: 443,
+          maximum: 65535,
+          minimum: 0
         },
         proxy_autoconfig_url: {
           title: 'Proxy Autoconfiguration URL',
@@ -2637,8 +2645,10 @@ system_proxy_js = {
         http_proxy_port: {
           title: 'HTTP Proxy Port',
           title_es: 'Puerto del Proxy HTTP',
-          type: 'number',
-          default: 80
+          type: 'integer',
+          default: 80,
+          maximum: 65535,
+          minimum: 0
         },
         https_proxy: {
           title: 'HTTPS Proxy',
@@ -2648,8 +2658,10 @@ system_proxy_js = {
         https_proxy_port: {
           title: 'HTTPS Proxy Port',
           title_es: 'Puerto del Proxy HTTPS',
-          type: 'number',
-          default: 443
+          type: 'integer',
+          default: 443,
+          maximum: 65535,
+          minimum: 0
         },
         proxy_autoconfig_url: {
           title: 'Proxy Autoconfiguration URL',
