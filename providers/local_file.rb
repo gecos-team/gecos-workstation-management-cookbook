@@ -38,7 +38,7 @@ action :setup do
                  end
           mode = local.attribute?('mode') ? local.mode : '755'
 
-          if !local.attribute?('file')
+          unless local.attribute?('file')
             Chef::Log.warn("local_file.rb ::: add to #{dest} without file URI!")
             next
           end
