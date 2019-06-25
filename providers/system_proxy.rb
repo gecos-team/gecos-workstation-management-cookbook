@@ -229,7 +229,6 @@ action :presetup do
         Chef::Log.debug('system_proxy.rb - mozilla_settings: '\
             "#{mozilla_settings}")
         gecos_ws_mgmt_appconfig_firefox 'Firefox proxy configuration' do
-          provider 'gecos_ws_mgmt_appconfig_firefox'
           config_firefox mozilla_settings
           job_ids new_resource.job_ids
           support_os new_resource.support_os
@@ -237,7 +236,6 @@ action :presetup do
         end.run_action(:setup)
 
         gecos_ws_mgmt_appconfig_thunderbird 'Thunderbird proxy setup' do
-          provider 'gecos_ws_mgmt_appconfig_thunderbird'
           config_thunderbird mozilla_settings
           job_ids new_resource.job_ids
           support_os new_resource.support_os
@@ -296,7 +294,6 @@ action :setup do
       # Clearing old configuration
       Chef::Log.debug('system_proxy.rb - System-Wide Proxy clearing')
       gecos_ws_mgmt_system_settings 'System-Wide Proxy Clear' do
-        provider 'gecos_ws_mgmt_system_settings'
         schema   'system/proxy'
         action   :nothing
       end.run_action(:clear)
@@ -308,7 +305,6 @@ action :setup do
         # Appliying new configuration
         Chef::Log.debug('system_proxy.rb - System-Wide Proxy Mode Manual')
         gecos_ws_mgmt_system_settings 'System-Wide Proxy Mode' do
-          provider 'gecos_ws_mgmt_system_settings'
           schema   'system/proxy'
           name     'mode'
           value    'manual'
@@ -316,7 +312,6 @@ action :setup do
         end.run_action(:set)
 
         gecos_ws_mgmt_system_settings 'System-Wide HTTP Proxy' do
-          provider 'gecos_ws_mgmt_system_settings'
           schema   'system/proxy/http'
           name     'host'
           value     URI.parse(global_settings['http_proxy']).host
@@ -325,7 +320,6 @@ action :setup do
         end.run_action(:set)
 
         gecos_ws_mgmt_system_settings 'System-Wide HTTP Proxy PORT' do
-          provider 'gecos_ws_mgmt_system_settings'
           schema   'system/proxy/http'
           name     'port'
           value     global_settings['http_proxy_port']
@@ -334,7 +328,6 @@ action :setup do
         end.run_action(:set)
 
         gecos_ws_mgmt_system_settings 'System-Wide HTTPS Proxy' do
-          provider 'gecos_ws_mgmt_system_settings'
           schema   'system/proxy/https'
           name     'host'
           value     URI.parse(global_settings['https_proxy']).host
@@ -343,7 +336,6 @@ action :setup do
         end.run_action(:set)
 
         gecos_ws_mgmt_system_settings 'System-Wide HTTPS Proxy PORT' do
-          provider 'gecos_ws_mgmt_system_settings'
           schema   'system/proxy/https'
           name     'port'
           value     global_settings['https_proxy_port']
@@ -392,7 +384,6 @@ action :setup do
         Chef::Log.debug('system_proxy.rb - System-Wide Proxy Autoconfig URL')
 
         gecos_ws_mgmt_system_settings 'System-Wide Proxy Mode' do
-          provider 'gecos_ws_mgmt_system_settings'
           schema   'system/proxy'
           name     'mode'
           value    'auto'
@@ -400,7 +391,6 @@ action :setup do
         end.run_action(:set)
 
         gecos_ws_mgmt_system_settings 'System-Wide Proxy Autoconfig URL' do
-          provider 'gecos_ws_mgmt_system_settings'
           schema   'system/proxy'
           name     'autoconfig-url'
           value global_settings['proxy_autoconfig_url']
@@ -429,42 +419,36 @@ action :setup do
     elsif global_settings['disable_proxy']
       # DESKTOP APPLICATIONS
       gecos_ws_mgmt_system_settings 'System-Wide Proxy Mode [:unset]' do
-        provider 'gecos_ws_mgmt_system_settings'
         schema   'system/proxy'
         name     'mode'
         value    'none'
       end.run_action(:unset)
 
       gecos_ws_mgmt_system_settings 'System-Wide HTTP Proxy [:unset]' do
-        provider 'gecos_ws_mgmt_system_settings'
         schema   'system/proxy/http'
         name     'host'
         value global_settings['http_proxy']
       end.run_action(:unset)
 
       gecos_ws_mgmt_system_settings 'System-Wide HTTP Proxy PORT [:unset]' do
-        provider 'gecos_ws_mgmt_system_settings'
         schema   'system/proxy/http'
         name     'port'
         value global_settings['http_proxy_port']
       end.run_action(:unset)
 
       gecos_ws_mgmt_system_settings 'System-Wide HTTPS Proxy [:unset]' do
-        provider 'gecos_ws_mgmt_system_settings'
         schema   'system/proxy/https'
         name     'host'
-        value     global_settings['https_proxy']
+        value global_settings['https_proxy']
       end.run_action(:unset)
 
       gecos_ws_mgmt_system_settings 'System-Wide HTTPS Proxy PORT [:unset]' do
-        provider 'gecos_ws_mgmt_system_settings'
         schema  'system/proxy/https'
         name    'port'
-        value    global_settings['https_proxy_port']
+        value global_settings['https_proxy_port']
       end.run_action(:unset)
 
       gecos_ws_mgmt_system_settings 'System-Wide Proxy Autoconf URL [:unset]' do
-        provider 'gecos_ws_mgmt_system_settings'
         schema  'system/proxy'
         name    'autoconfig-url'
         value global_settings['proxy_autoconfig_url']
@@ -507,10 +491,6 @@ action :setup do
         node.normal['job_status'][jid]['message'] = e.message
       end
     end
-  ensure
-    gecos_ws_mgmt_jobids 'system_proxy_res' do
-      recipe 'network_mgmt'
-    end.run_action(:reset)
   end
 end
 

@@ -40,15 +40,9 @@ action :test do
   Chef::Log.debug("connectivity.rb ::: targets => #{targets}")
 
   # Proxy
-  proxy_from_etc = proxy_ssl_from_etc = nil
-  ruby_block 'HTTP(S)_PROXY etc_environment' do
-    block do
-      file = ::File.read('/etc/environment')
-      proxy_from_etc     = file.scan(/http_proxy=(.*)/i).flatten.pop  || ''
-      proxy_ssl_from_etc = file.scan(/https_proxy=(.*)/i).flatten.pop || ''
-    end
-    action :nothing
-  end.run_action(:run)
+  file = ::File.read('/etc/environment')
+  proxy_from_etc     = file.scan(/http_proxy=(.*)/i).flatten.pop  || ''
+  proxy_ssl_from_etc = file.scan(/https_proxy=(.*)/i).flatten.pop || ''
 
   Chef::Log.debug("connectivity.rb ::: proxy_from_etc => #{proxy_from_etc}")
   Chef::Log.debug('connectivity.rb ::: proxy_ssl_from_etc => '\
