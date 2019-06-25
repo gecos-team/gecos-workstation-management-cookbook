@@ -137,7 +137,7 @@ forticlientvpn_js = {
             type: 'integer',
             title: 'Port',
             title_es: 'Puerto',
-            maximum: 65535,
+            maximum: 65_535,
             minimum: 0
           },
           name: {
@@ -157,7 +157,7 @@ forticlientvpn_js = {
       type: 'integer',
       title: 'Proxy Port',
       title_es: 'Puerto del Proxy',
-      maximum: 65535,
+      maximum: 65_535,
       minimum: 0
     },
     proxyuser: {
@@ -2595,7 +2595,7 @@ system_proxy_js = {
           title_es: 'Puerto del Proxy HTTP',
           type: 'integer',
           default: 80,
-          maximum: 65535,
+          maximum: 65_535,
           minimum: 0
         },
         https_proxy: {
@@ -2608,7 +2608,7 @@ system_proxy_js = {
           title_es: 'Puerto del Proxy HTTPS',
           type: 'integer',
           default: 443,
-          maximum: 65535,
+          maximum: 65_535,
           minimum: 0
         },
         proxy_autoconfig_url: {
@@ -2649,7 +2649,7 @@ system_proxy_js = {
           title_es: 'Puerto del Proxy HTTP',
           type: 'integer',
           default: 80,
-          maximum: 65535,
+          maximum: 65_535,
           minimum: 0
         },
         https_proxy: {
@@ -2662,7 +2662,7 @@ system_proxy_js = {
           title_es: 'Puerto del Proxy HTTPS',
           type: 'integer',
           default: 443,
-          maximum: 65535,
+          maximum: 65_535,
           minimum: 0
         },
         proxy_autoconfig_url: {
