@@ -195,9 +195,9 @@ action :presetup do
             'Mozilla: http_proxy URL or Hostname not valid'
           )
 
-          global_settings['https_proxy'] = check_https_uri(
-            global_settings['https_proxy'],
-            'System Wide: https_proxy URL or Hostname not valid'
+          mozilla_settings['https_proxy'] = check_https_uri(
+            mozilla_settings['https_proxy'],
+            'Mozilla: https_proxy URL or Hostname not valid'
           )
 
           # Remove trailing slash
