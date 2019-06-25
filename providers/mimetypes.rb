@@ -45,12 +45,6 @@ action :setup do
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
 
-        directory "/home/#{username}/.local/share/applications" do
-          owner username
-          group gid
-          recursive true
-        end
-
         Chef::Log.debug("mimetypes.rb - Users: #{user}")
 
         # File associations stored
@@ -75,7 +69,7 @@ action :setup do
           Chef::Log.debug("mimetypes.rb - assoc: #{assoc}")
 
           desktopfile = assoc.desktop_entry
-          desktopfile.concat('.desktop') unless desktopfile.include? '\.desktop'
+          desktopfile.concat('.desktop') unless desktopfile.include? '.desktop'
 
           Chef::Log.debug("mimetypes.rb - desktop: #{desktopfile}")
 
