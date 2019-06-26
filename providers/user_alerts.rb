@@ -45,9 +45,9 @@ action :setup do
 
         msg_hash = {}
         msg_hash['urgency'] = user.urgency
-        msg_hash['icon'] = icon
-        msg_hash['summary'] = user.summary
-        msg_hash['body'] = user.body
+        msg_hash['icon'] = icon.gsub! '"', '\"'
+        msg_hash['summary'] = user.summary.gsub! '"', '\"'
+        msg_hash['body'] = user.body.gsub! '"', '\"'
 
         if ::File.exist?("#{homedir}/.user-alert")
           file = ::File.read("#{homedir}/.user-alert")
@@ -61,7 +61,8 @@ action :setup do
         if !::File.exist?("#{homedir}/.user-alert") || change
           send_command = "sudo -u #{username} DBUS_SESSION_BUS_ADDRESS="\
             "#{dbus_address} /usr/bin/notify-send -u #{user.urgency} -i "\
-            "#{icon} \"#{user.summary}\" \"#{user.body}\"".delete("\u0000")
+            "\"#{icon}\" \"#{user.summary}\" \"#{user.body}\"".delete("\u0000")
+          Chef::Log.info("Execute: #{send_command}")
           system send_command
         end
 
