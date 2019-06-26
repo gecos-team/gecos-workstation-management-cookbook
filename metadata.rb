@@ -617,7 +617,9 @@ web_browser_js = {
                   uri: {
                     title: 'Uri',
                     title_es: 'Uri',
-                    type: 'string'
+                    type: 'string',
+                    pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
                   },
                   action: {
                     title: 'Action',
@@ -647,7 +649,9 @@ web_browser_js = {
                   uri: {
                     title: 'Uri',
                     title_es: 'Uri',
-                    type: 'string'
+                    type: 'string',
+                    pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
                   }
                 }
               }
