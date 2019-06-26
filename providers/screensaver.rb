@@ -52,7 +52,7 @@ action :setup do
           schema 'org.cinnamon.desktop.session'
           key 'idle-delay'
           user username
-          value idle_delay
+          value idle_delay.to_s
           action :nothing
         end.run_action(:set)
 
@@ -60,7 +60,7 @@ action :setup do
           schema 'org.cinnamon.desktop.screensaver'
           key 'lock-delay'
           user username
-          value lock_delay
+          value lock_delay.to_s
           action :nothing
         end.run_action(:set)
       end

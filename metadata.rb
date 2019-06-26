@@ -258,11 +258,12 @@ screensaver_js = {
               title_es: 'Oscurecer pantalla'
             },
             idle_delay: {
-              type: 'string',
+              type: 'integer',
               description: 'Time to dim screen in seconds',
               description_es: 'Tiempo hasta el oscurecimiento en segundos',
               title: 'Idle delay',
-              title_es: 'Retraso de inactividad'
+              title_es: 'Retraso de inactividad',
+              minimum: 0
             },
             lock_enabled: {
               type: 'boolean',
@@ -270,12 +271,13 @@ screensaver_js = {
               title_es: 'Permitir bloqueo de pantalla'
             },
             lock_delay: {
-              type: 'string',
+              type: 'integer',
               description: 'Time to lock the screen in seconds',
               description_es: ' Tiempo hasta el bloqueo de la pantalla '\
                 'en segundos',
               title: 'Time to lock',
-              title_es: 'Tiempo hasta el bloqueo'
+              title_es: 'Tiempo hasta el bloqueo',
+              minimum: 0
             },
             updated_by: updated_js
           }
