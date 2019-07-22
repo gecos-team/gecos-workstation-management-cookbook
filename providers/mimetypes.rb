@@ -21,7 +21,8 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'mimetypes_res'))
       $required_pkgs['mimetypes'].each do |pkg|
         Chef::Log.debug("mimetypes.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "mimetypes_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
@@ -43,12 +44,6 @@ action :setup do
         username = nameuser.gsub('###', '.')
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
-
-        directory "/home/#{username}/.local/share/applications" do
-          owner username
-          group gid
-          recursive true
-        end
 
         Chef::Log.debug("mimetypes.rb - Users: #{user}")
 
@@ -74,7 +69,7 @@ action :setup do
           Chef::Log.debug("mimetypes.rb - assoc: #{assoc}")
 
           desktopfile = assoc.desktop_entry
-          desktopfile.concat('.desktop') unless desktopfile.include? '\.desktop'
+          desktopfile.concat('.desktop') unless desktopfile.include? '.desktop'
 
           Chef::Log.debug("mimetypes.rb - desktop: #{desktopfile}")
 

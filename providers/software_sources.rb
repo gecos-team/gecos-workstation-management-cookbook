@@ -62,7 +62,8 @@ action :setup do
       # Install or upgrade gecosws-repository-compatibility package
       $required_pkgs['software_sources'].each do |pkg|
         Chef::Log.debug("software_sources.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "software_sources_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
@@ -114,6 +115,7 @@ action :setup do
       end
 
       if repo_list.any?
+        codename = `lsb_release -c -s`.delete("\n")
         repo_list.each do |repo|
           # Replace non alpha-numeric characters by "_"
           rname = repo.repo_name.gsub(/[^A-Za-z0-9]/, '_')
@@ -124,12 +126,19 @@ action :setup do
             next
           end
 
-          if white_list.in_white_list(rname, repo.uri, repo.distribution)
+          dist = if repo.attribute?('distribution')
+                   repo.distribution
+                 else
+                   Chef::Log.info("Set default distribution: '#{codename}'")
+                   codename
+                 end
+
+          if white_list.in_white_list(rname, repo.uri, dist)
             # Add this repository to the system
             remote_lists.push("#{rname}.list")
             apt_repository rname do
               uri repo.uri
-              distribution repo.distribution
+              distribution dist
               components repo.components
               action :nothing
               key repo.repo_key
@@ -138,7 +147,7 @@ action :setup do
             end.run_action(:add)
           else
             Chef::Log.info("Ignore '#{rname}' repository because it is"\
-              'NOT in the white list!')
+              ' NOT in the white list!')
           end
         end
       end

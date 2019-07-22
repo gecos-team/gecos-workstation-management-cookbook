@@ -134,9 +134,11 @@ forticlientvpn_js = {
             title_es: 'Servidor'
           },
           port: {
-            type: 'string',
+            type: 'integer',
             title: 'Port',
-            title_es: 'Puerto'
+            title_es: 'Puerto',
+            maximum: 65_535,
+            minimum: 0
           },
           name: {
             type: 'string',
@@ -152,9 +154,11 @@ forticlientvpn_js = {
       title_es: 'Servidor Proxy'
     },
     proxyport: {
-      type: 'string',
+      type: 'integer',
       title: 'Proxy Port',
-      title_es: 'Puerto del Proxy'
+      title_es: 'Puerto del Proxy',
+      maximum: 65_535,
+      minimum: 0
     },
     proxyuser: {
       type: 'string',
@@ -254,11 +258,12 @@ screensaver_js = {
               title_es: 'Oscurecer pantalla'
             },
             idle_delay: {
-              type: 'string',
+              type: 'integer',
               description: 'Time to dim screen in seconds',
               description_es: 'Tiempo hasta el oscurecimiento en segundos',
               title: 'Idle delay',
-              title_es: 'Retraso de inactividad'
+              title_es: 'Retraso de inactividad',
+              minimum: 0
             },
             lock_enabled: {
               type: 'boolean',
@@ -266,12 +271,13 @@ screensaver_js = {
               title_es: 'Permitir bloqueo de pantalla'
             },
             lock_delay: {
-              type: 'string',
+              type: 'integer',
               description: 'Time to lock the screen in seconds',
               description_es: ' Tiempo hasta el bloqueo de la pantalla '\
                 'en segundos',
               title: 'Time to lock',
-              title_es: 'Tiempo hasta el bloqueo'
+              title_es: 'Tiempo hasta el bloqueo',
+              minimum: 0
             },
             updated_by: updated_js
           }
@@ -611,7 +617,9 @@ web_browser_js = {
                   uri: {
                     title: 'Uri',
                     title_es: 'Uri',
-                    type: 'string'
+                    type: 'string',
+                    pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
                   },
                   action: {
                     title: 'Action',
@@ -641,7 +649,9 @@ web_browser_js = {
                   uri: {
                     title: 'Uri',
                     title_es: 'Uri',
-                    type: 'string'
+                    type: 'string',
+                    pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
                   }
                 }
               }
@@ -1310,13 +1320,15 @@ auto_updates_js = {
                 title: 'Hour',
                 title_es: 'Hora',
                 type: 'integer',
-                maximum: 23
+                maximum: 23,
+                minimum: 0
               },
               minute: {
                 title: 'Minute',
                 title_es: 'Minuto',
                 type: 'integer',
-                maximum: 59
+                maximum: 59,
+                minimum: 0
               }
             }
           }
@@ -1331,25 +1343,25 @@ auto_updates_js = {
               title: 'Day',
               title_es: 'Día',
               type: 'string',
-              pattern: '^([0-9]|[0-2][0-9]|3[0-1]|\\\*)$'
+              pattern: '^([0-9]|[0-2][0-9]|3[0-1]|\*)$'
             },
             month: {
               title: 'Month',
               title_es: 'Mes',
               type: 'string',
-              pattern: '^(0?[1-9]|1[0-2]|\\\*)$'
+              pattern: '^(0?[1-9]|1[0-2]|\*)$'
             },
             hour: {
               title: 'Hour',
               title_es: 'Hora',
               type: 'string',
-              pattern: '^((([0-1][0-9])|[0-2][0-3])|\\\*)$'
+              pattern: '^((([0-1][0-9])|[0-2][0-3])|\*)$'
             },
             minute: {
               title: 'Minute',
               title_es: 'Minuto',
               type: 'string',
-              pattern: '^([0-5][0-9]|\\\*)$'
+              pattern: '^([0-5][0-9]|\*)$'
             }
           }
         }
@@ -2033,7 +2045,8 @@ local_users_js = {
           user: {
             title: 'User',
             title_es: 'Usuario',
-            type: 'string'
+            type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$'
           },
           name: {
             title: 'Full Name',
@@ -2084,11 +2097,13 @@ local_groups_js = {
         properties: {
           group: {
             type: 'string',
+            pattern: '^([^: ]+)$',
             title: 'Group',
             title_es: 'Grupo'
           },
           user: {
             type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$',
             title: 'User',
             title_es: 'Usuario'
           },
@@ -2260,7 +2275,8 @@ local_admin_users_js = {
           name: {
             title: 'Name',
             title_es: 'Nombre',
-            type: 'string'
+            type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$'
           },
           action: {
             title: 'Action',
@@ -2583,8 +2599,10 @@ system_proxy_js = {
         http_proxy_port: {
           title: 'HTTP Proxy Port',
           title_es: 'Puerto del Proxy HTTP',
-          type: 'number',
-          default: 80
+          type: 'integer',
+          default: 80,
+          maximum: 65_535,
+          minimum: 0
         },
         https_proxy: {
           title: 'HTTPS Proxy',
@@ -2594,8 +2612,10 @@ system_proxy_js = {
         https_proxy_port: {
           title: 'HTTPS Proxy Port',
           title_es: 'Puerto del Proxy HTTPS',
-          type: 'number',
-          default: 443
+          type: 'integer',
+          default: 443,
+          maximum: 65_535,
+          minimum: 0
         },
         proxy_autoconfig_url: {
           title: 'Proxy Autoconfiguration URL',
@@ -2633,8 +2653,10 @@ system_proxy_js = {
         http_proxy_port: {
           title: 'HTTP Proxy Port',
           title_es: 'Puerto del Proxy HTTP',
-          type: 'number',
-          default: 80
+          type: 'integer',
+          default: 80,
+          maximum: 65_535,
+          minimum: 0
         },
         https_proxy: {
           title: 'HTTPS Proxy',
@@ -2644,8 +2666,10 @@ system_proxy_js = {
         https_proxy_port: {
           title: 'HTTPS Proxy Port',
           title_es: 'Puerto del Proxy HTTPS',
-          type: 'number',
-          default: 443
+          type: 'integer',
+          default: 443,
+          maximum: 65_535,
+          minimum: 0
         },
         proxy_autoconfig_url: {
           title: 'Proxy Autoconfiguration URL',

@@ -30,13 +30,18 @@ action :setup do
                   else
                     local.file_dest
                   end
-          uid  = local.attribute?('user') ? Etc.getpwnam(local.user).uid : '0'
+          uid  = local.attribute?('user') ? Etc.getpwnam(local.user).uid : 0
           gid  = if local.attribute?('group')
                    Etc.getgrnam(local.group).gid
                  else
                    Etc.getpwuid(uid).gid
                  end
           mode = local.attribute?('mode') ? local.mode : '755'
+
+          unless local.attribute?('file')
+            Chef::Log.warn("local_file.rb ::: add to #{dest} without file URI!")
+            next
+          end
 
           Chef::Log.debug("local_file.rb ::: act   = #{act}")
           Chef::Log.debug("local_file.rb ::: dest  = #{dest}")

@@ -16,9 +16,10 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'idle_timeout_res'))
       $required_pkgs['idle_timeout'].each do |pkg|
         Chef::Log.debug("idle_timeout.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "idle_timeout_#{pkg}" do
+          package_name pkg
           action :nothing
-        end.run_action(:nothing)
+        end.run_action(:install)
       end
 
       cookbook_file '/usr/bin/autolock.sh' do

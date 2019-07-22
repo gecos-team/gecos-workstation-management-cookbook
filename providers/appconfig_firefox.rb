@@ -10,6 +10,7 @@
 #
 
 action :setup do
+  app_update = nil
   begin
     if os_supported? &&
        (policy_active?('software_mgmt', 'appconfig_firefox_res') ||
@@ -43,37 +44,39 @@ action :setup do
           FileUtils.mkdir_p '/etc/firefox'
         end
 
-        var_hash = {
-          app_update: app_update
-        }
-        template '/etc/firefox/update.js' do
-          source 'update.js.erb'
-          action :nothing
-          variables var_hash
-          not_if { app_update.nil? }
-          action :nothing
-        end.run_action(:create)
+        unless app_update.nil?
+          # Only when this provider is not called from system_proxy provider
+          var_hash = {
+            app_update: app_update
+          }
+          template '/etc/firefox/update.js' do
+            source 'update.js.erb'
+            action :nothing
+            variables var_hash
+          end.run_action(:create)
 
-        var_hash = {
-          settings: new_resource.config_firefox
-        }
-        template '/etc/firefox/proxy-prefs.js' do
-          source 'mozilla_proxy.erb'
-          action :nothing
-          variables var_hash
-          not_if { defaults_prefs.empty? }
-          not_if { new_resource.config_firefox['mode'].nil? }
-          action :nothing
-        end.run_action(:create)
-
-        link "#{system_prefs}/update.js" do
-          to '/etc/firefox/update.js'
-          only_if 'test -f /etc/firefox/update.js'
+          link "#{system_prefs}/update.js" do
+            to '/etc/firefox/update.js'
+            only_if 'test -f /etc/firefox/update.js'
+          end
         end
 
-        link "#{defaults_prefs}/proxy-prefs.js" do
-          to '/etc/firefox/proxy-prefs.js'
-          only_if 'test -f /etc/firefox/proxy-prefs.js'
+        unless new_resource.config_firefox['mode'].nil?
+          # This provider is called from system_proxy provider
+          var_hash = {
+            settings: new_resource.config_firefox
+          }
+          template '/etc/firefox/proxy-prefs.js' do
+            source 'mozilla_proxy.erb'
+            action :nothing
+            variables var_hash
+            not_if { defaults_prefs.empty? }
+          end.run_action(:create)
+
+          link "#{defaults_prefs}/proxy-prefs.js" do
+            to '/etc/firefox/proxy-prefs.js'
+            only_if 'test -f /etc/firefox/proxy-prefs.js'
+          end
         end
       end
     end
@@ -100,8 +103,11 @@ action :setup do
       end
     end
   ensure
-    gecos_ws_mgmt_jobids 'appconfig_firefox_res' do
-      recipe 'software_mgmt'
-    end.run_action(:reset)
+    unless app_update.nil?
+      # Only when this provider is not called from system_proxy provider
+      gecos_ws_mgmt_jobids 'appconfig_firefox_res' do
+        recipe 'software_mgmt'
+      end.run_action(:reset)
+    end
   end
 end

@@ -22,7 +22,8 @@ action :setup do
       # Install required packages
       $required_pkgs['auto_updates'].each do |pkg|
         Chef::Log.debug("auto_updates.rb - REQUIRED PACKAGES = #{pkg}")
-        package pkg do
+        package "auto_updates_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

@@ -18,7 +18,8 @@ action :setup do
 
       $required_pkgs['power_conf'].each do |pkg|
         Chef::Log.debug("power_conf.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "power_conf_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

@@ -128,7 +128,8 @@ action :setup do
 
         $required_pkgs['printers'].each do |pkg|
           Chef::Log.debug("printers.rb - REQUIRED PACKAGE = #{pkg}")
-          package pkg do
+          package "printers_#{pkg}" do
+            package_name pkg
             action :nothing
           end.run_action(:install)
         end

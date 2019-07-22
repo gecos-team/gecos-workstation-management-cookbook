@@ -117,7 +117,8 @@ action :setup do
       # Install required packages
       $required_pkgs['im_client'].each do |pkg|
         Chef::Log.debug("im_client.rb - REQUIRED PACKAGES = #{pkg}")
-        package pkg do
+        package "im_client_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end

@@ -16,7 +16,8 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'desktop_background_res'))
       $required_pkgs['desktop_background'].each do |pkg|
         Chef::Log.debug("desktop_background.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "desktop_background_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
