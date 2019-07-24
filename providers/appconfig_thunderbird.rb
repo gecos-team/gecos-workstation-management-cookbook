@@ -12,13 +12,16 @@
 action :setup do
   app_update = nil
   begin
-    if os_supported? &&
+    # Check if thunderbird is installed
+    thunderbird_istalled = system('dpkg -L thunderbird > /dev/null 2>&1')
+    if os_supported? && thunderbird_istalled &&
        ((!new_resource.config_thunderbird.empty? &&
          policy_active?('software_mgmt', 'appconfig_thunderbird_res')) ||
         policy_autoreversible?('software_mgmt', 'appconfig_thunderbird_res'))
 
       Chef::Log.debug('appconfig_thunderbird.rb - config_thunderbird:'\
           " #{new_resource.config_thunderbird}")
+
       # Detecting installation directory
       installdir = ShellUtil.shell(
         'dpkg -L thunderbird | grep -E \'defaults/pref$\''
