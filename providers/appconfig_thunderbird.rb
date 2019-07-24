@@ -13,8 +13,8 @@ action :setup do
   app_update = nil
   begin
     # Check if thunderbird is installed
-    thunderbird_istalled = system('dpkg -L thunderbird > /dev/null 2>&1')
-    if os_supported? && thunderbird_istalled &&
+    thunderbird_installed = system('dpkg -L thunderbird > /dev/null 2>&1')
+    if os_supported? && thunderbird_installed &&
        ((!new_resource.config_thunderbird.empty? &&
          policy_active?('software_mgmt', 'appconfig_thunderbird_res')) ||
         policy_autoreversible?('software_mgmt', 'appconfig_thunderbird_res'))
