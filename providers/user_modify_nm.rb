@@ -36,13 +36,13 @@ action :setup do
         else
            disallowed_users << username
         end
-        group 'netdev' do
+      end
+      group 'netdev' do
             members allowed_users
             excluded_members disallowed_users
             append true
             action :nothing
-        end.run_action(:modify)
-      end
+      end.run_action(:modify)
 
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
