@@ -79,24 +79,24 @@ action :setup do
        (policy_active?('software_mgmt', 'package_res') ||
         policy_autoreversible?('software_mgmt', 'package_res'))
       if new_resource.package_list.any?
+
+        # Execute apt-get update every 24 hours
+        execute 'apt-get-update-periodic' do
+          command 'apt-get update'
+          ignore_failure true
+          only_if do
+            ::File.exist?('/var/lib/apt/periodic/update-success-stamp') &&
+              ::File.mtime('/var/lib/apt/periodic/update-success-stamp') <
+                Time.now - 86_400
+          end
+        end
+
         Chef::Log.info('Installing package list')
         new_resource.package_list.each do |pkg|
           Chef::Log.debug("Package: #{pkg}")
           case pkg.action
           when 'add'
             # Add a package
-
-            # Execute apt-get update every 24 hours
-            execute 'apt-get-update-periodic' do
-              command 'apt-get update'
-              ignore_failure true
-              only_if do
-                ::File.exist?('/var/lib/apt/periodic/update-success-stamp') &&
-                  ::File.mtime('/var/lib/apt/periodic/update-success-stamp') <
-                    Time.now - 86_400
-              end
-            end
-
             add_package(pkg)
 
           when 'remove'
