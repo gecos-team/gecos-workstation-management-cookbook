@@ -43,6 +43,7 @@ action :setup do
             append true
             action :nothing
       end.run_action(:modify)
+    end
 
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids
