@@ -32,7 +32,7 @@ action :setup do
         # (amunoz)
         # Distinguir entre sesion Cinnamon y LXDE
 
-        desktop_gsettings 'idle-activation-enabled' do
+        desktop_gsettings 'idle-activation-enabled-#{username}' do
           schema 'org.cinnamon.desktop.screensaver'
           key 'idle-activation-enabled'
           user username
@@ -41,7 +41,7 @@ action :setup do
         end.run_action(:set)
 
         desktop_gsettings 'lock-enabled' do
-          schema 'org.cinnamon.desktop.screensaver'
+          schema 'org.cinnamon.desktop.screensaver-#{username}'
           key 'lock-enabled'
           user username
           value lock_enabled.to_s
@@ -49,7 +49,7 @@ action :setup do
         end.run_action(:set)
 
         desktop_gsettings 'idle-delay' do
-          schema 'org.cinnamon.desktop.session'
+          schema 'org.cinnamon.desktop.session-#{username}'
           key 'idle-delay'
           user username
           value idle_delay.to_s
@@ -57,7 +57,7 @@ action :setup do
         end.run_action(:set)
 
         desktop_gsettings 'lock-delay' do
-          schema 'org.cinnamon.desktop.screensaver'
+          schema 'org.cinnamon.desktop.screensaver-#{username}'
           key 'lock-delay'
           user username
           value lock_delay.to_s
