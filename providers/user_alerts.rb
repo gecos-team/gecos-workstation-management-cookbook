@@ -30,8 +30,7 @@ action :setup do
       users = new_resource.users
       users.each_key do |user_key|
         user = users[user_key]
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         usernames << username
         homedir = `eval echo ~#{username}`.delete("\n")
         last_pid = `ps -u #{username} h -o pid| tail -n1`.strip

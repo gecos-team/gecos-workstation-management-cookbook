@@ -16,8 +16,7 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'screensaver_res'))
       users = new_resource.users
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
 
         idle_enabled = user.idle_enabled
@@ -40,24 +39,24 @@ action :setup do
           action :nothing
         end.run_action(:set)
 
-        desktop_gsettings 'lock-enabled' do
-          schema 'org.cinnamon.desktop.screensaver-#{username}'
+        desktop_gsettings 'lock-enabled-#{username}' do
+          schema 'org.cinnamon.desktop.screensaver'
           key 'lock-enabled'
           user username
           value lock_enabled.to_s
           action :nothing
         end.run_action(:set)
 
-        desktop_gsettings 'idle-delay' do
-          schema 'org.cinnamon.desktop.session-#{username}'
+        desktop_gsettings 'idle-delay-#{username}' do
+          schema 'org.cinnamon.desktop.session'
           key 'idle-delay'
           user username
           value idle_delay.to_s
           action :nothing
         end.run_action(:set)
 
-        desktop_gsettings 'lock-delay' do
-          schema 'org.cinnamon.desktop.screensaver-#{username}'
+        desktop_gsettings 'lock-delay-#{username}' do
+          schema 'org.cinnamon.desktop.screensaver'
           key 'lock-delay'
           user username
           value lock_delay.to_s

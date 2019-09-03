@@ -127,8 +127,7 @@ action :setup do
       users = new_resource.users
       users.each_key do |user_key|
         user = users[user_key]
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         gid = Etc.getpwnam(username).gid
 
         # Check if the email must be configured

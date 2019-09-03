@@ -40,8 +40,7 @@ action :setup do
       users = new_resource.users
 
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
 
@@ -80,7 +79,7 @@ action :setup do
           Chef::Log.debug("mimetypes.rb - mimes: #{mimes}")
 
           env_hash = { 'HOME' => "/home/#{username}", 'USER' => username.to_s }
-          execute 'xdg-mime execution commmand' do
+          execute 'xdg-mime execution commmand-#{username}-#{assoc}' do
             action :run
             user username
             group gid

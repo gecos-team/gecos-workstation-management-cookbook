@@ -46,13 +46,13 @@ action :setup do
 
       # User-level key values
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
 
         disable_log_out = user.disable_log_out
         if !lite
-          desktop_gsettings 'org.cinnamon.desktop.lockdown' do
+          desktop_gsettings 'org.cinnamon.desktop.lockdown-#{username}' do
+            schema 'org.cinnamon.desktop.lockdown'
             key 'disable-log-out'
             user username
             value disable_log_out.to_s

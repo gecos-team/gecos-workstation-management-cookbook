@@ -30,8 +30,7 @@ action :setup do
       users = new_resource.users
 
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
 

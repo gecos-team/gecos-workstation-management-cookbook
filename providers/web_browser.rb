@@ -185,10 +185,22 @@ action :setup do
       end
 
       users = new_resource.users
+      
+      directory '/etc/firefox/pref' do
+        owner    'root'
+        group    'root'
+        mode     '0755'
+        recursive true
+        action :nothing
+      end.run_action(:create)
+
+      template '/etc/firefox/pref/web_browser_res.js' do
+        source 'web_browser_scope.js.erb'
+        action :nothing
+      end.run_action(:create)
 
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
 
         homedir = `eval echo ~#{username}`.delete("\n")
@@ -222,19 +234,6 @@ action :setup do
         ## Plugins STUFF
         unless plugins.empty?
           Chef::Log.info("Setting user #{username} web plugins")
-
-          directory '/etc/firefox/pref' do
-            owner    'root'
-            group    'root'
-            mode     '0755'
-            recursive true
-            action :nothing
-          end.run_action(:create)
-
-          template '/etc/firefox/pref/web_browser_res.js' do
-            source 'web_browser_scope.js.erb'
-            action :nothing
-          end.run_action(:create)
 
           extensions_dirs.each do |xdir|
             directory xdir do

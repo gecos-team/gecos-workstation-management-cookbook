@@ -25,20 +25,21 @@ action :setup do
       if !new_resource.users.nil? && !new_resource.users.empty?
         users = new_resource.users
         users.each_key do |user_key|
-          nameuser = user_key
-          username = nameuser.gsub('###', '.')
+          username = user_key.gsub('###', '.')
           user = users[user_key]
           Chef::Log.info("Setting wallpaper #{user.desktop_file}")
           desktop_file = user.desktop_file
 
-          desktop_gsettings 'org.cinnamon.desktop.background' do
+          desktop_gsettings 'org.cinnamon.desktop.background-#{username}' do
+            schema 'org.cinnamon.desktop.background'
             key 'picture-uri'
             value "'file://#{desktop_file}'"
             user username
             action :nothing
           end.run_action(:set)
 
-          desktop_gsettings 'org.gnome.desktop.background' do
+          desktop_gsettings 'org.gnome.desktop.background-#{username}' do
+            schema 'org.gnome.desktop.background'
             key 'picture-uri'
             value "'file://#{desktop_file}'"
             user username
