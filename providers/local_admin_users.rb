@@ -10,32 +10,36 @@
 #
 
 action :setup do
+  require 'etc'
   begin
     if os_supported? &&
        (policy_active?('misc_mgmt', 'local_admin_users_res') ||
         policy_autoreversible?('misc_mgmt', 'local_admin_users_res'))
       local_admin_list = new_resource.local_admin_list
+      admins_to_add = []
+      admins_to_remove = []
       local_admin_list.each do |admin|
-        case admin.action
-        when 'add'
-          group 'sudo' do
-            members admin.name
-            append true
-            action :nothing
-            only_if "id -u #{admin.name}"
-          end.run_action(:modify)
-        when 'remove'
-          group 'sudo' do
-            excluded_members admin.name
-            append true
-            action :nothing
-            only_if "id -u #{admin.name}"
-          end.run_action(:modify)
-        else
-          raise "Action for admin #{admin.name} is not add nor remove "\
-          "(#{admin.action})"
+        begin
+          Etc.getpwnam(admin.name)
+          case admin.action
+          when 'add'
+            admins_to_add << admin.name
+          when 'remove'
+            admins_to_remove << admin.name
+          else
+            raise "Action for admin #{admin.name} is not add nor remove "\
+            "(#{admin.action})"
+          end
+        rescue
+          Chef::Log.error('#{admin.name} is not a valid username in this workstation')
         end
       end
+      group 'sudo' do
+        members admins_to_add
+        excluded_members admins_to_remove
+        append true
+        action :nothing
+      end.run_action(:modify)      
     end
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

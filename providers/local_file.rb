@@ -54,7 +54,7 @@ action :setup do
             action :nothing
           end.run_action(act)
 
-          execute 'Changing file perms' do
+          execute 'Changing file perms for file #{dest}' do
             command "chown #{uid}:#{gid} #{dest} && chmod #{mode} #{dest}"
             not_if do
               ::File.stat(dest).mode.to_s(8)[3..5] == mode &&
