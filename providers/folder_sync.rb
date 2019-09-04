@@ -24,8 +24,7 @@ action :setup do
       end
 
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
 
         # Prepare environment variables
@@ -58,7 +57,8 @@ action :setup do
           action :create
         end
 
-        cookbook_file 'owncloud.desktop' do
+        cookbook_file 'owncloud.desktop-#{username}' do
+          source 'owncloud.desktop'
           path "#{autostart_dir}/ownCloud.desktop"
           owner username
           group gid

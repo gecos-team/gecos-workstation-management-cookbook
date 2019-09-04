@@ -17,9 +17,8 @@ action :setup do
       pattern = '(smb|nfs|ftp|sftp|dav)(:\/\/)([\S]*\/.*)'
       users = new_resource.users
       users.each_key do |user_key|
-        nameuser = user_key
         VariableManager.add_to_environ(user_key)
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
 
         homedir = `eval echo ~#{username}`.delete("\n")
