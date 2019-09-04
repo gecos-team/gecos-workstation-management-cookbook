@@ -70,13 +70,10 @@ action :setup do
        (policy_active?('users_mgmt', 'email_setup_res') ||
         policy_autoreversible?('users_mgmt', 'email_setup_res'))
  
-      directory '/var/cache/gecos' do
-        mode '0755'
-        action :nothing
-      end.run_action(:create)
-
+     
       directory '/var/cache/gecos/email_setup' do
         mode '0755'
+        recursive true
         action :nothing
       end.run_action(:create)  
  
