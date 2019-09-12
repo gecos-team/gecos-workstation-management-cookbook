@@ -85,7 +85,7 @@ action :setup do
             job = file.sub(/#{regex2}/, '\\1')
             Chef::Log.debug("job: #{job}")
 
-            ruby_block 'Rename ttyX.conf-#{file}' do
+            ruby_block "Rename ttyX.conf-#{file}" do
               block do
                 ::File.rename(file, file.sub(/(.*)#{backup_suffix}/, '\\1'))
               end
