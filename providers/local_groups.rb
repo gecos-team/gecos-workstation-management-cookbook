@@ -18,7 +18,7 @@ action :setup do
 
       groups_list.each do |item|
         if item.action == 'add'
-          group '#{item.group.to_s}-#{item.user}' do
+          group "#{item.group.to_s}-#{item.user}" do
             group_name item.group.to_s
             append true
             members item.user
@@ -27,7 +27,7 @@ action :setup do
           end.run_action(:create)
 
         elsif item.action == 'remove'
-          group '#{item.group.to_s}-#{item.user}' do
+          group "#{item.group.to_s}-#{item.user}" do
             group_name item.group.to_s
             append true
             excluded_members item.user

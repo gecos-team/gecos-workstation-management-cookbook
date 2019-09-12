@@ -38,7 +38,7 @@ action :setup do
             action :nothing
           end.run_action(:set)
 
-          desktop_gsettings 'org.gnome.desktop.background-#{username}' do
+          desktop_gsettings "org.gnome.desktop.background-#{username}" do
             schema 'org.gnome.desktop.background'
             key 'picture-uri'
             value "'file://#{desktop_file}'"
