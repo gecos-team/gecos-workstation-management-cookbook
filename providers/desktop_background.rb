@@ -30,7 +30,7 @@ action :setup do
           Chef::Log.info("Setting wallpaper #{user.desktop_file}")
           desktop_file = user.desktop_file
 
-          desktop_gsettings 'org.cinnamon.desktop.background-#{username}' do
+          desktop_gsettings "org.cinnamon.desktop.background-#{username}" do
             schema 'org.cinnamon.desktop.background'
             key 'picture-uri'
             value "'file://#{desktop_file}'"
