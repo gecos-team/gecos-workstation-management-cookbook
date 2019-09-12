@@ -51,7 +51,7 @@ action :setup do
 
         disable_log_out = user.disable_log_out
         if !lite
-          desktop_gsettings 'org.cinnamon.desktop.lockdown-#{username}' do
+          desktop_gsettings "org.cinnamon.desktop.lockdown-#{username}" do
             schema 'org.cinnamon.desktop.lockdown'
             key 'disable-log-out'
             user username

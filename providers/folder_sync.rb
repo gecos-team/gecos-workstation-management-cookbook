@@ -57,7 +57,7 @@ action :setup do
           action :create
         end
 
-        cookbook_file 'owncloud.desktop-#{username}' do
+        cookbook_file "owncloud.desktop-#{username}" do
           source 'owncloud.desktop'
           path "#{autostart_dir}/ownCloud.desktop"
           owner username

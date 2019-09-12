@@ -123,7 +123,7 @@ action :setup do
         end.run_action(:delete)
 
         env_hash = { 'HOME' => homedir, 'USER' => username }
-        execute 'Create GECOS Profile-#{username}' do
+        execute "Create GECOS Profile-#{username}" do
           command 'Xvfb :99.0 -ac & sleep 1; thunderbird -CreateProfile '\
             "'gecos #{homedir}/.thunderbird/gecos' "\
             '--display=:99.0; killall Xvfb'
@@ -249,7 +249,7 @@ action :setup do
           plugin_file = "/var/cache/gecos/email_setup/#{plugin_file_name}"
 
           # Download extension if necessary
-          remote_file '#{plugin_file}-#{username}' do
+          remote_file "#{plugin_file}-#{username}" do
             path plugin_file
             source plugin_data['url']
             action :nothing
