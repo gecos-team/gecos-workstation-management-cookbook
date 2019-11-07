@@ -16,7 +16,8 @@ action :setup do
       # install depends
       $required_pkgs['cert'].each do |pkg|
         Chef::Log.debug("cert.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "cert_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
@@ -71,10 +72,14 @@ action :setup do
           cert_name = cert[:name].tr(' ', '_') + '.crt'
           cert_file_dst = certs_path + cert_name
           cert_file = certs_path + cert[:name].tr(' ', '_') + '.cer'
-          remote_file cert_file do
-            source cert[:uri]
-            action :nothing
-          end.run_action(:create)
+          begin
+            remote_file cert_file do
+              source cert[:uri]
+              action :nothing
+            end.run_action(:create)
+          rescue StandardError
+            raise "Error getting file from URI: #{cert[:uri]}"
+          end
 
           mustupdate = (!::File.exist?(cert_file_dst) ||
             ::File.mtime(cert_file) > ::File.mtime(cert_file_dst))

@@ -24,7 +24,8 @@ action :setup do
 
         $required_pkgs['tz_date'].each do |pkg|
           Chef::Log.debug("tz_date.rb - REQUIRED PACKAGE = #{pkg}")
-          package pkg do
+          package "tz_date_#{pkg}" do
+            package_name pkg
             action :nothing
           end.run_action(:install)
         end

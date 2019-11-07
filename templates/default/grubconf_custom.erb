@@ -5,7 +5,7 @@ exec tail -n +3 $0
 # the 'exec tail' line above.
 
 <%if @lock_boot %>
-set superusers="<%= @unlock_user %>"
-password <%= @unlock_user %> <%= @unlock_pass %>
+set superusers='<%= @unlock_user %>'
+password '<%= @unlock_user %>' '<%= @unlock_pass %>'
 export superusers
 <% end %>

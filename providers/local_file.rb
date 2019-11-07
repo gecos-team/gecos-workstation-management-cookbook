@@ -30,13 +30,18 @@ action :setup do
                   else
                     local.file_dest
                   end
-          uid  = local.attribute?('user') ? Etc.getpwnam(local.user).uid : '0'
+          uid  = local.attribute?('user') ? Etc.getpwnam(local.user).uid : 0
           gid  = if local.attribute?('group')
                    Etc.getgrnam(local.group).gid
                  else
                    Etc.getpwuid(uid).gid
                  end
           mode = local.attribute?('mode') ? local.mode : '755'
+
+          unless local.attribute?('file')
+            Chef::Log.warn("local_file.rb ::: add to #{dest} without file URI!")
+            next
+          end
 
           Chef::Log.debug("local_file.rb ::: act   = #{act}")
           Chef::Log.debug("local_file.rb ::: dest  = #{dest}")
@@ -49,7 +54,7 @@ action :setup do
             action :nothing
           end.run_action(act)
 
-          execute 'Changing file perms' do
+          execute "Changing file perms for file #{dest}" do
             command "chown #{uid}:#{gid} #{dest} && chmod #{mode} #{dest}"
             not_if do
               ::File.stat(dest).mode.to_s(8)[3..5] == mode &&

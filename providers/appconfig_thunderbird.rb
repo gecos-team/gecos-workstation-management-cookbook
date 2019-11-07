@@ -10,14 +10,18 @@
 #
 
 action :setup do
+  app_update = nil
   begin
-    if os_supported? &&
+    # Check if thunderbird is installed
+    thunderbird_installed = system('dpkg -L thunderbird > /dev/null 2>&1')
+    if os_supported? && thunderbird_installed &&
        ((!new_resource.config_thunderbird.empty? &&
          policy_active?('software_mgmt', 'appconfig_thunderbird_res')) ||
         policy_autoreversible?('software_mgmt', 'appconfig_thunderbird_res'))
 
       Chef::Log.debug('appconfig_thunderbird.rb - config_thunderbird:'\
           " #{new_resource.config_thunderbird}")
+
       # Detecting installation directory
       installdir = ShellUtil.shell(
         'dpkg -L thunderbird | grep -E \'defaults/pref$\''
@@ -30,32 +34,37 @@ action :setup do
         FileUtils.mkdir_p '/etc/thunderbird'
       end
 
-      if app_update
-        execute 'enable thunderbird upgrades' do
-          command 'apt-mark unhold thunderbird thunderbird*'
-          action :nothing
-        end.run_action(:run)
-      else
-        execute 'disable thunderbird upgrades' do
-          command 'apt-mark hold thunderbird thunderbird*'
-          action :nothing
-        end.run_action(:run)
+      unless app_update.nil?
+        # Only when this provider is not called from system_proxy provider
+        if app_update
+          execute 'enable thunderbird upgrades' do
+            command 'apt-mark unhold thunderbird thunderbird*'
+            action :nothing
+          end.run_action(:run)
+        else
+          execute 'disable thunderbird upgrades' do
+            command 'apt-mark hold thunderbird thunderbird*'
+            action :nothing
+          end.run_action(:run)
+        end
       end
 
-      var_hash = {
-        settings: new_resource.config_thunderbird
-      }
-      template '/etc/thunderbird/proxy-prefs.js' do
-        source 'mozilla_proxy.erb'
-        action :nothing
-        variables var_hash
-        not_if { installdir.empty? }
-        not_if { new_resource.config_thunderbird['mode'].nil? }
-      end.run_action(:create)
+      unless new_resource.config_thunderbird['mode'].nil?
+        # This provider is called from system_proxy provider
+        var_hash = {
+          settings: new_resource.config_thunderbird
+        }
+        template '/etc/thunderbird/proxy-prefs.js' do
+          source 'mozilla_proxy.erb'
+          action :nothing
+          variables var_hash
+          not_if { installdir.empty? }
+        end.run_action(:create)
 
-      link "#{installdir}/proxy-prefs.js" do
-        to '/etc/thunderbird/proxy-prefs.js'
-        only_if 'test -f /etc/thunderbird/proxy-prefs.js'
+        link "#{installdir}/proxy-prefs.js" do
+          to '/etc/thunderbird/proxy-prefs.js'
+          only_if 'test -f /etc/thunderbird/proxy-prefs.js'
+        end
       end
     end
 
@@ -81,8 +90,11 @@ action :setup do
       end
     end
   ensure
-    gecos_ws_mgmt_jobids 'appconfig_thunderbird_res' do
-      recipe 'software_mgmt'
-    end.run_action(:reset)
+    unless app_update.nil?
+      # Only when this provider is not called from system_proxy provider
+      gecos_ws_mgmt_jobids 'appconfig_thunderbird_res' do
+        recipe 'software_mgmt'
+      end.run_action(:reset)
+    end
   end
 end

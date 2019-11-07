@@ -69,12 +69,19 @@ action :setup do
     if os_supported? &&
        (policy_active?('users_mgmt', 'email_setup_res') ||
         policy_autoreversible?('users_mgmt', 'email_setup_res'))
+ 
+     
+      directory '/var/cache/gecos/email_setup' do
+        mode '0755'
+        recursive true
+        action :nothing
+      end.run_action(:create)  
+ 
       # Setup email for users
       users = new_resource.users
       users.each_key do |user_key|
         user = users[user_key]
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         gid = Etc.getpwnam(username).gid
 
         # Check if the email must be configured
@@ -83,7 +90,8 @@ action :setup do
 
         $required_pkgs['email_setup'].each do |pkg|
           Chef::Log.debug("email_setup.rb - REQUIRED PACKAGE = #{pkg}")
-          package pkg do
+          package "email_setup_#{pkg}" do
+            package_name pkg
             action :nothing
           end.run_action(:install)
         end
@@ -115,7 +123,7 @@ action :setup do
         end.run_action(:delete)
 
         env_hash = { 'HOME' => homedir, 'USER' => username }
-        execute 'Create GECOS Profile' do
+        execute "Create GECOS Profile-#{username}" do
           command 'Xvfb :99.0 -ac & sleep 1; thunderbird -CreateProfile '\
             "'gecos #{homedir}/.thunderbird/gecos' "\
             '--display=:99.0; killall Xvfb'
@@ -231,15 +239,7 @@ action :setup do
           action :nothing
         end.run_action(:create)
 
-        directory '/var/cache/gecos' do
-          mode '0755'
-          action :nothing
-        end.run_action(:create)
-
-        directory '/var/cache/gecos/email_setup' do
-          mode '0755'
-          action :nothing
-        end.run_action(:create)
+       
 
         data['plugins'].each do |plugin_data|
           Chef::Log.info("Checking addon: #{plugin_data['name']}")
@@ -249,7 +249,8 @@ action :setup do
           plugin_file = "/var/cache/gecos/email_setup/#{plugin_file_name}"
 
           # Download extension if necessary
-          remote_file plugin_file do
+          remote_file "#{plugin_file}-#{username}" do
+            path plugin_file
             source plugin_data['url']
             action :nothing
           end.run_action(:create_if_missing)

@@ -17,14 +17,14 @@ action :setup do
 
       $required_pkgs['folder_sync'].each do |pkg|
         Chef::Log.debug("folder_sync.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "folder_sync_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
 
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
 
         # Prepare environment variables
@@ -57,7 +57,8 @@ action :setup do
           action :create
         end
 
-        cookbook_file 'owncloud.desktop' do
+        cookbook_file "owncloud.desktop-#{username}" do
+          source 'owncloud.desktop'
           path "#{autostart_dir}/ownCloud.desktop"
           owner username
           group gid

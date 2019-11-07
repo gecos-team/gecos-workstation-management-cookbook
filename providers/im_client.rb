@@ -117,7 +117,8 @@ action :setup do
       # Install required packages
       $required_pkgs['im_client'].each do |pkg|
         Chef::Log.debug("im_client.rb - REQUIRED PACKAGES = #{pkg}")
-        package pkg do
+        package "im_client_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
@@ -126,8 +127,7 @@ action :setup do
       users = new_resource.users
       users.each_key do |user_key|
         user = users[user_key]
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         gid = Etc.getpwnam(username).gid
 
         # Check if the email must be configured

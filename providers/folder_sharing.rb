@@ -21,7 +21,8 @@ action :setup do
 
       $required_pkgs['folder_sharing'].each do |pkg|
         Chef::Log.debug("folder_sharing.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "folder_sharing_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
@@ -31,8 +32,7 @@ action :setup do
       samba_members = Etc.getgrnam(GRP_SAMBA).mem
 
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
         if user.can_share
           users_to_add << username

@@ -18,7 +18,8 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'shutdown_options_res'))
       $required_pkgs['shutdown_options'].each do |pkg|
         Chef::Log.debug("shutdown_options.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "shutdown_options_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
@@ -45,13 +46,13 @@ action :setup do
 
       # User-level key values
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
 
         disable_log_out = user.disable_log_out
         if !lite
-          desktop_gsettings 'org.cinnamon.desktop.lockdown' do
+          desktop_gsettings "org.cinnamon.desktop.lockdown-#{username}" do
+            schema 'org.cinnamon.desktop.lockdown'
             key 'disable-log-out'
             user username
             value disable_log_out.to_s

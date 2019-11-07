@@ -22,29 +22,29 @@ action :set do
   Chef::Log.debug("system_settings.rb - value:#{value}")
 
   if !key.nil? && !key.empty?
-    dirs = ['/etc/dconf/profile', "/etc/dconf/db/#{dconfdb}.d/locks"]
-    dirs.each do |dir|
-      directory dir do
-        recursive true
-        action :nothing
-      end.run_action(:create)
+    unless ::File.directory?('/etc/dconf/profile')
+      FileUtils.mkdir_p '/etc/dconf/profile'
+    end
+    unless ::File.directory?("/etc/dconf/db/#{dconfdb}.d/locks")
+      FileUtils.mkdir_p "/etc/dconf/db/#{dconfdb}.d/locks"
     end
   end
 
-  file '/etc/dconf/profile/user' do
+  schema_s = schema.tr('/', '-')
+  file "user-dconf-profile-set-#{schema_s}-#{key}" do
+    path '/etc/dconf/profile/user'
     backup false
     content "user-db:user\nsystem-db:#{dconfdb}\n"
     action :nothing
   end.run_action(:create)
 
-  schema_s = schema.tr('/', '-')
   file "/etc/dconf/db/#{dconfdb}.d/#{schema_s}-#{key}.key" do
     backup false
     content "[#{schema}]\n#{key}=#{value}\n"
     action :nothing
   end.run_action(:create)
 
-  execute 'update-dconf' do
+  execute "update-dconf-set-#{schema_s}-#{key}" do
     action :nothing
     command 'dconf update'
   end.run_action(:run)
@@ -61,7 +61,7 @@ action :unset do
     action :nothing
   end.run_action(:delete)
 
-  execute 'update-dconf' do
+  execute "update-dconf-unset-#{schema_s}-#{key}" do
     action :nothing
     command 'dconf update'
   end.run_action(:run)
@@ -74,15 +74,16 @@ action :lock do
   key = new_resource.name
 
   if !key.nil? && !key.empty?
-    dirs = ['/etc/dconf/profile', "/etc/dconf/db/#{dconfdb}.d/locks"]
-    dirs.each do |dir|
-      directory dir do
-        recursive true
-      end.run_action(:create)
+    unless ::File.directory?('/etc/dconf/profile')
+      FileUtils.mkdir_p '/etc/dconf/profile'
+    end
+    unless ::File.directory?("/etc/dconf/db/#{dconfdb}.d/locks")
+      FileUtils.mkdir_p "/etc/dconf/db/#{dconfdb}.d/locks"
     end
   end
 
-  file '/etc/dconf/profile/user' do
+  file "user-dconf-profile-lock-#{key}" do
+    path '/etc/dconf/profile/user'
     backup false
     content "system-db:#{dconfdb}\nuser-db:user\n"
   end.run_action(:create)
@@ -93,7 +94,7 @@ action :lock do
     content "#{key_path}\n"
   end.run_action(:create)
 
-  execute 'update-dconf' do
+  execute "update-dconf-lock-#{key}" do
     action :nothing
     command 'dconf update'
   end.run_action(:run)
@@ -108,7 +109,7 @@ action :unlock do
     action :nothing
   end.run_action(:delete)
 
-  execute 'update-dconf' do
+  execute "update-dconf-unlock-#{key}" do
     action :nothing
     command 'dconf update'
   end.run_action(:run)
@@ -130,15 +131,12 @@ action :clear do
   end.run_action(:create)
 
   # Delete all files of schema
-  Dir["/etc/dconf/db/#{dconfdb}.d/#{regex}"].each do |fe|
-    Chef::Log.debug("system_settings.rb - fe:#{fe}")
-    file fe.to_s do
-      backup false
-      action :nothing
-    end.run_action(:delete)
-  end
+  directory "/etc/dconf/db/#{dconfdb}.d/#{regex}" do
+    recursive true
+    action :nothing
+  end.run_action(:delete)
 
-  execute 'update-dconf' do
+  execute 'update-dconf-clear' do
     action :nothing
     command 'dconf update'
   end.run_action(:run)

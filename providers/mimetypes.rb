@@ -21,7 +21,8 @@ action :setup do
         policy_autoreversible?('users_mgmt', 'mimetypes_res'))
       $required_pkgs['mimetypes'].each do |pkg|
         Chef::Log.debug("mimetypes.rb - REQUIRED PACKAGE = #{pkg}")
-        package pkg do
+        package "mimetypes_#{pkg}" do
+          package_name pkg
           action :nothing
         end.run_action(:install)
       end
@@ -39,16 +40,9 @@ action :setup do
       users = new_resource.users
 
       users.each_key do |user_key|
-        nameuser = user_key
-        username = nameuser.gsub('###', '.')
+        username = user_key.gsub('###', '.')
         user = users[user_key]
         gid = Etc.getpwnam(username).gid
-
-        directory "/home/#{username}/.local/share/applications" do
-          owner username
-          group gid
-          recursive true
-        end
 
         Chef::Log.debug("mimetypes.rb - Users: #{user}")
 
@@ -74,7 +68,7 @@ action :setup do
           Chef::Log.debug("mimetypes.rb - assoc: #{assoc}")
 
           desktopfile = assoc.desktop_entry
-          desktopfile.concat('.desktop') unless desktopfile.include? '\.desktop'
+          desktopfile.concat('.desktop') unless desktopfile.include? '.desktop'
 
           Chef::Log.debug("mimetypes.rb - desktop: #{desktopfile}")
 
@@ -85,7 +79,7 @@ action :setup do
           Chef::Log.debug("mimetypes.rb - mimes: #{mimes}")
 
           env_hash = { 'HOME' => "/home/#{username}", 'USER' => username.to_s }
-          execute 'xdg-mime execution commmand' do
+          execute "xdg-mime execution commmand-#{username}-#{assoc}" do
             action :run
             user username
             group gid
