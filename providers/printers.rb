@@ -120,6 +120,7 @@ action :setup do
        (policy_active?('printers_mgmt', 'printers_res') || \
         policy_autoreversible?('printers_mgmt', 'printers_res'))
       printers_list = new_resource.printers_list
+      cups_ad_fix_needed = 'GECOS V3, GECOS V2, GECOS V3 Lite, Gecos V2 Lite'
 
       if printers_list.any?
         service 'cups' do
@@ -150,6 +151,11 @@ action :setup do
 
           oppolicy = 'default'
           oppolicy = printer.oppolicy if printer.attribute?('oppolicy')
+# GECOS V4 and later (I guess) include the fix we provided by "cups_ad_fix" package, but the name of the operation policy
+# is 'kerberos' while cups_ad_fix used the name 'kerberos-ad'
+          if oppolicy == 'kerberos-ad' and not cups_ad_fix_needed.include?($gecos_os)
+            oppolicy = 'kerberos'
+          end
 
           inst_prt_uri = `lpoptions -p #{curr_ptr_name}`
           inst_prt_uri = inst_prt_uri.scan(/^.*\sdevice-uri=(\S+)\s.*$/)
