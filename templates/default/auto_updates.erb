@@ -26,14 +26,21 @@ NAME=auto_update
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export PATH
 
-set -e
+#set -e
 
 case "$1" in
   start|stop)
-        echo -n "Starting $DESC: "
+        echo -n "Starting $NAME: "
         apt-get update | ts '%Y-%m-%d %T' >> <%= @log_file %> 2>> <%= @err_file %>
         apt-get autoclean -y | ts '%Y-%m-%d %T' >> <%= @log_file %> 2>> <%= @err_file %>
-        DEBCONF_PRIORITY=critical DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --assume-yes --force-yes | ts '%Y-%m-%d %T' >> <%= @log_file %> 2>> <%= @err_file %>
+        DEBCONF_PRIORITY=critical DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -q --assume-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" | ts '%Y-%m-%d %T' >> <%= @log_file %> 2>> <%= @err_file %>
+        apt-get check >> <%= @log_file %> 2>> <%= @err_file %> 
+        if [ $? -ne 0 ]
+        then
+           dpkg --configure -a | ts '%Y-%m-%d %T' > <%= @recover_file %>  2>&1 
+           apt --fix-broken install | ts '%Y-%m-%d %T' > <%= @recover_file %>  2>&1 
+        fi
+
         echo "$NAME."
         ;;
   *)

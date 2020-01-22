@@ -36,6 +36,8 @@ action :setup do
 
       unless app_update.nil?
         # Only when this provider is not called from system_proxy provider
+
+        # Hold/Unhold the package
         if app_update
           execute 'enable thunderbird upgrades' do
             command 'apt-mark unhold thunderbird thunderbird*'
@@ -47,6 +49,22 @@ action :setup do
             action :nothing
           end.run_action(:run)
         end
+
+        # Set the update configuration parameters
+        var_hash = {
+          app_update: app_update
+        }
+        template '/etc/thunderbird/update.js' do
+          source 'update.js.erb'
+          action :nothing
+          variables var_hash
+        end.run_action(:create)
+
+        link "#{installdir}/update.js" do
+          to '/etc/thunderbird/update.js'
+          only_if 'test -f /etc/thunderbird/update.js'
+        end
+
       end
 
       unless new_resource.config_thunderbird['mode'].nil?

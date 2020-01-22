@@ -32,6 +32,7 @@ action :setup do
 
       log_file = '/var/log/automatic-updates.log'
       err_file = '/var/log/automatic-updates.err'
+      recover_file = '/var/log/automatic-updates.rec'
 
       arrinit = ['2'] if onstart_update
       arrhalt = %w[6 0] if onstop_update
@@ -41,6 +42,7 @@ action :setup do
         var_hash = {
           log_file: log_file,
           err_file: err_file,
+          recover_file: recover_file,
           arrinit: arrinit,
           arrhalt: arrhalt
         }
