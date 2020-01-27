@@ -38,10 +38,10 @@ case "$1" in
         if [ $? -ne 0 ]
         then
            dpkg --configure -a | ts '%Y-%m-%d %T' > <%= @recover_file %>  2>&1 
-           apt --fix-broken install | ts '%Y-%m-%d %T' > <%= @recover_file %>  2>&1 
+           apt-get -y --fix-broken install | ts '%Y-%m-%d %T' > <%= @recover_file %>  2>&1 
         fi
 
-        echo "$NAME."
+        echo "$NAME end."
         ;;
   *)
         N=/etc/init.d/$NAME
