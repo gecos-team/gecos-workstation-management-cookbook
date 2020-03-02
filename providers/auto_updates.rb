@@ -36,12 +36,12 @@ action :setup do
       # Create the auto_updates.sh script file
       if onstart_update || onstop_update || !days.empty? ||
          !date.empty?
-        template '/usr/bin/auto_updates.sh' do
-          source 'auto_updates.sh.erb'
+        cookbook_file 'auto_updates.sh' do
+          path '/usr/bin/auto_updates.sh'
+          action :nothing
           mode '0755'
           owner 'root'
-          action :nothing
-        end.run_action(:create)
+        end.run_action(:create_if_missing)
 
       else
         file '/usr/bin/auto_updates.sh' do
