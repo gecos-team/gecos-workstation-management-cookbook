@@ -1,0 +1,20 @@
+[Unit]
+Description=Automatic package upgrades from configured repositories
+After=network-online.target
+
+[Service]
+Type=oneshot
+<% if @onstart_update %>
+ExecStart=/usr/bin/auto_updates.sh
+<% end %>
+<% if @onstop_update %>
+ExecStop=/usr/bin/auto_updates.sh
+<% end %>
+RemainAfterExit=true
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
+
+
+

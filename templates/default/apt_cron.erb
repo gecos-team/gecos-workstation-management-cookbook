@@ -28,14 +28,14 @@
   end
 %>
 
-<%= minute %> <%= hour %> <%= day %> <%= month %> * root /etc/init.d/auto_updates start
+<%= minute %> <%= hour %> <%= day %> <%= month %> * root /usr/bin/auto_updates.sh
 <% end %>
 <% unless @days_cron.empty? %>
   <% @days_cron.each do |dc| %>
     <% @days_map.each do |k,v| %>
       <% ks = k.to_s %> 
       <% if ks == dc.day %>
-<%= dc.minute %> <%= dc.hour %> * * <%= v %> root /etc/init.d/auto_updates start
+<%= dc.minute %> <%= dc.hour %> * * <%= v %> root /usr/bin/auto_updates.sh
       <% end %>
     <% end%>
   <% end %>

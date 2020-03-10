@@ -30,62 +30,115 @@ action :setup do
 
       Chef::Log.info('Setting automatic updates')
 
-      log_file = '/var/log/automatic-updates.log'
-      err_file = '/var/log/automatic-updates.err'
-      recover_file = '/var/log/automatic-updates.rec'
-
       arrinit = ['2'] if onstart_update
       arrhalt = %w[6 0] if onstop_update
 
+      # Create the auto_updates.sh script file
       if onstart_update || onstop_update || !days.empty? ||
          !date.empty?
-        var_hash = {
-          log_file: log_file,
-          err_file: err_file,
-          recover_file: recover_file,
-          arrinit: arrinit,
-          arrhalt: arrhalt
-        }
-        template '/etc/init.d/auto_updates' do
-          source 'auto_updates.erb'
+        cookbook_file 'auto_updates.sh' do
+          path '/usr/bin/auto_updates.sh'
+          action :nothing
           mode '0755'
           owner 'root'
-          variables var_hash
-          action :nothing
-        end.run_action(:create)
+        end.run_action(:create_if_missing)
+
       else
-        file '/etc/init.d/auto_updates' do
+        file '/usr/bin/auto_updates.sh' do
           action :nothing
         end.run_action(:delete)
+
       end
 
-      if onstart_update
-        bash 'enable on start auto_update script' do
-          action :nothing
-          code "update-rc.d auto_updates start 60 2 .\n"
-        end.run_action(:run)
-      else
-        link '/etc/rc2.d/S60auto_updates' do
-          action :nothing
-          only_if 'test -L /etc/rc2.d/S60auto_updates'
-        end.run_action(:delete)
-      end
+      # Check if systemd is running
+      if system('pidof systemd > /dev/null')
+        Chef::Log.info('Setting automatic updates in systemd')
+        # Use systemd script
+        if onstart_update || onstop_update
+          var_hash = {
+            onstart_update: onstart_update,
+            onstop_update: onstop_update
+          }
 
-      if onstop_update
-        bash 'enable on stop auto_update script' do
-          action :nothing
-          code "update-rc.d auto_updates start 60 6 0 .\n"
-        end.run_action(:run)
-      else
-        link '/etc/rc6.d/S60auto_updates' do
-          action :nothing
-          only_if 'test -L /etc/rc6.d/S60auto_updates'
-        end.run_action(:delete)
+          # Create systemd service file
+          template '/lib/systemd/system/autoupdates.service' do
+            source 'auto_updates.service.erb'
+            mode '0644'
+            owner 'root'
+            variables var_hash
+            action :nothing
+            only_if { ::File.directory?('/lib/systemd/system/') }
+          end.run_action(:create)
 
-        link '/etc/rc0.d/S60auto_updates' do
-          action :nothing
-          only_if 'test -L /etc/rc0.d/S60auto_updates'
-        end.run_action(:delete)
+          # Enable systemd service
+          systemd_unit 'autoupdates.service' do
+            action :nothing
+          end.run_action(:enable)
+        else
+          # Disable systemd service
+          systemd_unit 'autoupdates.service' do
+            action :nothing
+          end.run_action(:disable)
+
+          # Delete systemd service file
+          file '/lib/systemd/system/autoupdates.service' do
+            action :nothing
+            only_if { ::File.directory?('/lib/systemd/system/') }
+          end.run_action(:delete)
+        end
+
+      else
+        Chef::Log.info('Setting automatic updates in SysV')
+        # Use sysv script
+
+        # Create the init file
+        if onstart_update || onstop_update
+          var_hash = {
+            arrinit: arrinit,
+            arrhalt: arrhalt
+          }
+          template '/etc/init.d/auto_updates' do
+            source 'auto_updates.erb'
+            mode '0755'
+            owner 'root'
+            variables var_hash
+            action :nothing
+          end.run_action(:create)
+        else
+          file '/etc/init.d/auto_updates' do
+            action :nothing
+          end.run_action(:delete)
+        end
+
+
+        if onstart_update
+          bash 'enable on start auto_update script' do
+            action :nothing
+            code "update-rc.d auto_updates start 60 2 .\n"
+          end.run_action(:run)
+        else
+          link '/etc/rc2.d/S60auto_updates' do
+            action :nothing
+            only_if 'test -L /etc/rc2.d/S60auto_updates'
+          end.run_action(:delete)
+        end
+
+        if onstop_update
+          bash 'enable on stop auto_update script' do
+            action :nothing
+            code "update-rc.d auto_updates start 60 6 0 .\n"
+          end.run_action(:run)
+        else
+          link '/etc/rc6.d/S60auto_updates' do
+            action :nothing
+            only_if 'test -L /etc/rc6.d/S60auto_updates'
+          end.run_action(:delete)
+
+          link '/etc/rc0.d/S60auto_updates' do
+            action :nothing
+            only_if 'test -L /etc/rc0.d/S60auto_updates'
+          end.run_action(:delete)
+        end
       end
 
       dmap = {

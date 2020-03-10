@@ -60,6 +60,21 @@ cron 'GECOS Agent' do
   action :create
 end
 
+env_hash = {
+  gecos_path_ids: node.normal['gecos_path_ids'],
+  gecos_path_names: node.normal['gecos_path_names']
+}
+
+Chef::Log.info('Create /etc/gecos/environment file ')
+template '/etc/gecos/environment' do
+  source 'environment.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+  variables env_hash
+  action :nothing
+end.run_action(:create)
+
 include_recipe 'gecos_ws_mgmt::required_packages'
 include_recipe 'gecos_ws_mgmt::software_mgmt'
 include_recipe 'gecos_ws_mgmt::misc_mgmt'
