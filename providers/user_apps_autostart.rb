@@ -25,7 +25,14 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
-        gid  = Etc.getpwnam(username).gid
+        Chef::Log.info("user_apps_autostart.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error('user_apps_autostart.rb ::: can\'t find user '\
+            "= #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         autostart_path = ::File.expand_path("~#{username}")
 

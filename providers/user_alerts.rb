@@ -31,9 +31,17 @@ action :setup do
       users.each_key do |user_key|
         user = users[user_key]
         username = user_key.gsub('###', '.')
+        Chef::Log.info("user_alerts.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("user_alerts.rb ::: can't find user = #{username}")
+          next
+        end
+
         usernames << username
         homedir = `eval echo ~#{username}`.delete("\n")
         last_pid = `ps -u #{username} h -o pid| tail -n1`.strip
+        next if last_pid.empty?
         grepcmd = "grep -z DBUS_SESSION_BUS_ADDRESS /proc/#{last_pid}/environ"
         dbus_address = `#{grepcmd} | cut -d= -f2-`.chop
 

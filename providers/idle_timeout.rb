@@ -32,7 +32,14 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
-        gid = Etc.getpwnam(username).gid
+        Chef::Log.info("idle_timeout.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error('idle_timeout.rb ::: can\'t find user '\
+            "= #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         autostart = ::File.expand_path("~#{username}/.config/autostart")
         home = ::File.expand_path("~#{username}")

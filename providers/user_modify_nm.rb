@@ -31,6 +31,12 @@ action :setup do
 
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
+        Chef::Log.info("user_modify_nm.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("user_modify_nm.rb ::: can't find user = #{username}")
+          next
+        end
         if users[user_key].can_modify
           allowed_users << username
         else

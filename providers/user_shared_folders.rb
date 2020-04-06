@@ -20,9 +20,16 @@ action :setup do
         VariableManager.add_to_environ(user_key)
         username = user_key.gsub('###', '.')
         user = users[user_key]
+        Chef::Log.info("user_shared_folders.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error('user_shared_folders.rb ::: can\'t find user '\
+            "= #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         homedir = `eval echo ~#{username}`.delete("\n")
-        gid = Etc.getpwnam(username).gid
         gtkbookmark_files = [
           "#{homedir}/.config/gtk-3.0/bookmarks",
           "#{homedir}/.gtk-bookmarks"

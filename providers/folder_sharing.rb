@@ -34,6 +34,13 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
+        Chef::Log.info("folder_sharing.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("folder_sharing.rb ::: can't find user = #{username}")
+          next
+        end
+
         if user.can_share
           users_to_add << username
         else

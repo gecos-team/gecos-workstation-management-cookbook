@@ -26,6 +26,14 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
+        Chef::Log.info("folder_sync.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error('folder_sync.rb ::: can\'t find user '\
+            "= #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         # Prepare environment variables
         VariableManager.reset_environ
@@ -49,7 +57,7 @@ action :setup do
         autostart_dir = "/home/#{username}/.config/autostart"
         home = "/home/#{username}"
         owncloud_dir = "#{home}/.local/share/data/ownCloud"
-        gid = Etc.getpwnam(username).gid
+
         directory autostart_dir do
           recursive true
           owner username

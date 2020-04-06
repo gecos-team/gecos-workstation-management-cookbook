@@ -48,6 +48,13 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
+        Chef::Log.info("shutdown_options.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error('shutdown_options.rb ::: can\'t find user = '\
+            "#{username}")
+          next
+        end
 
         disable_log_out = user.disable_log_out
         if !lite
