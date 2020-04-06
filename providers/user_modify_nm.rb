@@ -26,22 +26,22 @@ action :setup do
       end.run_action(:create)
 
       users = new_resource.users
-      allowed_users=[]
-      disallowed_users=[]
-      
+      allowed_users = []
+      disallowed_users = []
+
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         if users[user_key].can_modify
-           allowed_users << username
+          allowed_users << username
         else
-           disallowed_users << username
+          disallowed_users << username
         end
       end
       group 'netdev' do
-            members allowed_users
-            excluded_members disallowed_users
-            append true
-            action :nothing
+        members allowed_users
+        excluded_members disallowed_users
+        append true
+        action :nothing
       end.run_action(:modify)
     end
 
