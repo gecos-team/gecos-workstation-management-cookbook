@@ -30,8 +30,9 @@ action :setup do
             raise "Action for admin #{admin.name} is not add nor remove "\
             "(#{admin.action})"
           end
-        rescue
-          Chef::Log.error('#{admin.name} is not a valid username in this workstation')
+        rescue ArgumentError
+          Chef::Log.error("#{admin.name} is not a valid username in this"\
+            ' workstation')
         end
       end
       group 'sudo' do
@@ -39,7 +40,7 @@ action :setup do
         excluded_members admins_to_remove
         append true
         action :nothing
-      end.run_action(:modify)      
+      end.run_action(:modify)
     end
     # save current job ids (new_resource.job_ids) as "ok"
     job_ids = new_resource.job_ids

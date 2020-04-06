@@ -27,6 +27,14 @@ action :setup do
         users.each_key do |user_key|
           username = user_key.gsub('###', '.')
           user = users[user_key]
+          Chef::Log.info("desktop_background.rb ::: user = #{username}")
+          uid = UserUtil.get_user_id(username)
+          if uid == UserUtil::NOBODY
+            Chef::Log.error('desktop_background.rb ::: can\'t find user '\
+              "= #{username}")
+            next
+          end
+
           Chef::Log.info("Setting wallpaper #{user.desktop_file}")
           desktop_file = user.desktop_file
 

@@ -128,7 +128,13 @@ action :setup do
       users.each_key do |user_key|
         user = users[user_key]
         username = user_key.gsub('###', '.')
-        gid = Etc.getpwnam(username).gid
+        Chef::Log.info("im_client.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("im_client.rb ::: can't find user = #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         # Check if the email must be configured
         Chef::Log.info('Check if the instant messaging client'\
@@ -209,7 +215,7 @@ action :setup do
           # overwritten if the content of the file is different
           previous_content = ''
           if ::File.exist?("#{homedir}/.purple/accounts.xml")
-            previous_content = ::File.read("#{homedir}/.purple/digest")
+            previous_content = ::File.read("#{homedir}/.purple/accounts.xml")
           end
 
           # Overwrite the whole file

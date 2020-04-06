@@ -26,22 +26,28 @@ action :setup do
       end.run_action(:create)
 
       users = new_resource.users
-      allowed_users=[]
-      disallowed_users=[]
-      
+      allowed_users = []
+      disallowed_users = []
+
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
+        Chef::Log.info("user_modify_nm.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("user_modify_nm.rb ::: can't find user = #{username}")
+          next
+        end
         if users[user_key].can_modify
-           allowed_users << username
+          allowed_users << username
         else
-           disallowed_users << username
+          disallowed_users << username
         end
       end
       group 'netdev' do
-            members allowed_users
-            excluded_members disallowed_users
-            append true
-            action :nothing
+        members allowed_users
+        excluded_members disallowed_users
+        append true
+        action :nothing
       end.run_action(:modify)
     end
 

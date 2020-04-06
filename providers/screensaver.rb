@@ -18,6 +18,12 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
+        Chef::Log.info("screensaver.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("screensaver.rb ::: can't find user = #{username}")
+          next
+        end
 
         idle_enabled = user.idle_enabled
         idle_delay = '0'

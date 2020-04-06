@@ -69,20 +69,25 @@ action :setup do
     if os_supported? &&
        (policy_active?('users_mgmt', 'email_setup_res') ||
         policy_autoreversible?('users_mgmt', 'email_setup_res'))
- 
-     
+
       directory '/var/cache/gecos/email_setup' do
         mode '0755'
         recursive true
         action :nothing
-      end.run_action(:create)  
- 
+      end.run_action(:create)
+
       # Setup email for users
       users = new_resource.users
       users.each_key do |user_key|
         user = users[user_key]
         username = user_key.gsub('###', '.')
-        gid = Etc.getpwnam(username).gid
+        Chef::Log.info("email_setup.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("email_setup.rb ::: can't find user = #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         # Check if the email must be configured
         Chef::Log.info('Check if the email must be configured')
@@ -238,8 +243,6 @@ action :setup do
           group gid
           action :nothing
         end.run_action(:create)
-
-       
 
         data['plugins'].each do |plugin_data|
           Chef::Log.info("Checking addon: #{plugin_data['name']}")
