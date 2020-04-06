@@ -17,11 +17,19 @@ action :setup do
       groups_list = new_resource.groups_list
 
       groups_list.each do |item|
+        username = item.user
+        Chef::Log.info("local_groups.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("local_groups.rb ::: can't find user = #{username}")
+          next
+        end
+
         if item.action == 'add'
           group "#{item.group}-#{item.user}" do
             group_name item.group.to_s
             append true
-            members item.user
+            members username
             action :nothing
             not_if "grep %#{item.group} /etc/sudoers"
           end.run_action(:create)
@@ -30,7 +38,7 @@ action :setup do
           group "#{item.group}-#{item.user}" do
             group_name item.group.to_s
             append true
-            excluded_members item.user
+            excluded_members username
             action :nothing
             not_if "grep %#{item.group} /etc/sudoers"
           end.run_action(:modify)
