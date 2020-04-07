@@ -8,7 +8,7 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 
-HISTORY_FILTER = /^profile|^p12passwd|^path|^password|^user|^port|^server/
+HISTORY_FILTER = /^profile|^p12passwdenc|^path|^passwordenc|^user|^port|^server/
 
 action :setup do
   begin
@@ -79,9 +79,9 @@ action :setup do
             connections[name] = {}
             connections[name]['server'] = conn[:server]
             connections[name]['port'] = conn[:port]
-            connections[name]['p12passwd'] = ''
+            connections[name]['p12passwdenc'] = ''
             connections[name]['path'] = ''
-            connections[name]['password'] = ''
+            connections[name]['passwordenc'] = ''
             connections[name]['user'] = ''
           else
             # update host/port for connection if values were updated in node
