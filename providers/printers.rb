@@ -151,9 +151,11 @@ action :setup do
 
           oppolicy = 'default'
           oppolicy = printer.oppolicy if printer.attribute?('oppolicy')
-# GECOS V4 and later (I guess) include the fix we provided by "cups_ad_fix" package, but the name of the operation policy
-# is 'kerberos' while cups_ad_fix used the name 'kerberos-ad'
-          if oppolicy == 'kerberos-ad' and not cups_ad_fix_needed.include?($gecos_os)
+          # GECOS V4 and later (I guess) include the fix we provided by
+          # "cups_ad_fix" package, but the name of the operation policy
+          # is 'kerberos' while cups_ad_fix used the name 'kerberos-ad'
+          if oppolicy == 'kerberos-ad' &&
+             !cups_ad_fix_needed.include?($gecos_os)
             oppolicy = 'kerberos'
           end
 

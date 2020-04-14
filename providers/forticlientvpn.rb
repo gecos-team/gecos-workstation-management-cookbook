@@ -8,7 +8,7 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 
-HISTORY_FILTER = /^profile|^p12passwd|^path|^password|^user|^port|^server/
+HISTORY_FILTER = /^profile|^p12passwdenc|^path|^passwordenc|^user|^port|^server/
 
 action :setup do
   begin
@@ -37,6 +37,15 @@ action :setup do
       require 'fileutils'
 
       Dir['/home/*'].each do |homedir|
+        user = homedir.scan(%r{/home/(.*)}).flatten.pop
+        Chef::Log.info("forticlientvpn.rb ::: user = #{user}")
+        uid = UserUtil.get_user_id(user)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("forticlientvpn.rb ::: can't find user = #{user}")
+          next
+        end
+        gid = UserUtil.get_group_id(user)
+
         user_fctlsslvpnhistory = homedir + '/.fctsslvpnhistory'
         if ::File.file?(user_fctlsslvpnhistory)
           # parse current conf file for already existant
@@ -70,9 +79,9 @@ action :setup do
             connections[name] = {}
             connections[name]['server'] = conn[:server]
             connections[name]['port'] = conn[:port]
-            connections[name]['p12passwd'] = ''
+            connections[name]['p12passwdenc'] = ''
             connections[name]['path'] = ''
-            connections[name]['password'] = ''
+            connections[name]['passwordenc'] = ''
             connections[name]['user'] = ''
           else
             # update host/port for connection if values were updated in node
@@ -85,8 +94,6 @@ action :setup do
           end
         end
 
-        user = homedir.scan(%r{/home/(.*)}).flatten.pop
-        Chef::Log.info("forticlientvpn.rb ::: user = #{user}")
         var_hash = {
           proxyserver: res_proxyserver,
           proxyport: res_proxyport,
@@ -96,10 +103,11 @@ action :setup do
           autostart: autostart_num,
           connections: connections
         }
+
         template user_fctlsslvpnhistory do
           source 'fctlsslvpnhistory.erb'
-          owner user.to_s
-          group Etc.getpwnam(user).gid
+          owner uid
+          group gid
           mode  '644'
           variables var_hash
         end

@@ -26,14 +26,20 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
-        gid = Etc.getpwnam(username).gid
+        Chef::Log.info("user_launchers.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("user_launchers.rb ::: can't find user = #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         desktop_path = ::File.expand_path("~#{username}")
 
         subdirs.each do |subdir|
           desktop_path = ::File.join(desktop_path, subdir)
           directory desktop_path do
-            owner username
+            owner uid
             group gid
             mode '0755'
             action :nothing

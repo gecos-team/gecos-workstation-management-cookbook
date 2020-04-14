@@ -19,6 +19,12 @@ action :setup do
         nameuser = user_key
         username = nameuser.gsub('###', '.')
         user = users[user_key]
+        Chef::Log.info("file_browser.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("file_browser.rb ::: can't find user = #{username}")
+          next
+        end
 
         # default_folder_viewer
         if !user.default_folder_viewer.empty? &&

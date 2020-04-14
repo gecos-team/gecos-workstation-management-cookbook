@@ -12,9 +12,7 @@
 #
 
 begin
-
   require 'libxml'
-
 
   # Utility class used to work with XML files
   class XMLUtil
@@ -61,9 +59,9 @@ begin
       document
     end
   end
-rescue LoadError => error
-#  Chef::Log.warn("Error creating XMLUtil library: #{error.backtrace}")
-  Chef::Log.warn("Can not load libxml gem in XMLUtil library. A recipe will install requirements when needed.")
+rescue LoadError
+  Chef::Log.warn('Can not load libxml gem in XMLUtil library. '\
+                 'A recipe will install requirements when needed.')
 
   # Empty stub
   class XMLUtilStub

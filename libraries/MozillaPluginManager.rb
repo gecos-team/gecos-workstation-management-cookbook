@@ -12,6 +12,7 @@
 require 'chef/shell_out'
 require 'pathname'
 require 'fileutils'
+require_relative 'UserUtil'
 
 FIREFOX_VERSION_LIMIT = 4
 
@@ -69,8 +70,8 @@ class MozillaPluginManager
   #
   def self.create_temp_dir(plugin_file, username)
     plugin_dir_temp = "#{plugin_file}_temp"
-    uid = Etc.getpwnam(username).uid
-    gid = Etc.getpwnam(username).gid
+    uid = UserUtil.get_user_id(username)
+    gid = UserUtil.get_group_id(username)
     FileUtils.mkdir_p plugin_dir_temp
 
     if ::File.stat(plugin_dir_temp).uid != uid ||

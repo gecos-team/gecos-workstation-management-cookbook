@@ -42,9 +42,13 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
-        gid = Etc.getpwnam(username).gid
-
-        Chef::Log.debug("mimetypes.rb - Users: #{user}")
+        Chef::Log.info("mimetypes.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("mimetypes.rb ::: can't find user = #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         # File associations stored
         localshareapp = "/home/#{username}/.local/share/applications"

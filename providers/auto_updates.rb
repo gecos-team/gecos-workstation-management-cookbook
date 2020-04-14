@@ -110,7 +110,6 @@ action :setup do
           end.run_action(:delete)
         end
 
-
         if onstart_update
           bash 'enable on start auto_update script' do
             action :nothing

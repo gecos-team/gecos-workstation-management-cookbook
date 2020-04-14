@@ -72,14 +72,14 @@ action :setup do
       def download_plugin(username, exdir, plugin)
         # vars
         plugin_file = "#{exdir}/#{plugin.name.tr(' ', '_')}.xpi"
-        groupname = Etc.getpwnam(username).gid
+        gid = UserUtil.get_group_id(username)
         Chef::Log.debug("web_browser.rb - plugin file: #{plugin_file}")
 
         # Download extension if not exists
         remote_file plugin_file do
           source plugin.uri
           user username
-          group groupname
+          group gid
           action :nothing
         end.run_action(:create_if_missing)
 
@@ -185,7 +185,7 @@ action :setup do
       end
 
       users = new_resource.users
-      
+
       directory '/etc/firefox/pref' do
         owner    'root'
         group    'root'
@@ -202,6 +202,13 @@ action :setup do
       users.each_key do |user_key|
         username = user_key.gsub('###', '.')
         user = users[user_key]
+        Chef::Log.info("web_browser.rb ::: user = #{username}")
+        uid = UserUtil.get_user_id(username)
+        if uid == UserUtil::NOBODY
+          Chef::Log.error("web_browser.rb ::: can't find user = #{username}")
+          next
+        end
+        gid = UserUtil.get_group_id(username)
 
         homedir = `eval echo ~#{username}`.delete("\n")
         plugins = user.plugins
@@ -237,8 +244,8 @@ action :setup do
 
           extensions_dirs.each do |xdir|
             directory xdir do
-              owner username
-              group username
+              owner uid
+              group gid
               action :nothing
             end.run_action(:create)
 
