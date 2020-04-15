@@ -47,23 +47,30 @@ action :setup do
         gid = UserUtil.get_group_id(user)
 
         user_fctlsslvpnhistory = homedir + '/.fctsslvpnhistory'
+        current_profile = 'default'
         if ::File.file?(user_fctlsslvpnhistory)
           # parse current conf file for already existant
           # (pass saved) connections
           current_conns = {}
           history = ::File.read(user_fctlsslvpnhistory).split("\n")
-          current_profile = history.grep(/^current/).each do |cpline|
+          history.grep(/^current/).each do |cpline|
             current_profile = cpline.strip.split('=')[1]
+            if current_profile.include? '['
+              Chef::Log.warn('forticlientvpn.rb ::: wrong current profile!')
+              current_profile = 'default'
+            end
           end
 
+          cprofile = nil
           history.grep(HISTORY_FILTER).each do |fc|
             fc = fc.strip
             key, val = fc.split('=')
-            if key.include? 'profile'
-              current_profile = val
-              current_conns[current_profile] = {}
+            if key.start_with? 'profile'
+              cprofile = val
+              current_conns[cprofile] = {}
             end
-            current_conns[current_profile][key] = val
+
+            current_conns[cprofile][key] = val unless cprofile.nil?
           end
           connections = current_conns
         else
