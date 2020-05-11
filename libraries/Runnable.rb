@@ -69,8 +69,8 @@ module Runnable
     end
 
     def policy_autoreversible?(recipe, policy)
-      Runnable::Helper.schema[recipe.to_sym][:properties][
-        policy.to_sym].key?(AUTOREVERSE.to_sym)
+      schem = Runnable::Helper.schema[recipe.to_sym][:properties][policy.to_sym]
+      schem.key?(AUTOREVERSE.to_sym) && schem[AUTOREVERSE.to_sym]
     end
 
     def os_supported?
