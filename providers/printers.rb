@@ -146,8 +146,8 @@ action :setup do
           end
 
           curr_ptr_name  = printer.name.tr(' ', '+')
-          curr_ptr_id    = printer.manufacturer.tr(' ', '_') + '-' +
-                           printer.model.tr(' ', '_')
+          curr_ptr_id    = printer.manufacturer.tr(' ', '_').tr('/', '_') +
+                           '-' + printer.model.tr(' ', '_').tr('/', '_')
 
           oppolicy = 'default'
           oppolicy = printer.oppolicy if printer.attribute?('oppolicy')
