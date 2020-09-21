@@ -12,7 +12,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.11.2'
+version           '0.11.3'
 
 supports 'ubuntu'
 supports 'debian'
@@ -2376,8 +2376,6 @@ folder_sync_js = {
               type: 'integer',
               minimum: 0,
               maximum: 500,
-              exclusiveMinimum: false,
-              exclusiveMaximum: false,
               description: 'Between 0 and 500 KB/s'
             },
             owncloud_download_bandwith: {
@@ -2386,8 +2384,6 @@ folder_sync_js = {
               type: 'integer',
               minimum: 0,
               maximum: 500,
-              exclusiveMinimum: false,
-              exclusiveMaximum: false,
               description: 'Between 0 and 500 KB/s'
             },
             owncloud_folders: {
