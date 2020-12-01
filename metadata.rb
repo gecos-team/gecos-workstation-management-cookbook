@@ -2444,7 +2444,8 @@ power_conf_js = {
           description: 'Time when the computer is shutdown',
           description_es: 'Hora en que se apagará el equipo',
           type: 'integer',
-          maximum: 23
+          maximum: 23,
+          minimum: 0
         },
         minute: {
           title: 'Minute',
@@ -2452,7 +2453,8 @@ power_conf_js = {
           description: 'Minute the computer will shutdown',
           description_es: 'Minuto en que se apagará el equipo',
           type: 'integer',
-          maximum: 59
+          maximum: 59,
+          minimum: 0
         }
       }
     },
