@@ -2195,6 +2195,7 @@ local_file_js = {
           },
           file_dest: {
             type: 'string',
+            pattern: '^(\/[^\/]+)+\/?$',
             title: 'File Path',
             title_es: 'Ruta del archivo',
             description: 'Enter the absolute path where the file is saved',
@@ -2203,16 +2204,19 @@ local_file_js = {
           },
           user: {
             type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$',
             title: 'User',
             title_es: 'Usuario'
           },
           group: {
             type: 'string',
+            pattern: '^([^: ]+)$',
             title: 'Group',
             title_es: 'Grupo'
           },
           mode: {
             type: 'string',
+            pattern: '(^[0-7]{3}$)|(^[rwx-]{9}$)',
             title: 'Mode',
             title_es: 'Permisos'
           },
@@ -2228,6 +2232,8 @@ local_file_js = {
           },
           file: {
             type: 'string',
+            pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]',
             title: 'File URL',
             title_es: 'URL del archivo',
             description: 'Enter the URL where the file was downloaded',
