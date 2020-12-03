@@ -174,7 +174,8 @@ forticlientvpn_js = {
     keepalive: {
       title: 'Keepalive frequency',
       title_es: 'Frecuencia del keepalive',
-      type: 'integer'
+      type: 'integer',
+      minimum: 0
     },
     updated_by: updated_js,
     support_os: support_os_js.clone,
