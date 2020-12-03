@@ -130,6 +130,8 @@ forticlientvpn_js = {
         properties: {
           server: {
             type: 'string',
+            pattern: '(^([a-z]+\.){2,}[a-z]+$)|'\
+              '(^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$)',
             title: 'Server',
             title_es: 'Servidor'
           },
