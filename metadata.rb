@@ -543,7 +543,8 @@ cert_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: 'string'
+        type: 'string',
+        pattern: '^(\/[^\/]+)+\/?$',
       }
     },
     ca_root_certs: {
@@ -563,7 +564,9 @@ cert_js = {
           uri: {
             title: 'Uri certificate',
             title_es: 'Uri del certificado',
-            type: 'string'
+            type: 'string',
+            pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
           }
         }
       }
