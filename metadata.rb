@@ -156,11 +156,10 @@ forticlientvpn_js = {
       title_es: 'Servidor Proxy'
     },
     proxyport: {
-      type: 'integer',
+      type: 'string',
+      pattern: '^(?:[0-5]?[0-9]{1,4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-6])$',
       title: 'Proxy Port',
       title_es: 'Puerto del Proxy',
-      maximum: 65_535,
-      minimum: 0
     },
     proxyuser: {
       type: 'string',
