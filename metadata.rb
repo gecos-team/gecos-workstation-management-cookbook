@@ -2379,9 +2379,9 @@ folder_sync_js = {
               type: 'boolean'
             },
             owncloud_ask: {
-              title: 'Ask confirmation before downloading folders larger than',
-              title_es: 'Preguntar antes de descargar carpetas de más de',
-              type: 'integer'
+              title: 'Ask confirmation before downloading folders larger than (KB)',
+              title_es: 'Preguntar antes de descargar carpetas de más de (KB)',
+              type: 'integer',
             },
             owncloud_upload_bandwith: {
               title: 'Upload Bandwith',
@@ -2390,7 +2390,7 @@ folder_sync_js = {
               minimum: 0,
               maximum: 500,
               description: 'Between 0 and 500 KB/s',
-              descrpition_es: 'Entre 0 y 500 KB/s'
+              description_es: 'Entre 0 y 500 KB/s'
             },
             owncloud_download_bandwith: {
               title: 'Download Bandwith',
@@ -2399,7 +2399,7 @@ folder_sync_js = {
               minimum: 0,
               maximum: 500,
               description: 'Between 0 and 500 KB/s',
-              descrpition_es: 'Entre 0 y 500 KB/s'
+              description_es: 'Entre 0 y 500 KB/s'
             },
             owncloud_folders: {
               title: 'Sync folders',
