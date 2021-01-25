@@ -161,7 +161,7 @@ forticlientvpn_js = {
       type: 'string',
       pattern: '^(?:[0-5]?[0-9]{1,4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-6])$',
       title: 'Proxy Port',
-      title_es: 'Puerto del Proxy',
+      title_es: 'Puerto del Proxy'
     },
     proxyuser: {
       type: 'string',
@@ -480,7 +480,7 @@ file_browser_js = {
               type: 'string',
               title: 'files viewer',
               title_es: 'Visualización de archivos',
-              enum: ['icon-view', 'compact-view', 'list-view'],
+              enum: %w[icon-view compact-view list-view],
               default: 'icon-view'
             },
             show_hidden_files: {
@@ -546,7 +546,7 @@ cert_js = {
       uniqueItems: true,
       items: {
         type: 'string',
-        pattern: '^(\/[^\/]+)+\/?$',
+        pattern: '^(\/[^\/]+)+\/?$'
       }
     },
     ca_root_certs: {
@@ -2368,7 +2368,7 @@ folder_sync_js = {
               title_es: 'URL de Owncloud',
               type: 'string',
               pattern: '(https?|ftp|file)://'\
-                      '[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]',
+                      '[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]'
             },
             owncloud_authuser: {
               title: 'User',
@@ -2381,9 +2381,9 @@ folder_sync_js = {
               type: 'boolean'
             },
             owncloud_ask: {
-              title: 'Ask confirmation before downloading folders larger than (KB)',
-              title_es: 'Preguntar antes de descargar carpetas de más de (KB)',
-              type: 'integer',
+              title: 'Ask confirmation before downloading folders larger than',
+              title_es: 'Preguntar antes de descargar carpetas de más de',
+              type: 'integer'
             },
             owncloud_upload_bandwith: {
               title: 'Upload Bandwith',
@@ -2722,18 +2722,19 @@ display_manager_js = {
     items: [
       'dm',
       'autologin',
-      type: 'section',
-      items: [
-        {
-          key: 'autologin_options.username',
-          value: ' '
-        },
-        {
-          key: 'autologin_options.timeout',
-          value: 0
-        },
-        'session_script'
-      ]
+      { type: 'section' },
+      { items:
+        [
+          {
+            key: 'autologin_options.username',
+            value: ' '
+          },
+          {
+            key: 'autologin_options.timeout',
+            value: 0
+          },
+          'session_script'
+        ] }
     ]
   },
   properties:
@@ -2804,8 +2805,8 @@ idle_timeout_js = {
     type: 'section',
     items: [
       'idle_enabled',
-      type: 'section',
-      items: [
+      { type: 'section' },
+      { items: [
         {
           key: 'idle_options.timeout',
           value: 0
@@ -2819,7 +2820,7 @@ idle_timeout_js = {
           type: 'textarea',
           value: ' '
         }
-      ]
+      ] }
     ]
   },
   properties: {
