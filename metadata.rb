@@ -2385,7 +2385,8 @@ folder_sync_js = {
             owncloud_ask: {
               title: 'Ask confirmation before downloading folders larger than',
               title_es: 'Preguntar antes de descargar carpetas de más de',
-              type: 'integer'
+              type: 'integer',
+              description: 'KB'
             },
             owncloud_upload_bandwith: {
               title: 'Upload Bandwith',
