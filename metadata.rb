@@ -130,7 +130,7 @@ forticlientvpn_js = {
         properties: {
           server: {
             type: 'string',
-            pattern: '(^([a-z]+\.){2,}[a-z]+$)|'\
+            pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]+$)|'\
               '(^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$)',
             title: 'Server',
             title_es: 'Servidor'
@@ -152,6 +152,8 @@ forticlientvpn_js = {
     },
     proxyserver: {
       type: 'string',
+      pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]+$)|'\
+              '(^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$)',
       title: 'Proxy Server',
       title_es: 'Servidor Proxy'
     },
