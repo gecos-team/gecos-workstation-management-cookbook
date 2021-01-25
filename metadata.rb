@@ -2364,7 +2364,9 @@ folder_sync_js = {
             owncloud_url: {
               title: 'Owncloud URL',
               title_es: 'URL de Owncloud',
-              type: 'string'
+              type: 'string',
+              pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]',
             },
             owncloud_authuser: {
               title: 'User',
