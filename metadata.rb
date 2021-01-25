@@ -2387,7 +2387,8 @@ folder_sync_js = {
               type: 'integer',
               minimum: 0,
               maximum: 500,
-              description: 'Between 0 and 500 KB/s'
+              description: 'Between 0 and 500 KB/s',
+              descrpition_es: 'Entre 0 y 500 KB/s'
             },
             owncloud_download_bandwith: {
               title: 'Download Bandwith',
@@ -2395,7 +2396,8 @@ folder_sync_js = {
               type: 'integer',
               minimum: 0,
               maximum: 500,
-              description: 'Between 0 and 500 KB/s'
+              description: 'Between 0 and 500 KB/s',
+              descrpition_es: 'Entre 0 y 500 KB/s'
             },
             owncloud_folders: {
               title: 'Sync folders',
