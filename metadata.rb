@@ -132,7 +132,7 @@ forticlientvpn_js = {
         properties: {
           server: {
             type: 'string',
-            pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]+$)|'\
+            pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]{2,}$)|'\
               '(^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$)',
             title: 'Server',
             title_es: 'Servidor'
@@ -154,7 +154,7 @@ forticlientvpn_js = {
     },
     proxyserver: {
       type: 'string',
-      pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]+$)|'\
+      pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]{2,}$)|'\
               '(^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$)',
       title: 'Proxy Server',
       title_es: 'Servidor Proxy'
@@ -2369,7 +2369,7 @@ folder_sync_js = {
               title: 'Owncloud URL',
               title_es: 'URL de Owncloud',
               type: 'string',
-              pattern: '(https?|ftp|file)://'\
+              pattern: '(https?)://'\
                       '[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]'
             },
             owncloud_authuser: {
@@ -2386,7 +2386,7 @@ folder_sync_js = {
               title: 'Ask confirmation before downloading folders larger than',
               title_es: 'Preguntar antes de descargar carpetas de más de',
               type: 'integer',
-              description: 'KB'
+              description: 'MB'
             },
             owncloud_upload_bandwith: {
               title: 'Upload Bandwith',
