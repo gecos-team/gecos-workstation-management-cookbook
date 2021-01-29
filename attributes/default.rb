@@ -7,11 +7,9 @@
 # All rights reserved - EUPL License V 1.1
 # http://www.osor.eu/eupl
 #
-ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
-                  'Gecos V2 Lite'].freeze
-UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
-                'Gecos V2 Lite', 'Ubuntu 14.04.1 LTS'].freeze
-GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V2'].freeze
+ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V5', 'GECOS V3 Lite'].freeze
+UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V5', 'GECOS V3 Lite'].freeze
+GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V5'].freeze
 
 default[:gecos_ws_mgmt][:single_node][:network_res][:job_ids] = []
 default[:gecos_ws_mgmt][:single_node][:network_res][
