@@ -2994,6 +2994,7 @@ remote_control_js = {
 }
 
 ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V5', 'GECOS V3 Lite'].freeze
+ALL_GECOS_VERS_EXV5 = ['GECOS V4', 'GECOS V3', 'GECOS V3 Lite'].freeze
 UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V5', 'GECOS V3 Lite'].freeze
 GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V5'].freeze
 debug_mode_js[:properties][:support_os][:default] = ALL_GECOS_VERS
@@ -3005,7 +3006,7 @@ local_file_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 auto_updates_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 boot_lock_js[:properties][:support_os][:default] = UBUNTU_BASED
 local_groups_js[:properties][:support_os][:default] = ALL_GECOS_VERS
-power_conf_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+power_conf_js[:properties][:support_os][:default] = ALL_GECOS_VERS_EXV5
 local_admin_users_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 software_sources_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 package_js[:properties][:support_os][:default] = UBUNTU_BASED
