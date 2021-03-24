@@ -44,4 +44,9 @@ when 'GECOS V4'
   $required_pkgs['local_users'] = ['ruby-shadow']
   $required_pkgs['printers'].delete('foomatic-db-gutenprint')
 
+when 'GECOS V5'
+  $required_pkgs['desktop_background'] = ['dconf-editor']
+  $required_pkgs['shutdown_options'] = ['dconf-editor']
+  $required_pkgs['printers'].delete('foomatic-db-gutenprint')
+  $required_pkgs['local_users'] = ['ruby-shadow']
 end
