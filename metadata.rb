@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook Name:: gecos-ws-mgmt
 #
@@ -12,7 +14,7 @@ maintainer        'GECOS Team'
 maintainer_email  'gecos@guadalinex.org'
 license           'Apache 2.0'
 description       'Cookbook for GECOS Workstations management'
-version           '0.11.3'
+version           '0.11.4'
 
 supports 'ubuntu'
 supports 'debian'
@@ -130,6 +132,8 @@ forticlientvpn_js = {
         properties: {
           server: {
             type: 'string',
+            pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]{2,}$)|'\
+              '(^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$)',
             title: 'Server',
             title_es: 'Servidor'
           },
@@ -150,15 +154,16 @@ forticlientvpn_js = {
     },
     proxyserver: {
       type: 'string',
+      pattern: '(^([a-z0-9]+\.){2,}[a-z0-9]{2,}$)|'\
+              '(^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$)',
       title: 'Proxy Server',
       title_es: 'Servidor Proxy'
     },
     proxyport: {
-      type: 'integer',
+      type: 'string',
+      pattern: '^(?:[0-5]?[0-9]{1,4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-6])$',
       title: 'Proxy Port',
-      title_es: 'Puerto del Proxy',
-      maximum: 65_535,
-      minimum: 0
+      title_es: 'Puerto del Proxy'
     },
     proxyuser: {
       type: 'string',
@@ -174,7 +179,8 @@ forticlientvpn_js = {
     keepalive: {
       title: 'Keepalive frequency',
       title_es: 'Frecuencia del keepalive',
-      type: 'integer'
+      type: 'integer',
+      minimum: 0
     },
     updated_by: updated_js,
     support_os: support_os_js.clone,
@@ -476,7 +482,7 @@ file_browser_js = {
               type: 'string',
               title: 'files viewer',
               title_es: 'Visualización de archivos',
-              enum: ['icon-view', 'compact-view', 'list-view'],
+              enum: %w[icon-view compact-view list-view],
               default: 'icon-view'
             },
             show_hidden_files: {
@@ -541,7 +547,8 @@ cert_js = {
       minItems: 0,
       uniqueItems: true,
       items: {
-        type: 'string'
+        type: 'string',
+        pattern: '^(\/[^\/]+)+\/?$'
       }
     },
     ca_root_certs: {
@@ -561,7 +568,9 @@ cert_js = {
           uri: {
             title: 'Uri certificate',
             title_es: 'Uri del certificado',
-            type: 'string'
+            type: 'string',
+            pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
           }
         }
       }
@@ -2195,6 +2204,7 @@ local_file_js = {
           },
           file_dest: {
             type: 'string',
+            pattern: '^(\/[^\/]+)+\/?$',
             title: 'File Path',
             title_es: 'Ruta del archivo',
             description: 'Enter the absolute path where the file is saved',
@@ -2203,16 +2213,19 @@ local_file_js = {
           },
           user: {
             type: 'string',
+            pattern: '^([0-9A-Za-z\._@][0-9A-Za-z\._\-@]*)(\$?)$',
             title: 'User',
             title_es: 'Usuario'
           },
           group: {
             type: 'string',
+            pattern: '^([^: ]+)$',
             title: 'Group',
             title_es: 'Grupo'
           },
           mode: {
             type: 'string',
+            pattern: '(^[0-7]{3}$)|(^[rwx-]{9}$)',
             title: 'Mode',
             title_es: 'Permisos'
           },
@@ -2228,6 +2241,8 @@ local_file_js = {
           },
           file: {
             type: 'string',
+            pattern: '(https?|ftp|file)://'\
+                      '[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]',
             title: 'File URL',
             title_es: 'URL del archivo',
             description: 'Enter the URL where the file was downloaded',
@@ -2353,7 +2368,9 @@ folder_sync_js = {
             owncloud_url: {
               title: 'Owncloud URL',
               title_es: 'URL de Owncloud',
-              type: 'string'
+              type: 'string',
+              pattern: '(https?)://'\
+                      '[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]'
             },
             owncloud_authuser: {
               title: 'User',
@@ -2368,7 +2385,8 @@ folder_sync_js = {
             owncloud_ask: {
               title: 'Ask confirmation before downloading folders larger than',
               title_es: 'Preguntar antes de descargar carpetas de más de',
-              type: 'integer'
+              type: 'integer',
+              description: 'MB'
             },
             owncloud_upload_bandwith: {
               title: 'Upload Bandwith',
@@ -2376,7 +2394,8 @@ folder_sync_js = {
               type: 'integer',
               minimum: 0,
               maximum: 500,
-              description: 'Between 0 and 500 KB/s'
+              description: 'Between 0 and 500 KB/s',
+              description_es: 'Entre 0 y 500 KB/s'
             },
             owncloud_download_bandwith: {
               title: 'Download Bandwith',
@@ -2384,7 +2403,8 @@ folder_sync_js = {
               type: 'integer',
               minimum: 0,
               maximum: 500,
-              description: 'Between 0 and 500 KB/s'
+              description: 'Between 0 and 500 KB/s',
+              description_es: 'Entre 0 y 500 KB/s'
             },
             owncloud_folders: {
               title: 'Sync folders',
@@ -2444,7 +2464,8 @@ power_conf_js = {
           description: 'Time when the computer is shutdown',
           description_es: 'Hora en que se apagará el equipo',
           type: 'integer',
-          maximum: 23
+          maximum: 23,
+          minimum: 0
         },
         minute: {
           title: 'Minute',
@@ -2452,7 +2473,8 @@ power_conf_js = {
           description: 'Minute the computer will shutdown',
           description_es: 'Minuto en que se apagará el equipo',
           type: 'integer',
-          maximum: 59
+          maximum: 59,
+          minimum: 0
         }
       }
     },
@@ -2703,18 +2725,19 @@ display_manager_js = {
     items: [
       'dm',
       'autologin',
-      type: 'section',
-      items: [
-        {
-          key: 'autologin_options.username',
-          value: ' '
-        },
-        {
-          key: 'autologin_options.timeout',
-          value: 0
-        },
-        'session_script'
-      ]
+      { type: 'section' },
+      { items:
+        [
+          {
+            key: 'autologin_options.username',
+            value: ' '
+          },
+          {
+            key: 'autologin_options.timeout',
+            value: 0
+          },
+          'session_script'
+        ] }
     ]
   },
   properties:
@@ -2785,8 +2808,8 @@ idle_timeout_js = {
     type: 'section',
     items: [
       'idle_enabled',
-      type: 'section',
-      items: [
+      { type: 'section' },
+      { items: [
         {
           key: 'idle_options.timeout',
           value: 0
@@ -2800,7 +2823,7 @@ idle_timeout_js = {
           type: 'textarea',
           value: ' '
         }
-      ]
+      ] }
     ]
   },
   properties: {
@@ -2970,11 +2993,10 @@ remote_control_js = {
   }
 }
 
-ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
-                  'Gecos V2 Lite'].freeze
-UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V2', 'GECOS V3 Lite',
-                'Gecos V2 Lite', 'Ubuntu 14.04.1 LTS'].freeze
-GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V2'].freeze
+ALL_GECOS_VERS = ['GECOS V4', 'GECOS V3', 'GECOS V5', 'GECOS V3 Lite'].freeze
+ALL_GECOS_VERS_EXV5 = ['GECOS V4', 'GECOS V3', 'GECOS V3 Lite'].freeze
+UBUNTU_BASED = ['GECOS V4', 'GECOS V3', 'GECOS V5', 'GECOS V3 Lite'].freeze
+GECOS_FULL = ['GECOS V4', 'GECOS V3', 'GECOS V5'].freeze
 debug_mode_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 network_resource_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 tz_date_js[:properties][:support_os][:default] = ALL_GECOS_VERS
@@ -2984,7 +3006,7 @@ local_file_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 auto_updates_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 boot_lock_js[:properties][:support_os][:default] = UBUNTU_BASED
 local_groups_js[:properties][:support_os][:default] = ALL_GECOS_VERS
-power_conf_js[:properties][:support_os][:default] = ALL_GECOS_VERS
+power_conf_js[:properties][:support_os][:default] = ALL_GECOS_VERS_EXV5
 local_admin_users_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 software_sources_js[:properties][:support_os][:default] = ALL_GECOS_VERS
 package_js[:properties][:support_os][:default] = UBUNTU_BASED
