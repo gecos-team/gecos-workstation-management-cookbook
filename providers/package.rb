@@ -82,7 +82,7 @@ action :setup do
 
         # Execute apt-get update every 24 hours
         execute 'apt-get-update-periodic' do
-          command 'apt-get update'
+          command 'apt-get --allow-releaseinfo-change update'
           ignore_failure true
           only_if do
             ::File.exist?('/var/lib/apt/periodic/update-success-stamp') &&
