@@ -64,7 +64,7 @@ def install_or_update_printer(prt_name, prt_uri, prt_policy, prt_ppd_uri)
   Chef::Log.info("Installing or updating printer #{prt_name}... ")
   lpadm_comm = ShellUtil.shell("/usr/sbin/lpadmin  -p #{prt_name} -E "\
       "-m #{prt_name}.ppd -v #{prt_uri} -o printer-op-policy=#{prt_policy}"\
-      ' -o auth-info-required=none')
+      ' -o auth-info-required=negotiate')
   if lpadm_comm.exitstatus.zero?
     set_printer_options(prt_name, prt_ppd_uri)
   else
