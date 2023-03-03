@@ -17,7 +17,8 @@ action :setup do
          policy_active?('users_mgmt', 'web_browser_res')) ||
          policy_autoreversible?('users_mgmt', 'web_browser_res'))
 
-      $required_pkgs['web_browser'].each do |pkg|
+# libsqlite3-dev need to compile native sqlite gem
+      $required_pkgs['web_browser, libsqlite3-dev'].each do |pkg|
         Chef::Log.debug("web_browser.rb - REQUIRED PACKAGES = #{pkg}")
         package "web_browser_#{pkg}" do
           package_name pkg
@@ -25,14 +26,11 @@ action :setup do
         end.run_action(:install)
       end
 
-      gem_depends = ['sqlite3']
-
-      gem_depends.each do |gem|
-        gem_package gem do
+      gem_package 'sqlite3' do
           gem_binary($gem_path)
+          version "1.4.4"
           action :nothing
-        end.run_action(:install)
-      end
+      end.run_action(:install)
 
       Gem.clear_paths
 
