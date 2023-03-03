@@ -18,7 +18,7 @@ action :setup do
          policy_autoreversible?('users_mgmt', 'web_browser_res'))
 
 # libsqlite3-dev need to compile native sqlite gem
-      $required_pkgs['web_browser', 'libsqlite3-dev'].each do |pkg|
+      $required_pkgs['web_browser'].each do |pkg|
         Chef::Log.debug("web_browser.rb - REQUIRED PACKAGES = #{pkg}")
         package "web_browser_#{pkg}" do
           package_name pkg
