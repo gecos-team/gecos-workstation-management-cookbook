@@ -13,7 +13,7 @@
 # Old lsb_release method does not work anymore, as this command now parses /usr/lib/os_release
 # $gecos_os = `lsb_release -d`.split(':')[1].chomp.lstrip
 # TODO: include GECOS strings in /usr/lib/os_release 
-$gecos_os = `grep DISTRIB_DESCRIPTION /etc/lsb-release`.split('=')[1].gsub '"',""
+$gecos_os = `grep DISTRIB_DESCRIPTION /etc/lsb-release`.split('=')[1].gsub '"',"".chomp.lstrip
 
 $arch = case node[:kernel][:machine]
         when 'x86_64'
